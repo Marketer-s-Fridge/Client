@@ -34,38 +34,38 @@ export default function AccountPage() {
                 type="email"
                 value="a123456789@gmail.com"
                 disabled
-                className="w-full md:w-2/3 border border-gray-300 rounded px-2 py-1 bg-gray-100"
+                className="w-full md:w-2/3 border border-gray-300 rounded-lg px-2 py-1 bg-gray-100"
               />
             </div>
 
             {/* 간편 로그인 */}
-            <div className="md:ml-30 flex items-center  gap-6">
+            <div className="md:ml-32 flex items-center  gap-10">
               {/* 카카오 */}
               <div className="flex flex-col items-center gap-1">
                 <img
                   src="/icons/kakao-round.png"
                   alt="카카오"
-                  className="w-8 h-8"
+                  className="w-9 h-9"
                 />
-                <span className="text-[11px] text-gray-700">연동됨</span>
+                <span className="text-[10px] text-gray-700">연결완료</span>
               </div>
               {/* 네이버 */}
               <div className="flex flex-col items-center gap-1">
                 <img
                   src="/icons/naver-round.png"
                   alt="네이버"
-                  className="w-8 h-8"
+                  className="w-9 h-9"
                 />
-                <span className="text-[11px] text-gray-700">연결하기</span>
+                <span className="text-[10px] text-gray-700">연결하기</span>
               </div>
               {/* 구글 */}
               <div className="flex flex-col items-center gap-1">
                 <img
                   src="/icons/google-round.png"
                   alt="구글"
-                  className="w-8 h-8"
+                  className="w-9 h-9"
                 />
-                <span className="text-[11px] text-gray-700">연결하기</span>
+                <span className="text-[10px] text-gray-700">연결하기</span>
               </div>
             </div>
 
@@ -77,7 +77,7 @@ export default function AccountPage() {
               <input
                 type="text"
                 placeholder="홍길동"
-                className="w-full md:w-2/3 border border-gray-300 rounded px-2 py-1"
+                className="w-full md:w-2/3 border border-gray-300 rounded-lg px-2 py-1"
               />
             </div>
 
@@ -89,7 +89,7 @@ export default function AccountPage() {
               <input
                 type="text"
                 placeholder="마케터"
-                className="w-full md:w-2/3 border border-gray-300 rounded px-2 py-1"
+                className="w-full md:w-2/3 border border-gray-300 rounded-lg px-2 py-1"
               />
             </div>
 
@@ -101,7 +101,7 @@ export default function AccountPage() {
               <input
                 type="text"
                 placeholder="010-1234-5678"
-                className="w-full md:w-2/3 border border-gray-300 rounded px-2 py-1"
+                className="w-full md:w-2/3 border border-gray-300 rounded-lg px-2 py-1"
               />
             </div>
           </div>

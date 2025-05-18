@@ -30,7 +30,7 @@ export default function PasswordChangePage() {
               </label>
               <input
                 type="password"
-                className="flex-1 border border-gray-300 rounded px-3 py-1"
+                className="flex-1 border border-gray-300 rounded-lg px-3 py-1"
               />
             </div>
 
@@ -42,7 +42,7 @@ export default function PasswordChangePage() {
                 </label>
                 <input
                   type="password"
-                  className="flex-1 border border-gray-300 rounded px-3 py-1"
+                  className="flex-1 border border-gray-300 rounded-lg px-3 py-1"
                 />
               </div>
               <p className="pl-32 text-xs text-gray-500 mt-1">
@@ -57,7 +57,7 @@ export default function PasswordChangePage() {
               </label>
               <input
                 type="password"
-                className="flex-1 border border-gray-300 rounded px-3 py-1"
+                className="flex-1 border border-gray-300 rounded-lg px-3 py-1"
               />
             </div>
           </div>
