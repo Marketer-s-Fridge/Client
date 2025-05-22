@@ -24,7 +24,7 @@ const categories: Category[] = [
   { name: "Fashion", icon: "/icons/icon-fashion1.png" },
 ];
 
-const mockContents = [
+const mockContents: Content[] = [
   { id: 1, title: "셀럽들의 공항 패션 스타일", image: "/images/content1.png" },
   { id: 2, title: "재테크를 위한 중요한 원칙과 전략", image: "/images/content2.png" },
   { id: 3, title: "고효율 작업을 위한 생산성 도구 추천", image: "/images/content3.png" },
@@ -45,6 +45,7 @@ const mockContents = [
 
 export default function Page() {
   const [likedItems, setLikedItems] = useState<number[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   const toggleLike = (id: number) => {
     setLikedItems((prev) =>
@@ -61,17 +62,36 @@ export default function Page() {
         <SearchInput showInstagramButton={false} />
 
         {/* 카테고리 아이콘들 */}
-        <div className="flex flex-wrap justify-center mt-14 mb-6 gap-6 sm:gap-1 md:gap-2">
-          {categories.map((cat) => (
-            <button
-              key={cat.name}
-              className="flex flex-col items-center text-white cursor-pointer"
-            >
-              <div className="w-24 h-24 sm:w-28 sm:h-28 md:w-40 md:h-40 flex items-center justify-center">
-                <img src={cat.icon} alt={cat.name} className="object-contain w-full h-full" />
-              </div>
-            </button>
-          ))}
+        <div className="flex flex-wrap justify-center mt-14 mb-6 gap-6 sm:gap-4 md:gap-6">
+          {categories.map((cat) => {
+            const isSelected = selectedCategory === null || selectedCategory === cat.name;
+
+            return (
+              <button
+                key={cat.name}
+                onClick={() =>
+                  setSelectedCategory((prev) =>
+                    prev === cat.name ? null : cat.name
+                  )
+                }
+                className="flex flex-col items-center text-white cursor-pointer transition-all duration-200"
+              >
+                <div
+                  className={`flex items-center justify-center transition-all duration-300 ${
+                    isSelected
+                      ? "w-24 h-24 sm:w-28 sm:h-28 md:w-40 md:h-40"
+                      : "w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 opacity-60"
+                  }`}
+                >
+                  <img
+                    src={cat.icon}
+                    alt={cat.name}
+                    className="object-contain w-full h-full"
+                  />
+                </div>
+              </button>
+            );
+          })}
         </div>
       </section>
 
@@ -80,16 +100,16 @@ export default function Page() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-8">
           {mockContents.map((item) => (
             <div key={item.id} className="w-full">
-              <div className="aspect-[6/7] w-full rounded-lg overflow-hidden bg-gray-100">
+              <div className="relative aspect-[6/7] w-full rounded-lg overflow-hidden bg-gray-100">
                 <img
                   src="/icons/rectangle-gray.png"
                   alt={item.title}
                   className="w-full h-full object-cover cursor-pointer"
                 />
-              </div>
-              <div className="pt-2 px-1 text-sm font-semibold flex justify-between items-start gap-2">
-                <p className="line-clamp-2 leading-snug">{item.title}</p>
-                <button onClick={() => toggleLike(item.id)} className="shrink-0 cursor-pointer">
+                <button
+                  onClick={() => toggleLike(item.id)}
+                  className="absolute bottom-2 right-2"
+                >
                   <img
                     src={
                       likedItems.includes(item.id)
@@ -97,9 +117,12 @@ export default function Page() {
                         : "/icons/grayheart.png"
                     }
                     alt="찜하기"
-                    className="w-4 h-4 mt-0.5"
+                    className="cursor-pointer w-5 h-5"
                   />
                 </button>
+              </div>
+              <div className="pt-2 px-1 text-sm font-semibold flex justify-between items-start gap-2">
+                <p className="line-clamp-2 leading-snug">{item.title}</p>
               </div>
             </div>
           ))}

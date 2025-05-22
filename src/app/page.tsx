@@ -18,7 +18,7 @@ export default function HomePage() {
         <h2 className="text-white text-2xl font-bold mb-6">이번주 카드뉴스</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="h-70 bg-white rounded-2xl shadow" />
+            <div key={i} className="h-70 bg-white rounded-lg shadow" />
           ))}
         </div>
       </section>
@@ -29,7 +29,7 @@ export default function HomePage() {
           {/* 인기 콘텐츠 */}
           <div>
             <h3 className="text-lg font-bold mb-4">이번주 인기 콘텐츠</h3>
-            <div className="bg-gray-200 h-60 rounded-2xl" />
+            <div className="bg-gray-200 h-60 rounded-lg" />
             <p className="text-xs text-gray-500 mt-2">브랜드커뮤니케이션</p>
             <p className="text-sm font-medium mt-1">
               마크는 왜 달마과자에 글을 올렸을까?
@@ -45,7 +45,7 @@ export default function HomePage() {
           {/* 에디터 픽 */}
           <div>
             <h3 className="text-lg font-bold mb-4">에디터 픽</h3>
-            <div className="bg-gray-200 h-60 rounded" />
+            <div className="bg-gray-200 h-60 rounded-lg" />
             <p className="text-xs text-gray-500 mt-2">리브랜딩</p>
             <p className="text-sm font-medium mt-1">시니어 마케팅의 시대</p>
             <p className="text-xs text-gray-500 mt-1">

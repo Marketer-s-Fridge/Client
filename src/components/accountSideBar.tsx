@@ -14,9 +14,9 @@ export default function AccountSidebar() {
     <aside className="bg-gray-100 flex flex-col items-center py-10 px-4 text-center w-full md:w-[280px] h-auto md:h-screen">
       {/* 프로필 이미지 */}
       <img
-        src="/images/profile-character.png"
+        src="/images/profile-lovely.png"
         alt="프로필"
-        className="w-24 h-24 md:w-36 md:h-36 rounded-full object-cover"
+        className="w-28 h-28 md:w-40 md:h-40 rounded-full object-cover"
       />
 
       {/* 사용자 정보 */}

@@ -1,4 +1,3 @@
-// components/Header.tsx
 'use client';
 
 import Link from 'next/link';
@@ -17,21 +16,24 @@ export default function Header() {
   ];
 
   return (
-    <section className="border-b border-gray-300 px-60 py-3 flex justify-between items-center">
+    <section className="border-b border-gray-300 px-4 sm:px-10 md:px-20 lg:px-40 xl:px-60 py-3 flex justify-between items-center">
       {/* 홈으로 이동하는 로고 */}
-      <Link href="/" className="text-red-500 font-bold text-sm font-playfair cursor-pointer">
+      <Link
+        href="/"
+        className="text-red-500 font-bold text-sm font-playfair cursor-pointer whitespace-nowrap"
+      >
         Marketer&apos;s Fridge
       </Link>
 
       {/* 네비게이션 */}
-      <nav className="space-x-6 text-xs text-gray-700">
+      <nav className="flex flex-wrap gap-x-10 gap-y-2 text-xs  text-gray-700">
         {navItems.map((item) => (
           <Link
             key={item.name}
             href={item.href}
-            className={`${
+            className={`whitespace-nowrap ${
               pathname === item.href ? 'font-bold text-black' : ''
-            } hover:underline`}
+            } `}
           >
             {item.name}
           </Link>

@@ -22,7 +22,7 @@ export default function ChangeNicknameModal({ onClose }: Props) {
       <div className="bg-white w-[90%] max-w-[460px] rounded-2xl relative py-8 px-6 sm:px-8">
         {/* 닫기 버튼 */}
         <button
-          className="absolute  top-4 right-4 text-black text-3xl"
+          className="absolute cursor-pointer top-4 right-4 text-black text-3xl"
           onClick={onClose}
         >
           ×
@@ -45,7 +45,7 @@ export default function ChangeNicknameModal({ onClose }: Props) {
           <div className="h-[1px] bg-red-300 w-full" />
         </div>
 
-        <div className="space-y-5 text-sm">
+        <div className="space-y-5 text-sm px-5">
           {/* 계정 */}
           <div className="flex items-center">
             <label className="w-28 font-bold text-sm shrink-0">계정</label>
@@ -53,7 +53,7 @@ export default function ChangeNicknameModal({ onClose }: Props) {
               type="text"
               value={email}
               disabled
-              className="flex-1 bg-gray-100 border border-gray-300 rounded-lg px-3 py-1 text-sm"
+              className="flex-1 bg-white text-gray-500 border border-gray-300 rounded-lg px-3 py-1.5 text-sm"
             />
           </div>
 
@@ -66,7 +66,7 @@ export default function ChangeNicknameModal({ onClose }: Props) {
               type="text"
               value={currentNickname}
               disabled
-              className="flex-1 bg-gray-100 border border-gray-300 rounded-lg px-3 py-1 text-sm"
+              className="flex-1 bg-white text-gray-500 border border-gray-300 rounded-lg px-3 py-1.5 text-sm"
             />
           </div>
 
@@ -77,12 +77,12 @@ export default function ChangeNicknameModal({ onClose }: Props) {
                 닉네임 변경
               </label>
               <div className="flex-1 flex gap-2">
-                <div className="relative flex flex-row items-center">
+                <div className="relative w-full flex flex-row items-center">
                   <input
                     type="text"
                     value={nickname}
                     onChange={(e) => setNickname(e.target.value)}
-                    className=" flex-1 border border-gray-300 rounded-lg px-3 py-1 text-sm"
+                    className="flex-1 w-full border border-gray-300 rounded-lg px-3 py-1.5 text-sm"
                     maxLength={8}
                   ></input>
                   {/* 글자 수 표시 */}
@@ -92,14 +92,14 @@ export default function ChangeNicknameModal({ onClose }: Props) {
                 </div>
                 <button
                   onClick={handleDuplicateCheck}
-                  className="bg-gray-300 px-2 py-1 rounded-lg text-sm shrink-0"
+                  className="cursor-pointer bg-gray-300 px-2 py-1 rounded-lg text-xs shrink-0"
                 >
                   중복확인
                 </button>
               </div>
             </div>
 
-            <div className="pl-28 text-xs text-gray-500">
+            <div className="pl-29 text-[10px] text-gray-500">
               닉네임은 최소 2~8자로 작성해주세요.
             </div>
             {isDuplicate && (
@@ -112,7 +112,7 @@ export default function ChangeNicknameModal({ onClose }: Props) {
 
         {/* 확인 버튼 */}
         <div className="mt-10 text-center">
-          <button className="bg-red-500 text-xs text-white font-semibold rounded-full px-6 py-1 hover:bg-red-600">
+          <button className="cursor-pointer bg-red-500 text-xs text-white font-semibold rounded-full px-6 py-1 hover:bg-red-600">
             확인
           </button>
         </div>
