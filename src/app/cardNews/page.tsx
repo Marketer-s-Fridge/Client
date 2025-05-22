@@ -91,9 +91,7 @@ export default function CardNewsDetailPage() {
           </div>
 
           {/* 텍스트 영역 + 버튼 포함 */}
-          <div
-            className="w-full md:w-[420px]  aspect-[4/5]"
-          >
+          <div className="w-full md:w-[420px]  aspect-[4/5]">
             <div className="flex flex-col h-full">
               <div className="flex-1 overflow-y-scroll pr-2 py-2 px-1 ">
                 <h1 className="text-2xl font-bold mb-2">
@@ -130,17 +128,18 @@ export default function CardNewsDetailPage() {
               </div>
 
               {/* 고정 버튼 */}
-              <div className="bg-white flex justify-end gap-4 ">
-                <button className="border border-gray-300 rounded-full px-4 py-1 text-sm flex items-center gap-2 ">
+              <div className="bg-white flex justify-end gap-4">
+                <button className="border border-gray-300 rounded-full px-4 py-1 text-sm flex items-center gap-2 cursor-pointer">
                   <Image
                     src="/icons/pinkheart.png"
                     alt="하트"
                     width={16}
                     height={16}
+                    // className="cursor-pointer"
                   />
                   MY냉장고에 저장
                 </button>
-                <button className="border border-gray-300 rounded-full px-2 py-1 text-sm">
+                <button className="border border-gray-300 rounded-full px-2 py-1 text-sm cursor-pointer">
                   <Image
                     src="/icons/share.png"
                     alt="공유"

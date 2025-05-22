@@ -58,7 +58,7 @@ export default function MyContact() {
         {/* 하단 버튼 + 페이지네이션 */}
         <div className="flex justify-between items-center mt-6">
           <div></div>
-          <button className="bg-red-500 text-white px-4 py-1 rounded-full text-sm hover:bg-red-600">
+          <button className="cursor-pointer bg-red-500 text-white px-4 py-1 rounded-full text-xs hover:bg-red-600">
             글쓰기
           </button>
         </div>

@@ -22,7 +22,7 @@ export default function ChangeNicknameModal({ onClose }: Props) {
       <div className="bg-white w-[90%] max-w-[460px] rounded-2xl relative py-8 px-6 sm:px-8">
         {/* 닫기 버튼 */}
         <button
-          className="absolute  top-4 right-4 text-black text-3xl"
+          className="absolute cursor-pointer top-4 right-4 text-black text-3xl"
           onClick={onClose}
         >
           ×
@@ -92,7 +92,7 @@ export default function ChangeNicknameModal({ onClose }: Props) {
                 </div>
                 <button
                   onClick={handleDuplicateCheck}
-                  className="bg-gray-300 px-2 py-1 rounded-lg text-sm shrink-0"
+                  className="cursor-pointer bg-gray-300 px-2 py-1 rounded-lg text-sm shrink-0"
                 >
                   중복확인
                 </button>
@@ -112,7 +112,7 @@ export default function ChangeNicknameModal({ onClose }: Props) {
 
         {/* 확인 버튼 */}
         <div className="mt-10 text-center">
-          <button className="bg-red-500 text-xs text-white font-semibold rounded-full px-6 py-1 hover:bg-red-600">
+          <button className="cursor-pointer bg-red-500 text-xs text-white font-semibold rounded-full px-6 py-1 hover:bg-red-600">
             확인
           </button>
         </div>

@@ -11,7 +11,7 @@ export default function PasswordChangePage() {
       <Header />
 
       {/* 상단 배너 */}
-      <Banner title="계정관리" />
+      <Banner title="계정 관리" />
 
       {/* 본문 영역 */}
       <main className="max-w-[1024px] mx-auto h-full grid grid-cols-1 md:grid-cols-[280px_1fr]">

@@ -36,7 +36,7 @@ export default function Page() {
       </section>
 
       <CategoryTabBar
-        categories={["전체", "트렌드", "브랜드", "뷰티", "테크"]}
+        categories={["All", "food", "lifestyle", "beauty", "tech","fashion"]}
         selected={selectedCategory}
         onSelect={setSelectedCategory}
         sortOptions={["최신순", "오래된순"]}
@@ -64,7 +64,7 @@ export default function Page() {
                   <img
                     src="/icons/grayheart.png"
                     alt="찜하기"
-                    className="w-4 h-4"
+                    className="w-4 h-4 cursor-pointer"
                   />
                 </button>
               </div>

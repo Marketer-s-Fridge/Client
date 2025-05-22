@@ -14,7 +14,7 @@ export default function AccountPage() {
       <Header />
 
       {/* 상단 배너 */}
-      <Banner title="계정관리" />
+      <Banner title="계정 관리" />
 
       {/* 본문 영역 */}
       <main className="max-w-[1024px] mx-auto h-full grid grid-cols-1 md:grid-cols-[280px_1fr]">
@@ -52,7 +52,7 @@ export default function AccountPage() {
               {/* 네이버 */}
               <div className="flex flex-col items-center gap-1">
                 <img
-                  src="/icons/naver-round.png"
+                  src="/icons/naver-gray-round.png"
                   alt="네이버"
                   className="w-9 h-9"
                 />
@@ -61,7 +61,7 @@ export default function AccountPage() {
               {/* 구글 */}
               <div className="flex flex-col items-center gap-1">
                 <img
-                  src="/icons/google-round.png"
+                  src="/icons/google-gray-round.png"
                   alt="구글"
                   className="w-9 h-9"
                 />
