@@ -22,7 +22,7 @@ export default function PasswordChangePage() {
         <section className="relative pt-14 px-20 h-lvh">
           <h3 className="text-xl font-bold mb-10">비밀번호 변경</h3>
 
-          <div className="flex flex-col gap-6 text-sm w-full max-w-[600px]">
+          <div className="flex flex-col gap-3.5 text-sm">
             {/* 기존 비밀번호 */}
             <div className="flex items-center">
               <label className="w-32 text-gray-700 font-semibold">
@@ -30,7 +30,7 @@ export default function PasswordChangePage() {
               </label>
               <input
                 type="password"
-                className="flex-1 border border-gray-300 rounded-lg px-3 py-1"
+                className="md:w-3/6 border border-gray-300 rounded-lg px-3 py-2"
               />
             </div>
 
@@ -42,10 +42,10 @@ export default function PasswordChangePage() {
                 </label>
                 <input
                   type="password"
-                  className="flex-1 border border-gray-300 rounded-lg px-3 py-1"
+                  className="md:w-3/6 border border-gray-300 rounded-lg px-3 py-2"
                 />
               </div>
-              <p className="pl-32 text-xs text-gray-500 mt-1">
+              <p className="md:w-4/9 ml-33 text-[10px] text-wrap text-gray-500 mt-1">
                 비밀번호는 영문, 숫자, 특수문자를 모두 포함한 8~20자리로 입력해주세요.
               </p>
             </div>
@@ -57,13 +57,13 @@ export default function PasswordChangePage() {
               </label>
               <input
                 type="password"
-                className="flex-1 border border-gray-300 rounded-lg px-3 py-1"
+                className="border md:w-3/6 border-gray-300 rounded-lg px-3 py-2"
               />
             </div>
           </div>
 
-          <div className="absolute right-10 bottom-20 flex justify-end">
-            <button className="bg-red-500 text-white rounded-full px-6 py-1 text-sm font-semibold hover:bg-red-600">
+          <div className="absolute right-15 bottom-20 flex justify-end">
+            <button className="bg-red-500 text-white rounded-full px-5 py-1.5 text-[12px] font-semibold hover:bg-red-600">
               변경 완료
             </button>
           </div>

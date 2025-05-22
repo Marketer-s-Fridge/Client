@@ -26,7 +26,7 @@ export default function Header() {
       </Link>
 
       {/* 네비게이션 */}
-      <nav className="flex flex-wrap gap-x-4 gap-y-2 text-xs  text-gray-700">
+      <nav className="flex flex-wrap gap-x-10 gap-y-2 text-xs  text-gray-700">
         {navItems.map((item) => (
           <Link
             key={item.name}

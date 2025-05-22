@@ -45,7 +45,7 @@ export default function Page() {
       />
 
       {/* 카드 리스트 */}
-      <section className="w-full max-w-screen-lg mx-auto px-4 sm:px-6 md:px-8 py-12">
+      <section className="w-4/7 max-w-screen-lg mx-auto px-4 sm:px-6 md:px-8 py-12">
         <h2 className="text-xl font-bold mb-6">‘{query}’ 검색 결과</h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-10">

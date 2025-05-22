@@ -21,7 +21,7 @@ export default function CategoryTabBar({
 }: CategoryTabBarProps) {
   return (
     <>
-      <div className="flex justify-between items-center max-w-screen-lg mx-auto px-4 sm:px-6 md:px-10 py-3 border-gray-200">
+      <div className="flex justify-between items-center max-w-screen-lg mx-auto px-4 sm:px-6 md:px-30 py-3 border-gray-200">
         {/* 카테고리 필터 버튼 */}
         <div className="flex flex-wrap gap-2">
           {categories.map((category) => (
