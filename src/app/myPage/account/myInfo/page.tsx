@@ -2,12 +2,13 @@
 
 import Header from "@/components/header";
 import React from "react";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import AccountSidebar from "@/components/accountSideBar";
 import Banner from "@/components/banner";
+import Image from "next/image";
 
 export default function AccountPage() {
-  const router = useRouter();
+  // const router = useRouter();
 
   return (
     <div className="bg-white min-h-screen">
@@ -42,7 +43,7 @@ export default function AccountPage() {
             <div className="md:ml-37.5 flex items-center  gap-13">
               {/* 카카오 */}
               <div className="flex flex-col items-center gap-1">
-                <img
+                <Image
                   src="/icons/kakao-round.png"
                   alt="카카오"
                   className="w-10 h-10"
@@ -51,7 +52,7 @@ export default function AccountPage() {
               </div>
               {/* 네이버 */}
               <div className="flex flex-col items-center gap-1">
-                <img
+                <Image
                   src="/icons/naver-gray-round.png"
                   alt="네이버"
                   className="w-10 h-10"
@@ -60,7 +61,7 @@ export default function AccountPage() {
               </div>
               {/* 구글 */}
               <div className="flex flex-col items-center gap-1">
-                <img
+                <Image
                   src="/icons/google-gray-round.png"
                   alt="구글"
                   className="w-10 h-10"
