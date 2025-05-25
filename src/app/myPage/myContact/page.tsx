@@ -3,8 +3,10 @@
 import Header from "@/components/header";
 import Banner from "@/components/banner";
 import React from "react";
+import { useRouter } from "next/navigation";
 
 export default function MyContact() {
+  const router = useRouter();
   const inquiries = Array.from({ length: 9 }).map((_, idx) => ({
     no: 9 - idx,
     title: "프로필 사진 업데이트가 안 돼요",
@@ -58,7 +60,10 @@ export default function MyContact() {
         {/* 하단 버튼 + 페이지네이션 */}
         <div className="flex justify-between items-center mt-6">
           <div></div>
-          <button className="cursor-pointer bg-red-500 text-white px-4 py-1 rounded-full text-xs hover:bg-red-600">
+          <button
+            onClick={() => router.push("/contact")}
+            className="cursor-pointer bg-red-500 text-white px-4 py-1 rounded-full text-xs hover:bg-red-600"
+          >
             글쓰기
           </button>
         </div>
