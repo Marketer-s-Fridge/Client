@@ -1,9 +1,12 @@
 "use client";
+
 import Header from "@/components/header";
 import SearchInput from "@/components/searchInput";
 import React from "react";
 import CategoryTabBar from "@/components/categoryTabBar";
 import { useState } from "react";
+import Image from "next/image";
+
 const mockContents = [
   { title: "신규 브랜드 탐방: 떠오르는 핫 브랜드", category: "🔥 인기 콘텐츠" },
   { title: "패션 아이콘들이 선택한 신상템", category: "✨ 에디터 픽" },
@@ -54,7 +57,7 @@ export default function Page() {
             {mockContents.map((item, index) => (
               <div key={index} className="w-full">
                 <div className="relative aspect-[6/7] w-full rounded-lg overflow-hidden bg-gray-100">
-                  <img
+                  <Image
                     src="/icons/rectangle-gray.png"
                     alt={item.title}
                     className="w-full h-full object-cover"
@@ -66,7 +69,7 @@ export default function Page() {
                 <div className="pt-2 px-1 text-sm font-semibold truncate flex items-center justify-between">
                   {item.title}
                   <button>
-                    <img
+                    <Image
                       src="/icons/grayheart.png"
                       alt="찜하기"
                       className="w-4 h-4"

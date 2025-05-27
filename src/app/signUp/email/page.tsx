@@ -1,165 +1,183 @@
 "use client";
 
-import { SubmitButton } from "@/components/authFormComponents";
+import { AuthHeader, SubmitButton } from "@/components/authFormComponents";
 import Header from "@/components/header";
 import React, { useState } from "react";
 
 export default function EmailJoinPage() {
   const [email, setEmail] = useState("");
+  const [id, setId] = useState("");
+  const [nickname, setNickname] = useState("");
+  const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [code, setCode] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordCheck, setPasswordCheck] = useState("");
+
+  const [birth, setBirth] = useState({ year: "", month: "", day: "" });
 
   return (
-    <div>
+    <div className="bg-white">
       <Header />
-      <div className="bg-white min-h-screen px-4 py-16 flex justify-center">
-        <div className="w-full max-w-[600px] items-center self-center align-middle">
-          <h1 className="text-4xl font-bold text-center mb-4">회원가입</h1>
-          <p className="text-center text-gray-700 text-lg mb-10">
-            마케터의 냉장고에 처음 오셨군요!
-            <br />
-            신선한 마케팅 아이디어를 꺼내보기 전에 먼저 나만의 냉장고를
-            만들어보세요.
-          </p>
+      <div className="bg-white min-h-screen px-4 sm:px-6 md:px-8 py-16 flex justify-center">
+        <div className="w-full max-w-[550px]">
+          <AuthHeader />
 
-          <form className="space-y-5 text-sm w-full">
+          <form className="w-full flex flex-col gap-6 text-sm">
             {/* 이메일 */}
-            <div className="w-9/11 mx-auto flex items-center gap-1">
-              <label className="text-[15px] w-32 font-semibold whitespace-nowrap">
-                이메일주소<span className="text-red-500 ml-1">*</span>
-              </label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="flex-1 border border-gray-400 rounded-lg px-3 py-2"
-              />
-              <button
-                type="button"
-                className="text-sm bg-gray-300 rounded-lg px-3 py-2"
-              >
-                중복확인
-              </button>
-            </div>
+            <InputRow label="이메일주소" required>
+              <div className="flex gap-2 w-full">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="flex-1 border border-gray-400 rounded px-3 py-2 text-[13px]"
+                />
+                <button
+                  type="button"
+                  className="bg-gray-200 text-[13px] px-3 py-2 rounded"
+                >
+                  중복확인
+                </button>
+              </div>
+            </InputRow>
 
             {/* 아이디 */}
-            <div className="w-9/11 mx-auto">
-              <div className="flex items-center gap-[4px] mb-1">
-                <label className="text-[15px] w-32 font-semibold whitespace-nowrap">
-                  아이디<span className="text-red-500 ml-1">*</span>
-                </label>
-                <input className="flex-1 border border-gray-400 rounded-lg px-3 py-2" />
+            <InputRow label="아이디" required>
+              <div className="flex gap-2 w-full">
+                <input
+                  type="text"
+                  value={id}
+                  onChange={(e) => setId(e.target.value)}
+                  className="flex-1 border border-gray-400 rounded px-3 py-2 text-[13px]"
+                />
+                <button
+                  type="button"
+                  className="bg-gray-200 text-[13px] px-3 py-2 rounded"
+                >
+                  중복확인
+                </button>
               </div>
-              <p className="text-xs text-gray-600 pl-36">
-                아이디는 영문, 숫자 포함 4-20자리를 입력해주세요.
-              </p>
-            </div>
+            </InputRow>
 
             {/* 닉네임 */}
-            <div className="w-9/11 mx-auto">
-              <div className="flex items-center gap-[4px] mb-1">
-                <label className="text-[15px] w-32 font-semibold whitespace-nowrap">
-                  닉네임<span className="text-red-500 ml-1">*</span>
-                </label>
-                <input className="flex-1 border border-gray-400 rounded-lg px-3 py-2" />
-              </div>
-              <p className="text-xs text-gray-600 pl-36">
-                닉네임은 2~8자까지 설정이 가능합니다.
-              </p>
-            </div>
+            <InputRow label="닉네임" required>
+              <input
+                type="text"
+                value={nickname}
+                onChange={(e) => setNickname(e.target.value)}
+                className="w-full border border-gray-400 rounded px-3 py-2 text-[13px]"
+              />
+            </InputRow>
 
             {/* 이름 */}
-            <div className="w-9/11 mx-auto flex items-center gap-[4px]">
-              <label className="text-[15px] w-32 font-semibold whitespace-nowrap">
-                이름<span className="text-red-500 ml-1">*</span>
-              </label>
-              <input className="flex-1 border border-gray-400 rounded-lg px-3 py-2" />
-            </div>
+            <InputRow label="이름" required>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full border border-gray-400 rounded px-3 py-2 text-[13px]"
+              />
+            </InputRow>
 
             {/* 휴대폰 */}
-            <div className="w-9/11 mx-auto flex items-center gap-[4px]">
-              <label className="text-[15px] w-32 font-semibold whitespace-nowrap">
-                휴대폰<span className="text-red-500 ml-1">*</span>
-              </label>
-              <input
-                placeholder="-없이 숫자만"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                className="flex-1 border border-gray-400 rounded-lg px-3 py-2"
-              />
-              <button
-                type="button"
-                className="text-sm bg-gray-300 rounded-lg px-3 py-2"
-              >
-                인증번호 전송
-              </button>
-            </div>
+            <InputRow label="휴대폰" required>
+              <div className="flex gap-2 w-full">
+                <input
+                  type="text"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="- 없이 숫자만"
+                  className="flex-1 border border-gray-400 rounded px-3 py-2 text-[13px]"
+                />
+                <button
+                  type="button"
+                  className="bg-gray-200 text-[13px] px-3 py-2 rounded"
+                >
+                  인증번호 전송
+                </button>
+              </div>
+            </InputRow>
 
             {/* 인증번호 */}
-            <div className="w-9/11 mx-auto flex items-center gap-[4px]">
-              <label className="text-[15px] w-32 font-semibold whitespace-nowrap">
-                인증번호<span className="text-red-500 ml-1">*</span>
-              </label>
-              <input
-                value={code}
-                onChange={(e) => setCode(e.target.value)}
-                className="flex-1 border border-gray-400 rounded-lg px-3 py-2"
-              />
-              <button
-                type="button"
-                className="text-sm bg-gray-300 rounded-lg px-3 py-2"
-              >
-                인증 완료
-              </button>
-            </div>
+            <InputRow label="인증번호" required>
+              <div className="flex gap-2 w-full">
+                <input
+                  type="text"
+                  value={code}
+                  onChange={(e) => setCode(e.target.value)}
+                  className="flex-1 border border-gray-400 rounded px-3 py-2 text-[13px]"
+                />
+                <button
+                  type="button"
+                  className="bg-gray-200 text-[13px] px-3 py-2 rounded"
+                >
+                  인증 완료
+                </button>
+              </div>
+            </InputRow>
 
             {/* 생년월일 */}
-            <div className="w-9/11 mx-auto flex items-center gap-[4px]">
-              <label className="text-[15px] w-32 font-semibold whitespace-nowrap">
-                생년월일
-              </label>
-              <select className="border border-gray-400 rounded-lg px-2 py-2">
-                <option>1990</option>
-              </select>
-              <select className="border border-gray-400 rounded-lg px-2 py-2">
-                <option>01</option>
-              </select>
-              <select className="border border-gray-400 rounded-lg px-2 py-2">
-                <option>01</option>
-              </select>
-            </div>
+            <InputRow label="생년월일">
+              <div className="flex gap-2 w-full">
+                <select
+                  value={birth.year}
+                  onChange={(e) => setBirth({ ...birth, year: e.target.value })}
+                  className="border border-gray-400 rounded px-2 py-2 text-[13px] w-1/3"
+                >
+                  <option value="">년도</option>
+                  {Array.from({ length: 50 }, (_, i) => 1980 + i).map((y) => (
+                    <option key={y}>{y}</option>
+                  ))}
+                </select>
+                <select
+                  value={birth.month}
+                  onChange={(e) =>
+                    setBirth({ ...birth, month: e.target.value })
+                  }
+                  className="border border-gray-400 rounded px-2 py-2 text-[13px] w-1/3"
+                >
+                  <option value="">월</option>
+                  {Array.from({ length: 12 }, (_, i) => i + 1).map((m) => (
+                    <option key={m}>{String(m).padStart(2, "0")}</option>
+                  ))}
+                </select>
+                <select
+                  value={birth.day}
+                  onChange={(e) => setBirth({ ...birth, day: e.target.value })}
+                  className="border border-gray-400 rounded px-2 py-2 text-[13px] w-1/3"
+                >
+                  <option value="">일</option>
+                  {Array.from({ length: 31 }, (_, i) => i + 1).map((d) => (
+                    <option key={d}>{String(d).padStart(2, "0")}</option>
+                  ))}
+                </select>
+              </div>
+            </InputRow>
 
             {/* 비밀번호 */}
-            <div className="w-9/11 mx-auto">
-              <div className="flex items-center gap-[4px] mb-1">
-                <label className="text-[15px] w-32 font-semibold whitespace-nowrap">
-                  비밀번호<span className="text-red-500 ml-1">*</span>
-                </label>
-                <input
-                  type="password"
-                  className="flex-1 border border-gray-400 rounded-lg px-3 py-2"
-                />
-              </div>
-              <p className="text-xs text-gray-600 pl-36">
-                비밀번호는 영문, 숫자, 특수문자를 포함한 8~20자리로
-                입력해주세요.
-              </p>
-            </div>
-
-            {/* 비밀번호 확인 */}
-            <div className="w-9/11 mx-auto flex items-center gap-[4px]">
-              <label className="text-[15px] w-32 font-semibold whitespace-nowrap">
-                비밀번호 확인<span className="text-red-500 ml-1">*</span>
-              </label>
+            <InputRow label="비밀번호" required>
               <input
                 type="password"
-                className="flex-1 border border-gray-400 rounded-lg px-3 py-2"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full border border-gray-400 rounded px-3 py-2 text-[13px]"
               />
-            </div>
+            </InputRow>
+
+            {/* 비밀번호 확인 */}
+            <InputRow label="비밀번호 확인" required>
+              <input
+                type="password"
+                value={passwordCheck}
+                onChange={(e) => setPasswordCheck(e.target.value)}
+                className="w-full border border-gray-400 rounded px-3 py-2 text-[13px]"
+              />
+            </InputRow>
 
             {/* 동의 체크박스 */}
-            <div className="w-9/11 mx-auto mt-6 border-t border-gray-200 pt-6 space-y-2 text-sm">
-              <label className="flex items-center gap-[4px]">
+            <div className="w-7/9 place-self-center mt-6 border-gray-200 pt-6 space-y-2 text-sm">
+              <label className="flex items-center gap-2">
                 <input type="checkbox" /> <b>모두 동의하기</b>
               </label>
               <label className="flex items-center gap-2">
@@ -181,7 +199,7 @@ export default function EmailJoinPage() {
             <div className="text-center mt-10">
               <SubmitButton
                 text="나의 냉장고 열어보기"
-                onClick={() => alert("이메일 회원가입 완료")}
+                onClick={() => alert("회원가입 완료")}
               />
             </div>
           </form>
@@ -190,3 +208,24 @@ export default function EmailJoinPage() {
     </div>
   );
 }
+
+// ✅ label + input 정렬 맞추는 공통 row 컴포넌트
+const InputRow = ({
+  label,
+  required = false,
+  children,
+}: {
+  label: string;
+  required?: boolean;
+  children: React.ReactNode;
+}) => {
+  return (
+    <div className="w-7/9 mx-auto grid grid-cols-[112px_1fr] gap-2 items-center">
+      <label className="text-[13px] font-semibold whitespace-nowrap text-left">
+        {label}
+        {required && <span className="text-red-500 ml-1">*</span>}
+      </label>
+      {children}
+    </div>
+  );
+};

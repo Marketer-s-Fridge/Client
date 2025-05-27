@@ -2,25 +2,19 @@
 
 import React, { useState } from "react";
 import Header from "@/components/header";
-import { useRouter } from "next/navigation";
-import { SubmitButton } from "@/components/authFormComponents";
+// import { useRouter } from "next/navigation";
+import { AuthHeader, SubmitButton } from "@/components/authFormComponents";
 
 const SignUpPage: React.FC = () => {
   const [email, setEmail] = useState("");
-  const router = useRouter();
+  // const router = useRouter();
 
   return (
     <div className="bg-white min-h-screen">
       <Header />
       <main className="flex justify-center px-4 py-16">
         <div className="w-full max-w-[550px] flex flex-col items-center text-center">
-          <h1 className="text-4xl font-bold text-center mb-4">회원가입</h1>
-          <p className="text-center text-gray-700 text-lg mb-10">
-            마케터의 냉장고에 처음 오셨군요!
-            <br />
-            신선한 마케팅 아이디어를 꺼내보기 전에 먼저 나만의 냉장고를
-            만들어보세요.
-          </p>
+          <AuthHeader />
 
           {/* 이메일 입력 */}
           <div className="w-9/11 flex flex-row items-start text-left mb-14 gap-3">

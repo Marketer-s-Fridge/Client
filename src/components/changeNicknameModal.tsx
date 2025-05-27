@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Image from "next/image";
 
 type Props = {
   onClose: () => void;
@@ -30,10 +31,12 @@ export default function ChangeNicknameModal({ onClose }: Props) {
 
         {/* 캐릭터 이미지 */}
         <div className="flex flex-col items-center">
-          <img
+          <Image
             src="/images/profile-character.png"
             alt="프로필"
             className="w-28 h-28 rounded-full border border-red-400"
+            width={300}
+            height={300}
           />
           <button className="mt-2 text-xs text-white bg-red-400 rounded-full px-4 py-1">
             사진 수정

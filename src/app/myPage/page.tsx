@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Header from "@/components/header";
 import DoughnutChart from "@/components/doughnutChart";
 import ChangeNicknameModal from "@/components/changeNicknameModal";
+import Image from "next/image";
 
 export default function MyPage() {
   const router = useRouter();
@@ -38,17 +39,19 @@ export default function MyPage() {
       <section className="py-10 px-4 main-red text-white">
         <div className="max-w-[1024px] mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="flex items-center gap-6">
-            <img
+            <Image
               src="/images/profile-character.png"
               alt="프로필"
               className="w-40 h-40"
+              width={230}
+              height={230}
             />
             <div>
               <h2 className="text-2xl font-bold">마케터</h2>
               <p className="text-sm">a123456789@gmail.com</p>
               <button
                 onClick={() => setIsNicknameModalOpen(true)}
-                className="cursor-pointer mt-2  flex-1 border border-white rounded-full px-4 py-1 text-sm"
+                className="flex cursor-pointer mt-2  flex-1 border border-white rounded-full px-4 py-1 text-sm"
               >
                 프로필 편집
               </button>
@@ -86,10 +89,12 @@ export default function MyPage() {
                   }
                   className="absolute left-[-33px] top-4/9 -translate-y-1/2 z-10 hidden md:block"
                 >
-                  <img
+                  <Image
                     src="/icons/left.png"
-                    className="cursor-pointer w-8 h-8"
+                    className="cursor-pointer w-8 h-8 "
                     alt="이전"
+                    width={30}
+                    height={30}
                   />
                 </button>
                 <div className="flex gap-6 overflow-hidden">
@@ -101,15 +106,19 @@ export default function MyPage() {
                     .map((title, i) => (
                       <div key={i} className="w-[140px] flex-shrink-0">
                         <div className="relative aspect-[3/4] rounded-lg overflow-hidden bg-gray-100">
-                          <img
+                          <Image
                             src="/icons/rectangle-gray.png"
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-cover cursor-pointer"
                             alt={title}
+                            width={200}
+                            height={250}
                           />
-                          <img
+                          <Image
                             src="/icons/grayheart.png"
-                            className="absolute right-2 bottom-2 w-5 h-5"
+                            className="absolute right-2 bottom-2 w-5 h-5 "
                             alt="찜"
+                            width={30}
+                            height={30}
                           />
                         </div>
                         <div className="pt-2 text-xs font-medium truncate">
@@ -124,10 +133,12 @@ export default function MyPage() {
                   }
                   className="absolute right-[-33px] top-4/9 -translate-y-1/2 z-10 hidden md:block"
                 >
-                  <img
+                  <Image
                     src="/icons/right.png"
                     className="cursor-pointer w-8 h-8"
                     alt="다음"
+                    width={30}
+                    height={30}
                   />
                 </button>
               </div>
@@ -138,29 +149,38 @@ export default function MyPage() {
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-2xl font-bold">MY 냉장고</h3>
                 <div className="flex flex-row items-center">
-                  <button className=" cursor-pointer text-sm text-gray-500 ">
+                  <button
+                    onClick={() => router.push("/myPage/myFridge")}
+                    className=" cursor-pointer text-sm text-gray-500 "
+                  >
                     더보기
                   </button>
-                  <img
+                  <Image
                     src="/icons/right.png"
                     className="cursor-pointer w-4 h-4"
                     alt="다음"
-                  ></img>
+                    width={30}
+                    height={30}
+                  ></Image>
                 </div>
               </div>
               <div className="flex gap-6">
                 {myFridgeContents.map((title, i) => (
                   <div key={i} className="w-[140px]">
                     <div className="relative aspect-[3/4] rounded-lg overflow-hidden bg-gray-100">
-                      <img
+                      <Image
                         src="/icons/rectangle-gray.png"
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover cursor-pointer"
                         alt={title}
+                        width={200}
+                        height={250}
                       />
-                      <img
+                      <Image
                         src="/icons/redheart.png"
                         className="absolute right-2 bottom-2 w-4 h-4"
                         alt="찜"
+                        width={30}
+                        height={30}
                       />
                     </div>
                     <div className="pt-2 text-xs font-medium truncate">

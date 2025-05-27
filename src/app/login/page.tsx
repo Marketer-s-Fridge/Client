@@ -3,26 +3,26 @@
 import Header from "@/components/header";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { SubmitButton } from "@/components/authFormComponents";
+import { AuthHeader, SubmitButton } from "@/components/authFormComponents";
+import Image from "next/image";
 
 const LoginPage: React.FC = () => {
   const [input1, onChangeInput1] = useState("");
   const [input2, onChangeInput2] = useState("");
-  const [input3, onChangeInput3] = useState("");
+  // const [input3, onChangeInput3] = useState("");
 
   const router = useRouter();
 
   return (
-    <div>
+    <div className="bg-white">
       <Header />
       <div className="flex justify-center bg-white py-16 px-4">
         <div className="w-full max-w-[480px] flex flex-col items-center">
-          <h1 className="text-4xl font-bold text-center mb-4">로그인</h1>
-          <p className="text-center text-gray-700 text-lg mb-15">
-            마케터의 냉장고에 오신 걸 환영합니다!
-            <br />
-            필요한 마케팅 콘텐츠를 골라보는 냉장고, 지금 로그인하세요!
-          </p>
+          <AuthHeader
+            title="로그인"
+            description={`마케터의 냉장고에 오신 걸 환영합니다!
+필요한 마케팅 콘텐츠를 골라보는 냉장고, 지금 로그인하세요!`}
+          />
 
           <h2 className="text-[24px] font-semibold mb-4">일반 로그인</h2>
 
@@ -76,26 +76,32 @@ const LoginPage: React.FC = () => {
           {/* ✅ 소셜 로그인 이미지 버튼 */}
           <div className="w-full flex flex-col items-center gap-y-3 mb-10">
             <button onClick={() => alert("카카오 로그인")}>
-              <img
+              <Image
                 src="/icons/kakao-login-bt.png"
                 alt="카카오 로그인"
                 className="w-full max-w-[400px]"
+                width={500}
+                height={100}
               />
             </button>
 
             <button onClick={() => alert("네이버 로그인")}>
-              <img
+              <Image
                 src="/icons/naver-login-bt.png"
                 alt="네이버 로그인"
                 className="w-full max-w-[400px]"
+                width={500}
+                height={100}
               />
             </button>
 
             <button onClick={() => alert("Google 로그인")}>
-              <img
+              <Image
                 src="/icons/google-login-bt.png"
                 alt="Google 로그인"
                 className="w-full max-w-[400px]"
+                width={500}
+                height={100}
               />
             </button>
           </div>

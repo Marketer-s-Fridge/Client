@@ -2,6 +2,7 @@
 
 import { useRouter, usePathname } from "next/navigation";
 import React from "react";
+import Image from "next/image";
 
 export default function AccountSidebar() {
   const router = useRouter();
@@ -13,10 +14,12 @@ export default function AccountSidebar() {
   return (
     <aside className="bg-gray-100 flex flex-col items-center py-10 px-4 text-center w-full md:w-[280px] h-auto md:h-screen">
       {/* 프로필 이미지 */}
-      <img
+      <Image
         src="/images/profile-lovely.png"
         alt="프로필"
         className="w-28 h-28 md:w-40 md:h-40 rounded-full object-cover"
+        width={200}
+        height={200}
       />
 
       {/* 사용자 정보 */}
@@ -44,7 +47,7 @@ export default function AccountSidebar() {
       </div>
 
       {/* 탈퇴 */}
-      <p className="mb-10 md:mt-auto text-xs text-gray-400">계정 탈퇴</p>
+      <p className="mb-10 md:mt-auto text-xs text-gray-400 cursor-pointer">계정 탈퇴</p>
     </aside>
   );
 }

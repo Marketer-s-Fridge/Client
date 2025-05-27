@@ -2,6 +2,8 @@
 
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import Image from 'next/image';
+
 
 type SearchInputProps = {
   showInstagramButton?: boolean;
@@ -22,13 +24,12 @@ export default function SearchInput({ showInstagramButton = true }: SearchInputP
   };
 
   return (
-    <div className="relative w-[60%] sm:w-[50%] md:w-[60%] max-w-[550px] mx-auto">
+    <div className="relative w-[80%] sm:w-[75%] md:w-[60%] lg:w-[50%] max-w-[550px] mx-auto">
       <div className="relative w-full rounded-full border border-gray-300 bg-white">
         <input
           type="text"
           placeholder="필요한 콘텐츠, 꺼내볼까요?"
-          className="w-full px-6 py-2 text-sm rounded-full border border-gray-300 focus:outline-none pr-12
-                     sm:py-2.5 md:py-3"
+          className="text-xs w-full px-5 sm:px-6 md:px-7 py-2 sm:py-2.5 md:py-3 md:text-sm sm:text-base rounded-full border border-gray-300 focus:outline-none pr-12"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={handleKeyDown}
@@ -37,7 +38,13 @@ export default function SearchInput({ showInstagramButton = true }: SearchInputP
           className="absolute top-1/2 right-4 -translate-y-1/2"
           onClick={handleSearch}
         >
-          <img src="/icons/search.png" alt="검색" className="w-6 h-6 sm:w-7 sm:h-7" />
+          <Image
+            src="/icons/search.png"
+            alt="검색"
+            className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 cursor-pointer"
+            width={50}
+            height={50}
+          />
         </button>
       </div>
 
@@ -48,10 +55,12 @@ export default function SearchInput({ showInstagramButton = true }: SearchInputP
           rel="noopener noreferrer"
           className="block mt-4 text-right"
         >
-          <img
+          <Image
             src="/icons/insta-bt.png"
             alt="Marketer's Fridge Instagram"
-            className="w-[120px] h-auto inline-block"
+            className="w-[100px] sm:w-[110px] md:w-[120px] h-auto inline-block"
+            width={200}
+            height={250}
           />
         </a>
       )}
