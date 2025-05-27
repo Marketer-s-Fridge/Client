@@ -13,7 +13,7 @@ export default function HomePage() {
       <Header />
 
       {/* 검색 입력창 */}
-      <section className="flex flex-col items-center pt-9 pb-7 md:pt-[4.5rem] md:pb-[5rem] relative">
+      <section className="bg-white flex flex-col items-center pt-9 pb-7 md:pt-[4.5rem] md:pb-[5rem] relative">
         <SearchInput showInstagramButton />
       </section>
 
@@ -26,20 +26,29 @@ export default function HomePage() {
               alt=""
               src="/icons/rectangle-gray.png"
               key={i}
-              className="h-[17.5rem] bg-white rounded-lg shadow"
+              className="h-[17.5rem] bg-white rounded-lg shadow cursor-pointer"
               onClick={() => router.push("/cardNews")}
+              width={250}
+              height={300}
             />
           ))}
         </div>
       </section>
 
       {/* 인기 콘텐츠 + 에디터 픽 */}
-      <section className="py-12 px-4 sm:px-10 md:px-[4.375rem] lg:px-[15.5rem]">
+      <section className="bg-white py-12 px-4 sm:px-10 md:px-[4.375rem] lg:px-[15.5rem]">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-[3.75rem]">
           {/* 인기 콘텐츠 */}
           <div>
             <h3 className="text-lg font-bold mb-4">이번주 인기 콘텐츠</h3>
-            <div className="bg-gray-200 h-[15rem] rounded-lg" />
+            {/* <div className="bg-gray-200 h-[15rem] rounded-lg" /> */}
+            <Image
+              width={500}
+              height={200}
+              alt=""
+              src="/icons/rectangle-gray.png"
+              className="h-[15rem] rounded-lg"
+            />
             <p className="text-xs text-gray-500 mt-2">브랜드커뮤니케이션</p>
             <p className="text-sm font-medium mt-1">
               마크는 왜 달마과자에 글을 올렸을까?
@@ -55,7 +64,13 @@ export default function HomePage() {
           {/* 에디터 픽 */}
           <div>
             <h3 className="text-lg font-bold mb-4">에디터 픽</h3>
-            <div className="bg-gray-200 h-[15rem] rounded-lg" />
+            <Image
+              width={500}
+              height={200}
+              alt=""
+              src="/icons/rectangle-gray.png"
+              className="h-[15rem] rounded-lg"
+            />
             <p className="text-xs text-gray-500 mt-2">리브랜딩</p>
             <p className="text-sm font-medium mt-1">시니어 마케팅의 시대</p>
             <p className="text-xs text-gray-500 mt-1">

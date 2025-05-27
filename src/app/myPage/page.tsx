@@ -43,13 +43,15 @@ export default function MyPage() {
               src="/images/profile-character.png"
               alt="프로필"
               className="w-40 h-40"
+              width={230}
+              height={230}
             />
             <div>
               <h2 className="text-2xl font-bold">마케터</h2>
               <p className="text-sm">a123456789@gmail.com</p>
               <button
                 onClick={() => setIsNicknameModalOpen(true)}
-                className="cursor-pointer mt-2  flex-1 border border-white rounded-full px-4 py-1 text-sm"
+                className="flex cursor-pointer mt-2  flex-1 border border-white rounded-full px-4 py-1 text-sm"
               >
                 프로필 편집
               </button>
@@ -89,8 +91,10 @@ export default function MyPage() {
                 >
                   <Image
                     src="/icons/left.png"
-                    className="cursor-pointer w-8 h-8"
+                    className="cursor-pointer w-8 h-8 "
                     alt="이전"
+                    width={30}
+                    height={30}
                   />
                 </button>
                 <div className="flex gap-6 overflow-hidden">
@@ -104,13 +108,17 @@ export default function MyPage() {
                         <div className="relative aspect-[3/4] rounded-lg overflow-hidden bg-gray-100">
                           <Image
                             src="/icons/rectangle-gray.png"
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-cover cursor-pointer"
                             alt={title}
+                            width={200}
+                            height={250}
                           />
                           <Image
                             src="/icons/grayheart.png"
-                            className="absolute right-2 bottom-2 w-5 h-5"
+                            className="absolute right-2 bottom-2 w-5 h-5 "
                             alt="찜"
+                            width={30}
+                            height={30}
                           />
                         </div>
                         <div className="pt-2 text-xs font-medium truncate">
@@ -129,6 +137,8 @@ export default function MyPage() {
                     src="/icons/right.png"
                     className="cursor-pointer w-8 h-8"
                     alt="다음"
+                    width={30}
+                    height={30}
                   />
                 </button>
               </div>
@@ -149,6 +159,8 @@ export default function MyPage() {
                     src="/icons/right.png"
                     className="cursor-pointer w-4 h-4"
                     alt="다음"
+                    width={30}
+                    height={30}
                   ></Image>
                 </div>
               </div>
@@ -158,13 +170,17 @@ export default function MyPage() {
                     <div className="relative aspect-[3/4] rounded-lg overflow-hidden bg-gray-100">
                       <Image
                         src="/icons/rectangle-gray.png"
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover cursor-pointer"
                         alt={title}
+                        width={200}
+                        height={250}
                       />
                       <Image
                         src="/icons/redheart.png"
                         className="absolute right-2 bottom-2 w-4 h-4"
                         alt="찜"
+                        width={30}
+                        height={30}
                       />
                     </div>
                     <div className="pt-2 text-xs font-medium truncate">

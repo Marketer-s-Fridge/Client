@@ -3,7 +3,7 @@ import React from "react";
 
 export default function DashboardPage() {
   return (
-    <div>
+    <div className="bg-white">
       <AdminHeader />
       <div className="min-h-screen flex bg-white">
         {/* Sidebar */}
@@ -31,7 +31,7 @@ export default function DashboardPage() {
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 p-10 ">
+        <main className="flex-1 p-10 bg-white">
           {/* Summary */}
 
           <div className="grid grid-cols-3 items-center justify-center self-center gap-4 text-center text-lg font-semibold my-20">

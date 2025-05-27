@@ -41,7 +41,9 @@ export default function SearchInput({ showInstagramButton = true }: SearchInputP
           <Image
             src="/icons/search.png"
             alt="검색"
-            className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7"
+            className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 cursor-pointer"
+            width={50}
+            height={50}
           />
         </button>
       </div>
@@ -57,6 +59,8 @@ export default function SearchInput({ showInstagramButton = true }: SearchInputP
             src="/icons/insta-bt.png"
             alt="Marketer's Fridge Instagram"
             className="w-[100px] sm:w-[110px] md:w-[120px] h-auto inline-block"
+            width={200}
+            height={250}
           />
         </a>
       )}

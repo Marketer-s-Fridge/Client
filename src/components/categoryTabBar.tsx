@@ -22,7 +22,7 @@ export default function CategoryTabBar({
 }: CategoryTabBarProps) {
   return (
     <>
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-0 max-w-screen-lg mx-auto px-4 sm:px-6 md:px-10 py-3 border-gray-200">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-0 max-w-screen-lg mx-auto px-4 sm:px-6 md:px-27 py-3 border-gray-200">
         {/* 카테고리 필터 버튼 */}
         <div className="flex flex-wrap gap-2">
           {categories.map((category) => (
@@ -57,6 +57,8 @@ export default function CategoryTabBar({
             src="/icons/down.png"
             alt="드롭다운 아이콘"
             className="w-3 h-3 absolute right-1 top-1/2 -translate-y-1/2 pointer-events-none"
+            width={20}
+            height={20}
           />
         </div>
       </div>

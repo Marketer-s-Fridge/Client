@@ -14,7 +14,7 @@ const LoginPage: React.FC = () => {
   const router = useRouter();
 
   return (
-    <div>
+    <div className="bg-white">
       <Header />
       <div className="flex justify-center bg-white py-16 px-4">
         <div className="w-full max-w-[480px] flex flex-col items-center">
@@ -80,6 +80,8 @@ const LoginPage: React.FC = () => {
                 src="/icons/kakao-login-bt.png"
                 alt="카카오 로그인"
                 className="w-full max-w-[400px]"
+                width={500}
+                height={100}
               />
             </button>
 
@@ -88,6 +90,8 @@ const LoginPage: React.FC = () => {
                 src="/icons/naver-login-bt.png"
                 alt="네이버 로그인"
                 className="w-full max-w-[400px]"
+                width={500}
+                height={100}
               />
             </button>
 
@@ -96,6 +100,8 @@ const LoginPage: React.FC = () => {
                 src="/icons/google-login-bt.png"
                 alt="Google 로그인"
                 className="w-full max-w-[400px]"
+                width={500}
+                height={100}
               />
             </button>
           </div>

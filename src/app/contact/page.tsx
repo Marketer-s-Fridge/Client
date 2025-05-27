@@ -6,7 +6,7 @@ import Header from "@/components/header";
 
 export default function ContactPage() {
   return (
-    <div>
+    <div className="bg-white">
       <Header />
 
       {/* 상단 배너 */}
@@ -97,7 +97,10 @@ export default function ContactPage() {
           {/* 개인정보 동의 */}
           <div className="absolute items-center text-sm left-3/21">
             <input type="checkbox" id="agree" className="mr-2.5 w-4.5 h-4.5" />
-            <label htmlFor="agree" className="text-center align-top text-gray-400">
+            <label
+              htmlFor="agree"
+              className="text-center align-top text-gray-400"
+            >
               개인정보 수집 및 이용에 동의합니다. [필수]
               <a href="#" className="underline ml-3 text-gray-500">
                 이용약관 보기

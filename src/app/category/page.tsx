@@ -115,7 +115,7 @@ export default function Page() {
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full bg-white">
       <Header />
 
       {/* 검색 영역 */}
@@ -142,13 +142,15 @@ export default function Page() {
                   className={`flex items-center justify-center transition-all duration-300 ${
                     isSelected
                       ? "w-15 h-15 sm:w-20 sm:h-20 md:w-40 md:h-40"
-                      : "w-12 h-12 sm:w-10 sm:h-10 md:w-24 md:h-24 opacity-60"
+                      : "w-12 h-12 sm:w-10 sm:h-10 md:w-35 md:h-35 opacity-80"
                   }`}
                 >
                   <Image
                     src={cat.icon}
                     alt={cat.name}
                     className="object-contain w-full h-full"
+                    width={200}
+                    height={200}
                   />
                 </div>
               </button>
@@ -158,15 +160,17 @@ export default function Page() {
       </section>
 
       {/* 카드 리스트 */}
-      <section className="w-full max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-17 py-16">
+      <section className="bg-white w-full max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-17 py-16">
         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-6">
           {mockContents.map((item) => (
             <div key={item.id} className="w-full">
               <div className="relative aspect-[6/7] w-full rounded-lg overflow-hidden bg-gray-100">
                 <Image
-                  src="icons/rectangle-gray.png"
+                  src="/icons/rectangle-gray.png"
                   alt={item.title}
                   className="w-full h-full object-cover cursor-pointer"
+                  width={200}
+                  height={250}
                 />
                 <button
                   onClick={() => toggleLike(item.id)}
@@ -180,6 +184,8 @@ export default function Page() {
                     }
                     alt="찜하기"
                     className="cursor-pointer w-5 h-5"
+                    width={20}
+                    height={20}
                   />
                 </button>
               </div>

@@ -20,7 +20,7 @@ export default function CardNewsDetailPage() {
   }, [activeSlide]);
 
   return (
-    <div>
+    <div className="bg-white">
       <Header />
 
       {/* 상단 카테고리 탭 */}
@@ -41,7 +41,7 @@ export default function CardNewsDetailPage() {
       </nav>
 
       {/* 본문 */}
-      <main className="max-w-[1024px] mx-auto px-4 sm:px-4 py-7">
+      <main className="max-w-[1024px] mx-auto px-4 sm:px-4 py-7 bg-white">
         {/* 경로 표시 */}
         <div className="text-xs text-gray-400 mb-10">
           홈 &gt; 카테고리 &gt;{" "}
@@ -92,7 +92,7 @@ export default function CardNewsDetailPage() {
             </div>
 
             {/* 텍스트 영역 + 버튼 포함 */}
-            <div className="w-full   aspect-[4/5]">
+            <div className="w-full aspect-[4/5]">
               <div className="flex flex-col h-auto">
                 <div className="flex-1 overflow-y-scroll pr-2 py-2 px-1 ">
                   <h1 className="text-3xl font-bold mb-2">

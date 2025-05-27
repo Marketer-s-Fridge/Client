@@ -46,7 +46,7 @@ export default function MyContact() {
             </thead>
             <tbody>
               {inquiries.map((item) => (
-                <tr key={item.no} className="h-10 ">
+                <tr key={item.no} className="h-10 hover:bg-gray-100 rounded-4xl">
                   <td>{item.no}</td>
                   <td className="text-left px-15">{item.title}</td>
                   <td>{item.date}</td>

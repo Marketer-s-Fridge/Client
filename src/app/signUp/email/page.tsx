@@ -17,7 +17,7 @@ export default function EmailJoinPage() {
   const [birth, setBirth] = useState({ year: "", month: "", day: "" });
 
   return (
-    <div>
+    <div className="bg-white">
       <Header />
       <div className="bg-white min-h-screen px-4 sm:px-6 md:px-8 py-16 flex justify-center">
         <div className="w-full max-w-[550px]">
@@ -122,9 +122,7 @@ export default function EmailJoinPage() {
               <div className="flex gap-2 w-full">
                 <select
                   value={birth.year}
-                  onChange={(e) =>
-                    setBirth({ ...birth, year: e.target.value })
-                  }
+                  onChange={(e) => setBirth({ ...birth, year: e.target.value })}
                   className="border border-gray-400 rounded px-2 py-2 text-[13px] w-1/3"
                 >
                   <option value="">년도</option>
@@ -146,9 +144,7 @@ export default function EmailJoinPage() {
                 </select>
                 <select
                   value={birth.day}
-                  onChange={(e) =>
-                    setBirth({ ...birth, day: e.target.value })
-                  }
+                  onChange={(e) => setBirth({ ...birth, day: e.target.value })}
                   className="border border-gray-400 rounded px-2 py-2 text-[13px] w-1/3"
                 >
                   <option value="">일</option>
@@ -191,10 +187,12 @@ export default function EmailJoinPage() {
                 <input type="checkbox" /> [필수] 개인정보 제공에 동의합니다.
               </label>
               <label className="flex items-center gap-2">
-                <input type="checkbox" /> [필수] 개인정보 수집 및 이용에 동의합니다.
+                <input type="checkbox" /> [필수] 개인정보 수집 및 이용에
+                동의합니다.
               </label>
               <label className="flex items-center gap-2">
-                <input type="checkbox" /> [선택] 마케팅 활용 및 광고 수신에 동의합니다.
+                <input type="checkbox" /> [선택] 마케팅 활용 및 광고 수신에
+                동의합니다.
               </label>
             </div>
 

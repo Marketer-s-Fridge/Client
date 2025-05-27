@@ -46,7 +46,9 @@ export default function AccountPage() {
                 <Image
                   src="/icons/kakao-round.png"
                   alt="카카오"
-                  className="w-10 h-10"
+                  className="w-10 h-10 cursor-pointer"
+                  width={50}
+                  height={50}
                 />
                 <span className="text-[10px] text-gray-700">연결완료</span>
               </div>
@@ -55,7 +57,9 @@ export default function AccountPage() {
                 <Image
                   src="/icons/naver-gray-round.png"
                   alt="네이버"
-                  className="w-10 h-10"
+                  className="w-10 h-10 cursor-pointer"
+                  width={50}
+                  height={50}
                 />
                 <span className="text-[10px] text-gray-700">연결하기</span>
               </div>
@@ -64,7 +68,9 @@ export default function AccountPage() {
                 <Image
                   src="/icons/google-gray-round.png"
                   alt="구글"
-                  className="w-10 h-10"
+                  className="w-10 h-10 cursor-pointer"
+                  width={50}
+                  height={50}
                 />
                 <span className="text-[10px] text-gray-700">연결하기</span>
               </div>
@@ -108,7 +114,7 @@ export default function AccountPage() {
           </div>
 
           <div className="absolute right-15 bottom-20 flex justify-end">
-          <button className="bg-red-500 text-white rounded-full px-5 py-1.5 text-[12px] font-semibold hover:bg-red-600">
+            <button className="bg-red-500 text-white rounded-full px-5 py-1.5 text-[12px] font-semibold hover:bg-red-600">
               변경 완료
             </button>
           </div>

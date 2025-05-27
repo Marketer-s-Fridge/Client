@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import React, { useState } from "react";
 import Image from "next/image";
@@ -79,16 +79,16 @@ export default function MyFridgePage() {
   return (
     <div>
       <Header />
-      <div className="max-w-screen-xl mx-auto px-6 py-8">
+      <div className="max-w-screen-xl mx-auto px-35 py-8">
         <h1 className="text-2xl font-bold mb-4">MY 냉장고</h1>
 
         <div className="flex flex-wrap gap-2 mb-6">
           {categories.map((cat) => (
             <button
               key={cat}
-              className={`px-4 py-1 rounded-full border text-sm ${
+              className={`px-4 py-1.5 rounded-full border text-xs ${
                 selectedCategory === cat
-                  ? "bg-black text-white"
+                  ? "bg-red-500 text-white"
                   : "bg-white text-black border-gray-300"
               }`}
               onClick={() => setSelectedCategory(cat)}
@@ -101,25 +101,31 @@ export default function MyFridgePage() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10">
           {contents.map((content) => (
             <div key={content.id} className="relative">
-              <Image
-                src={'/icons/rectangle-gray.png'}
-                alt={content.title}
-                width={300}
-                height={200}
-                className="rounded-md object-cover w-full h-[200px]"
-              />
-              <p className="mt-2 text-sm leading-snug">{content.title}</p>
-              {content.liked && (
-                <div className="absolute top-2 right-2">
-                  <span className="text-red-500 text-xl">❤️</span>
-                </div>
-              )}
+              <div className="aspect-[9/11] w-full">
+                <Image
+                  src="/icons/rectangle-gray.png"
+                  alt={content.title}
+                  width={400}
+                  height={489} // 400 * 11 / 9
+                  className="w-full h-full object-cover rounded-lg"
+                />
+              </div>
+              <div className="flex flex-row justify-between items-center">
+                <p className="mt-2 text-sm font-medium leading-snug line-clamp-2">
+                  {content.title}
+                </p>
+                {content.liked && (
+                  <div className="bottom-2 right-2">
+                    <span className="text-red-500 text-xl">❤️</span>
+                  </div>
+                )}
+              </div>
             </div>
           ))}
         </div>
 
-        <div className="flex justify-center items-center mt-8 gap-2 text-sm">
-          <span className="text-gray-400">&#8249;</span>
+        <div className="flex justify-center items-center mt-8 gap-1 text-sm">
+          <span className="text-gray-400 ">&#8249;</span>
           {[1, 2, 3, 4, 5].map((num) => (
             <button
               key={num}
