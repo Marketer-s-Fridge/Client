@@ -17,7 +17,7 @@ const Footer: React.FC = () => {
           {/* 회사 정보 및 타이틀 */}
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center w-full mb-4 gap-6">
             <span className="text-white text-xs whitespace-pre-line">
-              (주)마케터스프리지 대표자;
+              (주)마케터스프리지 대표자
               {"\n"}000-00-00000
               {"\n"}서울특별시 마포구 마포대로
               {"\n"}marketersfridge@co.kr
