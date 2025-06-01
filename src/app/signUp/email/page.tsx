@@ -73,6 +73,7 @@ export default function EmailJoinPage() {
     agreements.provide,
     agreements.collect,
     agreements.marketing,
+    agreements.all, // ✅ 추가!
   ]);
 
   // ✅ "모두 동의하기" 클릭 시 나머지 필수 전체 반영

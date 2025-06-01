@@ -1,12 +1,10 @@
 "use client";
 
 import Header from "@/components/header";
-import { useRouter } from "next/navigation";
 import Footer from "@/components/footer";
 import Image from "next/image";
 
 export default function HomePage() {
-  const router = useRouter();
 
   return (
     <main className="min-h-screen bg-white">
