@@ -8,7 +8,7 @@ export default function Header() {
 
   const navItems = [
     { name: '홈', href: '/' },
-    { name: '서비스 소개', href: '#' },
+    { name: '서비스 소개', href: '/service' },
     { name: '카테고리', href: '/category' },
     { name: '문의하기', href: '/contact' },
     { name: '마이페이지', href: '/myPage' },
