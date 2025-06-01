@@ -5,6 +5,7 @@ import Image from "next/image";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import Pagination from "@/components/pagination";
+import ScrollToTopButton from "@/components/scrollToTopButton";
 
 const categories = ["전체", "Beauty", "Fashion", "Food", "Lifestyle", "Tech"];
 
@@ -131,6 +132,7 @@ export default function MyFridgePage() {
           totalPages={5}
           onPageChange={(page) => setCurrentPage(page)}
         />
+        <ScrollToTopButton />
       </div>
       <Footer />
     </div>

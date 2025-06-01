@@ -206,6 +206,7 @@ export default function Page() {
           totalPages={5}
           onPageChange={(page) => setCurrentPage(page)}
         />
+        <ScrollToTopButton/>
       </section>
       <Footer />
     </div>

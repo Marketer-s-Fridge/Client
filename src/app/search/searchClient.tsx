@@ -81,6 +81,8 @@ export default function SearchClient() {
           totalPages={5}
           onPageChange={(page) => setCurrentPage(page)}
         />
+
+        <ScrollToTopButton />
       </section>
     </>
   );

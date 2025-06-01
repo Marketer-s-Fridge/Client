@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 
 interface PaginationProps {
   currentPage: number;
@@ -20,7 +21,7 @@ const Pagination: React.FC<PaginationProps> = ({
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
       >
-        <img src="/icons/left.png" alt="이전" className="w-5 h-5" />
+        <Image src="/icons/left.png" alt="이전" className="w-5 h-5" width={30} height={30}/>
       </button>
 
       {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
@@ -42,7 +43,7 @@ const Pagination: React.FC<PaginationProps> = ({
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
       >
-        <img src="/icons/right.png" alt="이전" className="w-5 h-5" />
+        <Image src="/icons/right.png" alt="이전" className="w-5 h-5" width={30} height={30}/>
       </button>
     </div>
   );
