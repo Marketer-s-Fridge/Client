@@ -6,6 +6,7 @@ import SearchInput from "@/components/searchInput";
 import ScrollToTopButton from "@/components/scrollToTopButton";
 import CategoryTabBar from "@/components/categoryTabBar";
 import Image from "next/image";
+import Pagination from "@/components/pagination";
 
 const mockContents = Array.from({ length: 6 }).map((_, i) => ({
   id: i,
@@ -24,6 +25,7 @@ export default function SearchClient() {
   const query = searchParams.get("q") || "전체";
   const [selectedSort, setSelectedSort] = useState("최신순");
   const [selectedCategory, setSelectedCategory] = useState("전체");
+  const [currentPage, setCurrentPage] = useState(1);
 
   return (
     <>
@@ -74,19 +76,11 @@ export default function SearchClient() {
         </div>
 
         {/* 페이지네이션 */}
-        <div className="flex justify-center items-center gap-4 mt-14 mb-10">
-          {[1, 2, 3, 4, 5].map((page) => (
-            <button
-              key={page}
-              className={`w-8 h-8 rounded-full text-sm font-semibold ${
-                page === 1 ? "bg-red-500 text-white" : "text-gray-700"
-              }`}
-            >
-              {page}
-            </button>
-          ))}
-          <ScrollToTopButton />
-        </div>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={5}
+          onPageChange={(page) => setCurrentPage(page)}
+        />
       </section>
     </>
   );

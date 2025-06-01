@@ -2,12 +2,14 @@
 
 import Header from "@/components/header";
 import Banner from "@/components/banner";
-import React from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Footer from "@/components/footer";
+import Pagination from "@/components/pagination";
 
 export default function MyContact() {
   const router = useRouter();
+  const [currentPage, setCurrentPage] = useState(1);
 
   // 샘플 문의 리스트 생성
   const inquiries = Array.from({ length: 9 }).map((_, idx) => ({
@@ -27,7 +29,9 @@ export default function MyContact() {
         <div className="flex justify-between items-center mb-4">
           <p>
             총 문의:{" "}
-            <span className="text-red-500 font-semibold">{inquiries.length}건</span>
+            <span className="text-red-500 font-semibold">
+              {inquiries.length}건
+            </span>
           </p>
           <div className="relative">
             <select className="border border-gray-400 rounded px-1 py-1">
@@ -81,21 +85,11 @@ export default function MyContact() {
             글쓰기
           </button>
         </div>
-
-        <div className="flex justify-center mt-8 gap-2 text-sm">
-          <button>{"<"}</button>
-          {[1, 2, 3, 4, 5].map((num) => (
-            <button
-              key={num}
-              className={`w-8 h-8 rounded-full ${
-                num === 1 ? "bg-red-500 text-white" : "text-gray-700"
-              }`}
-            >
-              {num}
-            </button>
-          ))}
-          <button>{">"}</button>
-        </div>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={5}
+          onPageChange={(page) => setCurrentPage(page)}
+        />
       </main>
       <Footer />
     </div>
