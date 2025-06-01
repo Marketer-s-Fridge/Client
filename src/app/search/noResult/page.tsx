@@ -30,7 +30,7 @@ export default function Page() {
       </section>
 
       <CategoryTabBar
-        categories={["All", "food", "lifestyle", "beauty", "tech","fashion"]}
+        categories={["All", "food", "lifestyle", "beauty", "tech", "fashion"]}
         selected={selectedCategory}
         onSelect={setSelectedCategory}
         sortOptions={["최신순", "오래된순"]}
@@ -45,9 +45,17 @@ export default function Page() {
         </h1>
         {/* 냉장고 비어있는 이미지 */}
         <div className="flex justify-center mb-8">
-          <div className="w-32 h-40 border rounded-lg flex items-center justify-center text-xs text-gray-500">
+          {/* <div className="w-32 h-40 border rounded-lg flex items-center justify-center text-xs text-gray-500">
             냉장고가 비어있는 이미지
-          </div>
+          </div> */}
+          <Image
+            src="/icons/noContents.png"
+            className="w-100 h-40 object-contain"
+            alt=""
+            width={500}
+            height={250}
+            
+          ></Image>
         </div>
 
         {/* 카드 리스트 */}
@@ -62,6 +70,8 @@ export default function Page() {
                     src="/icons/rectangle-gray.png"
                     alt={item.title}
                     className="w-full h-full object-cover"
+                    width={50}
+                    height={50}
                   />
                   <div className="border-gray-700 border-1 bg-white w-auto px-2.5 py-0.5 h-6 text-sm rounded absolute top-3 right-3 text-center ">
                     {item.category}
@@ -74,6 +84,8 @@ export default function Page() {
                       src="/icons/grayheart.png"
                       alt="찜하기"
                       className="w-4 h-4"
+                      width={50}
+                      height={50}
                     />
                   </button>
                 </div>
@@ -82,7 +94,7 @@ export default function Page() {
           </div>
         </section>
       </section>
-      <Footer/>
+      <Footer />
     </div>
   );
 }
