@@ -6,6 +6,7 @@ import Header from "@/components/header";
 import DoughnutChart from "@/components/doughnutChart";
 import ChangeNicknameModal from "@/components/changeNicknameModal";
 import Image from "next/image";
+import Footer from "@/components/footer";
 
 export default function MyPage() {
   const router = useRouter();
@@ -232,6 +233,8 @@ export default function MyPage() {
       {isNicknameModalOpen && (
         <ChangeNicknameModal onClose={() => setIsNicknameModalOpen(false)} />
       )}
+
+      <Footer/>
     </div>
   );
 }

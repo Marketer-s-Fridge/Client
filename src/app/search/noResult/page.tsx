@@ -6,6 +6,7 @@ import React from "react";
 import CategoryTabBar from "@/components/categoryTabBar";
 import { useState } from "react";
 import Image from "next/image";
+import Footer from "@/components/footer";
 
 const mockContents = [
   { title: "신규 브랜드 탐방: 떠오르는 핫 브랜드", category: "🔥 인기 콘텐츠" },
@@ -81,6 +82,7 @@ export default function Page() {
           </div>
         </section>
       </section>
+      <Footer/>
     </div>
   );
 }

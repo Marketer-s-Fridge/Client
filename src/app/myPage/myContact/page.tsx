@@ -4,6 +4,7 @@ import Header from "@/components/header";
 import Banner from "@/components/banner";
 import React from "react";
 import { useRouter } from "next/navigation";
+import Footer from "@/components/footer";
 
 export default function MyContact() {
   const router = useRouter();
@@ -83,6 +84,7 @@ export default function MyContact() {
           <button>{">"}</button>
         </div>
       </main>
+      <Footer/>
     </div>
   );
 }

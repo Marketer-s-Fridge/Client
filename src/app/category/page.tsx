@@ -5,6 +5,7 @@ import Header from "@/components/header";
 import SearchInput from "@/components/searchInput";
 import ScrollToTopButton from "@/components/scrollToTopButton";
 import Image from "next/image";
+import Footer from "@/components/footer";
 
 interface Category {
   name: string;
@@ -211,6 +212,7 @@ export default function Page() {
           <ScrollToTopButton />
         </div>
       </section>
+      <Footer/>
     </div>
   );
 }

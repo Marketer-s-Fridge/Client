@@ -4,6 +4,7 @@ import Header from "@/components/header";
 import React from "react";
 import AccountSidebar from "@/components/accountSideBar";
 import Banner from "@/components/banner";
+import Footer from "@/components/footer";
 
 export default function PasswordChangePage() {
   return (
@@ -69,6 +70,7 @@ export default function PasswordChangePage() {
           </div>
         </section>
       </main>
+      <Footer/>
     </div>
   );
 }

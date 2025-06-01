@@ -5,6 +5,7 @@ import Header from "@/components/header";
 import { useRouter } from "next/navigation"; // ✅ Next.js 클라이언트 라우팅
 import { AuthHeader } from "@/components/authFormComponents";
 import Image from "next/image";
+import Footer from "@/components/footer";
 
 const SignUpPage: React.FC = () => {
   // const [input1, onChangeInput1] = useState("");
@@ -76,6 +77,7 @@ const SignUpPage: React.FC = () => {
           </div>
         </div>
       </main>
+      <Footer/>
     </div>
   );
 };

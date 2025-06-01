@@ -4,6 +4,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import Header from "@/components/header";
 import Image from "next/image";
+import Footer from "@/components/footer";
 
 const categories = ["Beauty", "Food", "Lifestyle", "Tech", "Fashion"];
 
@@ -154,6 +155,7 @@ export default function CardNewsDetailPage() {
           </div>
         </div>
       </main>
+      <Footer/>
     </div>
   );
 }
