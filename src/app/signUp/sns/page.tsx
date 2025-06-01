@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import Header from "@/components/header";
 // import { useRouter } from "next/navigation";
 import { AuthHeader, SubmitButton } from "@/components/authFormComponents";
-import Footer from "@/components/footer";
 
 const SignUpPage: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -65,7 +64,6 @@ const SignUpPage: React.FC = () => {
           />
         </div>
       </main>
-      <Footer/>
     </div>
   );
 };

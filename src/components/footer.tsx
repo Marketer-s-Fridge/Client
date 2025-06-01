@@ -5,9 +5,9 @@ const Footer: React.FC = () => {
   return (
     <div className="flex flex-col bg-white mt-10 sm:mt-16 md:mt-24 lg:mt-32 xl:mt-40 mb-10">
       <div className="self-stretch bg-white">
-        <div className="flex flex-col items-start self-stretch bg-[#FF4545] py-10 px-6 sm:px-12 md:px-24 lg:px-32 xl:px-60">
+        <div className="flex flex-col items-start self-stretch bg-[#FF4545] py-8 px-6 sm:px-12 md:px-24 lg:px-32 xl:px-60">
           {/* 상단 네비게이션 */}
-          <div className="flex flex-wrap gap-5 mb-20">
+          <div className="flex flex-wrap gap-5 mb-25">
             <span className="text-white text-sm font-bold">About us</span>
             <span className="text-white text-xs font-bold">카테고리</span>
             <span className="text-white text-xs font-bold">문의하기</span>
