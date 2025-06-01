@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { AuthHeader, SubmitButton } from "@/components/authFormComponents";
 import Image from "next/image";
+import Footer from "@/components/footer";
 
 const LoginPage: React.FC = () => {
   const [input1, onChangeInput1] = useState("");
@@ -107,6 +108,7 @@ const LoginPage: React.FC = () => {
           </div>
         </div>
       </div>
+      <Footer/>
     </div>
   );
 };

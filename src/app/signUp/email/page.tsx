@@ -1,6 +1,7 @@
 "use client";
 
 import { AuthHeader, SubmitButton } from "@/components/authFormComponents";
+import Footer from "@/components/footer";
 import Header from "@/components/header";
 import React, { useState } from "react";
 
@@ -205,6 +206,7 @@ export default function EmailJoinPage() {
           </form>
         </div>
       </div>
+      <Footer/>
     </div>
   );
 }

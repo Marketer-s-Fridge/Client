@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Header from "@/components/header";
+import Footer from "@/components/footer";
 
 const categories = ["전체", "Beauty", "Fashion", "Food", "Lifestyle", "Tech"];
 
@@ -139,6 +140,7 @@ export default function MyFridgePage() {
           <span className="text-gray-400">&#8250;</span>
         </div>
       </div>
+      <Footer/>
     </div>
   );
 }

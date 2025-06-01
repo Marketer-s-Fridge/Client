@@ -4,12 +4,13 @@ import Header from "@/components/header";
 import SearchInput from "@/components/searchInput";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import Footer from "@/components/footer";
 
 export default function HomePage() {
   const router = useRouter();
 
   return (
-    <main className="min-h-screen bg-white mb-20">
+    <main className="min-h-screen bg-white">
       <Header />
 
       {/* 검색 입력창 */}
@@ -82,6 +83,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+      <Footer/>
     </main>
   );
 }

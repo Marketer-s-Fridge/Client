@@ -6,6 +6,7 @@ import React from "react";
 import AccountSidebar from "@/components/accountSideBar";
 import Banner from "@/components/banner";
 import Image from "next/image";
+import Footer from "@/components/footer";
 
 export default function AccountPage() {
   // const router = useRouter();
@@ -120,6 +121,7 @@ export default function AccountPage() {
           </div>
         </section>
       </main>
+      <Footer/>
     </div>
   );
 }

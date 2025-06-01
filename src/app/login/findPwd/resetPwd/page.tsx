@@ -4,6 +4,7 @@ import { SubmitButton, TextInput } from "@/components/authFormComponents";
 import Header from "@/components/header";
 import React, { useState } from "react";
 import BaseModal from "@/components/baseModal"; // ✅ 모달 import
+import Footer from "@/components/footer";
 
 const ResetPwdPage: React.FC = () => {
   const [pwd, setPwd] = useState("");
@@ -62,6 +63,7 @@ const ResetPwdPage: React.FC = () => {
           확인
         </button>
       </BaseModal>
+      <Footer/>
     </div>
   );
 };

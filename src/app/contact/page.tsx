@@ -3,6 +3,7 @@
 
 import React from "react";
 import Header from "@/components/header";
+import Footer from "@/components/footer";
 
 export default function ContactPage() {
   return (
@@ -119,6 +120,7 @@ export default function ContactPage() {
           </div>
         </form>
       </main>
+      <Footer/>
     </div>
   );
 }

@@ -3,6 +3,7 @@
 import Header from "@/components/header";
 import React, { useState } from "react";
 import { TextInput, SubmitButton } from "@/components/authFormComponents";
+import Footer from "@/components/footer";
 
 const FindPwdPage: React.FC = () => {
   const [name, setName] = useState("");
@@ -53,6 +54,7 @@ const FindPwdPage: React.FC = () => {
           />
         </form>
       </main>
+      <Footer/>
     </div>
   );
 };
