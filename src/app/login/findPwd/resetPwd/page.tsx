@@ -53,10 +53,10 @@ const ResetPwdPage: React.FC = () => {
 
       {/* ✅ 비밀번호 변경 완료 모달 */}
       <BaseModal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
-        <p className="text-lg font-medium mb-6">비밀번호가 변경되었습니다.</p>
+        <p className=" text-lg font-normal my-5">비밀번호가 변경되었습니다.</p>
         <button
           onClick={() => setModalOpen(false)}
-          className="bg-red-500 text-white text-sm font-semibold px-6 py-2 rounded-md hover:bg-red-600"
+          className="bg-red-500 text-white text-xs font-semibold px-8 py-0.5 rounded-lg hover:bg-red-600"
         >
           확인
         </button>
