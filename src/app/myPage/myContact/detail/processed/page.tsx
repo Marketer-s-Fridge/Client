@@ -1,9 +1,8 @@
 "use client";
 import Header from "@/components/header";
-import React, { useState } from "react";
+import React from "react";
 
 const InquiryDetailPage: React.FC = () => {
-  const [input1, onChangeInput1] = useState<string>("");
 
   return (
     <div className="flex flex-col bg-white">
