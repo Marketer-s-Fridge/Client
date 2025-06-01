@@ -6,9 +6,12 @@ import React from "react";
 import AccountSidebar from "@/components/accountSideBar";
 import Banner from "@/components/banner";
 import Image from "next/image";
-import Footer from "@/components/footer";
+import ConfirmModal from "@/components/confirmModal";
+import { useState } from "react";
 
 export default function AccountPage() {
+  const [modalOpen, setModalOpen] = useState(false);
+
   // const router = useRouter();
 
   return (
@@ -115,13 +118,20 @@ export default function AccountPage() {
           </div>
 
           <div className="absolute right-15 bottom-20 flex justify-end">
-            <button className="bg-red-500 text-white rounded-full px-5 py-1.5 text-[12px] font-semibold hover:bg-red-600">
+            <button
+              onClick={() => setModalOpen(true)}
+              className="bg-red-500 text-white rounded-full px-5 py-1.5 text-[12px] font-semibold hover:bg-red-600"
+            >
               변경 완료
             </button>
           </div>
         </section>
       </main>
-      <Footer/>
+      <ConfirmModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        children="회원정보가 변경되었습니다."
+      ></ConfirmModal>
     </div>
   );
 }
