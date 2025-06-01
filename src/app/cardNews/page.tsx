@@ -7,10 +7,19 @@ import Footer from "@/components/footer";
 
 const categories = ["Beauty", "Food", "Lifestyle", "Tech", "Fashion"];
 
+const slideImages = [
+  "/images/001.png",
+  "/images/002.png",
+  "/images/003.png",
+  "/images/004.png",
+  "/images/005.png",
+  "/images/006.png",
+];
+
 export default function CardNewsDetailPage() {
   const [activeCategory, setActiveCategory] = useState("Beauty");
   const [activeSlide, setActiveSlide] = useState(0);
-  const slideCount = 4;
+  const slideCount = slideImages.length;
 
   return (
     <div className="bg-white">
@@ -57,7 +66,7 @@ export default function CardNewsDetailPage() {
                   }%)`,
                 }}
               >
-                {[...Array(slideCount)].map((_, idx) => (
+                {slideImages.map((src, idx) => (
                   <div
                     key={idx}
                     className="relative"
@@ -68,8 +77,8 @@ export default function CardNewsDetailPage() {
                     }}
                   >
                     <Image
-                      src="/images/content-beauty1.png"
-                      alt={`slide-${idx}`}
+                      src={src}
+                      alt={`slide-${idx + 1}`}
                       fill
                       className="object-cover rounded-xl"
                     />
