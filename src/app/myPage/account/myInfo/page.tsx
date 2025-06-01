@@ -130,8 +130,7 @@ export default function AccountPage() {
       <ConfirmModal
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
-        children="회원정보가 변경되었습니다."
-      ></ConfirmModal>
+      >"비밀번호가 변경되었습니다."</ConfirmModal>
     </div>
   );
 }

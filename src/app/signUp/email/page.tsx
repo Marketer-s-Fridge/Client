@@ -342,8 +342,7 @@ export default function EmailJoinPage() {
       <ConfirmModal
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
-        children="회원가입이 완료되었습니다."
-      ></ConfirmModal>
+      >"회원가입이 완료되었습니다."</ConfirmModal>
     </div>
   );
 }

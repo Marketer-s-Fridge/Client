@@ -170,11 +170,9 @@ const LoginPage: React.FC = () => {
         </div>
       </div>
 
-      <ConfirmModal
-        isOpen={showConfirm}
-        onClose={() => setShowConfirm(false)}
-        children="마케터의 냉장고에 오신 걸 환영합니다!"
-      />
+      <ConfirmModal isOpen={showConfirm} onClose={() => setShowConfirm(false)}>
+        "마케터의 냉장고에 오신 걸 환영합니다!"
+      </ConfirmModal>
     </div>
   );
 };
