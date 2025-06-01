@@ -8,11 +8,13 @@ import Footer from "@/components/footer";
 
 export default function MyContact() {
   const router = useRouter();
+
+  // 샘플 문의 리스트 생성
   const inquiries = Array.from({ length: 9 }).map((_, idx) => ({
     no: 9 - idx,
     title: "프로필 사진 업데이트가 안 돼요",
     date: `2025/05/${(10 - idx).toString().padStart(2, "0")}`,
-    status: "답변완료",
+    status: idx % 2 === 0 ? "답변완료" : "미답변", // 짝수: 완료, 홀수: 미답변
   }));
 
   return (
@@ -24,7 +26,8 @@ export default function MyContact() {
         {/* 상단 요약 */}
         <div className="flex justify-between items-center mb-4">
           <p>
-            총 문의: <span className="text-red-500 font-semibold">9건</span>
+            총 문의:{" "}
+            <span className="text-red-500 font-semibold">{inquiries.length}건</span>
           </p>
           <div className="relative">
             <select className="border border-gray-400 rounded px-1 py-1">
@@ -36,7 +39,7 @@ export default function MyContact() {
 
         {/* 테이블 */}
         <div className="overflow-x-auto">
-          <table className="w-full text-center border-t ">
+          <table className="w-full text-center border-t">
             <thead className="border-b-2 border-t-2 border-black">
               <tr className="h-10">
                 <th className="w-[50px]">NO</th>
@@ -47,9 +50,19 @@ export default function MyContact() {
             </thead>
             <tbody>
               {inquiries.map((item) => (
-                <tr key={item.no} className="h-10 hover:bg-gray-100 rounded-4xl">
+                <tr
+                  key={item.no}
+                  onClick={() =>
+                    router.push(
+                      item.status === "답변완료"
+                        ? `./myContact/detail/processed`
+                        : `./myContact/detail/unprocessed`
+                    )
+                  }
+                  className="h-10 hover:bg-gray-100 cursor-pointer"
+                >
                   <td>{item.no}</td>
-                  <td className="text-left px-15">{item.title}</td>
+                  <td className="text-left px-4">{item.title}</td>
                   <td>{item.date}</td>
                   <td>{item.status}</td>
                 </tr>
@@ -84,7 +97,7 @@ export default function MyContact() {
           <button>{">"}</button>
         </div>
       </main>
-      <Footer/>
+      <Footer />
     </div>
   );
 }
