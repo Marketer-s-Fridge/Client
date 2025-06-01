@@ -121,8 +121,9 @@ export const SubmitButton: React.FC<SubmitButtonProps> = ({
   fullWidth = true,
 }) => (
   <button
+    type="button" // 🔴 반드시 명시
     onClick={onClick}
-    className={`bg-[#FF4545] text-white ${
+    className={`cursor-pointer bg-[#FF4545] text-white ${
       fullWidth ? "w-9/11" : "px-6"
     } py-3 rounded-lg text-[17px] font-bold place-self-center`}
   >

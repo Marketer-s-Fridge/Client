@@ -15,7 +15,8 @@ export default function SearchInput({ showInstagramButton = true }: SearchInputP
 
   const handleSearch = () => {
     if (query.trim()) {
-      router.push(`/search?q=${encodeURIComponent(query.trim())}`);
+      // router.push(`/search?q=${encodeURIComponent(query.trim())}`);
+      router.push(`/search/noResult`);
     }
   };
 

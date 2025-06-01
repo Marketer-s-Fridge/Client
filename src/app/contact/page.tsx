@@ -1,11 +1,26 @@
-// components/ContactPage.tsx
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 
 export default function ContactPage() {
+  const [category, setCategory] = useState("");
+  const [title, setTitle] = useState("");
+  const [email, setEmail] = useState("");
+  const [content, setContent] = useState("");
+  const [agreed, setAgreed] = useState(false);
+
+  const isFormValid = category && title && email && content && agreed;
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!isFormValid) return;
+
+    // 제출 처리 로직
+    alert("문의가 제출되었습니다.");
+  };
+
   return (
     <div className="bg-white">
       <Header />
@@ -17,7 +32,7 @@ export default function ContactPage() {
 
       {/* 폼 섹션 */}
       <main className="max-w-[800px] mx-auto px-4 py-12 relative">
-        <form className="space-y-6">
+        <form className="space-y-6" onSubmit={handleSubmit}>
           {/* 분류 */}
           <div className="flex flex-col md:flex-row md:items-center">
             <label className="w-[100px] text-lg text-gray-800 font-bold">
@@ -25,7 +40,8 @@ export default function ContactPage() {
             </label>
             <select
               className="flex-1 border border-gray-300 rounded px-3 py-2 text-sm"
-              defaultValue=""
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
             >
               <option value="" disabled>
                 문의유형을 선택하세요
@@ -44,6 +60,8 @@ export default function ContactPage() {
             <input
               type="text"
               placeholder="ex) 콘텐츠를 저장할 수 없어요."
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
               className="flex-1 border border-gray-300 rounded px-3 py-2 text-sm"
             />
           </div>
@@ -56,6 +74,8 @@ export default function ContactPage() {
             <input
               type="email"
               placeholder="답변 받을 이메일을 입력해주세요"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="flex-1 border border-gray-300 rounded px-3 py-2 text-sm"
             />
           </div>
@@ -81,46 +101,56 @@ export default function ContactPage() {
             <label className="w-[100px] text-lg text-gray-800 font-bold">
               내용
             </label>
-
-            <div className="flex-1 flex items-center gap-3 relative">
+            <div className="flex-1 relative">
               <textarea
                 rows={10}
                 maxLength={1000}
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
                 placeholder="문제가 발생한 화면과 증상을 자세히 작성해주세요."
                 className="w-full border border-gray-300 rounded px-3 py-2 text-sm"
-              ></textarea>
-              <div className="absolute text-right text-xs text-gray-500 mt-1 right-3 bottom-2">
-                0 / 1000
+              />
+              <div className="absolute text-right text-xs text-gray-500 right-3 bottom-12">
+                {`${content.length}/1000`}
+              </div>
+
+              {/* 개인정보 수집 동의 */}
+              <div className="flex items-start mt-4 text-sm">
+                <input
+                  type="checkbox"
+                  id="agree"
+                  className="mr-2.5 mt-1 w-4 h-4"
+                  checked={agreed}
+                  onChange={(e) => setAgreed(e.target.checked)}
+                />
+                <label htmlFor="agree" className="text-gray-500">
+                  개인정보 수집 및 이용에 동의합니다. [필수]
+                  <a href="#" className="underline ml-2">
+                    이용약관 보기
+                  </a>
+                </label>
               </div>
             </div>
           </div>
 
-          {/* 개인정보 동의 */}
-          <div className="absolute items-center text-sm left-3/21">
-            <input type="checkbox" id="agree" className="mr-2.5 w-4.5 h-4.5" />
-            <label
-              htmlFor="agree"
-              className="text-center align-top text-gray-400"
-            >
-              개인정보 수집 및 이용에 동의합니다. [필수]
-              <a href="#" className="underline ml-3 text-gray-500">
-                이용약관 보기
-              </a>
-            </label>
-          </div>
-
           {/* 제출버튼 */}
-          <div className="text-end mt-20">
+          <div className="text-end mt-10">
             <button
               type="submit"
-              className="border border-gray-300 rounded-full px-6 py-1.5 text-sm hover:bg-gray-100"
+              disabled={!isFormValid}
+              className={`rounded-full px-6 py-1.5 text-sm font-medium transition-colors ${
+                isFormValid
+                  ? "bg-red-500 text-white hover:bg-red-600"
+                  : "bg-gray-100 text-gray-400 cursor-not-allowed"
+              }`}
             >
               제출하기
             </button>
           </div>
         </form>
       </main>
-      <Footer/>
+
+      <Footer />
     </div>
   );
 }

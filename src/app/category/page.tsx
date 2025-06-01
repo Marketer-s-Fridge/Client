@@ -6,6 +6,7 @@ import SearchInput from "@/components/searchInput";
 import ScrollToTopButton from "@/components/scrollToTopButton";
 import Image from "next/image";
 import Footer from "@/components/footer";
+import Pagination from "@/components/pagination";
 
 interface Category {
   name: string;
@@ -108,6 +109,8 @@ const mockContents: Content[] = [
 export default function Page() {
   const [likedItems, setLikedItems] = useState<number[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+
 
   const toggleLike = (id: number) => {
     setLikedItems((prev) =>
@@ -198,21 +201,14 @@ export default function Page() {
         </div>
 
         {/* 페이지네이션 */}
-        <div className="flex justify-center items-center gap-3 sm:gap-4 mt-20 mb-10 px-4">
-          {[1, 2, 3, 4, 5].map((page: number) => (
-            <button
-              key={page}
-              className={`w-8 h-8 rounded-full text-sm font-semibold ${
-                page === 1 ? "bg-red-500 text-white" : "text-gray-700"
-              }`}
-            >
-              {page}
-            </button>
-          ))}
-          <ScrollToTopButton />
-        </div>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={5}
+          onPageChange={(page) => setCurrentPage(page)}
+        />
+        <ScrollToTopButton/>
       </section>
-      <Footer/>
+      <Footer />
     </div>
   );
 }

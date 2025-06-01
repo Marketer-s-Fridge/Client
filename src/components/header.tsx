@@ -26,18 +26,30 @@ export default function Header() {
       </Link>
 
       {/* 네비게이션 */}
-      <nav className="flex flex-wrap justify-center sm:justify-end md:gap-x-7 gap-x-2 gap-y-2 text-xs text-gray-700">
-        {navItems.map((item) => (
-          <Link
-            key={item.name}
-            href={item.href}
-            className={`whitespace-nowrap transition-colors duration-200 ${
-              pathname === item.href ? 'font-bold text-black' : 'hover:text-black'
-            }`}
-          >
-            {item.name}
-          </Link>
-        ))}
+      <nav className="flex flex-wrap justify-center sm:justify-end md:gap-x-10 gap-x-2 gap-y-2 text-xs text-gray-700">
+        {navItems.map((item) => {
+          const isActive = pathname === item.href;
+          const isLoginJoin = item.name === '로그인 | 회원가입';
+
+          return (
+            <Link
+              key={item.name}
+              href={item.href}
+              className={`whitespace-nowrap transition-colors duration-200 ${
+                isActive ? 'font-bold text-black' : 'hover:text-black'
+              } ${isLoginJoin ? 'text-[11.5px] inline-flex items-center' : ''}`}
+            >
+              {isLoginJoin
+                ? (
+                  <>
+                    로그인 <span className="text-gray-400">|</span> 회원가입
+                  </>
+                )
+                : item.name
+              }
+            </Link>
+          );
+        })}
       </nav>
     </header>
   );

@@ -3,16 +3,30 @@
 import Header from "@/components/header";
 import React, { useState } from "react";
 import { TextInput, SubmitButton } from "@/components/authFormComponents";
-import Footer from "@/components/footer";
+import { useRouter } from "next/navigation"; // ✅ App Router 전용
 
 const FindPwdPage: React.FC = () => {
   const [name, setName] = useState("");
+  const [userId, setUserId] = useState("");
   const [email, setEmail] = useState("");
+  const router = useRouter();
+
+  const handleSubmit = () => {
+    // 간단한 유효성 검사
+    if (!name.trim() || !userId.trim() || !email.trim()) {
+      alert("모든 항목을 입력해주세요.");
+      return;
+    }
+
+    // 모든 항목이 입력되었을 경우
+    router.push("./findPwd/resetPwd");
+  };
 
   return (
-    <div className="bg-white min-h-screen">
+    <div className="bg-white min-h-screen flex flex-col">
       <Header />
-      <main className="flex flex-col items-center justify-center px-4 py-20">
+
+      <main className="flex flex-1 flex-col items-center justify-start pt-[15vh] px-4">
         {/* 타이틀 */}
         <h1 className="text-[36px] font-bold mb-4">비밀번호 찾기</h1>
 
@@ -33,9 +47,9 @@ const FindPwdPage: React.FC = () => {
 
           <TextInput
             label="아이디"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            type="id"
+            value={userId}
+            onChange={(e) => setUserId(e.target.value)}
+            type="text"
             required
           />
 
@@ -47,14 +61,9 @@ const FindPwdPage: React.FC = () => {
             required
           />
 
-          <div className="mb-1" />
-          <SubmitButton
-            text="다음 단계"
-            onClick={() => alert("아이디 찾기 요청됨")}
-          />
+          <SubmitButton text="다음 단계" onClick={handleSubmit} />
         </form>
       </main>
-      <Footer/>
     </div>
   );
 };

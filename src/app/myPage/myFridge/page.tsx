@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import Image from "next/image";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
+import Pagination from "@/components/pagination";
+import ScrollToTopButton from "@/components/scrollToTopButton";
 
 const categories = ["전체", "Beauty", "Fashion", "Food", "Lifestyle", "Tech"];
 
@@ -76,6 +78,7 @@ const contents = [
 
 export default function MyFridgePage() {
   const [selectedCategory, setSelectedCategory] = useState("전체");
+  const [currentPage, setCurrentPage] = useState(1);
 
   return (
     <div>
@@ -124,23 +127,14 @@ export default function MyFridgePage() {
             </div>
           ))}
         </div>
-
-        <div className="flex justify-center items-center mt-8 gap-1 text-sm">
-          <span className="text-gray-400 ">&#8249;</span>
-          {[1, 2, 3, 4, 5].map((num) => (
-            <button
-              key={num}
-              className={`w-6 h-6 text-center rounded-full ${
-                num === 2 ? "bg-black text-white" : "text-gray-600"
-              }`}
-            >
-              {num}
-            </button>
-          ))}
-          <span className="text-gray-400">&#8250;</span>
-        </div>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={5}
+          onPageChange={(page) => setCurrentPage(page)}
+        />
+        <ScrollToTopButton />
       </div>
-      <Footer/>
+      <Footer />
     </div>
   );
 }
