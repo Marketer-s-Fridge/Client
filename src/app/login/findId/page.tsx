@@ -9,9 +9,10 @@ const FindIdPage: React.FC = () => {
   const [email, setEmail] = useState("");
 
   return (
-    <div className="bg-white min-h-screen">
+    <div className="bg-white min-h-screen flex flex-col">
       <Header />
-      <main className="flex flex-col items-center justify-center px-4 py-20">
+
+      <main className="flex flex-1 flex-col items-center justify-start pt-[15vh] px-4">
         {/* 타이틀 */}
         <h1 className="text-[36px] font-bold mb-4">아이디 찾기</h1>
 
@@ -38,7 +39,6 @@ const FindIdPage: React.FC = () => {
             required
           />
 
-          <div className="mb-1" />
           <SubmitButton
             text="내 아이디 찾기"
             onClick={() => alert("아이디 찾기 요청됨")}
