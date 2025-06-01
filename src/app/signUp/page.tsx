@@ -7,7 +7,6 @@ import { AuthHeader } from "@/components/authFormComponents";
 import Image from "next/image";
 
 const SignUpPage: React.FC = () => {
-  // const [input1, onChangeInput1] = useState("");
   const router = useRouter(); // ✅ 라우터 객체 사용
 
   return (
