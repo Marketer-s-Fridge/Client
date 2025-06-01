@@ -55,7 +55,8 @@ const ResetPwdPage: React.FC = () => {
       <ConfirmModal
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
-      >"비밀번호가 변경되었습니다."</ConfirmModal>
+      ><p>"비밀번호가 변경되었습니다."</p>
+      </ConfirmModal>
     </div>
   );
 };
