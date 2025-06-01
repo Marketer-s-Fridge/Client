@@ -1,6 +1,7 @@
 "use client";
 
 import { AuthHeader, SubmitButton } from "@/components/authFormComponents";
+import ConfirmModal from "@/components/confirmModal";
 import Header from "@/components/header";
 import React, { useState } from "react";
 import { useEffect } from "react";
@@ -15,6 +16,7 @@ export default function EmailJoinPage() {
   const [password, setPassword] = useState("");
   const [passwordCheck, setPasswordCheck] = useState("");
   const [birth, setBirth] = useState({ year: "", month: "", day: "" });
+  const [modalOpen, setModalOpen] = useState(false);
 
   const [errors, setErrors] = useState({
     email: false,
@@ -51,17 +53,27 @@ export default function EmailJoinPage() {
     setErrors(newErrors);
 
     const hasError = Object.values(newErrors).some(Boolean);
-    if (!hasError) alert("회원가입 완료");
+    if (!hasError) {
+      setModalOpen(true);
+    }
   };
 
   // ✅ 필수 3개 체크 상태 감시하여 all 자동 반영
   useEffect(() => {
     const allChecked =
-      agreements.age && agreements.provide && agreements.collect && agreements.marketing;
+      agreements.age &&
+      agreements.provide &&
+      agreements.collect &&
+      agreements.marketing;
     if (agreements.all !== allChecked) {
       setAgreements((prev) => ({ ...prev, all: allChecked }));
     }
-  }, [agreements.age, agreements.provide, agreements.collect,agreements.marketing]);
+  }, [
+    agreements.age,
+    agreements.provide,
+    agreements.collect,
+    agreements.marketing,
+  ]);
 
   // ✅ "모두 동의하기" 클릭 시 나머지 필수 전체 반영
   const handleAllAgree = (checked: boolean) => {
@@ -327,6 +339,11 @@ export default function EmailJoinPage() {
           </form>
         </div>
       </div>
+      <ConfirmModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        children="회원가입이 완료되었습니다."
+      ></ConfirmModal>
     </div>
   );
 }
@@ -349,10 +366,7 @@ const InputRow = ({
       </label>
 
       {/* Input + Error (수직으로 쌓임) */}
-      <div className="flex flex-col gap-1">
-        {children}
-      </div>
+      <div className="flex flex-col gap-1">{children}</div>
     </div>
   );
 };
-

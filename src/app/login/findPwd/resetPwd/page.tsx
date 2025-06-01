@@ -3,7 +3,7 @@
 import { SubmitButton, TextInput } from "@/components/authFormComponents";
 import Header from "@/components/header";
 import React, { useState } from "react";
-import BaseModal from "@/components/baseModal";
+import ConfirmModal from "@/components/confirmModal";
 
 const ResetPwdPage: React.FC = () => {
   const [pwd, setPwd] = useState("");
@@ -52,15 +52,11 @@ const ResetPwdPage: React.FC = () => {
       </main>
 
       {/* ✅ 비밀번호 변경 완료 모달 */}
-      <BaseModal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
-        <p className=" text-lg font-normal my-5">비밀번호가 변경되었습니다.</p>
-        <button
-          onClick={() => setModalOpen(false)}
-          className="bg-red-500 text-white text-xs font-semibold px-8 py-0.5 rounded-lg hover:bg-red-600"
-        >
-          확인
-        </button>
-      </BaseModal>
+      <ConfirmModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        children="비밀번호가 변경되었습니다."
+      ></ConfirmModal>
     </div>
   );
 };
