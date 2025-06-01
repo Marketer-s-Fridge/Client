@@ -1,9 +1,7 @@
 // components/Footer.tsx
 import React from "react";
 
-interface FooterProps {}
-
-const Footer: React.FC<FooterProps> = () => {
+const Footer: React.FC = () => {
   return (
     <div className="flex flex-col bg-white mt-20">
       <div className="self-stretch bg-white h-[500px]">
