@@ -19,37 +19,41 @@ export default function HomePage() {
       </section>
 
       {/* 이번주 카드뉴스 */}
-      <section className="main-red py-[2.5rem] px-4 sm:px-10 md:px-[7.375rem] lg:px-[15.5rem]">
-        <h2 className="text-white text-2xl font-bold mb-6">이번주 카드뉴스</h2>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          {[1, 2, 3, 4].map((i) => (
-            <Image
-              alt=""
-              src="/icons/rectangle-gray.png"
-              key={i}
-              className="h-[17.5rem] bg-white rounded-lg shadow cursor-pointer"
-              onClick={() => router.push("/cardNews")}
-              width={250}
-              height={300}
-            />
-          ))}
+      <section className="main-red py-10 px-20 sm:px-10 place-items-center justify-items-center ">
+        <div className="aspect-[6/2]">
+          <h2 className="text-white text-2xl font-bold mb-6 ">
+            이번주 카드뉴스
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            {[1, 2, 3, 4].map((i) => (
+              <Image
+                alt=""
+                src="/icons/rectangle-gray.png"
+                key={i}
+                className="aspect-[3/4] bg-white rounded-lg shadow cursor-pointer"
+                onClick={() => router.push("/cardNews")}
+                width={250}
+                height={300}
+              />
+            ))}
+          </div>
         </div>
       </section>
 
       {/* 인기 콘텐츠 + 에디터 픽 */}
-      <section className="bg-white py-12 px-4 sm:px-10 md:px-[4.375rem] lg:px-[15.5rem]">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-[3.75rem]">
+      <section className="bg-white py-10 px-4 sm:px-10 md:px-20">
+        <div className="max-w-[1024px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-10">
           {/* 인기 콘텐츠 */}
-          <div>
+          <div className="flex flex-col">
             <h3 className="text-lg font-bold mb-4">이번주 인기 콘텐츠</h3>
-            {/* <div className="bg-gray-200 h-[15rem] rounded-lg" /> */}
-            <Image
-              width={500}
-              height={200}
-              alt=""
-              src="/icons/rectangle-gray.png"
-              className="h-[15rem] rounded-lg"
-            />
+            <div className="relative aspect-[2/1] w-full rounded-lg overflow-hidden shadow">
+              <Image
+                src="/icons/rectangle-gray.png"
+                alt=""
+                fill
+                className="object-cover"
+              />
+            </div>
             <p className="text-xs text-gray-500 mt-2">브랜드커뮤니케이션</p>
             <p className="text-sm font-medium mt-1">
               마크는 왜 달마과자에 글을 올렸을까?
@@ -63,27 +67,29 @@ export default function HomePage() {
           </div>
 
           {/* 에디터 픽 */}
-          <div>
+          <div className="flex flex-col">
             <h3 className="text-lg font-bold mb-4">에디터 픽</h3>
-            <Image
-              width={500}
-              height={200}
-              alt=""
-              src="/icons/rectangle-gray.png"
-              className="h-[15rem] rounded-lg"
-            />
+            <div className="relative aspect-[2/1] w-full rounded-lg overflow-hidden shadow">
+              <Image
+                src="/icons/rectangle-gray.png"
+                alt=""
+                fill
+                className="object-cover"
+              />
+            </div>
             <p className="text-xs text-gray-500 mt-2">리브랜딩</p>
             <p className="text-sm font-medium mt-1">시니어 마케팅의 시대</p>
             <p className="text-xs text-gray-500 mt-1">
               경제적 자원과 소비력을 갖춘 시니어층은 중요한 소비층으로
               떠올랐으며, 시니어층의 새로운 취미, 학습, 자기계발 수요가
               증가하면서 관련 제품과 서비스 시장도 함께 확대되고 있습니다. 이제
-              시니어...{" "}
+              시니어...
             </p>
           </div>
         </div>
       </section>
-      <Footer/>
+
+      <Footer />
     </main>
   );
 }
