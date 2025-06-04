@@ -3,7 +3,6 @@
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import Image from "next/image";
-import CarouselSection from "./carouselSection";
 
 export default function HomePage() {
   return (
@@ -35,7 +34,6 @@ export default function HomePage() {
         height="700"
         className="w-screen object-fill my-[15%]"
       ></Image>
-      {/* <CarouselSection /> */}
 
       <Footer />
     </main>
