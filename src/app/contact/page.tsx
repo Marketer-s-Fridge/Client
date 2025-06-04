@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
+import Banner from "@/components/banner";
 
 export default function ContactPage() {
   const [category, setCategory] = useState("");
@@ -26,16 +27,16 @@ export default function ContactPage() {
       <Header />
 
       {/* 상단 배너 */}
-      <section className="main-red py-10 text-center">
-        <h1 className="text-white text-2xl font-bold">문의하기</h1>
-      </section>
+
+      <Banner title="문의하기"></Banner>
 
       {/* 폼 섹션 */}
-      <main className="max-w-[800px] mx-auto px-4 py-12 relative">
+      <main className="max-w-[800px] mx-auto px-[5%] sm:px-4 py-12 relative">
         <form className="space-y-6" onSubmit={handleSubmit}>
+
           {/* 분류 */}
-          <div className="flex flex-col md:flex-row md:items-center">
-            <label className="w-[100px] text-lg text-gray-800 font-bold">
+          <div className="flex flex-col md:flex-row md:items-center gap-y-2">
+            <label className="w-[100px] text-medium sm:text-lg text-gray-800 font-bold">
               분류
             </label>
             <select
@@ -53,8 +54,8 @@ export default function ContactPage() {
           </div>
 
           {/* 제목 */}
-          <div className="flex flex-col md:flex-row md:items-center">
-            <label className="w-[100px] text-lg text-gray-800 font-bold">
+          <div className="flex flex-col md:flex-row md:items-center gap-y-2">
+            <label className="w-[100px] text-medium sm:text-lg text-gray-800 font-bold">
               제목
             </label>
             <input
@@ -67,8 +68,8 @@ export default function ContactPage() {
           </div>
 
           {/* 이메일 */}
-          <div className="flex flex-col md:flex-row md:items-center">
-            <label className="w-[100px] text-lg text-gray-800 font-bold">
+          <div className="flex flex-col md:flex-row md:items-center gap-y-2">
+            <label className="w-[100px] text-medium sm:text-lg text-gray-800 font-bold">
               이메일
             </label>
             <input
@@ -81,8 +82,8 @@ export default function ContactPage() {
           </div>
 
           {/* 파일첨부 */}
-          <div className="flex flex-col md:flex-row md:items-center">
-            <label className="w-[100px] text-lg text-gray-800 font-bold">
+          <div className="flex flex-col md:flex-row md:items-center gap-y-2">
+            <label className="w-[100px] text-medium sm:text-lg text-gray-800 font-bold">
               파일첨부
             </label>
             <div className="flex-1 flex items-center gap-3">
@@ -97,8 +98,8 @@ export default function ContactPage() {
           </div>
 
           {/* 내용 */}
-          <div className="flex flex-col md:flex-row md:items-start">
-            <label className="w-[100px] text-lg text-gray-800 font-bold">
+          <div className="flex flex-col md:flex-row md:items-start gap-y-2">
+            <label className="w-[100px] text-medium sm:text-lg text-gray-800 font-bold">
               내용
             </label>
             <div className="flex-1 relative">

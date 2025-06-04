@@ -19,18 +19,18 @@ export default function HomePage() {
       </section>
 
       {/* 이번주 카드뉴스 */}
-      <section className="main-red py-10 px-20 sm:px-10 place-items-center justify-items-center ">
-        <div className="aspect-[6/2]">
-          <h2 className="text-white text-2xl font-bold mb-6 ">
+      <section className="main-red py-10 px-[5%] sm:px-[10%] place-items-center justify-items-center ">
+        <div className=" sm:aspect-[6/2]">
+          <h2 className="text-white text-xl sm:text-2xl font-bold mb-6 ">
             이번주 카드뉴스
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-4 sm:grid-cols-4 gap-[2%] ">
             {[1, 2, 3, 4].map((i) => (
               <Image
                 alt=""
                 src="/icons/rectangle-gray.png"
                 key={i}
-                className="aspect-[3/4] bg-white rounded-lg shadow cursor-pointer"
+                className=" aspect-[3/4] bg-white rounded-lg shadow cursor-pointer"
                 onClick={() => router.push("/cardNews")}
                 width={250}
                 height={300}
@@ -41,8 +41,8 @@ export default function HomePage() {
       </section>
 
       {/* 인기 콘텐츠 + 에디터 픽 */}
-      <section className="bg-white py-10 px-4 sm:px-10 md:px-20">
-        <div className="max-w-[1024px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-10">
+      <section className="bg-white py-10 px-[5%] sm:px-10 md:px-20">
+        <div className="max-w-[1024px] mx-auto grid grid-cols-2 md:grid-cols-2 gap-10">
           {/* 인기 콘텐츠 */}
           <div className="flex flex-col">
             <h3 className="text-lg font-bold mb-4">이번주 인기 콘텐츠</h3>

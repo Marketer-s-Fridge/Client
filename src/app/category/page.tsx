@@ -111,7 +111,6 @@ export default function Page() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
 
-
   const toggleLike = (id: number) => {
     setLikedItems((prev) =>
       prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
@@ -123,11 +122,11 @@ export default function Page() {
       <Header />
 
       {/* 검색 영역 */}
-      <section className="flex flex-col items-center main-red pt-20 pb-12 px-4 sm:px-6 md:px-10 lg:px-16">
+      <section className="flex flex-col items-center main-red pt-10 pb-6 px-4 sm:px-6 sm:pt-20 sm:pb-6 md:px-10 lg:px-16">
         <SearchInput showInstagramButton={false} />
 
         {/* 카테고리 아이콘들 */}
-        <div className="flex flex-wrap justify-center mt-14 mb-6 gap-1 sm:gap-4 md:gap-6">
+        <div className="flex flex-wrap justify-center mt-7 mb-3 sm:mt-14 sm:mb-6 gap-1 sm:gap-4 md:gap-6">
           {categories.map((cat) => {
             const isSelected =
               selectedCategory === null || selectedCategory === cat.name;
@@ -145,8 +144,8 @@ export default function Page() {
                 <div
                   className={`flex items-center justify-center transition-all duration-300 ${
                     isSelected
-                      ? "w-15 h-15 sm:w-20 sm:h-20 md:w-40 md:h-40"
-                      : "w-12 h-12 sm:w-10 sm:h-10 md:w-35 md:h-35 opacity-80"
+                      ? "w-17 h-17 sm:w-26 sm:h-26 md:w-30 md:h-30 lg:w-40 lg:h-40 "
+                      : "w-15 h-15 sm:w-22 sm:h-22 md:w-27.5 md:h-27.5 lg:w-35 lg:h-35 opacity-80"
                   }`}
                 >
                   <Image
@@ -164,11 +163,11 @@ export default function Page() {
       </section>
 
       {/* 카드 리스트 */}
-      <section className="bg-white w-full max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-17 py-16">
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-6">
+      <section className="bg-white w-full max-w-screen-xl mx-auto px-10 lg:px-17 py-10 sm:py-16">
+        <div className="grid grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-6">
           {mockContents.map((item) => (
             <div key={item.id} className="w-full">
-              <div className="relative aspect-[6/7] w-full rounded-lg overflow-hidden bg-gray-100">
+              <div className="relative aspect-[3/4] w-full rounded-lg overflow-hidden bg-gray-100">
                 <Image
                   src="/icons/rectangle-gray.png"
                   alt={item.title}
@@ -193,7 +192,7 @@ export default function Page() {
                   />
                 </button>
               </div>
-              <div className="pt-2 px-1 text-sm font-semibold flex justify-between items-start gap-2">
+              <div className="pt-2 px-1 text-[10px] sm:text-sm font-semibold flex justify-between items-start gap-2">
                 <p className="line-clamp-2 leading-snug">{item.title}</p>
               </div>
             </div>
@@ -206,7 +205,7 @@ export default function Page() {
           totalPages={5}
           onPageChange={(page) => setCurrentPage(page)}
         />
-        <ScrollToTopButton/>
+        <ScrollToTopButton />
       </section>
       <Footer />
     </div>

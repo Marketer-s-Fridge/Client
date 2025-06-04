@@ -39,45 +39,43 @@ export default function Page() {
       />
 
       {/* 검색 결과 없음 메시지 */}
-      <section className="max-w-screen-lg mx-auto px-4 py-18 text-center">
+      <section className="px-[7%] lg:px-[17%] py-18 text-center">
         <h1 className="text-xl md:text-2xl font-bold mb-10">
           ‘어쩌구저쩌구’에 대한 콘텐츠가 아직 준비되지 않았습니다.
         </h1>
         {/* 냉장고 비어있는 이미지 */}
         <div className="flex justify-center mb-8">
-          {/* <div className="w-32 h-40 border rounded-lg flex items-center justify-center text-xs text-gray-500">
-            냉장고가 비어있는 이미지
-          </div> */}
           <Image
             src="/icons/noContents.png"
-            className="w-100 h-40 object-contain"
+            className="w-[80%] md:w-[50%] h-auto object-contain"
             alt=""
             width={500}
             height={250}
-            
           ></Image>
         </div>
 
         {/* 카드 리스트 */}
-        <section className="w-6/7 max-w-screen-lg mx-auto px-4 sm:px-6 md:px-8 py-12">
-          <h3 className="text-2xl font-bold mb-10">이런 콘텐츠는 어떠세요?</h3>
+        <section className="place-self-center py-12">
+          <h3 className="text-lg md:text-2xl font-bold mb-10">
+            이런 콘텐츠는 어떠세요?
+          </h3>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-10">
+          <div className="grid grid-cols-3 md:grid-cols-3 gap-x-6 gap-y-10">
             {mockContents.map((item, index) => (
               <div key={index} className="w-full">
-                <div className="relative aspect-[6/7] w-full rounded-lg overflow-hidden bg-gray-100">
+                <div className="relative aspect-[3/4] w-full rounded-lg overflow-hidden bg-gray-100">
                   <Image
                     src="/icons/rectangle-gray.png"
                     alt={item.title}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover cursor-pointer"
                     width={50}
                     height={50}
                   />
-                  <div className="border-gray-700 border-1 bg-white w-auto px-2.5 py-0.5 h-6 text-sm rounded absolute top-3 right-3 text-center ">
+                  <div className="border-gray-400 border-1 bg-white w-auto px-1 py-0 sm:px-2.5 sm:py-0.5 h-6 text-[10px] sm:text-sm rounded absolute top-3 right-3 text-center ">
                     {item.category}
                   </div>
                 </div>
-                <div className="pt-2 px-1 text-sm font-semibold truncate flex items-center justify-between">
+                <div className="pt-2 px-1 text-[10px] sm:text-sm font-semibold truncate flex items-center justify-between">
                   {item.title}
                   <button>
                     <Image

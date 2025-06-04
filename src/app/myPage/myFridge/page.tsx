@@ -83,14 +83,14 @@ export default function MyFridgePage() {
   return (
     <div>
       <Header />
-      <div className="max-w-screen-xl mx-auto px-35 py-8">
-        <h1 className="text-2xl font-bold mb-4">MY 냉장고</h1>
+      <div className="max-w-screen-xl mx-auto px-[10%] py-8">
+        <h1 className="text-lg sm:text-2xl font-bold mb-4">MY 냉장고</h1>
 
         <div className="flex flex-wrap gap-2 mb-6">
           {categories.map((cat) => (
             <button
               key={cat}
-              className={`px-4 py-1.5 rounded-full border text-xs ${
+              className={`cursor-pointer px-2 py-1 sm:px-4 sm:py-1.5 rounded-full border text-[10px] sm:text-xs ${
                 selectedCategory === cat
                   ? "bg-red-500 text-white"
                   : "bg-white text-black border-gray-300"
@@ -102,10 +102,10 @@ export default function MyFridgePage() {
           ))}
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10">
+        <div className="grid grid-cols-3 md:grid-cols-4 gap-x-6 gap-y-10">
           {contents.map((content) => (
             <div key={content.id} className="relative">
-              <div className="aspect-[9/11] w-full">
+              <div className="relative aspect-[3/4] w-full">
                 <Image
                   src="/icons/rectangle-gray.png"
                   alt={content.title}
@@ -113,16 +113,20 @@ export default function MyFridgePage() {
                   height={489} // 400 * 11 / 9
                   className="w-full h-full object-cover rounded-lg"
                 />
+                {content.liked && (
+                  <Image
+                    src="/icons/redheart.png"
+                    alt=""
+                    width={10}
+                    height={10}
+                    className="w-4 h-4 absolute right-1.5 bottom-1.5"
+                  ></Image>
+                )}
               </div>
               <div className="flex flex-row justify-between items-center">
-                <p className="mt-2 text-sm font-medium leading-snug line-clamp-2">
+                <p className="mx-1 mt-2 text-[10px] sm:text-sm font-semibold leading-snug line-clamp-2">
                   {content.title}
                 </p>
-                {content.liked && (
-                  <div className="bottom-2 right-2">
-                    <span className="text-red-500 text-xl">❤️</span>
-                  </div>
-                )}
               </div>
             </div>
           ))}
