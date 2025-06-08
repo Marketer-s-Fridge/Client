@@ -1,4 +1,5 @@
 import AdminHeader from "@/components/adminHeader";
+import Image from "next/image";
 import React from "react";
 
 export default function DashboardPage() {
@@ -7,25 +8,67 @@ export default function DashboardPage() {
       <AdminHeader />
       <div className="min-h-screen flex bg-white">
         {/* Sidebar */}
-        <aside className="w-60 bg-[#f9f9f9] border-r border-gray-200 py-18 px-4 space-y-8 text-sm">
-          <ul className="space-y-7 font-bold">
-            <li className="flex items-center gap-2">
-              <span>📤</span> 콘텐츠 업로드
+        <aside className="w-60 bg-[#f9f9f9] border-r border-gray-200 py-20 px-4 space-y-10 text-sm">
+          <ul className="space-y-9 font-bold">
+            <li className="flex items-center gap-3.5">
+              <Image
+                alt="콘텐츠 업로드"
+                src="/icons/admin/upload.png"
+                width={30}
+                height={30}
+                className="w-5 aspect-square"
+              ></Image>
+              콘텐츠 업로드
             </li>
-            <li className="flex items-center gap-2">
-              <span>🗂</span> 콘텐츠 관리
+            <li className="flex items-center gap-3.5">
+              <Image
+                alt="콘텐츠 관리"
+                src="/icons/admin/menu.png"
+                width={30}
+                height={30}
+                className="w-5 aspect-square"
+              ></Image>{" "}
+              콘텐츠 관리
             </li>
-            <li className="flex items-center gap-2">
-              <span>🕒</span> 임시 저장 리스트
+            <li className="flex items-center gap-3.5">
+              <Image
+                alt="임시 저장 리스트"
+                src="/icons/admin/archive.png"
+                width={30}
+                height={30}
+                className="w-5 aspect-square"
+              ></Image>{" "}
+              임시 저장 리스트
             </li>
-            <li className="flex items-center gap-2">
-              <span>📅</span> 업로드 예약
+            <li className="flex items-center gap-3.5">
+              <Image
+                alt="업로드 에약"
+                src="/icons/admin/clock.png"
+                width={30}
+                height={30}
+                className="w-5 aspect-square"
+              ></Image>{" "}
+              업로드 예약
             </li>
-            <li className="flex items-center gap-2">
-              <span>📨</span> 문의 답변 관리
+            <li className="flex items-center gap-3.5">
+              <Image
+                alt="문의 답변 관리"
+                src="/icons/admin/mdi_comment-question-outline.png"
+                width={30}
+                height={30}
+                className="w-5 aspect-square"
+              ></Image>
+              문의 답변 관리
             </li>
-            <li className="flex items-center gap-2">
-              <span>📊</span> 통계 및 분석
+            <li className="flex items-center gap-3.5">
+              <Image
+                alt="통계 및 분석"
+                src="/icons/admin/entypo_bar-graph.png"
+                width={30}
+                height={30}
+                className="w-5 aspect-square"
+              ></Image>
+              통계 및 분석
             </li>
           </ul>
         </aside>
