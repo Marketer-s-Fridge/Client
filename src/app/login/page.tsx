@@ -16,8 +16,6 @@ const LoginPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
-  // const [input3, onChangeInput3] = useState("");
-
   const router = useRouter();
 
   return (

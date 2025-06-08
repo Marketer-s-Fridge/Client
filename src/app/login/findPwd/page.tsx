@@ -9,7 +9,6 @@ const FindPwdPage: React.FC = () => {
   const [name, setName] = useState("");
   const [userId, setUserId] = useState("");
   const [email, setEmail] = useState("");
-  const [notFound, setNotFound] = useState(false);
   const [foundAccount, setFoundAccount] = useState(true);
 
   const router = useRouter();
