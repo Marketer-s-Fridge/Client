@@ -7,7 +7,7 @@ export default function AdminHeader() {
   return (
     <header className="relative w-full border-b border-gray-300 py-4 flex justify-between items-center px-[10%] md:px-[15%]">
       {/* 로고 */}
-      <Link href="/" className="text-red-500 font-bold text-sm font-playfair">
+      <Link href="/admin" className="text-red-500 font-bold text-sm font-playfair">
         Marketer&apos;s Fridge
       </Link>
 

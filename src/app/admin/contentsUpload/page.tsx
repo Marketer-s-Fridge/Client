@@ -1,10 +1,15 @@
 "use client";
 
-import AdminHeader from "@/components/adminHeader";
-import React from "react";
+import AdminHeader from "@/components/admin/adminHeader";
+import React, { useState } from "react";
 import AdminCategoryBar from "../../../components/admin/adminCategoryBar";
+import CustomDropdown from "@/components/admin/customDropdown";
 
 const UploadPage: React.FC = () => {
+  const [category, setCategory] = useState("카테고리 선택");
+  const [type, setType] = useState("유형 선택");
+
+
   return (
     <div className="bg-white min-h-screen">
       <AdminHeader />
@@ -15,7 +20,6 @@ const UploadPage: React.FC = () => {
       <main className=" mx-auto px-[10%] sm:px-[15%] py-12">
         {/* 콘텐츠 등록 */}
         <div className="flex flex-col lg:flex-row gap-12">
-          {/* 이미지 업로드 섹션 */}
           {/* 이미지 업로드 섹션 */}
           <div className="flex w-[400px] flex-col">
             <div className="w-full flex justify-center mb-4">
@@ -56,12 +60,29 @@ const UploadPage: React.FC = () => {
             />
 
             <div className="place-self-end text-gray-500 flex flex-row w-[70%] gap-2 mb-6">
-              <select className="w-1/2 border border-gray-300 rounded-lg px-1.5 py-2.5">
-                <option>카테고리 선택</option>
-              </select>
-              <select className="w-1/2 border border-gray-300 rounded-lg px-1.5 py-2.5">
-                <option>유형 선택</option>
-              </select>
+              <CustomDropdown
+                label={category}
+                options={[
+                  "카테고리 선택",
+                  "Beauty",
+                  "Fashion",
+                  "Food",
+                  "Lifestyle",
+                  "Tech",
+                ]}
+                onSelect={setCategory}
+              />
+              <CustomDropdown
+                label={type}
+                options={[
+                  "유형 선택",
+                  "마케팅 트렌드",
+                  "브랜드 사례",
+                  "Food",
+                  "Lifestyle",
+                ]}
+                onSelect={setType}
+              />
             </div>
 
             <textarea

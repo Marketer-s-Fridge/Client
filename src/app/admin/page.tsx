@@ -1,8 +1,12 @@
-import AdminHeader from "@/components/adminHeader";
+"use client"
+import AdminHeader from "@/components/admin/adminHeader";
 import Image from "next/image";
 import React from "react";
+import { useRouter } from "next/navigation";
 
 export default function DashboardPage() {
+  const router = useRouter(); // ✅ 라우터 훅 사용
+
   return (
     <div className="bg-white">
       <AdminHeader />
@@ -10,7 +14,10 @@ export default function DashboardPage() {
         {/* Sidebar */}
         <aside className=" bg-[#f9f9f9] border-r border-gray-200 py-20 px-4 space-y-10 text-sm w-[15%]">
           <ul className="space-y-9 font-bold">
-            <li className="flex items-center gap-3.5">
+            <li
+              className="flex items-center gap-3.5 cursor-pointer"
+              onClick={() => router.push("admin/contentsUpload")} // ✅ 클릭 시 이동
+            >
               <Image
                 alt="콘텐츠 업로드"
                 src="/icons/admin/upload.png"
@@ -20,7 +27,7 @@ export default function DashboardPage() {
               ></Image>
               콘텐츠 업로드
             </li>
-            <li className="flex items-center gap-3.5">
+            <li className="flex items-center gap-3.5 cursor-pointer">
               <Image
                 alt="콘텐츠 관리"
                 src="/icons/admin/menu.png"
@@ -30,7 +37,7 @@ export default function DashboardPage() {
               ></Image>{" "}
               콘텐츠 관리
             </li>
-            <li className="flex items-center gap-3.5">
+            <li className="flex items-center gap-3.5 cursor-pointer">
               <Image
                 alt="임시 저장 리스트"
                 src="/icons/admin/archive.png"
@@ -40,7 +47,7 @@ export default function DashboardPage() {
               ></Image>{" "}
               임시 저장 리스트
             </li>
-            <li className="flex items-center gap-3.5">
+            <li className="flex items-center gap-3.5 cursor-pointer">
               <Image
                 alt="업로드 에약"
                 src="/icons/admin/clock.png"
@@ -50,7 +57,7 @@ export default function DashboardPage() {
               ></Image>{" "}
               업로드 예약
             </li>
-            <li className="flex items-center gap-3.5">
+            <li className="flex items-center gap-3.5 cursor-pointer">
               <Image
                 alt="문의 답변 관리"
                 src="/icons/admin/mdi_comment-question-outline.png"
@@ -60,7 +67,7 @@ export default function DashboardPage() {
               ></Image>
               문의 답변 관리
             </li>
-            <li className="flex items-center gap-3.5">
+            <li className="flex items-center gap-3.5 cursor-pointer">
               <Image
                 alt="통계 및 분석"
                 src="/icons/admin/entypo_bar-graph.png"
