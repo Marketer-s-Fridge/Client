@@ -8,7 +8,7 @@ export default function DashboardPage() {
       <AdminHeader />
       <div className="min-h-screen flex bg-white">
         {/* Sidebar */}
-        <aside className="w-60 bg-[#f9f9f9] border-r border-gray-200 py-20 px-4 space-y-10 text-sm">
+        <aside className=" bg-[#f9f9f9] border-r border-gray-200 py-20 px-4 space-y-10 text-sm w-[15%]">
           <ul className="space-y-9 font-bold">
             <li className="flex items-center gap-3.5">
               <Image
@@ -74,11 +74,11 @@ export default function DashboardPage() {
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 p-10 bg-white">
+        <main className="flex-1 pl-10 pr-[15%] bg-white">
           {/* Summary */}
 
-          <div className="grid grid-cols-3 items-center justify-center self-center gap-4 text-center text-lg font-semibold my-20">
-            <div>
+          <div className=" grid grid-cols-3 items-center justify-center self-center gap-4 text-center text-xl font-semibold my-[8%]">
+            <div className="">
               게시물 수<div className="text-red-500 text-3xl mt-1">435</div>
             </div>
             <div>
@@ -97,36 +97,47 @@ export default function DashboardPage() {
             <div>
               <h2 className="text-xl font-bold mb-4">최근 업로드</h2>
               <ul className="space-y-3 text-sm">
-                <li>
-                  <span className="font-bold">Lifestyle</span> 효과적인
-                  의사소통을 위한 비언어적 신호{" "}
-                  <span className="float-right">2025.05.16</span>
-                </li>
-                <li>
-                  <span className="font-bold">Food</span> 맛있고 건강한 채식
-                  요리 레시피 10가지{" "}
-                  <span className="float-right">2025.05.12</span>
-                </li>
-                <li>
-                  <span className="font-bold">Lifestyle</span> 건강한 머리카락을
-                  위한 헤어케어 팁{" "}
-                  <span className="float-right">2025.05.07</span>
-                </li>
-                <li>
-                  <span className="font-bold">Fashion</span> 패션 스타일링:개인
-                  맞춤형 옷차림의 중요성{" "}
-                  <span className="float-right">2025.05.05</span>
-                </li>
-                <li>
-                  <span className="font-bold">Lifestyle</span>{" "}
-                  마인드풀니스:현대인의 스트레스 해소 비법{" "}
-                  <span className="float-right">2025.04.29</span>
-                </li>
-                <li>
-                  <span className="font-bold">Lifestyle</span>{" "}
-                  마인드풀니스:현대인의 스트레스 해소 비법{" "}
-                  <span className="float-right">2025.04.22</span>
-                </li>
+                {[
+                  {
+                    category: "Lifestyle",
+                    title: "효과적인 의사소통을 위한 비언어적 신호",
+                    date: "2025.05.16",
+                  },
+                  {
+                    category: "Food",
+                    title: "맛있고 건강한 채식 요리 레시피 10가지",
+                    date: "2025.05.12",
+                  },
+                  {
+                    category: "Lifestyle",
+                    title: "건강한 머리카락을 위한 헤어케어 팁",
+                    date: "2025.05.07",
+                  },
+                  {
+                    category: "Fashion",
+                    title: "패션 스타일링: 개인 맞춤형 옷차림의 중요성",
+                    date: "2025.05.05",
+                  },
+                  {
+                    category: "Lifestyle",
+                    title: "마인드풀니스: 현대인의 스트레스 해소 비법",
+                    date: "2025.04.29",
+                  },
+                  {
+                    category: "Lifestyle",
+                    title: "마인드풀니스: 현대인의 스트레스 해소 비법",
+                    date: "2025.04.22",
+                  },
+                ].map((item, index) => (
+                  <li
+                    key={index}
+                    className="grid grid-cols-[100px_1fr_auto] items-center gap-3"
+                  >
+                    <span className="font-bold">{item.category}</span>
+                    <span className="truncate">{item.title}</span>
+                    <span className="text-xs text-gray-500">{item.date}</span>
+                  </li>
+                ))}
               </ul>
             </div>
 
