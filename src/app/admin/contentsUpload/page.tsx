@@ -56,7 +56,7 @@ const UploadPage: React.FC = () => {
               className="w-full border-b border-gray-300 focus:outline-none focus:border-black mb-6 pb-1.5 sm:text-xl placeholder:text-gray-400"
             />
 
-            <div className="place-self-end text-gray-500 flex flex-row w-[70%] gap-2 mb-6">
+            <div className="place-self-end text-gray-500 flex flex-row w-[60%] gap-2 mb-6">
               <CustomDropdown
                 label={category}
                 options={[

@@ -29,7 +29,7 @@ export default function CustomDropdown({
       {/* 드롭다운 버튼 */}
       <div
         onClick={() => setIsOpen((prev) => !prev)}
-        className="flex items-center justify-between w-full px-4 py-2 border-b border-gray-300 focus:outline-none cursor-pointer z-20 relative bg-white"
+        className="flex items-center justify-between w-full px-4 py-2 border rounded-lg border-gray-300 focus:outline-none cursor-pointer z-20 relative bg-white"
       >
         <span>{selected}</span>
         <ChevronDown className="w-4 h-4" />
