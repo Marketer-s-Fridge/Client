@@ -41,6 +41,9 @@ const UploadPage: React.FC = () => {
                 />
               ))}
             </div>
+            <button className="self-end bg-gray-600 text-white px-6 py-3 mt-10 rounded cursor-pointer">
+              이미지 업로드
+            </button>
           </div>
 
           <div className="flex-1">
@@ -82,33 +85,35 @@ const UploadPage: React.FC = () => {
               />
             </div>
 
-            <textarea
-              placeholder="콘텐츠 내용 작성"
-              className="w-full aspect-[4/3] border border-gray-300 rounded p-4 resize-none mb-2"
-            />
-            <div className="text-right text-sm text-gray-500">0 / 1000</div>
+            <view className="relative">
+              <textarea
+                placeholder="콘텐츠 내용 작성"
+                className="w-full aspect-[4/3] border rounded-lg border-gray-300 p-4 resize-none mb-2"
+              />
+              <div className="absolute right-3 bottom-5 text-right text-sm text-gray-500">
+                0 / 1000
+              </div>
+            </view>
+            <div className="flex gap-4 mt-5 justify-between">
+              <button
+                onClick={() => setShowStatusModal(true)}
+                className="border border-gray-400 px-6 py-3 rounded cursor-pointer"
+              >
+                임시 저장
+              </button>
+              <div className="flex gap-3">
+                <button
+                  className="bg-gray-600 text-white px-6 py-3 rounded cursor-pointer"
+                  onClick={() => setShowBookingPopup(true)}
+                >
+                  업로드 예약
+                </button>
+                <button className="bg-[#FF4545] text-white px-6 py-3 rounded font-bold cursor-pointer">
+                  업로드
+                </button>
+              </div>
+            </div>
           </div>
-        </div>
-
-        <div className="flex justify-end gap-4 mt-10">
-          <button className="bg-gray-600 text-white px-6 py-3 rounded cursor-pointer">
-            이미지 업로드
-          </button>
-          <button
-            onClick={() => setShowStatusModal(true)}
-            className="border border-gray-400 px-6 py-3 rounded cursor-pointer"
-          >
-            임시 저장
-          </button>
-          <button
-            className="bg-gray-600 text-white px-6 py-3 rounded cursor-pointer"
-            onClick={() => setShowBookingPopup(true)}
-          >
-            업로드 예약
-          </button>
-          <button className="bg-[#FF4545] text-white px-6 py-3 rounded font-bold cursor-pointer">
-            업로드
-          </button>
         </div>
 
         {showBookingPopup && (
