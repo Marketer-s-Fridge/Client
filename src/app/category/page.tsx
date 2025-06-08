@@ -126,7 +126,7 @@ export default function Page() {
         <SearchInput showInstagramButton={false} />
 
         {/* 카테고리 아이콘들 */}
-        <div className="flex flex-wrap justify-center mt-7 mb-3 sm:mt-14 sm:mb-6 gap-1 sm:gap-4 md:gap-6">
+        <div className="flex justify-center mt-7 mb-3 sm:mt-14 sm:mb-6 gap-1 sm:gap-4 md:gap-6">
           {categories.map((cat) => {
             const isSelected =
               selectedCategory === null || selectedCategory === cat.name;
@@ -144,8 +144,8 @@ export default function Page() {
                 <div
                   className={`flex items-center justify-center transition-all duration-300 ${
                     isSelected
-                      ? "w-17 h-17 sm:w-26 sm:h-26 md:w-30 md:h-30 lg:w-40 lg:h-40 "
-                      : "w-15 h-15 sm:w-22 sm:h-22 md:w-27.5 md:h-27.5 lg:w-35 lg:h-35 opacity-80"
+                      ? "w-20 h-20 sm:w-26 sm:h-26 md:w-30 md:h-30 lg:w-40 lg:h-40 "
+                      : "w-17.5 h-17.5 sm:w-22 sm:h-22 md:w-27.5 md:h-27.5 lg:w-35 lg:h-35 opacity-80"
                   }`}
                 >
                   <Image
@@ -164,7 +164,7 @@ export default function Page() {
 
       {/* 카드 리스트 */}
       <section className="bg-white w-full max-w-screen-xl mx-auto px-10 lg:px-17 py-10 sm:py-16">
-        <div className="grid grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-6">
           {mockContents.map((item) => (
             <div key={item.id} className="w-full">
               <div className="relative aspect-[3/4] w-full rounded-lg overflow-hidden bg-gray-100">

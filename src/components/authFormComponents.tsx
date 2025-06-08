@@ -22,7 +22,8 @@ export const AuthHeader: React.FC<AuthHeaderProps> = ({
   );
 };
 
-interface TextInputProps {
+// components/authFormComponents.tsx
+export interface TextInputProps {
   label: string;
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -30,6 +31,9 @@ interface TextInputProps {
   placeholder?: string;
   required?: boolean;
   className?: string;
+  error?: string;
+  rightButtonText?: string; // 버튼 텍스트
+  onRightButtonClick?: () => void; // 버튼 핸들러
 }
 
 export const TextInput: React.FC<TextInputProps> = ({
@@ -40,20 +44,42 @@ export const TextInput: React.FC<TextInputProps> = ({
   placeholder,
   required = false,
   className = "",
+  error,
+  rightButtonText,
+  onRightButtonClick,
 }) => {
   return (
-    <div className="w-7/9 mx-auto flex items-center ">
-      <label className="text-[13px] w-28 font-semibold whitespace-nowrap">
-        {label}
-        {required && <span className="text-red-500 ml-1">*</span>}
-      </label>
-      <input
-        type={type}
-        value={value}
-        onChange={onChange}
-        placeholder={placeholder}
-        className={`text-[13px] flex-1 border border-gray-400 rounded px-3 py-2 ${className}`}
-      />
+    <div className="w-7/9 mx-auto flex flex-col">
+      <div className="flex items-center gap-2">
+        <label className="text-[14.5px] w-28 font-semibold whitespace-nowrap">
+          {label}
+          {required && <span className="text-red-500 ml-1">*</span>}
+        </label>
+
+        <input
+          type={type}
+          value={value}
+          onChange={onChange}
+          placeholder={placeholder}
+          className={`text-[13px] flex-1 border ${
+            error ? "border-red-500" : "border-gray-400"
+          } rounded px-3 py-2 ${className}`}
+        />
+
+        {rightButtonText && (
+          <button
+            type="button"
+            onClick={onRightButtonClick}
+            className="text-[13px] bg-gray-200 rounded px-3 py-2"
+          >
+            {rightButtonText}
+          </button>
+        )}
+      </div>
+
+      {error && (
+        <p className="text-red-500 text-xs mt-1 ml-31">{error}</p> // ❗label 너비 w-28 맞춰서 들여쓰기
+      )}
     </div>
   );
 };

@@ -37,12 +37,13 @@ export default function HomePage() {
               />
             ))}
           </div>
+          
         </div>
       </section>
 
       {/* 인기 콘텐츠 + 에디터 픽 */}
       <section className="bg-white py-10 px-[5%] sm:px-10 md:px-20">
-        <div className="max-w-[1024px] mx-auto grid grid-cols-2 md:grid-cols-2 gap-10">
+        <div className="max-w-[1024px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-10">
           {/* 인기 콘텐츠 */}
           <div className="flex flex-col">
             <h3 className="text-lg font-bold mb-4">이번주 인기 콘텐츠</h3>

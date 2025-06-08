@@ -9,17 +9,30 @@ const FindPwdPage: React.FC = () => {
   const [name, setName] = useState("");
   const [userId, setUserId] = useState("");
   const [email, setEmail] = useState("");
+  const [notFound, setNotFound] = useState(false);
+  const [foundAccount, setFoundAccount] = useState(true);
+
   const router = useRouter();
 
-  const handleSubmit = () => {
-    // 간단한 유효성 검사
+  const handleFindAccount = () => {
+    // 유효성 검사
     if (!name.trim() || !userId.trim() || !email.trim()) {
       alert("모든 항목을 입력해주세요.");
       return;
     }
 
-    // 모든 항목이 입력되었을 경우
-    router.push("./findPwd/resetPwd");
+    // 예시: 올바른 계정
+    const isMatch =
+      name === "테스트" &&
+      userId === "test" &&
+      email === "test@gmail.com";
+
+    if (isMatch) {
+      setFoundAccount(true);
+      router.push("./findPwd/resetPwd"); // ✅ 다음 단계로 이동
+    } else {
+      setFoundAccount(false);
+    }
   };
 
   return (
@@ -61,8 +74,31 @@ const FindPwdPage: React.FC = () => {
             required
           />
 
-          <SubmitButton text="다음 단계" onClick={handleSubmit} />
+          <SubmitButton text="다음 단계" onClick={handleFindAccount} />
         </form>
+
+        {/* 회원정보 없음 */}
+        {foundAccount === false && (
+          <div className="mt-10 text-center">
+            <p className="text-base text-black font-medium">
+              일치하는 회원 정보가 없습니다.
+            </p>
+            <div className="mt-6 flex gap-4 justify-center">
+              <button
+                className="border bg-[#FF4545] text-white font-semibold py-2 px-6 rounded-lg cursor-pointer"
+                onClick={() => router.push("/find-password")}
+              >
+                아이디 찾기
+              </button>
+              <button
+                className="border border-[#FF4545] text-[#FF4545] font-semibold py-2 px-8 rounded-lg cursor-pointer"
+                onClick={() => router.push("/register")}
+              >
+                회원가입
+              </button>
+            </div>
+          </div>
+        )}
       </main>
     </div>
   );
