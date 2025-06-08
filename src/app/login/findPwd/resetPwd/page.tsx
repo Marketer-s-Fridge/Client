@@ -8,7 +8,7 @@ import ConfirmModal from "@/components/confirmModal";
 const ResetPwdPage: React.FC = () => {
   const [pwd, setPwd] = useState("");
   const [newPwd, setNewPwd] = useState("");
-  const [confirmPwd, setConfirmPwd] = useState("");
+  const [confirmPwd] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
 
   const [pwdError, setPwdError] = useState("");
