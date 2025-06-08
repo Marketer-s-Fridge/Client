@@ -34,8 +34,13 @@ export interface TextInputProps {
   error?: string;
   rightButtonText?: string; // 버튼 텍스트
   onRightButtonClick?: () => void; // 버튼 핸들러
-}
 
+  // 🔽 추가된 커스터마이징 인자
+  rounded?: string; // ex) "rounded-full", "rounded-[8px]"
+  borderColor?: string; // ex) "border-gray-300"
+  textColor?: string; // ex) "text-gray-900"
+  bgColor?: string; // ex) "bg-white"
+}
 export const TextInput: React.FC<TextInputProps> = ({
   label,
   value,
@@ -47,6 +52,10 @@ export const TextInput: React.FC<TextInputProps> = ({
   error,
   rightButtonText,
   onRightButtonClick,
+  rounded = "rounded", // 기본값
+  borderColor = "border-gray-400",
+  textColor = "text-gray-900",
+  bgColor = "bg-white",
 }) => {
   return (
     <div className="w-7/9 mx-auto flex flex-col">
@@ -61,9 +70,9 @@ export const TextInput: React.FC<TextInputProps> = ({
           value={value}
           onChange={onChange}
           placeholder={placeholder}
-          className={`text-[13px] flex-1 border ${
-            error ? "border-red-500" : "border-gray-400"
-          } rounded px-3 py-2 ${className}`}
+          className={`text-[13px] flex-1 border ${textColor} ${bgColor} ${
+            error ? "border-red-500" : borderColor
+          } ${rounded} px-3 py-2 ${className}`}
         />
 
         {rightButtonText && (
@@ -78,7 +87,7 @@ export const TextInput: React.FC<TextInputProps> = ({
       </div>
 
       {error && (
-        <p className="text-red-500 text-xs mt-1 ml-31">{error}</p> // ❗label 너비 w-28 맞춰서 들여쓰기
+        <p className="text-red-500 text-xs mt-1 ml-31">{error}</p>
       )}
     </div>
   );
