@@ -4,23 +4,24 @@ import AdminHeader from "@/components/admin/adminHeader";
 import React, { useState } from "react";
 import AdminCategoryBar from "../../../components/admin/adminCategoryBar";
 import CustomDropdown from "@/components/admin/customDropdown";
+import BookingUploadPopup from "@/components/admin/bookingUploadPopup";
+import StatusSelectModal from "@/components/admin/statusSelectModal";
 
 const UploadPage: React.FC = () => {
   const [category, setCategory] = useState("카테고리 선택");
   const [type, setType] = useState("유형 선택");
-
+  const [showBookingPopup, setShowBookingPopup] = useState(false); // ✅ 팝업 열림 여부 state
+  const [showStatusModal, setShowStatusModal] = useState(false);
+  const [status, setStatus] = useState(""); // 선택된 상태 저장용
 
   return (
     <div className="bg-white min-h-screen">
       <AdminHeader />
 
-      {/* ✅ 카테고리 바 컴포넌트로 교체 */}
       <AdminCategoryBar title="콘텐츠 업로드" />
 
       <main className=" mx-auto px-[10%] sm:px-[15%] py-12">
-        {/* 콘텐츠 등록 */}
         <div className="flex flex-col lg:flex-row gap-12">
-          {/* 이미지 업로드 섹션 */}
           <div className="flex w-[400px] flex-col">
             <div className="w-full flex justify-center mb-4">
               <img
@@ -30,7 +31,6 @@ const UploadPage: React.FC = () => {
               />
             </div>
 
-            {/* 썸네일 리스트 */}
             <div className="w-full flex gap-1">
               {[...Array(6)].map((_, i) => (
                 <img
@@ -43,16 +43,13 @@ const UploadPage: React.FC = () => {
             </div>
           </div>
 
-          {/* 텍스트 입력 섹션 */}
           <div className="flex-1">
-            {/* 제목 */}
             <input
               type="text"
               placeholder="제목"
               className="w-full border-b border-gray-400 focus:outline-none focus:border-black mb-6 pb-1.5 sm:text-2xl placeholder:text-gray-400"
             />
 
-            {/* 부제목 */}
             <input
               type="text"
               placeholder="부제목"
@@ -93,21 +90,48 @@ const UploadPage: React.FC = () => {
           </div>
         </div>
 
-        {/* 버튼 영역 */}
         <div className="flex justify-end gap-4 mt-10">
-          <button className="bg-gray-600 text-white px-6 py-3 rounded">
+          <button className="bg-gray-600 text-white px-6 py-3 rounded cursor-pointer">
             이미지 업로드
           </button>
-          <button className="border border-gray-400 px-6 py-3 rounded">
+          <button
+            onClick={() => setShowStatusModal(true)}
+            className="border border-gray-400 px-6 py-3 rounded cursor-pointer"
+          >
             임시 저장
           </button>
-          <button className="bg-gray-600 text-white px-6 py-3 rounded">
+          <button
+            className="bg-gray-600 text-white px-6 py-3 rounded cursor-pointer"
+            onClick={() => setShowBookingPopup(true)}
+          >
             업로드 예약
           </button>
-          <button className="bg-[#FF4545] text-white px-6 py-3 rounded font-bold">
+          <button className="bg-[#FF4545] text-white px-6 py-3 rounded font-bold cursor-pointer">
             업로드
           </button>
         </div>
+
+        {showBookingPopup && (
+          <BookingUploadPopup
+            onConfirm={() => {
+              // 확인 버튼 눌렀을 때 실행할 로직
+              console.log("예약 업로드 확인됨");
+              setShowBookingPopup(false);
+            }}
+            onClose={() => setShowBookingPopup(false)}
+          />
+        )}
+        {showStatusModal && (
+          <StatusSelectModal
+            defaultStatus={status}
+            onClose={() => setShowStatusModal(false)}
+            onSave={(selected) => {
+              setStatus(selected);
+              setShowStatusModal(false);
+              console.log("✅ 선택된 상태:", selected);
+            }}
+          />
+        )}
       </main>
     </div>
   );
