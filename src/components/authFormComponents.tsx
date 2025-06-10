@@ -53,7 +53,7 @@ export const TextInput: React.FC<TextInputProps> = ({
   rightButtonText,
   onRightButtonClick,
   rounded = "rounded", // 기본값
-  borderColor = "border-gray-400",
+  borderColor = "border-[#C2C2C2]",
   textColor = "text-gray-900",
   bgColor = "bg-white",
 }) => {
