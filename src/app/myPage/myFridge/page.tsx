@@ -83,7 +83,7 @@ export default function MyFridgePage() {
   return (
     <div>
       <Header />
-      <div className="max-w-screen-xl mx-auto px-[10%] py-8">
+      <div className=" px-[10%] sm:px-[17%] py-8">
         <h1 className="text-lg sm:text-2xl font-bold mb-4">MY 냉장고</h1>
 
         <div className="flex flex-wrap gap-2 mb-6">
@@ -113,20 +113,18 @@ export default function MyFridgePage() {
                   height={489} // 400 * 11 / 9
                   className="w-full h-full object-cover rounded-lg"
                 />
-                {content.liked && (
-                  <Image
-                    src="/icons/redheart.png"
-                    alt=""
-                    width={10}
-                    height={10}
-                    className="w-4 h-4 absolute right-1.5 bottom-1.5"
-                  ></Image>
-                )}
               </div>
               <div className="flex flex-row justify-between items-center">
-                <p className="mx-1 mt-2 text-[10px] sm:text-sm font-semibold leading-snug line-clamp-2">
+                <p className="mx-1 mt-2 text-[10px] sm:text-sm font-semibold leading-snug line-clamp-2 justify-between">
                   {content.title}
                 </p>
+                <Image
+                  src="/icons/redheart.png"
+                  alt=""
+                  width={10}
+                  height={10}
+                  className="w-4 h-4 right-1.5 bottom-1.5"
+                ></Image>
               </div>
             </div>
           ))}
