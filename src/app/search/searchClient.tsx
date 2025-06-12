@@ -5,8 +5,8 @@ import { useSearchParams } from "next/navigation";
 import SearchInput from "@/components/searchInput";
 import ScrollToTopButton from "@/components/scrollToTopButton";
 import CategoryTabBar from "@/components/categoryTabBar";
-import Image from "next/image";
 import Pagination from "@/components/pagination";
+import CardGrid from "@/components/cardGrid";
 
 const mockContents = Array.from({ length: 6 }).map((_, i) => ({
   id: i,
@@ -26,6 +26,12 @@ export default function SearchClient() {
   const [selectedSort, setSelectedSort] = useState("최신순");
   const [selectedCategory, setSelectedCategory] = useState("전체");
   const [currentPage, setCurrentPage] = useState(1);
+  const [likedItems, setLikedItems] = useState<number[]>([]);
+  const toggleLike = (id: number) => {
+    setLikedItems((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+    );
+  };
 
   return (
     <>
@@ -44,37 +50,14 @@ export default function SearchClient() {
       />
 
       {/* 카드 리스트 */}
-      <section className="w-4/7 max-w-screen-lg mx-auto px-4 sm:px-6 md:px-8 py-12">
+      <section className="px-[10%] md:px-[22.5%] py-12">
         <h2 className="text-xl font-bold mb-6">‘{query}’ 검색 결과</h2>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-10">
-          {mockContents.map((item) => (
-            <div key={item.id} className="w-full">
-              <div className="aspect-[6/7] w-full rounded-lg overflow-hidden bg-gray-100">
-                <Image
-                  src="/icons/rectangle-gray.png"
-                  alt={item.title}
-                  width={300}
-                  height={350}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="pt-2 px-1 text-sm font-semibold truncate flex items-center justify-between">
-                {item.title}
-                <button>
-                  <Image
-                    src="/icons/grayheart.png"
-                    alt="찜하기"
-                    width={16}
-                    height={16}
-                    className="w-4 h-4 cursor-pointer"
-                  />
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-
+        <CardGrid
+          items={mockContents}
+          columns={3}
+          likedItems={likedItems}
+          onToggleLike={toggleLike}
+        />
         {/* 페이지네이션 */}
         <Pagination
           currentPage={currentPage}

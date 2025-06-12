@@ -1,13 +1,14 @@
 "use client";
 
 import React, { useState } from "react";
-import Image from "next/image";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import Pagination from "@/components/pagination";
 import ScrollToTopButton from "@/components/scrollToTopButton";
+import CardGrid from "@/components/cardGrid";
 
 const categories = ["전체", "Beauty", "Fashion", "Food", "Lifestyle", "Tech"];
+
 
 const contents = [
   {
@@ -79,18 +80,24 @@ const contents = [
 export default function MyFridgePage() {
   const [selectedCategory, setSelectedCategory] = useState("전체");
   const [currentPage, setCurrentPage] = useState(1);
+  const [likedItems, setLikedItems] = useState<number[]>([]);
+  const toggleLike = (id: number) => {
+    setLikedItems((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+    );
+  };
 
   return (
     <div>
       <Header />
-      <div className="max-w-screen-xl mx-auto px-35 py-8">
-        <h1 className="text-2xl font-bold mb-4">MY 냉장고</h1>
+      <div className=" px-[10%] sm:px-[17%] py-8">
+        <h1 className="text-lg sm:text-2xl font-bold mb-4">MY 냉장고</h1>
 
         <div className="flex flex-wrap gap-2 mb-6">
           {categories.map((cat) => (
             <button
               key={cat}
-              className={`px-4 py-1.5 rounded-full border text-xs ${
+              className={`cursor-pointer px-2 py-1 sm:px-4 sm:py-1.5 rounded-full border text-[10px] sm:text-xs ${
                 selectedCategory === cat
                   ? "bg-red-500 text-white"
                   : "bg-white text-black border-gray-300"
@@ -102,31 +109,12 @@ export default function MyFridgePage() {
           ))}
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10">
-          {contents.map((content) => (
-            <div key={content.id} className="relative">
-              <div className="aspect-[9/11] w-full">
-                <Image
-                  src="/icons/rectangle-gray.png"
-                  alt={content.title}
-                  width={400}
-                  height={489} // 400 * 11 / 9
-                  className="w-full h-full object-cover rounded-lg"
-                />
-              </div>
-              <div className="flex flex-row justify-between items-center">
-                <p className="mt-2 text-sm font-medium leading-snug line-clamp-2">
-                  {content.title}
-                </p>
-                {content.liked && (
-                  <div className="bottom-2 right-2">
-                    <span className="text-red-500 text-xl">❤️</span>
-                  </div>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
+        <CardGrid
+          items={contents}
+          columns={4}
+          likedItems={likedItems}
+          onToggleLike={toggleLike}
+        />
         <Pagination
           currentPage={currentPage}
           totalPages={5}

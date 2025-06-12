@@ -5,6 +5,7 @@ import ConfirmModal from "@/components/confirmModal";
 import Header from "@/components/header";
 import React, { useState } from "react";
 import { useEffect } from "react";
+import { TextInput } from "@/components/authFormComponents";
 
 export default function EmailJoinPage() {
   const [email, setEmail] = useState("");
@@ -73,6 +74,7 @@ export default function EmailJoinPage() {
     agreements.provide,
     agreements.collect,
     agreements.marketing,
+    agreements.all, // ✅ 추가!
   ]);
 
   // ✅ "모두 동의하기" 클릭 시 나머지 필수 전체 반영
@@ -93,96 +95,61 @@ export default function EmailJoinPage() {
         <div className="w-full max-w-[550px]">
           <AuthHeader />
           <form className="w-full flex flex-col gap-6 text-sm">
-            <InputRow label="이메일주소" required>
-              <div className="flex gap-2 w-full">
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="flex-1 border border-gray-400 rounded px-3 py-2 text-[13px]"
-                />
-                <button
-                  type="button"
-                  className="bg-gray-200 text-[13px] px-3 py-2 rounded cursor-pointer"
-                >
-                  인증번호 전송
-                </button>
-              </div>
-              {errors.email && (
-                <p className="text-[11px] text-red-500 mt-1">
-                  올바른 이메일 주소를 입력해주세요.
-                </p>
-              )}
-            </InputRow>
+            <TextInput
+              required
+              label="이메일주소"
+              type="text"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              error={errors.email ? "올바른 이메일 주소를 입력해주세요." : ""}
+              rightButtonText="인증번호 전송"
+              onRightButtonClick={() => alert("인증번호 전송!")}
+            />
 
-            <InputRow label="인증번호" required>
-              <div className="flex gap-2 w-full">
-                <input
-                  type="text"
-                  value={code}
-                  onChange={(e) => setCode(e.target.value)}
-                  className="flex-1 border border-gray-400 rounded px-3 py-2 text-[13px]"
-                />
-                <button
-                  type="button"
-                  className="bg-gray-200 text-[13px] px-3 py-2 rounded"
-                >
-                  인증 완료
-                </button>
-              </div>
-              {errors.code && (
-                <p className="text-[11px] text-red-500 mt-1">
-                  인증번호를 다시 확인해주세요.
-                </p>
-              )}
-            </InputRow>
+            <TextInput
+              required
+              label="인증번호"
+              type="text"
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
+              error={errors.code ? "인증번호를 다시 확인해주세요." : ""}
+              rightButtonText="인증 완료"
+              onRightButtonClick={() => alert("인증 완료!")}
+            />
 
-            <InputRow label="아이디" required>
-              <input
-                type="text"
-                value={id}
-                onChange={(e) => setId(e.target.value)}
-                className="w-full border border-gray-400 rounded px-3 py-2 text-[13px]"
-              />
-              {errors.id && (
-                <p className="text-[11px] text-red-500 mt-1">
-                  이미 사용중인 아이디입니다.
-                </p>
-              )}
-            </InputRow>
+            <TextInput
+              required
+              label="아이디"
+              type="text"
+              value={id}
+              onChange={(e) => setId(e.target.value)}
+              error={errors.id ? "이미 사용중인 아이디입니다." : ""}
+            />
 
-            <InputRow label="닉네임" required>
-              <input
-                type="text"
-                value={nickname}
-                onChange={(e) => setNickname(e.target.value)}
-                className="w-full border border-gray-400 rounded px-3 py-2 text-[13px]"
-              />
-              {errors.nickname && (
-                <p className="text-[11px] text-red-500 mt-1">
-                  중복된 닉네임입니다.
-                </p>
-              )}
-            </InputRow>
+            <TextInput
+              required
+              label="닉네임"
+              type="text"
+              value={nickname}
+              onChange={(e) => setNickname(e.target.value)}
+              error={errors.nickname ? "중복된 닉네임입니다." : ""}
+            />
 
-            <InputRow label="이름" required>
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="w-full border border-gray-400 rounded px-3 py-2 text-[13px]"
-              />
-            </InputRow>
+            <TextInput
+              required
+              label="이름"
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
 
-            <InputRow label="휴대폰">
-              <input
-                type="text"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="- 없이 숫자만"
-                className="w-full border border-gray-400 rounded px-3 py-2 text-[13px]"
-              />
-            </InputRow>
+            <TextInput
+              label="휴대폰"
+              type="text"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="- 없이 숫자만"
+            />
 
             <InputRow label="생년월일">
               <div className="flex gap-2 w-full">
@@ -196,6 +163,7 @@ export default function EmailJoinPage() {
                     <option key={y}>{y}</option>
                   ))}
                 </select>
+
                 <select
                   value={birth.month}
                   onChange={(e) =>
@@ -208,6 +176,7 @@ export default function EmailJoinPage() {
                     <option key={m}>{String(m).padStart(2, "0")}</option>
                   ))}
                 </select>
+
                 <select
                   value={birth.day}
                   onChange={(e) => setBirth({ ...birth, day: e.target.value })}
@@ -221,34 +190,29 @@ export default function EmailJoinPage() {
               </div>
             </InputRow>
 
-            <InputRow label="비밀번호" required>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full border border-gray-400 rounded px-3 py-2 text-[13px]"
-              />
-              {errors.password && (
-                <p className="text-[11px] text-red-500 mt-1">
-                  비밀번호는 영문, 숫자, 특수문자를 모두 포함한 8~20자리를
-                  입력해주세요.
-                </p>
-              )}
-            </InputRow>
+            <TextInput
+              required
+              label="비밀번호"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              error={
+                errors.password
+                  ? "비밀번호는 영문, 숫자, 특수문자를 모두 포함한 8~20자리를 입력해주세요."
+                  : ""
+              }
+            />
 
-            <InputRow label="비밀번호 확인" required>
-              <input
-                type="password"
-                value={passwordCheck}
-                onChange={(e) => setPasswordCheck(e.target.value)}
-                className="w-full border border-gray-400 rounded px-3 py-2 text-[13px]"
-              />
-              {errors.passwordCheck && (
-                <p className="text-[11px] text-red-500 mt-1">
-                  비밀번호를 다시 확인해주세요.
-                </p>
-              )}
-            </InputRow>
+            <TextInput
+              required
+              label="비밀번호 확인"
+              type="password"
+              value={passwordCheck}
+              onChange={(e) => setPasswordCheck(e.target.value)}
+              error={
+                errors.passwordCheck ? "비밀번호를 다시 확인해주세요." : ""
+              }
+            />
 
             {/* 동의 체크박스 */}
             <div className="w-7/9 place-self-center mt-6 border-gray-200 pt-6 space-y-2 text-sm">
@@ -339,10 +303,9 @@ export default function EmailJoinPage() {
           </form>
         </div>
       </div>
-      <ConfirmModal
-        isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
-      ><p>회원가입이 완료되었습니다.</p></ConfirmModal>
+      <ConfirmModal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
+        <p>회원가입이 완료되었습니다.</p>
+      </ConfirmModal>
     </div>
   );
 }

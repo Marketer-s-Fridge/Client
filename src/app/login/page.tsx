@@ -16,8 +16,6 @@ const LoginPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
-  // const [input3, onChangeInput3] = useState("");
-
   const router = useRouter();
 
   return (
@@ -118,13 +116,24 @@ const LoginPage: React.FC = () => {
           <SubmitButton text="로그인" onClick={() => setShowConfirm(true)} />
 
           <div className="flex justify-center gap-4 text-[11px] text-[#757575] mb-10 mt-3">
-            <button onClick={() => router.push("/signUp")}>회원가입</button>
+            <button
+              onClick={() => router.push("/signUp")}
+              className="cursor-pointer"
+            >
+              회원가입
+            </button>
             <span>|</span>
-            <button onClick={() => router.push("/login/findId")}>
+            <button
+              onClick={() => router.push("/login/findId")}
+              className="cursor-pointer"
+            >
               아이디 찾기
             </button>
             <span>|</span>
-            <button onClick={() => router.push("/login/findPwd")}>
+            <button
+              onClick={() => router.push("/login/findPwd")}
+              className="cursor-pointer"
+            >
               비밀번호 찾기
             </button>
           </div>
@@ -171,7 +180,7 @@ const LoginPage: React.FC = () => {
       </div>
 
       <ConfirmModal isOpen={showConfirm} onClose={() => setShowConfirm(false)}>
-      <p>마케터의 냉장고에 오신 걸 환영합니다!</p>
+        <p>마케터의 냉장고에 오신 걸 환영합니다!</p>
       </ConfirmModal>
     </div>
   );

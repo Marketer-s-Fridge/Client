@@ -8,7 +8,7 @@ const InquiryDetailPage: React.FC = () => {
     <div className="flex flex-col bg-white">
       <Header />
       <main className="w-full flex justify-center bg-white text-[#1D1D1D] px-4">
-        <div className="w-full max-w-[800px] mt-20">
+        <div className="w-full px-[5%] lg:px-[22.5%] mt-20">
           {/* 날짜 + 상태 */}
           <div className="flex justify-between">
             <span className="text-base">2025-05-02</span>

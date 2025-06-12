@@ -42,7 +42,7 @@ export default function MyContact() {
         </div>
 
         {/* 테이블 */}
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto text-[10px] sm:text-[13px]">
           <table className="w-full text-center border-t">
             <thead className="border-b-2 border-t-2 border-black">
               <tr className="h-10">

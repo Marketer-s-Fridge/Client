@@ -1,41 +1,91 @@
-import AdminHeader from "@/components/adminHeader";
+"use client"
+import AdminHeader from "@/components/admin/adminHeader";
+import Image from "next/image";
 import React from "react";
+import { useRouter } from "next/navigation";
 
 export default function DashboardPage() {
+  const router = useRouter(); // ✅ 라우터 훅 사용
+
   return (
     <div className="bg-white">
       <AdminHeader />
       <div className="min-h-screen flex bg-white">
         {/* Sidebar */}
-        <aside className="w-60 bg-[#f9f9f9] border-r border-gray-200 py-18 px-4 space-y-8 text-sm">
-          <ul className="space-y-7 font-bold">
-            <li className="flex items-center gap-2">
-              <span>📤</span> 콘텐츠 업로드
+        <aside className=" bg-[#f9f9f9] border-r border-gray-200 py-20 px-4 space-y-10 text-sm w-[15%]">
+          <ul className="space-y-9 font-bold">
+            <li
+              className="flex items-center gap-3.5 cursor-pointer"
+              onClick={() => router.push("admin/contentsUpload")} // ✅ 클릭 시 이동
+            >
+              <Image
+                alt="콘텐츠 업로드"
+                src="/icons/admin/upload.png"
+                width={30}
+                height={30}
+                className="w-5 aspect-square"
+              ></Image>
+              콘텐츠 업로드
             </li>
-            <li className="flex items-center gap-2">
-              <span>🗂</span> 콘텐츠 관리
+            <li className="flex items-center gap-3.5 cursor-pointer">
+              <Image
+                alt="콘텐츠 관리"
+                src="/icons/admin/menu.png"
+                width={30}
+                height={30}
+                className="w-5 aspect-square"
+              ></Image>{" "}
+              콘텐츠 관리
             </li>
-            <li className="flex items-center gap-2">
-              <span>🕒</span> 임시 저장 리스트
+            <li className="flex items-center gap-3.5 cursor-pointer">
+              <Image
+                alt="임시 저장 리스트"
+                src="/icons/admin/archive.png"
+                width={30}
+                height={30}
+                className="w-5 aspect-square"
+              ></Image>{" "}
+              임시 저장 리스트
             </li>
-            <li className="flex items-center gap-2">
-              <span>📅</span> 업로드 예약
+            <li className="flex items-center gap-3.5 cursor-pointer">
+              <Image
+                alt="업로드 에약"
+                src="/icons/admin/clock.png"
+                width={30}
+                height={30}
+                className="w-5 aspect-square"
+              ></Image>{" "}
+              업로드 예약
             </li>
-            <li className="flex items-center gap-2">
-              <span>📨</span> 문의 답변 관리
+            <li className="flex items-center gap-3.5 cursor-pointer">
+              <Image
+                alt="문의 답변 관리"
+                src="/icons/admin/mdi_comment-question-outline.png"
+                width={30}
+                height={30}
+                className="w-5 aspect-square"
+              ></Image>
+              문의 답변 관리
             </li>
-            <li className="flex items-center gap-2">
-              <span>📊</span> 통계 및 분석
+            <li className="flex items-center gap-3.5 cursor-pointer">
+              <Image
+                alt="통계 및 분석"
+                src="/icons/admin/entypo_bar-graph.png"
+                width={30}
+                height={30}
+                className="w-5 aspect-square"
+              ></Image>
+              통계 및 분석
             </li>
           </ul>
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 p-10 bg-white">
+        <main className="flex-1 pl-10 pr-[15%] bg-white">
           {/* Summary */}
 
-          <div className="grid grid-cols-3 items-center justify-center self-center gap-4 text-center text-lg font-semibold my-20">
-            <div>
+          <div className=" grid grid-cols-3 items-center justify-center self-center gap-4 text-center text-xl font-semibold my-[8%]">
+            <div className="">
               게시물 수<div className="text-red-500 text-3xl mt-1">435</div>
             </div>
             <div>
@@ -54,36 +104,47 @@ export default function DashboardPage() {
             <div>
               <h2 className="text-xl font-bold mb-4">최근 업로드</h2>
               <ul className="space-y-3 text-sm">
-                <li>
-                  <span className="font-bold">Lifestyle</span> 효과적인
-                  의사소통을 위한 비언어적 신호{" "}
-                  <span className="float-right">2025.05.16</span>
-                </li>
-                <li>
-                  <span className="font-bold">Food</span> 맛있고 건강한 채식
-                  요리 레시피 10가지{" "}
-                  <span className="float-right">2025.05.12</span>
-                </li>
-                <li>
-                  <span className="font-bold">Lifestyle</span> 건강한 머리카락을
-                  위한 헤어케어 팁{" "}
-                  <span className="float-right">2025.05.07</span>
-                </li>
-                <li>
-                  <span className="font-bold">Fashion</span> 패션 스타일링:개인
-                  맞춤형 옷차림의 중요성{" "}
-                  <span className="float-right">2025.05.05</span>
-                </li>
-                <li>
-                  <span className="font-bold">Lifestyle</span>{" "}
-                  마인드풀니스:현대인의 스트레스 해소 비법{" "}
-                  <span className="float-right">2025.04.29</span>
-                </li>
-                <li>
-                  <span className="font-bold">Lifestyle</span>{" "}
-                  마인드풀니스:현대인의 스트레스 해소 비법{" "}
-                  <span className="float-right">2025.04.22</span>
-                </li>
+                {[
+                  {
+                    category: "Lifestyle",
+                    title: "효과적인 의사소통을 위한 비언어적 신호",
+                    date: "2025.05.16",
+                  },
+                  {
+                    category: "Food",
+                    title: "맛있고 건강한 채식 요리 레시피 10가지",
+                    date: "2025.05.12",
+                  },
+                  {
+                    category: "Lifestyle",
+                    title: "건강한 머리카락을 위한 헤어케어 팁",
+                    date: "2025.05.07",
+                  },
+                  {
+                    category: "Fashion",
+                    title: "패션 스타일링: 개인 맞춤형 옷차림의 중요성",
+                    date: "2025.05.05",
+                  },
+                  {
+                    category: "Lifestyle",
+                    title: "마인드풀니스: 현대인의 스트레스 해소 비법",
+                    date: "2025.04.29",
+                  },
+                  {
+                    category: "Lifestyle",
+                    title: "마인드풀니스: 현대인의 스트레스 해소 비법",
+                    date: "2025.04.22",
+                  },
+                ].map((item, index) => (
+                  <li
+                    key={index}
+                    className="grid grid-cols-[100px_1fr_auto] items-center gap-3"
+                  >
+                    <span className="font-bold">{item.category}</span>
+                    <span className="truncate">{item.title}</span>
+                    <span className="text-xs text-gray-500">{item.date}</span>
+                  </li>
+                ))}
               </ul>
             </div>
 

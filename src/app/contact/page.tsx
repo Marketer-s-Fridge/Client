@@ -3,6 +3,8 @@
 import React, { useState } from "react";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
+import Banner from "@/components/banner";
+import CustomDropdown from "@/components/admin/customDropdown";
 
 export default function ContactPage() {
   const [category, setCategory] = useState("");
@@ -12,6 +14,7 @@ export default function ContactPage() {
   const [agreed, setAgreed] = useState(false);
 
   const isFormValid = category && title && email && content && agreed;
+  const categoryOptions = ["버그 신고", "기능 제안", "기타"];
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,35 +29,31 @@ export default function ContactPage() {
       <Header />
 
       {/* 상단 배너 */}
-      <section className="main-red py-10 text-center">
-        <h1 className="text-white text-2xl font-bold">문의하기</h1>
-      </section>
+
+      <Banner title="문의하기"></Banner>
 
       {/* 폼 섹션 */}
-      <main className="max-w-[800px] mx-auto px-4 py-12 relative">
+      <main className="max-w-[800px] mx-auto px-[5%] sm:px-4 py-12 relative">
         <form className="space-y-6" onSubmit={handleSubmit}>
           {/* 분류 */}
-          <div className="flex flex-col md:flex-row md:items-center">
-            <label className="w-[100px] text-lg text-gray-800 font-bold">
+          <div className="flex flex-col md:flex-row md:items-center gap-y-2">
+            <label className="w-[100px] text-medium sm:text-lg text-gray-800 font-bold">
               분류
             </label>
-            <select
-              className="flex-1 border border-gray-300 rounded px-3 py-2 text-sm"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-            >
-              <option value="" disabled>
-                문의유형을 선택하세요
-              </option>
-              <option value="bug">버그 신고</option>
-              <option value="feature">기능 제안</option>
-              <option value="etc">기타</option>
-            </select>
+
+            <div className="flex-1">
+              <CustomDropdown
+                options={categoryOptions}
+                label={category || "문의유형을 선택하세요"}
+                onSelect={(value) => setCategory(value)}
+                buttonClassName="rounded-md"
+              />
+            </div>
           </div>
 
           {/* 제목 */}
-          <div className="flex flex-col md:flex-row md:items-center">
-            <label className="w-[100px] text-lg text-gray-800 font-bold">
+          <div className="flex flex-col md:flex-row md:items-center gap-y-2">
+            <label className="w-[100px] text-medium sm:text-lg text-gray-800 font-bold">
               제목
             </label>
             <input
@@ -67,8 +66,8 @@ export default function ContactPage() {
           </div>
 
           {/* 이메일 */}
-          <div className="flex flex-col md:flex-row md:items-center">
-            <label className="w-[100px] text-lg text-gray-800 font-bold">
+          <div className="flex flex-col md:flex-row md:items-center gap-y-2">
+            <label className="w-[100px] text-medium sm:text-lg text-gray-800 font-bold">
               이메일
             </label>
             <input
@@ -81,8 +80,8 @@ export default function ContactPage() {
           </div>
 
           {/* 파일첨부 */}
-          <div className="flex flex-col md:flex-row md:items-center">
-            <label className="w-[100px] text-lg text-gray-800 font-bold">
+          <div className="flex flex-col md:flex-row md:items-center gap-y-2">
+            <label className="w-[100px] text-medium sm:text-lg text-gray-800 font-bold">
               파일첨부
             </label>
             <div className="flex-1 flex items-center gap-3">
@@ -97,8 +96,8 @@ export default function ContactPage() {
           </div>
 
           {/* 내용 */}
-          <div className="flex flex-col md:flex-row md:items-start">
-            <label className="w-[100px] text-lg text-gray-800 font-bold">
+          <div className="flex flex-col md:flex-row md:items-start gap-y-2">
+            <label className="w-[100px] text-medium sm:text-lg text-gray-800 font-bold">
               내용
             </label>
             <div className="flex-1 relative">
@@ -115,15 +114,42 @@ export default function ContactPage() {
               </div>
 
               {/* 개인정보 수집 동의 */}
-              <div className="flex items-start mt-4 text-sm">
-                <input
-                  type="checkbox"
-                  id="agree"
-                  className="mr-2.5 mt-1 w-4 h-4"
-                  checked={agreed}
-                  onChange={(e) => setAgreed(e.target.checked)}
-                />
-                <label htmlFor="agree" className="text-gray-500">
+              {/* 개인정보 수집 동의 */}
+              <div className="flex items-start mt-4 text-sm gap-2">
+                <div className="relative w-5 h-5">
+                  <input
+                    type="checkbox"
+                    id="agree"
+                    checked={agreed}
+                    onChange={(e) => setAgreed(e.target.checked)}
+                    className="absolute w-full h-full opacity-0 cursor-pointer z-10"
+                  />
+                  <div
+                    className={`w-5 h-5 rounded border-2 ${
+                      agreed
+                        ? "bg-[#FF4545] border-[#FF4545]"
+                        : "border-gray-300"
+                    } flex items-center justify-center transition-colors`}
+                  >
+                    {agreed && (
+                      <svg
+                        className="w-3 h-3 text-white"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth={3}
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                    )}
+                  </div>
+                </div>
+
+                <label htmlFor="agree" className="text-gray-500 leading-5">
                   개인정보 수집 및 이용에 동의합니다. [필수]
                   <a href="#" className="underline ml-2">
                     이용약관 보기

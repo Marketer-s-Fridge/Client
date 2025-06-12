@@ -22,7 +22,8 @@ export const AuthHeader: React.FC<AuthHeaderProps> = ({
   );
 };
 
-interface TextInputProps {
+// components/authFormComponents.tsx
+export interface TextInputProps {
   label: string;
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -30,8 +31,16 @@ interface TextInputProps {
   placeholder?: string;
   required?: boolean;
   className?: string;
-}
+  error?: string;
+  rightButtonText?: string; // 버튼 텍스트
+  onRightButtonClick?: () => void; // 버튼 핸들러
 
+  // 🔽 추가된 커스터마이징 인자
+  rounded?: string; // ex) "rounded-full", "rounded-[8px]"
+  borderColor?: string; // ex) "border-gray-300"
+  textColor?: string; // ex) "text-gray-900"
+  bgColor?: string; // ex) "bg-white"
+}
 export const TextInput: React.FC<TextInputProps> = ({
   label,
   value,
@@ -40,20 +49,46 @@ export const TextInput: React.FC<TextInputProps> = ({
   placeholder,
   required = false,
   className = "",
+  error,
+  rightButtonText,
+  onRightButtonClick,
+  rounded = "rounded", // 기본값
+  borderColor = "border-[#C2C2C2]",
+  textColor = "text-gray-900",
+  bgColor = "bg-white",
 }) => {
   return (
-    <div className="w-7/9 mx-auto flex items-center ">
-      <label className="text-[13px] w-28 font-semibold whitespace-nowrap">
-        {label}
-        {required && <span className="text-red-500 ml-1">*</span>}
-      </label>
-      <input
-        type={type}
-        value={value}
-        onChange={onChange}
-        placeholder={placeholder}
-        className={`text-[13px] flex-1 border border-gray-400 rounded px-3 py-2 ${className}`}
-      />
+    <div className="w-7/9 mx-auto flex flex-col">
+      <div className="flex items-center gap-2">
+        <label className="text-[14.5px] w-28 font-semibold whitespace-nowrap">
+          {label}
+          {required && <span className="text-red-500 ml-1">*</span>}
+        </label>
+
+        <input
+          type={type}
+          value={value}
+          onChange={onChange}
+          placeholder={placeholder}
+          className={`text-[13px] flex-1 border ${textColor} ${bgColor} ${
+            error ? "border-red-500" : borderColor
+          } ${rounded} px-3 py-2 ${className}`}
+        />
+
+        {rightButtonText && (
+          <button
+            type="button"
+            onClick={onRightButtonClick}
+            className="text-[13px] bg-gray-200 rounded px-3 py-2"
+          >
+            {rightButtonText}
+          </button>
+        )}
+      </div>
+
+      {error && (
+        <p className="text-red-500 text-xs mt-1 ml-31">{error}</p>
+      )}
     </div>
   );
 };
@@ -108,25 +143,37 @@ export const ConsentCheckbox: React.FC<ConsentCheckboxProps> = ({
     {required ? `[필수] ${label}` : `[선택] ${label}`}
   </label>
 );
-
 interface SubmitButtonProps {
   text: string;
   onClick: () => void;
   fullWidth?: boolean;
+  variant?: "solid" | "outline";
+  color?: string;
+  className?: string; // ⬅️ 추가!
 }
 
 export const SubmitButton: React.FC<SubmitButtonProps> = ({
   text,
   onClick,
   fullWidth = true,
-}) => (
-  <button
-    type="button" // 🔴 반드시 명시
-    onClick={onClick}
-    className={`cursor-pointer bg-[#FF4545] text-white ${
-      fullWidth ? "w-9/11" : "px-6"
-    } py-3 rounded-lg text-[17px] font-bold place-self-center`}
-  >
-    {text}
-  </button>
-);
+  variant = "solid",
+  color = "#FF4545",
+  className = "",
+}) => {
+  const baseStyle = "cursor-pointer text-[17px] font-bold py-3 rounded-lg place-self-center";
+  const widthStyle = fullWidth ? "w-9/11" : "px-6";
+  const solidStyle = `bg-[${color}] text-white`;
+  const outlineStyle = `bg-white border border-[${color}] text-[${color}]`;
+  const variantStyle = variant === "outline" ? outlineStyle : solidStyle;
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`${baseStyle} ${widthStyle} ${variantStyle} ${className}`}
+    >
+      {text}
+    </button>
+  );
+};
+

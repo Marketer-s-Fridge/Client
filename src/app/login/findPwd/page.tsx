@@ -2,68 +2,105 @@
 
 import Header from "@/components/header";
 import React, { useState } from "react";
-import { TextInput, SubmitButton } from "@/components/authFormComponents";
-import { useRouter } from "next/navigation"; // ✅ App Router 전용
+import { useRouter } from "next/navigation";
+import {
+  AuthHeader,
+  TextInput,
+  SubmitButton,
+} from "@/components/authFormComponents";
 
 const FindPwdPage: React.FC = () => {
   const [name, setName] = useState("");
   const [userId, setUserId] = useState("");
   const [email, setEmail] = useState("");
+  const [foundAccount, setFoundAccount] = useState(true);
+
   const router = useRouter();
 
-  const handleSubmit = () => {
-    // 간단한 유효성 검사
+  const handleFindAccount = () => {
     if (!name.trim() || !userId.trim() || !email.trim()) {
       alert("모든 항목을 입력해주세요.");
       return;
     }
 
-    // 모든 항목이 입력되었을 경우
-    router.push("./findPwd/resetPwd");
+    const isMatch =
+      name === "테스트" &&
+      userId === "test" &&
+      email === "test@gmail.com";
+
+    if (isMatch) {
+      setFoundAccount(true);
+      router.push("/login/findPwd/resetPwd");
+    } else {
+      setFoundAccount(false);
+    }
   };
 
   return (
-    <div className="bg-white min-h-screen flex flex-col">
+    <div className="bg-white">
       <Header />
 
-      <main className="flex flex-1 flex-col items-center justify-start pt-[15vh] px-4">
-        {/* 타이틀 */}
-        <h1 className="text-[36px] font-bold mb-4">비밀번호 찾기</h1>
-
-        {/* 서브텍스트 */}
-        <p className="text-[16px] text-center text-gray-700 leading-relaxed mb-10 whitespace-pre-line">
-          비밀번호가 기억나지 않으세요?
-          {"\n"}걱정 마세요, 금방 찾아드릴게요.
-        </p>
-
-        {/* 입력 필드 */}
-        <form className="w-3/8 flex flex-col gap-6 items-center">
-          <TextInput
-            label="이름"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
+      <div className="flex justify-center bg-white py-[16vh] px-4">
+        <div className="w-full max-w-[480px] flex flex-col items-center">
+          {/* ✅ 타이틀 + 설명 */}
+          <AuthHeader
+            title="비밀번호 찾기"
+            description={`비밀번호가 기억나지 않으세요?
+걱정 마세요, 금방 찾아드릴게요.`}
           />
 
-          <TextInput
-            label="아이디"
-            value={userId}
-            onChange={(e) => setUserId(e.target.value)}
-            type="text"
-            required
-          />
+          {/* ✅ 입력 필드 */}
+          <div className="w-full flex flex-col items-center gap-y-4 mb-6">
+            <TextInput
+              label="이름"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+            <TextInput
+              label="아이디"
+              value={userId}
+              onChange={(e) => setUserId(e.target.value)}
+              required
+            />
+            <TextInput
+              label="이메일주소"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
 
-          <TextInput
-            label="이메일주소"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            type="email"
-            required
-          />
+          {/* ✅ 버튼 */}
+          <SubmitButton text="다음 단계" onClick={handleFindAccount} />
 
-          <SubmitButton text="다음 단계" onClick={handleSubmit} />
-        </form>
-      </main>
+          {/* ✅ 실패 메시지 + 버튼 */}
+          {foundAccount === false && (
+            <div className="w-full mt-10 text-center">
+              <p className="text-base text-black font-medium">
+                일치하는 회원 정보가 없습니다.
+              </p>
+              <div className="mt-10 flex gap-4 w-full">
+                <SubmitButton
+                  text="아이디 찾기"
+                  onClick={() => router.push("/login/findId")}
+                  fullWidth={false}
+                  className="flex-1"
+                />
+                <SubmitButton
+                  text="회원가입"
+                  onClick={() => router.push("/signUp")}
+                  variant="outline"
+                  color="#FF4545"
+                  fullWidth={false}
+                  className="flex-1"
+                />
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 };

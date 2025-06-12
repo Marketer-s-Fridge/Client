@@ -10,7 +10,7 @@ const SignUpPage: React.FC = () => {
   const router = useRouter(); // ✅ 라우터 객체 사용
 
   return (
-    <div className="bg-white min-h-screen">
+    <div className="bg-white">
       <Header />
       <main className="flex justify-center px-4 py-16">
         <div className="w-full max-w-[550px]">

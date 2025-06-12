@@ -1,0 +1,34 @@
+/* src/styles/bookingUploadPopup.css */
+.react-calendar {
+  border: none;
+  font-family: inherit;
+  width: 100%;
+}
+
+.react-calendar__tile {
+  background: none;
+  border: none;
+  padding: 10px 6.6667px;
+  text-align: center;
+  color: #000; /* 기본 날짜: 검정 */
+}
+
+.react-calendar__tile--active {
+  background-color: #ff4545 !important;
+  color: white !important;
+  border-radius: 9999px;
+}
+
+.react-calendar__tile:enabled:hover:not(.react-calendar__tile--active) {
+  background-color: #ffe5e5 !important;
+  color: #ff4545 !important;
+  border-radius: 9999px;
+}
+
+.react-calendar__month-view__days__day--neighboringMonth {
+  color: #d1d5db !important; /* 지난달/다음달 날짜 */
+}
+
+.react-calendar__month-view__weekdays__weekday abbr {
+  text-decoration: none;
+}

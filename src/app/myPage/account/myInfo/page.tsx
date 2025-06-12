@@ -1,136 +1,126 @@
 "use client";
 
 import Header from "@/components/header";
-import React from "react";
-// import { useRouter } from "next/navigation";
+import React, { useState } from "react";
+import { TextInput } from "@/components/authFormComponents";
 import AccountSidebar from "@/components/accountSideBar";
 import Banner from "@/components/banner";
 import Image from "next/image";
 import ConfirmModal from "@/components/confirmModal";
-import { useState } from "react";
 
 export default function AccountPage() {
   const [modalOpen, setModalOpen] = useState(false);
 
-  // const router = useRouter();
+  const [name, setName] = useState("");
+  const [nickname, setNickname] = useState("");
+  const [phone, setPhone] = useState("");
 
   return (
     <div className="bg-white min-h-screen">
       <Header />
-
-      {/* 상단 배너 */}
       <Banner title="계정 관리" />
 
-      {/* 본문 영역 */}
       <main className="max-w-[1024px] mx-auto h-full grid grid-cols-1 md:grid-cols-[280px_1fr]">
-        {/* 왼쪽 프로필 영역 */}
         <AccountSidebar />
 
-        {/* 오른쪽 정보 수정 영역 */}
-        <section className="relative pt-14 px-6 md:px-20 pb-20">
-          <h3 className="text-xl font-bold mb-8">회원정보 수정</h3>
-          <div className="flex flex-col gap-3.5 text-sm">
-            {/* 계정 */}
-            <div className="flex flex-col md:flex-row md:items-center gap-2">
-              <label className="md:w-28 text-gray-700 font-semibold">
-                계정
-              </label>
-              <input
+        <section className="relative pt-14 h-lvh">
+          <h3 className="text-[22px] font-bold mb-13 ml-15">회원정보 수정</h3>
+
+          <div className="flex flex-col w-[75%] relative gap-5">
+            <div className="flex flex-col gap-2 text-sm">
+              {/* 계정 (readonly) */}
+              <TextInput
+                label="계정"
                 type="email"
                 value="a123456789@gmail.com"
-                disabled
-                className="w-full md:w-3/6 border border-gray-300 rounded-lg px-2 py-2"
+                onChange={() => {}}
+                rounded="rounded-lg"
+                borderColor="border-gray-300"
               />
-            </div>
 
-            {/* 간편 로그인 */}
-            <div className="md:ml-37.5 flex items-center  gap-13">
-              {/* 카카오 */}
-              <div className="flex flex-col items-center gap-1">
-                <Image
-                  src="/icons/kakao-round.png"
-                  alt="카카오"
-                  className="w-10 h-10 cursor-pointer"
-                  width={50}
-                  height={50}
-                />
-                <span className="text-[10px] text-gray-700">연결완료</span>
+              {/* 간편 로그인 */}
+              <div className="flex gap-8 ml-45 mt-1">
+                {[
+                  {
+                    name: "카카오",
+                    src: "/icons/kakao-round.png",
+                    status: "연결완료",
+                  },
+                  {
+                    name: "네이버",
+                    src: "/icons/naver-gray-round.png",
+                    status: "연결하기",
+                  },
+                  {
+                    name: "구글",
+                    src: "/icons/google-gray-round.png",
+                    status: "연결하기",
+                  },
+                ].map((sns) => (
+                  <div
+                    key={sns.name}
+                    className="flex flex-col items-center gap-1"
+                  >
+                    <Image
+                      src={sns.src}
+                      alt={sns.name}
+                      className="w-8 h-8 cursor-pointer"
+                      width={50}
+                      height={50}
+                    />
+                    <span className="text-[10px] text-gray-700">
+                      {sns.status}
+                    </span>
+                  </div>
+                ))}
               </div>
-              {/* 네이버 */}
-              <div className="flex flex-col items-center gap-1">
-                <Image
-                  src="/icons/naver-gray-round.png"
-                  alt="네이버"
-                  className="w-10 h-10 cursor-pointer"
-                  width={50}
-                  height={50}
-                />
-                <span className="text-[10px] text-gray-700">연결하기</span>
-              </div>
-              {/* 구글 */}
-              <div className="flex flex-col items-center gap-1">
-                <Image
-                  src="/icons/google-gray-round.png"
-                  alt="구글"
-                  className="w-10 h-10 cursor-pointer"
-                  width={50}
-                  height={50}
-                />
-                <span className="text-[10px] text-gray-700">연결하기</span>
-              </div>
             </div>
 
-            {/* 이름 */}
-            <div className="flex flex-col md:flex-row md:items-center gap-2">
-              <label className="md:w-28 text-gray-700 font-semibold">
-                이름
-              </label>
-              <input
-                type="text"
-                placeholder="홍길동"
-                className="w-full md:w-3/6 border border-gray-300 rounded-lg px-2 py-2"
-              />
-            </div>
+            <TextInput
+              label="이름"
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="홍길동"
+              rounded="rounded-lg"
+              borderColor="border-gray-300"
+            />
 
-            {/* 닉네임 */}
-            <div className="flex flex-col md:flex-row md:items-center gap-2">
-              <label className="md:w-28 text-gray-700 font-semibold">
-                닉네임
-              </label>
-              <input
-                type="text"
-                placeholder="마케터"
-                className="w-full md:w-3/6 border border-gray-300 rounded-lg px-2 py-2"
-              />
-            </div>
+            <TextInput
+              label="닉네임"
+              type="text"
+              value={nickname}
+              onChange={(e) => setNickname(e.target.value)}
+              placeholder="마케터"
+              rounded="rounded-lg"
+              borderColor="border-gray-300"
+            />
 
-            {/* 휴대폰 */}
-            <div className="flex flex-col md:flex-row md:items-center gap-2">
-              <label className="md:w-28 text-gray-700 font-semibold">
-                휴대폰
-              </label>
-              <input
-                type="text"
-                placeholder="010-1234-5678"
-                className="w-full md:w-3/6 border border-gray-300 rounded-lg px-2 py-2"
-              />
-            </div>
+            <TextInput
+              label="휴대폰"
+              type="text"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="010-1234-5678"
+              rounded="rounded-lg"
+              borderColor="border-gray-300"
+            />
           </div>
 
-          <div className="absolute right-15 bottom-20 flex justify-end">
+          <div className="absolute right-15 bottom-20">
             <button
               onClick={() => setModalOpen(true)}
-              className="bg-red-500 text-white rounded-full px-5 py-1.5 text-[12px] font-semibold hover:bg-red-600"
+              className="bg-red-500 text-white rounded-full px-5 py-1.5 text-[12px] cursor-pointer font-semibold hover:bg-red-600"
             >
               변경 완료
             </button>
           </div>
         </section>
       </main>
-      <ConfirmModal
-        isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
-      >회원정보가 변경되었습니다.</ConfirmModal>
+
+      <ConfirmModal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
+        회원정보가 변경되었습니다.
+      </ConfirmModal>
     </div>
   );
 }

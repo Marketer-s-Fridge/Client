@@ -26,7 +26,7 @@ export default function CardNewsDetailPage() {
       <Header />
 
       {/* 상단 카테고리 탭 */}
-      <nav className="flex border-b border-gray-200 text-sm font-medium mt-1 overflow-x-auto no-scrollbar gap-5 px-4 sm:px-6 xl:px-63">
+      <nav className="flex border-b border-gray-200 text-sm font-medium mt-1 overflow-x-auto no-scrollbar gap-5 px-[10%] md:px-[5%] lg:px-[17%]">
         {categories.map((cat) => (
           <span
             key={cat}
