@@ -15,17 +15,12 @@ interface CardGridProps {
   onToggleLike: (id: number) => void;
 }
 
-export default function CardGrid({ items, columns = 3 }: CardGridProps) {
-  const [likedItems, setLikedItems] = useState<boolean[]>(
-    new Array(items.length).fill(false)
-  );
-
-  const toggleLike = (index: number) => {
-    const updatedLikes = [...likedItems];
-    updatedLikes[index] = !updatedLikes[index];
-    setLikedItems(updatedLikes);
-  };
-
+export default function CardGrid({
+  items,
+  columns = 3,
+  likedItems,
+  onToggleLike,
+}: CardGridProps) {
   return (
     <div
       className={`grid gap-x-6 gap-y-10`}
@@ -46,10 +41,10 @@ export default function CardGrid({ items, columns = 3 }: CardGridProps) {
           </div>
           <div className="pt-2 px-1 text-wrap text-[10px] sm:text-sm font-semibold truncate flex items-center justify-between">
             {item.title}
-            <button onClick={() => toggleLike(index)}>
+            <button onClick={() => onToggleLike(index)}>
               <Image
                 src={
-                  likedItems[index]
+                  likedItems.includes(item.id)
                     ? "/icons/redheart.png"
                     : "/icons/grayheart.png"
                 }
