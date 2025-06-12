@@ -33,7 +33,7 @@ export default function Page() {
         categories={["All", "food", "lifestyle", "beauty", "tech", "fashion"]}
         selected={selectedCategory}
         onSelect={setSelectedCategory}
-        sortOptions={["최신순", "오래된순"]}
+        sortOptions={["최신순", "오래된순", "인기순", "조회순"]}
         selectedSort={selectedSort}
         onSortChange={setSelectedSort}
       />

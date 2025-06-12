@@ -1,7 +1,8 @@
 "use client";
 
 import React from "react";
-import Image from "next/image";
+// import Image from "next/image";
+import CategoryDropdown from "./categoryDropdown";
 
 type CategoryTabBarProps = {
   categories: string[];
@@ -41,24 +42,12 @@ export default function CategoryTabBar({
         </div>
 
         {/* 정렬 드롭다운 */}
-        <div className="relative text-xs sm:text-sm text-gray-700 self-center ">
-          <select
-            value={selectedSort}
-            onChange={(e) => onSortChange(e.target.value)}
-            className="appearance-none bg-transparent pr-6 pl-1 cursor-pointer"
-          >
-            {sortOptions.map((opt) => (
-              <option key={opt} value={opt}>
-                {opt}
-              </option>
-            ))}
-          </select>
-          <Image
-            src="/icons/down.png"
-            alt="드롭다운 아이콘"
-            className="w-3 h-3 absolute right-1 top-1/2 -translate-y-1/2 pointer-events-none"
-            width={20}
-            height={20}
+
+        <div className="relative  text-xs sm:text-sm text-gray-700 self-center">
+          <CategoryDropdown
+            items={sortOptions}
+            selected={selectedSort}
+            onSelect={onSortChange}
           />
         </div>
       </div>
