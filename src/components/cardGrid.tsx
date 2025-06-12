@@ -1,63 +1,64 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 
 interface CardItem {
   id: number;
   title: string;
-  image?: string;
 }
 
 interface CardGridProps {
   items: CardItem[];
-  columns?: number;
+  columns?: number; // 기본 3
   likedItems: number[]; // ✅ 여기가 포인트!
   onToggleLike: (id: number) => void;
 }
 
-export default function CardGrid({
-  items,
-  columns = 3,
-  likedItems,
-  onToggleLike,
-}: CardGridProps) {
+export default function CardGrid({ items, columns = 3 }: CardGridProps) {
+  const [likedItems, setLikedItems] = useState<boolean[]>(
+    new Array(items.length).fill(false)
+  );
+
+  const toggleLike = (index: number) => {
+    const updatedLikes = [...likedItems];
+    updatedLikes[index] = !updatedLikes[index];
+    setLikedItems(updatedLikes);
+  };
+
   return (
     <div
-      className="grid gap-x-6 gap-y-10"
+      className={`grid gap-x-6 gap-y-10`}
       style={{
         gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
       }}
     >
-      {items.map((item) => (
+      {items.map((item, index) => (
         <div key={item.id} className="w-full">
-          <div className="relative aspect-[3/4] w-full rounded-lg overflow-hidden bg-gray-100">
+          <div className="aspect-[3/4] w-full rounded-lg overflow-hidden bg-gray-100">
             <Image
-              src={item.image || "/icons/rectangle-gray.png"}
+              src="/icons/rectangle-gray.png"
               alt={item.title}
               width={300}
               height={350}
               className="w-full h-full object-cover cursor-pointer"
             />
-            <button
-              onClick={() => onToggleLike(item.id)}
-              className="absolute bottom-2 right-2"
-            >
+          </div>
+          <div className="pt-2 px-1 text-wrap text-[10px] sm:text-sm font-semibold truncate flex items-center justify-between">
+            {item.title}
+            <button onClick={() => toggleLike(index)}>
               <Image
                 src={
-                  likedItems.includes(item.id)
+                  likedItems[index]
                     ? "/icons/redheart.png"
                     : "/icons/grayheart.png"
                 }
                 alt="찜하기"
-                width={20}
-                height={20}
-                className="w-5 h-5"
+                width={16}
+                height={16}
+                className="w-4 h-4 cursor-pointer"
               />
             </button>
-          </div>
-          <div className="pt-2 px-1 text-[10px] sm:text-sm font-semibold truncate flex items-center justify-between">
-            {item.title}
           </div>
         </div>
       ))}
