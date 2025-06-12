@@ -80,6 +80,7 @@ const UploadPage: React.FC = () => {
                   "Tech",
                 ]}
                 onSelect={setCategory}
+                buttonClassName="rounded-lg"
               />
               <CustomDropdown
                 label={type}
@@ -91,6 +92,8 @@ const UploadPage: React.FC = () => {
                   "Lifestyle",
                 ]}
                 onSelect={setType}
+                buttonClassName="rounded-lg"
+
               />
             </div>
 

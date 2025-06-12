@@ -26,7 +26,7 @@ const AdminCategoryBar: React.FC<AdminCategoryBarProps> = ({
       {/* Selected Button */}
       <div className="relative w-[160px]">
         <div
-          className=" flex flex-row justify-between items-center text-start px-5 py-3 bg-white cursor-pointer"
+          className=" flex flex-row justify-between items-center text-start px-3 py-3 bg-white cursor-pointer"
           onClick={() => setIsOpen((prev) => !prev)}
         >
           <span>{selected}</span>
