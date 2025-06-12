@@ -7,6 +7,7 @@ import ScrollToTopButton from "@/components/scrollToTopButton";
 import Image from "next/image";
 import Footer from "@/components/footer";
 import Pagination from "@/components/pagination";
+import CardGrid from "@/components/cardGrid"; // ✅ 새 컴포넌트 import
 
 interface Category {
   name: string;
@@ -164,41 +165,12 @@ export default function Page() {
 
       {/* 카드 리스트 */}
       <section className="bg-white w-full max-w-screen-xl mx-auto px-10 lg:px-17 py-10 sm:py-16">
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-6">
-          {mockContents.map((item) => (
-            <div key={item.id} className="w-full">
-              <div className="relative aspect-[3/4] w-full rounded-lg overflow-hidden bg-gray-100">
-                <Image
-                  src="/icons/rectangle-gray.png"
-                  alt={item.title}
-                  className="w-full h-full object-cover cursor-pointer"
-                  width={200}
-                  height={250}
-                />
-                <button
-                  onClick={() => toggleLike(item.id)}
-                  className="absolute bottom-2 right-2"
-                >
-                  <Image
-                    src={
-                      likedItems.includes(item.id)
-                        ? "/icons/redheart.png"
-                        : "/icons/grayheart.png"
-                    }
-                    alt="찜하기"
-                    className="cursor-pointer w-5 h-5"
-                    width={20}
-                    height={20}
-                  />
-                </button>
-              </div>
-              <div className="pt-2 px-1 text-[10px] sm:text-sm font-semibold flex justify-between items-start gap-2">
-                <p className="line-clamp-2 leading-snug">{item.title}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-
+        <CardGrid
+          items={mockContents}
+          columns={4}
+          likedItems={likedItems}
+          onToggleLike={toggleLike}
+        />
         {/* 페이지네이션 */}
         <Pagination
           currentPage={currentPage}
