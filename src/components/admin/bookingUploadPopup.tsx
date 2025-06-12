@@ -25,41 +25,53 @@ export const BookingUploadPopup: React.FC<BookingUploadPopupProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black/30 flex justify-center items-center z-50">
-      <div className="bg-white w-[720px] rounded-xl p-10 flex gap-6">
+      <div className="bg-white w-[720px] rounded-xl p-10 flex gap-5">
         {/* 왼쪽: 달력 */}
         <div className="flex flex-col">
-          <h2 className="text-xl font-bold mb-4">날짜 및 시간 선택</h2>
+          <h2 className="text-2xl font-bold mb-8">날짜 및 시간 선택</h2>
           <div className="flex flex-row gap-10">
-            <Calendar
-              onChange={(value) => {
-                if (value instanceof Date) {
-                  setSelectedDate(value);
+            <div className="w-1/2">
+              <Calendar
+                onChange={(value) => {
+                  if (value instanceof Date) {
+                    setSelectedDate(value);
+                  }
+                }}
+                value={selectedDate}
+                locale="ko"
+                calendarType="gregory"
+                next2Label={null}
+                prev2Label={null}
+                formatDay={(locale, date) => String(date.getDate())}
+                formatShortWeekday={(_, date) =>
+                  ["일", "월", "화", "수", "목", "금", "토"][date.getDay()]
                 }
-              }}
-              value={selectedDate}
-              locale="ko"
-              calendarType="gregory"
-              next2Label={null}
-              prev2Label={null}
-              formatShortWeekday={(_, date) =>
-                ["", "월", "화", "수", "목", "금", "토"][date.getDay()]
-              }
-            />
+                tileClassName={({ date, view }) => {
+                  if (
+                    view === "month" &&
+                    date.getTime() < new Date().setHours(0, 0, 0, 0)
+                  ) {
+                    return "past-date";
+                  }
+                  return "";
+                }}
+              />
+            </div>
 
             {/* 오른쪽: 날짜/시간 확인 및 버튼 */}
-            <div className="flex flex-col justify-between ">
-              <div className="flex flex-col gap-4">
+            <div className="flex-1 flex flex-col justify-between">
+              <div className="flex flex-col gap-4 text-gray-500">
                 <input
                   type="text"
                   readOnly
                   value={format(selectedDate, "yyyy.MM.dd", { locale: ko })}
-                  className="border-gray-300 border-1 rounded px-4 py-2 w-48"
+                  className=" border-gray-300 border-1 rounded-lg px-3 py-2.5"
                 />
                 <input
                   type="text"
                   value={selectedTime}
                   onChange={(e) => setSelectedTime(e.target.value)}
-                  className="border-gray-300 border-1 rounded px-4 py-2 w-48"
+                  className="border-gray-300 border-1 rounded-lg px-3 py-2.5"
                 />
               </div>
 
