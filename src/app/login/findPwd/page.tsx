@@ -24,9 +24,7 @@ const FindPwdPage: React.FC = () => {
     }
 
     const isMatch =
-      name === "테스트" &&
-      userId === "test" &&
-      email === "test@gmail.com";
+      name === "테스트" && userId === "test" && email === "test@gmail.com";
 
     if (isMatch) {
       setFoundAccount(true);
@@ -94,7 +92,7 @@ const FindPwdPage: React.FC = () => {
                   variant="outline"
                   color="#FF4545"
                   fullWidth={false}
-                  className="flex-1"
+                  className="flex-1 text-red-700"
                 />
               </div>
             </div>
