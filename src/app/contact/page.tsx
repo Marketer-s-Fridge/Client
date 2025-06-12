@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import Banner from "@/components/banner";
+import CustomDropdown from "@/components/admin/customDropdown";
 
 export default function ContactPage() {
   const [category, setCategory] = useState("");
@@ -13,6 +14,7 @@ export default function ContactPage() {
   const [agreed, setAgreed] = useState(false);
 
   const isFormValid = category && title && email && content && agreed;
+  const categoryOptions = ["버그 신고", "기능 제안", "기타"];
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,24 +35,20 @@ export default function ContactPage() {
       {/* 폼 섹션 */}
       <main className="max-w-[800px] mx-auto px-[5%] sm:px-4 py-12 relative">
         <form className="space-y-6" onSubmit={handleSubmit}>
-
           {/* 분류 */}
           <div className="flex flex-col md:flex-row md:items-center gap-y-2">
             <label className="w-[100px] text-medium sm:text-lg text-gray-800 font-bold">
               분류
             </label>
-            <select
-              className="flex-1 border border-gray-300 rounded px-3 py-2 text-sm"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-            >
-              <option value="" disabled>
-                문의유형을 선택하세요
-              </option>
-              <option value="bug">버그 신고</option>
-              <option value="feature">기능 제안</option>
-              <option value="etc">기타</option>
-            </select>
+
+            <div className="flex-1">
+              <CustomDropdown
+                options={categoryOptions}
+                label={category || "문의유형을 선택하세요"}
+                onSelect={(value) => setCategory(value)}
+                buttonClassName="rounded-md"
+              />
+            </div>
           </div>
 
           {/* 제목 */}
