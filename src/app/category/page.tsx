@@ -123,11 +123,11 @@ export default function Page() {
       <Header />
 
       {/* 검색 영역 */}
-      <section className="flex flex-col items-center main-red pt-10 pb-6 px-4 sm:px-6 sm:pt-20 sm:pb-6 md:px-10 lg:px-16">
+      <section className="flex flex-col items-center main-red pt-10 pb-6 px-4 sm:px-6 sm:pt-20 sm:pb-10 md:px-10 lg:px-16">
         <SearchInput showInstagramButton={false} />
 
         {/* 카테고리 아이콘들 */}
-        <div className="flex justify-center mt-7 mb-3 sm:mt-14 sm:mb-6 gap-1 sm:gap-4 md:gap-6">
+        <div className="flex justify-center mt-7 mb-3 sm:mt-14 sm:mb-6 gap-1 sm:gap-4 md:gap-9">
           {categories.map((cat) => {
             const isSelected =
               selectedCategory === null || selectedCategory === cat.name;
@@ -142,19 +142,15 @@ export default function Page() {
                 }
                 className="flex flex-col items-center text-white cursor-pointer transition-all duration-200"
               >
-                <div
-                  className={`flex items-center justify-center transition-all duration-300 ${
-                    isSelected
-                      ? "w-20 h-20 sm:w-26 sm:h-26 md:w-30 md:h-30 lg:w-40 lg:h-40 "
-                      : "w-17.5 h-17.5 sm:w-22 sm:h-22 md:w-27.5 md:h-27.5 lg:w-35 lg:h-35 opacity-80"
-                  }`}
-                >
+                <div className="w-20 h-20 sm:w-26 sm:h-26 md:w-30 md:h-30 lg:w-34 lg:h-34 flex items-center justify-center transition-all duration-300 ">
                   <Image
                     src={cat.icon}
                     alt={cat.name}
-                    className="object-contain w-full h-full"
                     width={200}
                     height={200}
+                    className={`object-contain transition-transform duration-300 ${
+                      isSelected ? "scale-100" : "scale-90 opacity-80"
+                    }`}
                   />
                 </div>
               </button>
