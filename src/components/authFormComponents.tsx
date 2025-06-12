@@ -143,25 +143,37 @@ export const ConsentCheckbox: React.FC<ConsentCheckboxProps> = ({
     {required ? `[필수] ${label}` : `[선택] ${label}`}
   </label>
 );
-
 interface SubmitButtonProps {
   text: string;
   onClick: () => void;
   fullWidth?: boolean;
+  variant?: "solid" | "outline";
+  color?: string;
+  className?: string; // ⬅️ 추가!
 }
 
 export const SubmitButton: React.FC<SubmitButtonProps> = ({
   text,
   onClick,
   fullWidth = true,
-}) => (
-  <button
-    type="button" // 🔴 반드시 명시
-    onClick={onClick}
-    className={`cursor-pointer bg-[#FF4545] text-white ${
-      fullWidth ? "w-9/11" : "px-6"
-    } py-3 rounded-lg text-[17px] font-bold place-self-center`}
-  >
-    {text}
-  </button>
-);
+  variant = "solid",
+  color = "#FF4545",
+  className = "",
+}) => {
+  const baseStyle = "cursor-pointer text-[17px] font-bold py-3 rounded-lg place-self-center";
+  const widthStyle = fullWidth ? "w-9/11" : "px-6";
+  const solidStyle = `bg-[${color}] text-white`;
+  const outlineStyle = `bg-white border border-[${color}] text-[${color}]`;
+  const variantStyle = variant === "outline" ? outlineStyle : solidStyle;
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`${baseStyle} ${widthStyle} ${variantStyle} ${className}`}
+    >
+      {text}
+    </button>
+  );
+};
+

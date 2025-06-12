@@ -35,7 +35,7 @@ export default function MyPage() {
     Math.ceil(recentlyViewedContents.length / cardsPerPage) - 1;
 
   return (
-    <div className="bg-white min-h-screen">
+    <div className="bg-white">
       <Header />
 
       {/* 👤 프로필 영역 */}
