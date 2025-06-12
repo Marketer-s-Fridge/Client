@@ -92,7 +92,7 @@ const FindPwdPage: React.FC = () => {
                   variant="outline"
                   color="#FF4545"
                   fullWidth={false}
-                  className="flex-1 text-red-700"
+                  className="flex-1 text-red-500"
                 />
               </div>
             </div>

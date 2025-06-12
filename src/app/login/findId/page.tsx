@@ -97,6 +97,7 @@ const FindIdPage: React.FC = () => {
                   fullWidth
                   variant="outline"
                   color="#FF4545"
+                  className="text-red-500"
                 />
               </div>
             </div>
