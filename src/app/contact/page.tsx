@@ -114,15 +114,42 @@ export default function ContactPage() {
               </div>
 
               {/* 개인정보 수집 동의 */}
-              <div className="flex items-start mt-4 text-sm">
-                <input
-                  type="checkbox"
-                  id="agree"
-                  className="mr-2.5 mt-1 w-4 h-4"
-                  checked={agreed}
-                  onChange={(e) => setAgreed(e.target.checked)}
-                />
-                <label htmlFor="agree" className="text-gray-500">
+              {/* 개인정보 수집 동의 */}
+              <div className="flex items-start mt-4 text-sm gap-2">
+                <div className="relative w-5 h-5">
+                  <input
+                    type="checkbox"
+                    id="agree"
+                    checked={agreed}
+                    onChange={(e) => setAgreed(e.target.checked)}
+                    className="absolute w-full h-full opacity-0 cursor-pointer z-10"
+                  />
+                  <div
+                    className={`w-5 h-5 rounded border-2 ${
+                      agreed
+                        ? "bg-[#FF4545] border-[#FF4545]"
+                        : "border-gray-300"
+                    } flex items-center justify-center transition-colors`}
+                  >
+                    {agreed && (
+                      <svg
+                        className="w-3 h-3 text-white"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth={3}
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                    )}
+                  </div>
+                </div>
+
+                <label htmlFor="agree" className="text-gray-500 leading-5">
                   개인정보 수집 및 이용에 동의합니다. [필수]
                   <a href="#" className="underline ml-2">
                     이용약관 보기
