@@ -39,9 +39,14 @@ export default function CardGrid({
               className="w-full h-full object-cover cursor-pointer"
             />
           </div>
-          <div className="pt-2 px-1 text-wrap text-[10px] sm:text-sm font-semibold truncate flex items-center justify-between">
-            {item.title}
-            <button onClick={() => onToggleLike(index)}>
+          <div className="pt-2 px-1 text-[10px] sm:text-sm font-semibold flex items-center justify-between">
+            <span className="truncate whitespace-nowrap overflow-hidden pr-2 flex-1">
+              {item.title}
+            </span>
+            <button
+              onClick={() => onToggleLike(item.id)}
+              className="flex-shrink-0"
+            >
               <Image
                 src={
                   likedItems.includes(item.id)
@@ -49,11 +54,12 @@ export default function CardGrid({
                     : "/icons/grayheart.png"
                 }
                 alt="찜하기"
-                width={15}
-                height={15}
-                className={`w-5 h-5.5 cursor-pointer ${
+                width={20}
+                height={20}
+                className={`w-4.5 h-5 cursor-pointer ${
                   likedItems.includes(item.id) ? "" : "opacity-30 grayscale"
-                }`}              />
+                }`}
+              />
             </button>
           </div>
         </div>
