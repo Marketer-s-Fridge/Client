@@ -177,7 +177,7 @@ const ContentManagementPage = () => {
         {/* 테이블 */}
         <div className="border-t-2 border-gray-500 py-3">
           {sampleData.map((item) => (
-            <div className="grid grid-cols-[40px_50px_3.9fr_1fr_1.3fr_1fr_1fr_60px_40px] gap-x-6 py-3 items-center text-sm text-gray-700">
+            <div key={item.id} className="grid grid-cols-[40px_50px_3.9fr_1fr_1.3fr_1fr_1fr_60px_40px] gap-x-6 py-3 items-center text-sm text-gray-700">
             <div className="text-center font-semibold">{item.id}</div>
             <div>
               <Image
