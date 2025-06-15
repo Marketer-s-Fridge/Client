@@ -47,7 +47,7 @@ export default function CustomDropdown({
       {isOpen && (
         <div
           className={clsx(
-            "absolute top-0 left-0 w-full rounded-lg shadow-md bg-white border border-gray-100 z-50 pt-2 pb-2",
+            "absolute top-0 left-0 w-full  bg-white border border-gray-100 z-50 pt-2 pb-2 rounded-lg shadow-lg overflow-y-auto max-h-70",
             buttonClassName
           )}
         >

@@ -88,6 +88,8 @@ export default function EmailJoinPage() {
       marketing: checked, // 선택 항목은 유지
     });
   };
+  console.log(birth); // 예시: 임시로라도 써주면 빌드 통과함
+
 
   return (
     <div className="bg-white">
