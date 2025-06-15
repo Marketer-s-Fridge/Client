@@ -112,17 +112,8 @@ const ScheduledUploadPage = () => {
   return (
     <main className="bg-white min-h-screen">
       <AdminHeader />
-      <AdminCategoryBar
-        items={[
-          "콘텐츠 업로드",
-          "콘텐츠 관리",
-          "임시 저장 리스트",
-          "업로드 예약",
-          "문의 답변 관리",
-          "통계 및 분석",
-        ]}
-        onSelect={(val) => console.log("선택된 항목:", val)}
-      />
+      <AdminCategoryBar />
+
 
       <section className="px-[10%] sm:px-[15%] py-[2%]">
         {/* 필터 & 검색 */}
