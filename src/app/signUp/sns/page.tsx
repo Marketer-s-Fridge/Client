@@ -2,7 +2,11 @@
 
 import React, { useState } from "react";
 import Header from "@/components/header";
-import { AuthHeader, SubmitButton } from "@/components/authFormComponents";
+import {
+  AuthHeader,
+  SubmitButton,
+  TextInput,
+} from "@/components/authFormComponents";
 
 const SignUpPage: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -44,18 +48,14 @@ const SignUpPage: React.FC = () => {
           <AuthHeader />
 
           {/* 이메일 입력 */}
-          <div className="w-9/11 flex flex-row items-start text-left mb-14 gap-3">
-            <label className="text-[16px] font-semibold whitespace-nowrap self-center">
-              이메일
-            </label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="kakao1234@kakao.com"
-              className="w-full border border-gray-300 rounded px-3 py-2 text-[16px]"
-            />
-          </div>
+          <TextInput
+            className="gap-10"
+            label="이메일"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="kakao1234@kakao.com"
+          />
 
           {/* 동의 체크 영역 */}
           <div className="bg-[#F5F5F5] w-9/11 rounded-[18px] px-6 py-6 mb-10 text-left text-[14px]">

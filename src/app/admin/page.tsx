@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import AdminHeader from "@/components/admin/adminHeader";
 import Image from "next/image";
 import React from "react";
@@ -27,7 +27,10 @@ export default function DashboardPage() {
               ></Image>
               콘텐츠 업로드
             </li>
-            <li className="flex items-center gap-3.5 cursor-pointer">
+            <li
+              className="flex items-center gap-3.5 cursor-pointer"
+              onClick={() => router.push("admin/contentsManagement")} // ✅ 클릭 시 이동
+            >
               <Image
                 alt="콘텐츠 관리"
                 src="/icons/admin/menu.png"
