@@ -173,7 +173,7 @@ const ScheduledUploadPage = () => {
           <div className="flex items-center gap-4 ">
             <input
               type="checkbox"
-              className="w-4 h-4 accent-red-500"
+              className="w-4 h-4 accent-gray-800"
               checked={selectedItems.length === sampleData.length}
               onChange={(e) => {
                 if (e.target.checked) {
@@ -183,13 +183,33 @@ const ScheduledUploadPage = () => {
                 }
               }}
             />
-            <button className="cursor-pointer text-sm text-gray-500">
+            <button
+              disabled={selectedItems.length === 0}
+              className={`text-sm ${
+                selectedItems.length > 0
+                  ? "text-black font-semibold cursor-pointer"
+                  : "text-gray-500"
+              }`}
+            >
               전체 업로드
             </button>
-            <button className="cursor-pointer text-sm text-gray-500">
+            <button
+              disabled={selectedItems.length === 0}
+              className={` text-sm ${
+                selectedItems.length > 0
+                  ? "text-black font-semibold cursor-pointer"
+                  : "text-gray-500"
+              }`}
+            >
               전체 삭제
             </button>
+            {selectedItems.length > 0 && (
+              <span className="text-sm text-red-500">
+                {selectedItems.length}개 선택
+              </span>
+            )}
           </div>
+
           <div className="w-[14%]">
             <CustomDropdown
               label="업로드 예정 순"
@@ -211,7 +231,7 @@ const ScheduledUploadPage = () => {
               <div className="flex justify-center w-10 h-10 content-center items-center place-items-center justify-items-center">
                 <input
                   type="checkbox"
-                  className="w-3.5 h-3.5 accent-red-500 "
+                  className="w-3.5 h-3.5 accent-gray-800 "
                   checked={selectedItems.includes(item.id)}
                   onChange={(e) => {
                     if (e.target.checked) {
