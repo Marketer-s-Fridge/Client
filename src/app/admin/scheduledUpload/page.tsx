@@ -114,7 +114,6 @@ const ScheduledUploadPage = () => {
       <AdminHeader />
       <AdminCategoryBar />
 
-
       <section className="px-[10%] sm:px-[15%] py-[2%]">
         {/* 필터 & 검색 */}
         <div className="flex flex-wrap gap-3 mb-4 justify-between ">

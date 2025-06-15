@@ -123,6 +123,8 @@ export default function EmailJoinPage() {
               type="text"
               value={id}
               onChange={(e) => setId(e.target.value)}
+              rightButtonText="중복 확인"
+              onRightButtonClick={() => alert("중복 확인 메세지 전송!")}
               error={errors.id ? "이미 사용중인 아이디입니다." : ""}
             />
 
@@ -132,6 +134,8 @@ export default function EmailJoinPage() {
               type="text"
               value={nickname}
               onChange={(e) => setNickname(e.target.value)}
+              rightButtonText="중복 확인"
+              onRightButtonClick={() => alert("중복 확인 메세지 전송!")}
               error={errors.nickname ? "중복된 닉네임입니다." : ""}
             />
 
