@@ -49,10 +49,11 @@ export default function CardGrid({
                     : "/icons/grayheart.png"
                 }
                 alt="찜하기"
-                width={16}
-                height={16}
-                className="w-4 h-4 cursor-pointer"
-              />
+                width={15}
+                height={15}
+                className={`w-5 h-5.5 cursor-pointer ${
+                  likedItems.includes(item.id) ? "" : "opacity-30 grayscale"
+                }`}              />
             </button>
           </div>
         </div>
