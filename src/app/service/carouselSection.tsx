@@ -53,14 +53,14 @@ export default function CarouselSection() {
   return (
     <section className="relative bg-white py-14 text-center">
       <div className="absolute w-full z-10 top-[12%] sm:top-[14%]">
-        <h2 className="text-[12px] sm:text-2xl font-bold text-red-500">
+        <h2 className="text-[12px] md:text-3xl font-bold text-red-500">
           콕! 찝어먹기
         </h2>
-        <p className="text-[9px] sm:text-xs text-gray-600 mt-2 sm:mt-5 sm:leading-5">
+        <p className="text-[9px] text-xs md:text-base text-gray-600 mt-2 sm:mt-5 sm:leading-5">
           마치 냉장고 앞에서 먹고 싶은 음식을 꺼내 먹듯,
           <br />
           <span className="text-red-600 font-semibold font-playfair">
-            Marketer’s Fridge
+            {`Marketer’s Fridge `}
           </span>
           에서는 당신이 필요한 순간, 원하는 인사이트만 쏙 꺼내갈 수 있습니다.
         </p>
