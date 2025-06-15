@@ -2,14 +2,14 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import clsx from "clsx"; // 선택사항: tailwind에서 조건부 class 결합에 유용
+import clsx from "clsx";
 
 interface CustomDropdownProps {
   options: string[];
   label: string;
   onSelect?: (value: string) => void;
-  className?: string; // ✅ 외부에서 스타일 조정할 수 있게
-  buttonClassName?: string; // ✅ 버튼 div에 줄 클래스
+  className?: string;
+  buttonClassName?: string;
 }
 
 export default function CustomDropdown({
@@ -17,7 +17,7 @@ export default function CustomDropdown({
   label,
   onSelect,
   className = "",
-  buttonClassName = "", // ✅ 버튼 div에 줄 클래스
+  buttonClassName = "",
 }: CustomDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState(label);
@@ -34,17 +34,17 @@ export default function CustomDropdown({
       <div
         onClick={() => setIsOpen((prev) => !prev)}
         className={clsx(
-          "flex items-center justify-between w-full px-4 py-2 border border-gray-300 focus:outline-none cursor-pointer z-20 relative bg-white",
-          buttonClassName // ✅ 외부에서 전달받은 rounded 등 적용됨
+          "flex items-center justify-between w-full px-4 py-2 border border-gray-300 bg-white cursor-pointer",
+          buttonClassName
         )}
       >
         <span>{selected}</span>
         <Image
           src="/icons/down.png"
           alt="드롭다운 열기"
-          width={20}
-          height={20}
-          className="ml-2 w-4 h-4"
+          width={16}
+          height={16}
+          className=" w-5 h-5"
         />
       </div>
 
@@ -52,39 +52,39 @@ export default function CustomDropdown({
       {isOpen && (
         <div
           className={clsx(
-            "absolute top-0 left-0 w-full  bg-white border border-gray-100 z-50 pt-2 pb-2 rounded-lg shadow-lg overflow-y-auto max-h-70",
+            "absolute top-0 left-0 w-full bg-white border border-gray-100 rounded-lg shadow-lg z-50 max-h-72 overflow-y-auto",
             buttonClassName
           )}
         >
-          {/* 현재 선택된 항목 */}
+          {/* 현재 선택된 항목 표시 */}
           <div
-            className="flex flex-1 flex-row justify-between cursor-pointer"
+            className="flex justify-between items-center px-4 py-2 cursor-pointer"
             onClick={() => setIsOpen(false)}
           >
-            <div className="px-2 my-1 mx-2 text-black rounded-md">
-              {selected}
-            </div>
+            <span>{selected}</span>
             <Image
-              alt="down"
+              alt="close"
               src="/icons/down.png"
               width={20}
               height={20}
-              className="w-5 h-5 place-self-center mr-3"
+              className="w-5 h-5"
             />
           </div>
 
-          <hr className="border-t border-gray-200 my-2 mx-2" />
+          <hr className="border-t border-gray-200 mt-1 mb-1.5 mx-2" />
 
-          {/* 나머지 옵션 */}
+          {/* 옵션 목록 */}
           {options
             .filter((opt) => opt !== selected)
             .map((opt) => (
               <div
                 key={opt}
                 onClick={() => handleSelect(opt)}
-                className="cursor-pointer px-2 py-2 mx-2 rounded-md text-gray-800 hover:bg-[#FF4545] hover:text-white transition-colors duration-150"
+                className="cursor-pointer px-2"
               >
-                {opt}
+                <div className="px-2 py-1.5 mb-2 rounded-md hover:bg-[#FF4545] hover:text-white transition-colors">
+                  {opt}
+                </div>
               </div>
             ))}
         </div>

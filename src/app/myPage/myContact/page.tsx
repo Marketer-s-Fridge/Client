@@ -6,6 +6,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Footer from "@/components/footer";
 import Pagination from "@/components/pagination";
+import CustomDropdown from "@/components/admin/customDropdown";
 
 export default function MyContact() {
   const router = useRouter();
@@ -28,16 +29,21 @@ export default function MyContact() {
         {/* 상단 요약 */}
         <div className="flex justify-between items-center mb-4">
           <p>
-            총 문의:{" "}
+            총 문의:
             <span className="text-red-500 font-semibold">
               {inquiries.length}건
             </span>
           </p>
-          <div className="relative">
-            <select className="border border-gray-400 rounded px-1 py-1">
-              <option>최신순</option>
-              <option>오래된순</option>
-            </select>
+          <div className="relative w-27">
+            <CustomDropdown
+              options={["최신순", "오래된순"]}
+              label="최신순"
+              onSelect={(value) => {
+                // TODO: 정렬 로직 연결
+                console.log("선택된 정렬:", value);
+              }}
+              buttonClassName="rounded-lg"
+            />
           </div>
         </div>
 
