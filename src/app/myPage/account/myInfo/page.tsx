@@ -36,10 +36,11 @@ export default function AccountPage() {
                 onChange={() => {}}
                 rounded="rounded-lg"
                 borderColor="border-gray-300"
+                textColor="text-gray-500"
               />
 
               {/* 간편 로그인 */}
-              <div className="flex gap-8 ml-45 mt-1">
+              <div className="flex gap-[20%] ml-[40%] mt-1">
                 {[
                   {
                     name: "카카오",
@@ -81,7 +82,6 @@ export default function AccountPage() {
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="홍길동"
               rounded="rounded-lg"
               borderColor="border-gray-300"
             />
@@ -91,7 +91,6 @@ export default function AccountPage() {
               type="text"
               value={nickname}
               onChange={(e) => setNickname(e.target.value)}
-              placeholder="마케터"
               rounded="rounded-lg"
               borderColor="border-gray-300"
             />
@@ -101,7 +100,6 @@ export default function AccountPage() {
               type="text"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              placeholder="010-1234-5678"
               rounded="rounded-lg"
               borderColor="border-gray-300"
             />

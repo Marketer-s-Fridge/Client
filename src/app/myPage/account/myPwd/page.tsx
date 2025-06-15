@@ -26,16 +26,6 @@ export default function PasswordChangePage() {
           <h3 className="text-[22px] font-bold mb-13 ml-15">비밀번호 변경</h3>
 
           <div className="flex w-[75%] flex-col gap-5 text-sm">
-            <TextInput
-              label="기존 비밀번호"
-              type="password"
-              value={currentPwd}
-              onChange={(e) => setCurrentPwd(e.target.value)}
-              rounded="rounded-lg"
-              borderColor="border-gray-300"
-              required
-            />
-
             <div>
               <TextInput
                 label="새 비밀번호"

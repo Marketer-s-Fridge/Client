@@ -27,6 +27,7 @@ const categories: Category[] = [
   { name: "Tech", icon: "/icons/icon-tech1.png" },
   { name: "Fashion", icon: "/icons/icon-fashion1.png" },
 ];
+
 const mockContents: Content[] = [
   {
     title: "셀럽들의 공항 패션 스타일",
