@@ -53,7 +53,10 @@ export default function DashboardPage() {
               ></Image>{" "}
               임시 저장 리스트
             </li>
-            <li className="flex items-center gap-3.5 cursor-pointer">
+            <li
+              className="flex items-center gap-3.5 cursor-pointer"
+              onClick={() => router.push("admin/scheduledUpload")} // ✅ 클릭 시 이동
+            >
               <Image
                 alt="업로드 에약"
                 src="/icons/admin/clock.png"
