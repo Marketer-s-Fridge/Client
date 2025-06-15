@@ -41,13 +41,12 @@ const categories = [
 export default function CarouselSection() {
   const [sliderRef] = useKeenSlider<HTMLDivElement>({
     loop: true,
-    mode: "free-snap",
+    mode: "snap", // ✅ snap으로 변경
     slides: {
       perView: 5,
       spacing: 10,
-      origin: "center", // ✅ 여기로 바꿔야 함
+      origin: "center", // ✅ origin은 유지
     },
-    renderMode: "performance",
   });
 
   return (
@@ -80,7 +79,7 @@ export default function CarouselSection() {
           {categories.map((cat, idx) => (
             <div
               key={idx}
-              className="keen-slider__slide flex justify-center"
+              className="keen-slider__slide flex justify-center min-w-[290px]"
               style={{ perspective: "1000px" }}
             >
               <div className="relative w-[290px] aspect-[3/4] rounded-xl overflow-hidden shadow-xl transition-transform duration-0 transform hover:scale-101">
