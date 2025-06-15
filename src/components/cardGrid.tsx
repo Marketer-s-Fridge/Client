@@ -28,7 +28,7 @@ export default function CardGrid({
         gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
       }}
     >
-      {items.map((item, index) => (
+      {items.map((item) => (
         <div key={item.id} className="w-full">
           <div className="aspect-[3/4] w-full rounded-lg overflow-hidden bg-gray-100">
             <Image
