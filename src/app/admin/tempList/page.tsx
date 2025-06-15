@@ -7,6 +7,7 @@ import AdminHeader from "@/components/admin/adminHeader";
 import AdminCategoryBar from "@/components/admin/adminCategoryBar";
 import Pagination from "@/components/pagination";
 import CustomDropdown from "@/components/admin/customDropdown";
+import AdminSearchInput from "@/components/admin/adminSearchInput";
 
 interface ContentItem {
   id: number;
@@ -125,24 +126,10 @@ const TempListPage = () => {
         {/* 필터 & 검색 */}
         <div className="flex flex-wrap gap-3 mb-4 justify-between ">
           {/* 검색창 */}
-          <div className="relative w-4/10">
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="검색"
-              className="border border-gray-300 rounded-lg px-3 py-1.5 w-full"
-            />
-            <button className=" absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer">
-              <Image
-                src="/icons/search.png"
-                alt="검색"
-                width={16}
-                height={16}
-                className="w-5 h-5"
-              />
-            </button>
-          </div>
+          <AdminSearchInput
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
 
           <div className="flex flex-row w-5/10 gap-2">
             <CustomDropdown

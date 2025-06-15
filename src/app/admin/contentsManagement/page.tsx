@@ -7,6 +7,7 @@ import AdminHeader from "@/components/admin/adminHeader";
 import AdminCategoryBar from "@/components/admin/adminCategoryBar";
 import Pagination from "@/components/pagination";
 import CustomDropdown from "@/components/admin/customDropdown";
+import AdminSearchInput from "@/components/admin/adminSearchInput";
 
 interface ContentItem {
   id: number;
@@ -125,24 +126,10 @@ const ContentManagementPage = () => {
         {/* 필터 & 검색 */}
         <div className="flex flex-wrap gap-3 mb-4 justify-between ">
           {/* 검색창 */}
-          <div className="relative w-4/10">
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="검색"
-              className="border border-gray-300 rounded-lg px-3 py-1.5 w-full"
-            />
-            <button className=" absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer">
-              <Image
-                src="/icons/search.png"
-                alt="검색"
-                width={16}
-                height={16}
-                className="w-5 h-5"
-              />
-            </button>
-          </div>
+          <AdminSearchInput
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
 
           <div className="flex flex-row w-5/10 gap-2">
             <CustomDropdown
@@ -177,40 +164,45 @@ const ContentManagementPage = () => {
         {/* 테이블 */}
         <div className="border-t-2 border-gray-500 py-3">
           {sampleData.map((item) => (
-            <div key={item.id} className="grid grid-cols-[40px_50px_3.9fr_1fr_1.3fr_1fr_1fr_60px_40px] gap-x-6 py-3 items-center text-sm text-gray-700">
-            <div className="text-center font-semibold">{item.id}</div>
-            <div>
-              <Image
-                src="/icons/rectangle-gray.png"
-                alt="썸네일"
-                width={40}
-                height={40}
-                className="rounded"
-              />
-            </div>
-            <div className="truncate font-semibold">{item.title}</div>
-            <div>{item.category}</div>
-            <div>{item.type}</div>
-            <div>{item.date}</div>
             <div
-              className={`text-xs ${
-                item.status === "임시저장" || item.status === "예약됨"
-                  ? "text-gray-400"
-                  : ""
-              }`}
+              key={item.id}
+              className="grid grid-cols-[40px_50px_3.9fr_1fr_1.3fr_1fr_1fr_60px_40px] gap-x-6 py-3 items-center text-sm text-gray-700"
             >
-              [{item.status}]
+              <div className="text-center font-semibold">{item.id}</div>
+              <div>
+                <Image
+                  src="/icons/rectangle-gray.png"
+                  alt="썸네일"
+                  width={40}
+                  height={40}
+                  className="rounded"
+                />
+              </div>
+              <div className="truncate font-semibold">{item.title}</div>
+              <div>{item.category}</div>
+              <div>{item.type}</div>
+              <div>{item.date}</div>
+              <div
+                className={`text-xs ${
+                  item.status === "임시저장" || item.status === "예약됨"
+                    ? "text-gray-400"
+                    : ""
+                }`}
+              >
+                [{item.status}]
+              </div>
+              <div className="flex items-center gap-3">
+                <FiEdit2 className="cursor-pointer w-4 h-4" />
+                <FiTrash2 className="cursor-pointer w-4 h-4" />
+              </div>
+              <div
+                className={`${
+                  item.visibility === "비공개" ? "text-gray-400" : ""
+                }`}
+              >
+                {item.visibility}
+              </div>
             </div>
-            <div className="flex items-center gap-3">
-              <FiEdit2 className="cursor-pointer w-4 h-4" />
-              <FiTrash2 className="cursor-pointer w-4 h-4" />
-            </div>
-            <div className={`${item.visibility === "비공개" ? "text-gray-400" : ""}`}>
-              {item.visibility}
-            </div>
-          </div>
-          
-            
           ))}
         </div>
 
