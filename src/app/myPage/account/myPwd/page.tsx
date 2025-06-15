@@ -10,7 +10,6 @@ import { TextInput } from "@/components/authFormComponents"; // 상단에 추가
 
 export default function PasswordChangePage() {
   const [modalOpen, setModalOpen] = useState(false);
-  const [currentPwd, setCurrentPwd] = useState("");
   const [newPwd, setNewPwd] = useState("");
   const [confirmPwd, setConfirmPwd] = useState("");
 
