@@ -6,6 +6,7 @@ import Header from "@/components/header";
 import React, { useState } from "react";
 import { useEffect } from "react";
 import { TextInput } from "@/components/authFormComponents";
+import CustomDropdown from "@/components/admin/customDropdown";
 
 export default function EmailJoinPage() {
   const [email, setEmail] = useState("");
@@ -104,6 +105,7 @@ export default function EmailJoinPage() {
               error={errors.email ? "올바른 이메일 주소를 입력해주세요." : ""}
               rightButtonText="인증번호 전송"
               onRightButtonClick={() => alert("인증번호 전송!")}
+              className="rounded-lg"
             />
 
             <TextInput
@@ -115,6 +117,8 @@ export default function EmailJoinPage() {
               error={errors.code ? "인증번호를 다시 확인해주세요." : ""}
               rightButtonText="인증 완료"
               onRightButtonClick={() => alert("인증 완료!")}
+              className="rounded-lg"
+
             />
 
             <TextInput
@@ -126,6 +130,8 @@ export default function EmailJoinPage() {
               rightButtonText="중복 확인"
               onRightButtonClick={() => alert("중복 확인 메세지 전송!")}
               error={errors.id ? "이미 사용중인 아이디입니다." : ""}
+              className="rounded-lg"
+
             />
 
             <TextInput
@@ -137,6 +143,8 @@ export default function EmailJoinPage() {
               rightButtonText="중복 확인"
               onRightButtonClick={() => alert("중복 확인 메세지 전송!")}
               error={errors.nickname ? "중복된 닉네임입니다." : ""}
+              className="rounded-lg"
+
             />
 
             <TextInput
@@ -145,6 +153,8 @@ export default function EmailJoinPage() {
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
+              className="rounded-lg"
+
             />
 
             <TextInput
@@ -153,44 +163,42 @@ export default function EmailJoinPage() {
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               placeholder="- 없이 숫자만"
+              className="rounded-lg"
+
             />
 
             <InputRow label="생년월일">
               <div className="flex gap-2 w-full">
-                <select
-                  value={birth.year}
-                  onChange={(e) => setBirth({ ...birth, year: e.target.value })}
-                  className="border border-gray-400 rounded px-2 py-2 text-[13px] w-1/3"
-                >
-                  <option value="">년도</option>
-                  {Array.from({ length: 50 }, (_, i) => 1980 + i).map((y) => (
-                    <option key={y}>{y}</option>
-                  ))}
-                </select>
-
-                <select
-                  value={birth.month}
-                  onChange={(e) =>
-                    setBirth({ ...birth, month: e.target.value })
+                <CustomDropdown
+                  label="년도"
+                  options={Array.from({ length: 50 }, (_, i) =>
+                    String(1980 + i)
+                  )}
+                  onSelect={(val) =>
+                    setBirth((prev) => ({ ...prev, year: val }))
                   }
-                  className="border border-gray-400 rounded px-2 py-2 text-[13px] w-1/3"
-                >
-                  <option value="">월</option>
-                  {Array.from({ length: 12 }, (_, i) => i + 1).map((m) => (
-                    <option key={m}>{String(m).padStart(2, "0")}</option>
-                  ))}
-                </select>
-
-                <select
-                  value={birth.day}
-                  onChange={(e) => setBirth({ ...birth, day: e.target.value })}
-                  className="border border-gray-400 rounded px-2 py-2 text-[13px] w-1/3"
-                >
-                  <option value="">일</option>
-                  {Array.from({ length: 31 }, (_, i) => i + 1).map((d) => (
-                    <option key={d}>{String(d).padStart(2, "0")}</option>
-                  ))}
-                </select>
+                  buttonClassName="rounded-lg"
+                />
+                <CustomDropdown
+                  label="월"
+                  options={Array.from({ length: 12 }, (_, i) =>
+                    String(i + 1).padStart(2, "0")
+                  )}
+                  onSelect={(val) =>
+                    setBirth((prev) => ({ ...prev, month: val }))
+                  }
+                  buttonClassName="rounded-lg"
+                />
+                <CustomDropdown
+                  label="일"
+                  options={Array.from({ length: 31 }, (_, i) =>
+                    String(i + 1).padStart(2, "0")
+                  )}
+                  onSelect={(val) =>
+                    setBirth((prev) => ({ ...prev, day: val }))
+                  }
+                  buttonClassName="rounded-lg"
+                />
               </div>
             </InputRow>
 
@@ -205,6 +213,8 @@ export default function EmailJoinPage() {
                   ? "비밀번호는 영문, 숫자, 특수문자를 모두 포함한 8~20자리를 입력해주세요."
                   : ""
               }
+              className="rounded-lg"
+
             />
 
             <TextInput
@@ -216,6 +226,8 @@ export default function EmailJoinPage() {
               error={
                 errors.passwordCheck ? "비밀번호를 다시 확인해주세요." : ""
               }
+              className="rounded-lg"
+
             />
 
             {/* 동의 체크박스 */}
