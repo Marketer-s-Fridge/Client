@@ -40,7 +40,13 @@ export default function CustomDropdown({
         )}
       >
         <span>{selected}</span>
-        <ChevronDown className="w-4 h-4" />
+        <Image
+          src="/icons/down.png"
+          alt="드롭다운 열기"
+          width={20}
+          height={20}
+          className="ml-2 w-4 h-4"
+        />
       </div>
 
       {/* 드롭다운 리스트 */}
