@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronDown } from "lucide-react";
 import Image from "next/image";
 import clsx from "clsx"; // 선택사항: tailwind에서 조건부 class 결합에 유용
 
