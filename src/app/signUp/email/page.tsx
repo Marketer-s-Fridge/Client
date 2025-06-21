@@ -6,7 +6,7 @@ import Header from "@/components/header";
 import React, { useState } from "react";
 import { useEffect } from "react";
 import { TextInput } from "@/components/authFormComponents";
-import CustomDropdown from "@/components/admin/customDropdown";
+import CustomDropdown from "@/components/customDropdown";
 
 export default function EmailJoinPage() {
   const [email, setEmail] = useState("");
