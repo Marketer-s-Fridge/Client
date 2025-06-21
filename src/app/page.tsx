@@ -27,14 +27,15 @@ export default function HomePage() {
           <div className="grid grid-cols-4 sm:grid-cols-4 gap-[2%] ">
             {[1, 2, 3, 4].map((i) => (
               <Image
-                alt=""
-                src="/icons/rectangle-gray.png"
-                key={i}
-                className=" aspect-[3/4] bg-white rounded-lg shadow cursor-pointer"
-                onClick={() => router.push("/cardNews")}
-                width={250}
-                height={300}
-              />
+              alt=""
+              src={`/images/cardNews/${i}/001.png`}
+              key={i}
+              className="aspect-[3/4] bg-white rounded-lg shadow cursor-pointer 
+                         transition duration-300 ease-in-out hover:scale-105"
+              onClick={() => router.push("/cardNews")}
+              width={250}
+              height={300}
+            />
             ))}
           </div>
           
