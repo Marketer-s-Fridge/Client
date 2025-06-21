@@ -34,7 +34,7 @@ export default function CustomDropdown({
       <div
         onClick={() => setIsOpen((prev) => !prev)}
         className={clsx(
-          "flex items-center justify-between w-full px-4 py-2 border border-gray-300 bg-white cursor-pointer",
+          "flex items-center justify-between w-full gap-2 px-4 py-2 border border-gray-300 bg-white cursor-pointer",
           buttonClassName
         )}
       >

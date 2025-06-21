@@ -31,7 +31,7 @@ const AdminCategoryBar: React.FC<AdminCategoryBarProps> = ({
     "콘텐츠 관리": "/admin/contentsManagement",
     "임시 저장 리스트": "/admin/tempList",
     "업로드 예약": "/admin/scheduledUpload",
-    "문의 답변 관리": "/admin/contactReply",
+    "문의 답변 관리": "/admin/inquiryReplies",
     "통계 및 분석": "/admin/analytics",
   };
 

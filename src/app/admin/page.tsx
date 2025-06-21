@@ -66,7 +66,10 @@ export default function DashboardPage() {
               ></Image>{" "}
               업로드 예약
             </li>
-            <li className="flex items-center gap-3.5 cursor-pointer">
+            <li
+              className="flex items-center gap-3.5 cursor-pointer"
+              onClick={() => router.push("admin/inquiryReplies")} // ✅ 클릭 시 이동
+            >
               <Image
                 alt="문의 답변 관리"
                 src="/icons/admin/mdi_comment-question-outline.png"
