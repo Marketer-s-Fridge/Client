@@ -58,7 +58,7 @@ export default function CardNewsDetailPage() {
             >
               {/* 슬라이드 컨테이너 */}
               <div
-                className="flex transition-transform duration-500 ease-in-out"
+                className="relative flex transition-transform duration-500 ease-in-out"
                 style={{
                   width: `${slideCount * 100}%`,
                   transform: `translateX(-${
@@ -101,6 +101,45 @@ export default function CardNewsDetailPage() {
                   setActiveSlide((prev) => Math.min(prev + 1, slideCount - 1));
                 }}
               />
+              {/* 왼쪽 화살표 (첫 번째 슬라이드가 아닐 때만 보여줌) */}
+              {activeSlide > 0 && (
+                <>
+                  <div
+                    className="absolute top-0 left-0 h-full w-1/2 z-10 cursor-pointer"
+                    onClick={() => {
+                      setActiveSlide((prev) => Math.max(prev - 1, 0));
+                    }}
+                  />
+                  <Image
+                    width={150}
+                    height={150}
+                    className="absolute w-7 h-7 top-[47.5%] left-[1%]"
+                    src="/icons/cardnews-bt-left.png"
+                    alt="화살표"
+                  />
+                </>
+              )}
+
+              {/* 오른쪽 화살표 (마지막 슬라이드가 아닐 때만 보여줌) */}
+              {activeSlide < slideCount - 1 && (
+                <>
+                  <div
+                    className="absolute top-0 right-0 h-full w-1/2 z-10 cursor-pointer"
+                    onClick={() => {
+                      setActiveSlide((prev) =>
+                        Math.min(prev + 1, slideCount - 1)
+                      );
+                    }}
+                  />
+                  <Image
+                    width={150}
+                    height={150}
+                    className="absolute w-7 h-7 top-[47.5%] right-[1%]"
+                    src="/icons/cardnews-bt-right.png"
+                    alt="화살표"
+                  />
+                </>
+              )}
             </div>
             {/* 인디케이터 */}
             <div className="absolute bottom-0 left-1/2 -translate-x-1/2 flex gap-1">
