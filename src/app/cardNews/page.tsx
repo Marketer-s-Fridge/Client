@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Header from "@/components/header";
 import Image from "next/image";
 import Footer from "@/components/footer";
@@ -20,6 +20,29 @@ export default function CardNewsDetailPage() {
   const [activeCategory, setActiveCategory] = useState("Beauty");
   const [activeSlide, setActiveSlide] = useState(0);
   const slideCount = slideImages.length;
+
+  const slideBoxRef = useRef<HTMLDivElement>(null);
+  const [slideHeight, setSlideHeight] = useState<number>(0);
+
+  useEffect(() => {
+    const node = slideBoxRef.current;
+    if (!node) return;
+
+    const updateHeight = () => {
+      setSlideHeight(node.offsetHeight);
+    };
+
+    const resizeObserver = new ResizeObserver(() => {
+      updateHeight();
+    });
+
+    resizeObserver.observe(node);
+    updateHeight(); // 초기 설정
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, []);
 
   return (
     <div className="bg-white">
@@ -53,9 +76,24 @@ export default function CardNewsDetailPage() {
           {/* 카드 슬라이드 */}
           <div className="relative w-full md:w-4/9 flex flex-col items-center">
             <div
+              ref={slideBoxRef}
               className="relative w-full overflow-hidden"
               style={{ aspectRatio: "4 / 5" }}
             >
+              {/* 인디케이터 */}
+              <div className="z-10 absolute bottom-[2%] left-1/2 -translate-x-1/2 flex gap-1">
+                {[...Array(slideCount)].map((_, idx) => (
+                  <div
+                    key={idx}
+                    className={`w-1.5 h-1.5 rounded-full ${
+                      idx === activeSlide
+                        ? "bg-white"
+                        : "bg-gray-500 opacity-85"
+                    }`}
+                  ></div>
+                ))}
+              </div>
+
               {/* 슬라이드 컨테이너 */}
               <div
                 className="relative flex transition-transform duration-500 ease-in-out"
@@ -101,61 +139,40 @@ export default function CardNewsDetailPage() {
                   setActiveSlide((prev) => Math.min(prev + 1, slideCount - 1));
                 }}
               />
-              {/* 왼쪽 화살표 (첫 번째 슬라이드가 아닐 때만 보여줌) */}
+
+              {/* 왼쪽 화살표 */}
               {activeSlide > 0 && (
                 <>
-                  <div
-                    className="absolute top-0 left-0 h-full w-1/2 z-10 cursor-pointer"
-                    onClick={() => {
-                      setActiveSlide((prev) => Math.max(prev - 1, 0));
-                    }}
-                  />
                   <Image
                     width={150}
                     height={150}
-                    className="absolute w-7 h-7 top-[47.5%] left-[1%]"
+                    className="absolute w-6 h-6 top-[47.5%] left-[1%]"
                     src="/icons/cardnews-bt-left.png"
                     alt="화살표"
                   />
                 </>
               )}
 
-              {/* 오른쪽 화살표 (마지막 슬라이드가 아닐 때만 보여줌) */}
+              {/* 오른쪽 화살표 */}
               {activeSlide < slideCount - 1 && (
                 <>
-                  <div
-                    className="absolute top-0 right-0 h-full w-1/2 z-10 cursor-pointer"
-                    onClick={() => {
-                      setActiveSlide((prev) =>
-                        Math.min(prev + 1, slideCount - 1)
-                      );
-                    }}
-                  />
                   <Image
                     width={150}
                     height={150}
-                    className="absolute w-7 h-7 top-[47.5%] right-[1%]"
+                    className="absolute w-6 h-6 top-[47.5%] right-[1%]"
                     src="/icons/cardnews-bt-right.png"
                     alt="화살표"
                   />
                 </>
               )}
             </div>
-            {/* 인디케이터 */}
-            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 flex gap-1">
-              {[...Array(slideCount)].map((_, idx) => (
-                <div
-                  key={idx}
-                  className={`w-1.5 h-1.5 rounded-full ${
-                    idx === activeSlide ? "bg-red-500" : "bg-gray-300"
-                  }`}
-                ></div>
-              ))}
-            </div>
           </div>
 
           {/* 텍스트 + 버튼 */}
-          <div className="w-full md:w-5/9 flex flex-col">
+          <div
+            className="w-full md:w-5/9 flex flex-col"
+            style={{ height: slideHeight || "auto" }}
+          >
             <div className="flex-1 overflow-y-auto pr-2 py-2 no-scrollbar">
               <h1 className="text-2xl md:text-3xl font-bold mb-2">
                 뭐라고? 쿠션이 40가지나 된다고?!
