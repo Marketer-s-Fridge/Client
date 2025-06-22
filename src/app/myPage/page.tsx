@@ -33,7 +33,16 @@ export default function MyPage() {
   const cardsPerPage = 3; // 📦 슬라이드 한 페이지당 카드 수
   const maxSlideIndex =
     Math.ceil(recentlyViewedContents.length / cardsPerPage) - 1;
+    const [likedItems, setLikedItems] = useState<number[]>([]);
 
+
+    const handleToggleLike = (id: number) => {
+      setLikedItems((prev) =>
+        prev.includes(id)
+          ? prev.filter((item) => item !== id)
+          : [...prev, id]
+      );
+    };
   return (
     <div className="bg-white">
       <Header />
@@ -49,12 +58,12 @@ export default function MyPage() {
               width={230}
               height={230}
             />
-            <div className="justify-center-safe items-center self-center">
-              <h2 className="text-medium sm:text-2xl font-bold">마케터</h2>
+            <div className="w-full items-center self-center">
+              <h2 className="text-medium sm:text-3xl font-bold">마케터</h2>
               <p className="text-xs sm:text-sm">a123456789@gmail.com</p>
               <button
                 onClick={() => setIsNicknameModalOpen(true)}
-                className="flex cursor-pointer mt-2 flex-1 border border-white rounded-full text-xs px-2 py-1 sm:px-4 sm:py-1 sm:text-sm"
+                className="w-full flex-1 cursor-pointer mt-2  border border-white rounded-full text-xs px-2 py-1 sm:px-4 sm:py-1 sm:text-sm"
               >
                 프로필 편집
               </button>
@@ -78,186 +87,197 @@ export default function MyPage() {
       </section>
 
       {/* 📊 콘텐츠 + 리포트 */}
-      <section>
-        <section className="px-8 py-14">
-          <div className="max-w-[1024px] mx-auto grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-12 items-start">
-            {/* 📚 왼쪽 콘텐츠 */}
-            <div className="space-y-12">
-              {/* 📌 최근 본 콘텐츠 슬라이드 */}
-              <div className="relative">
-                <h3 className="text-2xl font-bold mb-4">최근 본 콘텐츠</h3>
+      <section className="px-8 py-14">
+        <div className="max-w-[1024px] mx-auto grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-12 items-start">
+          {/* 📚 왼쪽 콘텐츠 */}
+          <div className="space-y-12">
+            {/* 📌 최근 본 콘텐츠 슬라이드 */}
+            <div className="relative">
+              <h3 className="text-2xl font-bold mb-4">최근 본 콘텐츠</h3>
 
-                <div className="relative w-full max-w-[480px] mx-0">
-                  {/* ◀ 왼쪽 화살표 */}
-                  <button
-                    onClick={() =>
-                      slideIndex > 0 && setSlideIndex(slideIndex - 1)
-                    }
-                    className="absolute left-[-33px] top-1/2 -translate-y-1/2 z-10 hidden md:block cursor-pointer"
+              <div className="relative w-full max-w-[480px] mx-0">
+                {/* ◀ 왼쪽 화살표 */}
+                <button
+                  onClick={() =>
+                    slideIndex > 0 && setSlideIndex(slideIndex - 1)
+                  }
+                  className="absolute left-[-33px] top-1/2 -translate-y-5/6 z-10 hidden md:block cursor-pointer"
+                >
+                  <Image
+                    src="/icons/left.png"
+                    alt="이전"
+                    width={30}
+                    height={30}
+                  />
+                </button>
+
+                {/* 슬라이드 컨테이너 */}
+                <div className="overflow-hidden w-full">
+                  <div
+                    className="flex transition-transform duration-500 ease-in-out"
+                    style={{
+                      transform: `translateX(-${slideIndex * 480}px)`,
+                      width: `${(maxSlideIndex + 1) * 480}px`,
+                    }}
                   >
-                    <Image
-                      src="/icons/left.png"
-                      alt="이전"
-                      width={30}
-                      height={30}
-                    />
-                  </button>
-
-                  {/* 📦 슬라이드 컨테이너 */}
-                  <div className="overflow-hidden w-full">
-                    <div
-                      className="flex transition-transform duration-500 ease-in-out"
-                      style={{
-                        transform: `translateX(-${slideIndex * 480}px)`, // ✅ 픽셀 단위로 정확히 이동
-                        width: `${(maxSlideIndex + 1) * 480}px`, // ✅ 각 슬라이드 너비만큼 전체 너비
-                      }}
-                    >
-                      {/* 한 페이지에 카드 3개 */}
-                      {Array.from({ length: maxSlideIndex + 1 }).map(
-                        (_, pageIndex) => (
-                          <div
-                            key={pageIndex}
-                            className="flex gap-6 w-[480px] flex-shrink-0 justify-center"
-                          >
-                            {recentlyViewedContents
-                              .slice(
-                                pageIndex * cardsPerPage,
-                                pageIndex * cardsPerPage + cardsPerPage
-                              )
-                              .map((title, i) => (
-                                <div
-                                  key={i}
-                                  className="w-[140px] flex-shrink-0"
-                                >
-                                  <div className="relative aspect-[3/4] rounded-lg overflow-hidden bg-gray-100">
+                    {Array.from({ length: maxSlideIndex + 1 }).map(
+                      (_, pageIndex) => (
+                        <div
+                          key={pageIndex}
+                          className="flex gap-6 w-[480px] flex-shrink-0 justify-center"
+                        >
+                          {recentlyViewedContents
+                            .slice(
+                              pageIndex * cardsPerPage,
+                              pageIndex * cardsPerPage + cardsPerPage
+                            )
+                            .map((item,index) => (
+                              <div
+                                key={index}
+                                className="w-[140px] flex-shrink-0"
+                              >
+                                <div className="aspect-[3/4] w-full rounded-lg overflow-hidden bg-gray-100">
+                                  <Image
+                                    src="/icons/rectangle-gray.png"
+                                    alt={item}
+                                    width={300}
+                                    height={350}
+                                    className="w-full h-full object-cover cursor-pointer"
+                                  />
+                                </div>
+                                <div className="pt-2 px-1 text-[10px] sm:text-[13px] font-semibold flex items-center justify-between">
+                                  <span className="truncate whitespace-nowrap overflow-hidden pr-2 flex-1">
+                                    {item}
+                                  </span>
+                                  <button
+                                    onClick={() => handleToggleLike(index)}
+                                    className="flex-shrink-0"
+                                  >
                                     <Image
-                                      src="/icons/rectangle-gray.png"
-                                      alt={title}
-                                      width={200}
-                                      height={250}
-                                      className="w-full h-full object-cover"
-                                    />
-                                    <Image
-                                      src="/icons/grayheart.png"
-                                      alt="찜"
+                                      src={
+                                        likedItems.includes(index)
+                                          ? "/icons/redheart.png"
+                                          : "/icons/grayheart.png"
+                                      }
+                                      alt="찜하기"
                                       width={20}
                                       height={20}
-                                      className="absolute right-2 bottom-2 w-5 h-5"
+                                      className={`w-4.5 h-5 cursor-pointer ${
+                                        likedItems.includes(index)
+                                          ? ""
+                                          : "opacity-30 grayscale"
+                                      }`}
                                     />
-                                  </div>
-                                  <div className="pt-2 text-xs font-medium truncate">
-                                    {title}
-                                  </div>
+                                  </button>
                                 </div>
-                              ))}
-                          </div>
-                        )
-                      )}
-                    </div>
-                  </div>
-
-                  {/* ▶ 오른쪽 화살표 */}
-                  <button
-                    onClick={() =>
-                      slideIndex < maxSlideIndex &&
-                      setSlideIndex(slideIndex + 1)
-                    }
-                    className="absolute right-[-33px] top-1/2 -translate-y-1/2 z-10 hidden md:block cursor-pointer"
-                  >
-                    <Image
-                      src="/icons/right.png"
-                      alt="다음"
-                      width={30}
-                      height={30}
-                    />
-                  </button>
-                </div>
-              </div>
-
-              {/* ❤️ MY 냉장고 */}
-              <div>
-                <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-2xl font-bold">MY 냉장고</h3>
-                  <div className="flex flex-row items-center">
-                    <button
-                      onClick={() => router.push("/myPage/myFridge")}
-                      className="text-sm text-gray-500"
-                    >
-                      더보기
-                    </button>
-                    <Image
-                      src="/icons/right.png"
-                      alt="더보기"
-                      width={16}
-                      height={16}
-                      className="ml-1 cursor-pointer"
-                    />
+                              </div>
+                            ))}
+                        </div>
+                      )
+                    )}
                   </div>
                 </div>
-                <div className="flex gap-6 justify-center">
-                  {myFridgeContents.map((title, i) => (
-                    <div key={i} className="w-[140px]">
-                      <div className="relative aspect-[3/4] rounded-lg overflow-hidden bg-gray-100">
-                        <Image
-                          src="/icons/rectangle-gray.png"
-                          className="w-full h-full object-cover cursor-pointer"
-                          alt={title}
-                          width={200}
-                          height={250}
-                        />
-                        <Image
-                          src="/icons/redheart.png"
-                          className="absolute right-2 bottom-2 w-4 h-4"
-                          alt="찜"
-                          width={30}
-                          height={30}
-                        />
-                      </div>
-                      <div className="pt-2 text-xs font-medium truncate">
-                        {title}
-                      </div>
-                    </div>
-                  ))}
-                </div>
+
+                {/* ▶ 오른쪽 화살표 */}
+                <button
+                  onClick={() =>
+                    slideIndex < maxSlideIndex && setSlideIndex(slideIndex + 1)
+                  }
+                  className="absolute right-[-33px] top-1/2 -translate-y-5/6 z-10 hidden md:block cursor-pointer"
+                >
+                  <Image
+                    src="/icons/right.png"
+                    alt="다음"
+                    width={30}
+                    height={30}
+                  />
+                </button>
               </div>
             </div>
 
-            {/* 🍩 오른쪽 리포트 */}
+            {/* ❤️ MY 냉장고 */}
             <div>
-              <h3 className="text-2xl font-bold mb-10">콘텐츠 소비 리포트</h3>
-              <div className="flex flex-col sm:flex-row sm:items-center pl-5">
-                <DoughnutChart />
-                <ul className="pl-10 text-sm space-y-2 font-semibold whitespace-nowrap">
-                  <li className="flex items-center gap-2">
-                    <div className="w-3 h-3 bg-red-600 rounded-sm" />
-                    <span className="flex-1">Food</span>
-                    <span>40%</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <div className="w-3 h-3 bg-red-400 rounded-sm" />
-                    <span className="flex-1">Lifestyle</span>
-                    <span>35%</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <div className="w-3 h-3 bg-red-300 rounded-sm" />
-                    <span className="flex-1">Beauty</span>
-                    <span>15%</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <div className="w-3 h-3 bg-red-200 rounded-sm" />
-                    <span className="flex-1">Tech</span>
-                    <span>7%</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <div className="w-3 h-3 bg-red-100 rounded-sm" />
-                    <span className="flex-1">Fashion</span>
-                    <span>3%</span>
-                  </li>
-                </ul>
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-2xl font-bold">MY 냉장고</h3>
+                <div className="flex flex-row items-center cursor-pointer">
+                  <button
+                    onClick={() => router.push("/myPage/myFridge")}
+                    className="text-sm text-gray-500 cursor-pointer"
+                  >
+                    더보기
+                  </button>
+                  <Image
+                    src="/icons/right.png"
+                    alt="더보기"
+                    width={16}
+                    height={16}
+                    className="ml-1 cursor-pointer"
+                  />
+                </div>
+              </div>
+              <div className="flex gap-6 justify-center">
+                {myFridgeContents.map((title, i) => (
+                  <div key={i} className="w-[140px]">
+                    <div className="relative aspect-[3/4] rounded-lg overflow-hidden bg-gray-100">
+                      <Image
+                        src="/icons/rectangle-gray.png"
+                        className="w-full h-full object-cover cursor-pointer"
+                        alt={title}
+                        width={200}
+                        height={250}
+                      />
+                      <Image
+                        src="/icons/redheart.png"
+                        className="absolute right-2 bottom-2 w-4 h-4"
+                        alt="찜"
+                        width={30}
+                        height={30}
+                      />
+                    </div>
+                    <div className="px-1 pt-2 text-[13px] font-semibold truncate">
+                      {title}
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
-        </section>
+
+          {/* 🍩 오른쪽 리포트 */}
+          <div>
+            <h3 className="text-2xl font-bold mb-10">콘텐츠 소비 리포트</h3>
+            <div className="flex flex-col sm:flex-row sm:items-center pl-5">
+              <DoughnutChart />
+              <ul className="pl-10 text-sm space-y-2 font-semibold whitespace-nowrap">
+                <li className="flex items-center gap-2">
+                  <div className="w-3 h-3 bg-red-600 rounded-sm" />
+                  <span className="flex-1">Food</span>
+                  <span>40%</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <div className="w-3 h-3 bg-red-400 rounded-sm" />
+                  <span className="flex-1">Lifestyle</span>
+                  <span>35%</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <div className="w-3 h-3 bg-red-300 rounded-sm" />
+                  <span className="flex-1">Beauty</span>
+                  <span>15%</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <div className="w-3 h-3 bg-red-200 rounded-sm" />
+                  <span className="flex-1">Tech</span>
+                  <span>7%</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <div className="w-3 h-3 bg-red-100 rounded-sm" />
+                  <span className="flex-1">Fashion</span>
+                  <span>3%</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* ✏️ 닉네임 변경 모달 */}
