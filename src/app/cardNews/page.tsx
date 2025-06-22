@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from "react";
 import Header from "@/components/header";
 import Image from "next/image";
 import Footer from "@/components/footer";
+import Breadcrumb from "@/components/breadCrumb";
 
 const categories = ["Beauty", "Food", "Lifestyle", "Tech", "Fashion"];
 
@@ -65,10 +66,8 @@ export default function CardNewsDetailPage() {
         ))}
       </nav>
 
-      <div className="flex px-4 sm:px-6 xl:px-65 text-xs pt-5 text-gray-400 mb-8">
-        홈 &gt; 카테고리 &gt;{" "}
-        <span className="text-black font-medium">{activeCategory}</span>
-      </div>
+      <Breadcrumb category={activeCategory} />
+
 
       {/* 본문 */}
       <main className="flex justify-center px-4 sm:px-6 xl:px-80 py-15 min-h-[80vh]">
