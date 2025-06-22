@@ -50,7 +50,7 @@ export default function MyContact() {
         {/* 테이블 */}
         <div className="overflow-x-auto text-[10px] sm:text-[13px]">
           <table className="w-full text-center border-t">
-            <thead className="border-b-2 border-t-2 border-black">
+            <thead className="border-b-2 border-t-2 border-black ">
               <tr className="h-10">
                 <th className="w-[50px]">NO</th>
                 <th>제목</th>
@@ -71,10 +71,12 @@ export default function MyContact() {
                   }
                   className="h-10 hover:bg-gray-100 cursor-pointer"
                 >
-                  <td>{item.no}</td>
+                  <td className="rounded-l-lg hover:bg-gray-100 h-10">
+                    {item.no}
+                  </td>
                   <td className="text-left px-4">{item.title}</td>
                   <td>{item.date}</td>
-                  <td>{item.status}</td>
+                  <td className="rounded-r-lg">{item.status}</td>
                 </tr>
               ))}
             </tbody>
