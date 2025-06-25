@@ -100,10 +100,10 @@ export default function HomePage() {
       {/* 정보 소개 섹션 */}
       <FadeInSection>
         <section className="flex flex-col items-center py-[12%]">
-          <h1 className="font-bold text-4xl mb-[4.5%] text-center">
+          <h1 className="font-bold text-2xl md:text-4xl mb-[4.5%] text-center">
             마케터를 위한 정보 큐레이션 플랫폼
           </h1>
-          <div className="text-center text-lg">
+          <div className="text-center text-sm md:text-lg">
             {[
               "매일같이 쏟아지는 광고 사례, 소비자 반응, 트렌드 리포트 <br />그 안에서 지금 진짜 필요한 정보를 골라내는 건 쉽지 않은 일이죠",
               "그래서 우리는 마케터의 시선으로 <br />쓸 수 있는 정보만 선별하고 꺼내 쓰기 좋게 보관합니다.",
@@ -122,10 +122,10 @@ export default function HomePage() {
       {/* 인사이트 설명 섹션 */}
       <FadeInSection>
         <section className="flex flex-col items-center pb-[18%]">
-          <h1 className=" font-bold text-4xl mb-[4.5%] text-center">
+          <h1 className=" font-bold text-2xl md:text-4xl mb-[4.5%] text-center">
             관찰, 분석, 재구성된 마케팅 인사이트 저장소
           </h1>
-          <div className="w-[60%] items-center flex flex-row gap-[5%]">
+          <div className="w-[60%] items-center flex flex-col md:flex-row gap-[5%]">
             <Image
               alt="임시"
               width={300}
@@ -136,8 +136,8 @@ export default function HomePage() {
             <div className="flex-1 flex-col justify-between">
               {insightData.map(([title, line1, line2], idx) => (
                 <div key={idx} className="mb-[13%]">
-                  <h2 className="text-xl font-semibold">{title}</h2>
-                  <h3>
+                  <h2 className="text-sm md:text-xl font-semibold">{title}</h2>
+                  <h3 className="text-xs md:text-lg">
                     {line1}
                     <br />
                     {line2}
@@ -150,41 +150,41 @@ export default function HomePage() {
       </FadeInSection>
 
       <FadeInSection>
-        <div className="relative pb-[12%]">
+        <div className="flex flex-1 flex-column relative mb-[12%] py-[3%]">
           <Image
             src="/images/service-background.png"
             alt="배경"
             width={2000}
-            height={700}
-            className="object-contain w-full z-0"
+            height={600}
+            className="absolute object-cover top-0 w-full z-0"
           ></Image>
-          <div className="absolute text-center text-base left-[40%] top-[12%] text-white">
-            <h1 className="z-2 font-bold text-4xl mb-[20%]">
+          <div className="flex flex-1 flex-col relative text-center text-xs md:text-base items-center justify-items-center text-white place-self-center ">
+            <h1 className="z-2 font-bold text-xl md:text-4xl mb-[3%] md:mb-[4.5%]">
               왜 ‘Fridge’ 인가요?
             </h1>
-            <h3 className="mb-[11%]">
+            <h3 className="mb-[2%] md:mb-[3%] ">
               우리는 정보를 그냥 흘려보내지 않습니다
               <br /> 꺼내 쓰기 좋은 형태로 정리하고 차갑게 보관합니다
             </h3>
-            <h3 className="mb-[11%]">
+            <h3 className="mb-[2%] md:mb-[3%] ">
               그래서 오늘은 지나쳤지만
               <br />
               다음 회의에서 문득 생각나면 다시 열어볼 수 있는 곳
             </h3>
-            <h3 className="mb-[11%]">그래서 Marketer’s Fridge입니다</h3>
+            <h3 className="">그래서 <span className="">'Marketer’s Fridge'</span> 입니다.</h3>
           </div>
         </div>
       </FadeInSection>
 
       {/* 마지막 강조 섹션 */}
-      <section className="flex flex-col items-center pt-[6%] text-center">
+      <section className="flex flex-col items-center pt-[12%] text-center">
         {problemTexts.map((text, idx) => (
           <FadeInSection key={idx}>
-            <h1 className={`font-bold text-3xl py-[30%]`}>{text}</h1>
+            <h1 className={`font-bold text-lg md:text-3xl py-[30%]`}>{text}</h1>
           </FadeInSection>
         ))}
         <FadeInSection>
-          <h3 className="font-bold text-lg mt-[30%] mb-[5%]">
+          <h3 className="font-bold text-base md:text-lg mt-[30%] mb-[5%]">
             필요할 때 꺼내보고 꺼낸 정보로 다시 요리할 수 있도록.
             <br />
             <span className="font-playfair text-red-500 font-bold">

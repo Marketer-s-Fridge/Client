@@ -32,27 +32,27 @@ const characters = [
 
 export default function CharacterSection() {
   return (
-    <section className="mt-[7%] flex flex-row justify-center items-center gap-[3.6%] relative">
-      {characters.map((char, idx) => (
-        <div
-          key={idx}
-          className="relative cursor-pointer group"
-        >
-          <Image
-            alt={char.name}
-            src={char.image}
-            width={150}
-            height={150}
-            className="rounded-md transition-all"
-          />
+    <section className="relative w-full mt-[17%]  flex justify-center items-center">
+      <div className="absolute inset-0 flex justify-center items-end gap-[3.6%]">
+        {characters.map((char, idx) => (
+          <div key={idx} className="relative cursor-pointer group">
+            <Image
+              alt={char.name}
+              src={char.image}
+              width={0}
+              height={0}
+              sizes="(max-width: 768px) 60px, (max-width: 1024px) 80px, 100px"
+              className="w-[10vw] max-w-[150px] min-w-[50px] h-auto transition-all"
+            />
 
-          {/* 호버 시 나타나는 정보 */}
-          <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-black  text-white rounded-lg px-4 py-2 whitespace-nowrap text-center z-10 opacity-0 group-hover:opacity-90 transition-opacity duration-200">
-            <p className="font-bold text-lg">{char.name}</p>
-            <p className="text-sm opacity-80">{char.tags.join(" ")}</p>
+            {/* 호버 시 정보 */}
+            <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-black text-white rounded-lg px-4 py-2 text-xs md:text-sm text-center z-10 opacity-0 group-hover:opacity-90 transition-opacity duration-200 whitespace-nowrap">
+              <p className="font-bold text-sm md:text-lg">{char.name}</p>
+              <p className="opacity-80">{char.tags.join(" ")}</p>
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </section>
   );
 }
