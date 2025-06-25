@@ -160,7 +160,7 @@ export default function HomePage() {
           ></Image>
           <div className="flex flex-1 flex-col relative text-center text-xs md:text-base items-center justify-items-center text-white place-self-center ">
             <h1 className="z-2 font-bold text-xl md:text-4xl mb-[3%] md:mb-[4.5%]">
-              왜 ‘Fridge’ 인가요?
+              왜 &lsquo;Fridge&rsquo; 인가요?
             </h1>
             <h3 className="mb-[2%] md:mb-[3%] ">
               우리는 정보를 그냥 흘려보내지 않습니다
@@ -171,7 +171,7 @@ export default function HomePage() {
               <br />
               다음 회의에서 문득 생각나면 다시 열어볼 수 있는 곳
             </h3>
-            <h3 className="">그래서 <span className="">'Marketer’s Fridge'</span> 입니다.</h3>
+            <h3 className="">그래서 <span className="">Marketer’s Fridge</span> 입니다.</h3>
           </div>
         </div>
       </FadeInSection>
