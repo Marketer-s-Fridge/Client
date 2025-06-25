@@ -23,10 +23,16 @@ export default function ChangeNicknameModal({ onClose }: Props) {
       <div className="bg-white w-[90%] max-w-[460px] rounded-2xl relative py-8 px-6 sm:px-8">
         {/* 닫기 버튼 */}
         <button
-          className="absolute cursor-pointer top-4 right-4 text-black text-3xl"
+          className="absolute cursor-pointer top-4 right-4 text-black"
           onClick={onClose}
         >
-          ×
+          <Image
+            src="/icons/close.png" // 네가 준비한 닫기 아이콘 경로
+            alt="닫기"
+            width={20}
+            height={20}
+            className="w-5 h-5"
+          />
         </button>
 
         {/* 캐릭터 이미지 */}
@@ -44,11 +50,11 @@ export default function ChangeNicknameModal({ onClose }: Props) {
         </div>
 
         {/* 좌우 여백 없이 구분선 */}
-        <div className="relative my-6 -mx-6 sm:-mx-8">
+        <div className="relative my-7 -mx-6 sm:-mx-8">
           <div className="h-[1px] bg-red-300 w-full" />
         </div>
 
-        <div className="space-y-5 text-sm px-5">
+        <div className="space-y-3.5 text-sm px-5">
           {/* 계정 */}
           <div className="flex items-center">
             <label className="w-28 font-bold text-sm shrink-0">계정</label>
