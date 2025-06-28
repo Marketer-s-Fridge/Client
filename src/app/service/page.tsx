@@ -88,14 +88,34 @@ export default function HomePage() {
       {/* 캐릭터 */}
       <CharacterSection />
 
+      {/* 카테고리 바
+      <section className="flex flex-row relative ">
+        <Image
+          src="/images/categoryBar.jpg"
+          alt=""
+          width={1300}
+          height={50}
+          className="z-0 absolute top-[-40%] w-full"
+        />
+        <div className="z-1 flex flex-10/12 flex-row text-white font-semibold text-lg md:text-2xl justify-center gap-[8.5%]">
+          {["Food", "Fashion", "Tech", "Lifestyle", "Beauty"].map((label) => (
+            <div key={label} className="w-[80px] text-center">
+              {label}
+            </div>
+          ))}
+        </div>
+      </section> */}
+
       {/* 카테고리 바 */}
-      <Image
-        src="/images/categoryBar.jpg"
-        alt=""
-        width={1300}
-        height={50}
-        className="w-full"
-      />
+      <section className="flex flex-row relative ">
+        <Image
+          src="/images/categoryBar2.jpg"
+          alt=""
+          width={1300}
+          height={50}
+          className="w-full"
+        />
+      </section>
 
       {/* 정보 소개 섹션 */}
       <FadeInSection>
@@ -152,7 +172,7 @@ export default function HomePage() {
       <FadeInSection>
         <div className="flex flex-1 flex-column relative mb-[12%] py-[3%]">
           <Image
-            src="/images/service-background.png"
+            src="/images/service-background.jpg"
             alt="배경"
             width={2000}
             height={600}
@@ -171,7 +191,9 @@ export default function HomePage() {
               <br />
               다음 회의에서 문득 생각나면 다시 열어볼 수 있는 곳
             </h3>
-            <h3 className="">그래서 <span className="">Marketer’s Fridge</span> 입니다.</h3>
+            <h3 className="">
+              그래서 <span className="">Marketer’s Fridge</span> 입니다.
+            </h3>
           </div>
         </div>
       </FadeInSection>

@@ -6,6 +6,7 @@ import Footer from "@/components/footer";
 import Pagination from "@/components/pagination";
 import ScrollToTopButton from "@/components/scrollToTopButton";
 import CardGrid from "@/components/cardGrid";
+import CategoryFilter from "@/components/categoryFilter";
 
 const categories = ["전체", "Beauty", "Fashion", "Food", "Lifestyle", "Tech"];
 
@@ -64,12 +65,11 @@ const contents = [
   },
 ].map((item, i) => ({
   ...item,
-  id: i ,
+  id: i,
 }));
 
-
 export default function MyFridgePage() {
-  const [selectedCategory, setSelectedCategory] = useState("전체");
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [likedItems, setLikedItems] = useState<number[]>(
     contents.map((item) => item.id) // ✅ 모든 아이템을 liked 상태로 초기화
@@ -80,29 +80,27 @@ export default function MyFridgePage() {
     );
   };
 
+  const filteredContents =
+    selectedCategories.length === 0
+      ? contents
+      : contents.filter((item) =>
+          selectedCategories.some((cat) =>
+            item.title.toLowerCase().includes(cat.toLowerCase())
+          )
+        );
+
   return (
     <div>
       <Header />
       <div className=" px-[10%] sm:px-[17%] py-8">
         <h1 className="text-lg sm:text-2xl font-bold mb-4">MY 냉장고</h1>
-        <div className="flex flex-wrap gap-2 mb-6">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              className={`cursor-pointer px-2 py-1 sm:px-4 sm:py-1.5 rounded-full border text-[10px] sm:text-xs ${
-                selectedCategory === cat
-                  ? "bg-red-500 text-white"
-                  : "bg-white text-black border-gray-300"
-              }`}
-              onClick={() => setSelectedCategory(cat)}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-
+        <CategoryFilter
+          categories={categories}
+          selectedCategories={selectedCategories}
+          onChange={setSelectedCategories}
+        />
         <CardGrid
-          items={contents}
+          items={filteredContents}
           columns={4}
           likedItems={likedItems}
           onToggleLike={toggleLike}
