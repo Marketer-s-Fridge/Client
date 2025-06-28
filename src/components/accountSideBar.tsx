@@ -1,8 +1,9 @@
 "use client";
 
 import { useRouter, usePathname } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
+import WithdrawConfirmModal from "@/components/withdrawConfirmModal"; // ✅ 경로에 맞게 수정
 
 export default function AccountSidebar() {
   const router = useRouter();
@@ -10,6 +11,15 @@ export default function AccountSidebar() {
 
   const isMyInfo = pathname === "/myPage/account/myInfo";
   const isMyPwd = pathname === "/myPage/account/myPwd";
+
+  const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
+
+  const handleWithdrawConfirm = () => {
+    // 여기에 탈퇴 처리 로직 추가
+    console.log("탈퇴 처리 진행");
+    setIsWithdrawModalOpen(false);
+    // 예: router.push("/goodbye");
+  };
 
   return (
     <aside className="bg-gray-100 flex flex-col items-center py-10 px-4 text-center w-full md:w-[280px] h-auto md:h-screen">
@@ -47,7 +57,19 @@ export default function AccountSidebar() {
       </div>
 
       {/* 탈퇴 */}
-      <p className="mb-10 md:mt-auto text-xs text-gray-400 cursor-pointer">계정 탈퇴</p>
+      <p
+        className="mb-10 md:mt-auto text-xs text-gray-400 cursor-pointer"
+        onClick={() => setIsWithdrawModalOpen(true)}
+      >
+        계정 탈퇴
+      </p>
+
+      {/* 탈퇴 확인 모달 */}
+      <WithdrawConfirmModal
+        isOpen={isWithdrawModalOpen}
+        onClose={() => setIsWithdrawModalOpen(false)}
+        onConfirm={handleWithdrawConfirm}
+      />
     </aside>
   );
 }
