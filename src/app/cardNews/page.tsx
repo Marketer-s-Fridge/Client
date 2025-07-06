@@ -68,12 +68,11 @@ export default function CardNewsDetailPage() {
 
       <Breadcrumb category={activeCategory} />
 
-
       {/* 본문 */}
-      <main className="flex justify-center px-4 sm:px-6 xl:px-80 py-15 min-h-[80vh]">
-        <div className="w-full max-w-screen-lg flex flex-col md:flex-row gap-10">
+      <main className="flex justify-center px-4 sm:px-[8%] lg:px-[17%] py-14 min-h-[80vh]">
+        <div className="w-full max-w-screen-lg flex flex-col sm:flex-row gap-10">
           {/* 카드 슬라이드 */}
-          <div className="relative w-full md:w-4/9 flex flex-col items-center">
+          <div className="relative w-full sm:w-[45%] flex flex-col items-center">
             <div
               ref={slideBoxRef}
               className="relative w-full overflow-hidden"
@@ -123,64 +122,54 @@ export default function CardNewsDetailPage() {
                 ))}
               </div>
 
-              {/* 왼쪽 클릭 영역 */}
+              {/* 좌우 클릭 영역 */}
               <div
                 className="absolute top-0 left-0 h-full w-1/2 z-10 cursor-pointer"
-                onClick={() => {
-                  setActiveSlide((prev) => Math.max(prev - 1, 0));
-                }}
+                onClick={() => setActiveSlide((prev) => Math.max(prev - 1, 0))}
               />
-
-              {/* 오른쪽 클릭 영역 */}
               <div
                 className="absolute top-0 right-0 h-full w-1/2 z-10 cursor-pointer"
-                onClick={() => {
-                  setActiveSlide((prev) => Math.min(prev + 1, slideCount - 1));
-                }}
+                onClick={() =>
+                  setActiveSlide((prev) => Math.min(prev + 1, slideCount - 1))
+                }
               />
 
-              {/* 왼쪽 화살표 */}
+              {/* 화살표 */}
               {activeSlide > 0 && (
-                <>
-                  <Image
-                    width={150}
-                    height={150}
-                    className="absolute w-6 h-6 top-[47.5%] left-[1%]"
-                    src="/icons/cardnews-bt-left.png"
-                    alt="화살표"
-                  />
-                </>
+                <Image
+                  width={150}
+                  height={150}
+                  className="absolute w-6 h-6 top-[47.5%] left-[1%]"
+                  src="/icons/cardnews-bt-left.png"
+                  alt="←"
+                />
               )}
-
-              {/* 오른쪽 화살표 */}
               {activeSlide < slideCount - 1 && (
-                <>
-                  <Image
-                    width={150}
-                    height={150}
-                    className="absolute w-6 h-6 top-[47.5%] right-[1%]"
-                    src="/icons/cardnews-bt-right.png"
-                    alt="화살표"
-                  />
-                </>
+                <Image
+                  width={150}
+                  height={150}
+                  className="absolute w-6 h-6 top-[47.5%] right-[1%]"
+                  src="/icons/cardnews-bt-right.png"
+                  alt="→"
+                />
               )}
             </div>
           </div>
 
           {/* 텍스트 + 버튼 */}
           <div
-            className="w-full md:w-5/9 flex flex-col"
+            className="w-full sm:w-[55%] flex flex-col"
             style={{ height: slideHeight || "auto" }}
           >
             <div className="flex-1 overflow-y-auto pr-2 py-2 no-scrollbar">
-              <h1 className="text-2xl md:text-3xl font-bold mb-2">
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-2">
                 뭐라고? 쿠션이 40가지나 된다고?!
               </h1>
               <div className="text-xs text-gray-500 mb-4">
                 2025.05.07 · 12,324 views · 냉장고에 담은 사람 1,231
               </div>
-              <p className="text-sm text-gray-700 leading-relaxed">
-                <strong className="text-xl block mb-2 text-black">
+              <p className="text-sm sm:text-base text-gray-700 leading-relaxed">
+                <strong className="text-lg sm:text-xl block mb-2 text-black">
                   TIRTIR의 마케팅 전략: 소비자 중심과 다양한 색상
                 </strong>
                 TIRTIR는 단순한 뷰티 브랜드가 아닙니다. 소비자의 목소리를
@@ -201,7 +190,7 @@ export default function CardNewsDetailPage() {
                 맞는 다양한 색상을 제공하는 것처럼, 고객이 원하는 맞춤형
                 서비스를 제공하기 위해 끊임없이 발전하고 있습니다. 결국 TIRTIR는
                 소비자 중심의 브랜드로, 고객의 만족과 신뢰를 가장 중요한 가치로
-                삼고 있습니다.
+                삼고 있습니다. {/* 생략 */}
               </p>
             </div>
 

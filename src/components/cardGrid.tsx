@@ -10,23 +10,40 @@ interface CardItem {
 
 interface CardGridProps {
   items: CardItem[];
-  columns?: number; // 기본 3
-  likedItems: number[]; // ✅ 여기가 포인트!
+  columns?: number; // lg 이상에서만 적용
+  likedItems: number[];
   onToggleLike: (id: number) => void;
 }
 
 export default function CardGrid({
   items,
-  columns = 3,
+  columns = 4,
   likedItems,
   onToggleLike,
 }: CardGridProps) {
+  // ✅ columns 값에 따라 Tailwind 클래스를 수동으로 지정
+  const getLgGridColsClass = () => {
+    switch (columns) {
+      case 1:
+        return "lg:grid-cols-1";
+      case 2:
+        return "lg:grid-cols-2";
+      case 3:
+        return "lg:grid-cols-3";
+      case 4:
+        return "lg:grid-cols-4";
+      case 5:
+        return "lg:grid-cols-5";
+      case 6:
+        return "lg:grid-cols-6";
+      default:
+        return "lg:grid-cols-4"; // 기본값
+    }
+  };
+
   return (
     <div
-      className={`grid gap-x-6 gap-y-10`}
-      style={{
-        gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
-      }}
+      className={`grid grid-cols-2 sm:grid-cols-3 ${getLgGridColsClass()} gap-x-4 sm:gap-x-6 gap-y-8 sm:gap-y-10`}
     >
       {items.map((item) => (
         <div key={item.id} className="w-full">
@@ -35,7 +52,7 @@ export default function CardGrid({
               src="/icons/rectangle-gray.png"
               alt={item.title}
               width={300}
-              height={350}
+              height={400}
               className="w-full h-full object-cover cursor-pointer"
             />
           </div>
