@@ -22,7 +22,7 @@ function FadeInSection({ children }: { children: React.ReactNode }) {
           }
         }
       },
-      { threshold: 0.2 }
+      { threshold: 0.5 }
     );
     if (ref.current) observer.observe(ref.current);
     return () => observer.disconnect();
@@ -31,7 +31,7 @@ function FadeInSection({ children }: { children: React.ReactNode }) {
   return (
     <div
       ref={ref}
-      className="opacity-0 transition-opacity duration-1000 fade-in-section"
+      className="opacity-0 transition-opacity duration-1500 fade-in-section"
     >
       {children}
     </div>
@@ -153,7 +153,7 @@ export default function HomePage() {
       <section className="flex flex-col items-center px-6 sm:px-10 lg:px-20 pt-[10%] text-center">
         {problemTexts.map((text, idx) => (
           <FadeInSection key={idx}>
-            <h1 className="font-bold text-lg sm:text-xl lg:text-3xl py-[20%] leading-snug">
+            <h1 className="font-bold text-lg sm:text-xl lg:text-3xl py-[35%] ">
               {text}
             </h1>
           </FadeInSection>

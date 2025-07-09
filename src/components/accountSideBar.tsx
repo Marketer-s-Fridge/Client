@@ -3,21 +3,23 @@
 import { useRouter, usePathname } from "next/navigation";
 import React, { useState } from "react";
 import Image from "next/image";
-import WithdrawConfirmModal from "@/components/withdrawConfirmModal"; // ✅ 경로에 맞게 수정
+// import WithdrawConfirmModal from "@/components/withdrawConfirmModal"; // ✅ 경로에 맞게 수정
+import DeleteAccountModal from "@/app/myPage/account/deleteAccountModal";
 
 export default function AccountSidebar() {
   const router = useRouter();
   const pathname = usePathname();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const isMyInfo = pathname === "/myPage/account/myInfo";
   const isMyPwd = pathname === "/myPage/account/myPwd";
 
-  const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
+  // const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
 
   const handleWithdrawConfirm = () => {
     // 여기에 탈퇴 처리 로직 추가
     console.log("탈퇴 처리 진행");
-    setIsWithdrawModalOpen(false);
+    setIsModalOpen(false);
     // 예: router.push("/goodbye");
   };
 
@@ -59,16 +61,21 @@ export default function AccountSidebar() {
       {/* 탈퇴 */}
       <p
         className="mb-10 md:mt-auto text-xs text-gray-400 cursor-pointer"
-        onClick={() => setIsWithdrawModalOpen(true)}
+        onClick={() => setIsModalOpen(true)}
       >
         계정 탈퇴
       </p>
 
       {/* 탈퇴 확인 모달 */}
-      <WithdrawConfirmModal
-        isOpen={isWithdrawModalOpen}
-        onClose={() => setIsWithdrawModalOpen(false)}
-        onConfirm={handleWithdrawConfirm}
+
+      <DeleteAccountModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        email="a123456789@gmail.com"
+        onConfirm={() => {
+          console.log("탈퇴 처리됨");
+          // 실제 탈퇴 API 호출 가능
+        }}
       />
     </aside>
   );

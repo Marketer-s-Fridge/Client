@@ -11,7 +11,7 @@ const BaseModal: React.FC<BaseModalProps> = ({ isOpen, children }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
-      <div className="bg-white rounded-2xl px-16 py-5 shadow-xl text-center">
+      <div className="bg-white rounded-2xl px-10 py-5 shadow-xl text-center">
         {children}
       </div>
     </div>
