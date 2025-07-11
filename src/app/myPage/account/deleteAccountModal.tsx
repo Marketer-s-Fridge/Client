@@ -16,7 +16,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
   onConfirm,
 }) => {
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(false);
+  const [, setError] = useState(false);
   const [success, setSuccess] = useState(false);
 
   const handleConfirm = () => {
