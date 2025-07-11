@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import BaseModal from "@/components/baseModal";
-import { SubmitButton, TextInput } from "@/components/authFormComponents";
+import {  TextInput } from "@/components/authFormComponents";
 
 interface DeleteAccountModalProps {
   isOpen: boolean;
