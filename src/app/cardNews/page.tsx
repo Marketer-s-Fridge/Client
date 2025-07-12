@@ -5,6 +5,7 @@ import Header from "@/components/header";
 import Image from "next/image";
 import Footer from "@/components/footer";
 import Breadcrumb from "@/components/breadCrumb";
+import MobileMenu from "@/components/mobileMenu";
 
 const categories = ["Beauty", "Food", "Lifestyle", "Tech", "Fashion"];
 
@@ -21,7 +22,7 @@ export default function CardNewsDetailPage() {
   const [activeCategory, setActiveCategory] = useState("Beauty");
   const [activeSlide, setActiveSlide] = useState(0);
   const slideCount = slideImages.length;
-
+  const [menuOpen, setMenuOpen] = useState(false);
   const slideBoxRef = useRef<HTMLDivElement>(null);
   const [slideHeight, setSlideHeight] = useState<number>(0);
 
@@ -47,7 +48,8 @@ export default function CardNewsDetailPage() {
 
   return (
     <div className="bg-white">
-      <Header />
+      <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+      <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
 
       {/* 상단 카테고리 탭 */}
       <nav className="flex border-b border-gray-200 text-sm font-medium mt-1 overflow-x-auto no-scrollbar gap-5 px-[10%] md:px-[5%] lg:px-[17%]">

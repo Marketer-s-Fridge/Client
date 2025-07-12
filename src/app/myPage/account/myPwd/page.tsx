@@ -7,15 +7,18 @@ import Banner from "@/components/banner";
 import { useState } from "react";
 import ConfirmModal from "@/components/confirmModal";
 import { TextInput } from "@/components/authFormComponents"; // 상단에 추가
+import MobileMenu from "@/components/mobileMenu";
 
 export default function PasswordChangePage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [newPwd, setNewPwd] = useState("");
   const [confirmPwd, setConfirmPwd] = useState("");
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <div className="bg-white min-h-screen">
-      <Header />
+      <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+      <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <Banner title="계정 관리" />
 
       <main className="max-w-[1024px] mx-auto h-full grid grid-cols-1 md:grid-cols-[280px_1fr]">

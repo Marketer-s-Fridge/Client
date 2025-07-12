@@ -6,11 +6,12 @@ import { useRouter } from "next/navigation";
 import { AuthHeader, SubmitButton } from "@/components/authFormComponents";
 import Image from "next/image";
 import ConfirmModal from "@/components/confirmModal";
+import MobileMenu from "@/components/mobileMenu";
 
 const LoginPage: React.FC = () => {
   const [input1, onChangeInput1] = useState("");
   const [input2, onChangeInput2] = useState("");
-
+  const [menuOpen, setMenuOpen] = useState(false);
   const [rememberId, setRememberId] = useState(false);
   const [autoLogin, setAutoLogin] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -20,7 +21,8 @@ const LoginPage: React.FC = () => {
 
   return (
     <div className="bg-white">
-      <Header />
+      <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+      <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <div className="flex justify-center bg-white py-16 px-4">
         <div className="w-full max-w-[480px] flex flex-col items-center">
           <AuthHeader

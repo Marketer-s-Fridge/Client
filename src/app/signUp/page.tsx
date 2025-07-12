@@ -1,17 +1,21 @@
 "use client";
 
 import React from "react";
+import { useState } from "react";
 import Header from "@/components/header";
 import { useRouter } from "next/navigation"; // ✅ Next.js 클라이언트 라우팅
 import { AuthHeader } from "@/components/authFormComponents";
 import Image from "next/image";
+import MobileMenu from "@/components/mobileMenu";
 
 const SignUpPage: React.FC = () => {
   const router = useRouter(); // ✅ 라우터 객체 사용
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <div className="bg-white">
-      <Header />
+      <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+      <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <main className="flex justify-center px-4 py-16">
         <div className="w-full max-w-[550px]">
           <AuthHeader />

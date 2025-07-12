@@ -7,10 +7,12 @@ import { useRouter } from "next/navigation";
 import Footer from "@/components/footer";
 import Pagination from "@/components/pagination";
 import CustomDropdown from "@/components/customDropdown";
+import MobileMenu from "@/components/mobileMenu";
 
 export default function MyContact() {
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   // 샘플 문의 리스트 생성
   const inquiries = Array.from({ length: 9 }).map((_, idx) => ({
@@ -22,7 +24,8 @@ export default function MyContact() {
 
   return (
     <div className="bg-white min-h-screen">
-      <Header />
+      <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+      <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <Banner title="내 문의 내역" />
 
       <main className="max-w-[1024px] mx-auto px-4 sm:px-6 py-12 text-sm">

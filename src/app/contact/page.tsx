@@ -5,6 +5,7 @@ import Header from "@/components/header";
 import Footer from "@/components/footer";
 import Banner from "@/components/banner";
 import CustomDropdown from "@/components/customDropdown";
+import MobileMenu from "@/components/mobileMenu";
 
 export default function ContactPage() {
   const [category, setCategory] = useState("");
@@ -12,6 +13,7 @@ export default function ContactPage() {
   const [email, setEmail] = useState("");
   const [content, setContent] = useState("");
   const [agreed, setAgreed] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const isFormValid = category && title && email && content && agreed;
   const categoryOptions = ["버그 신고", "기능 제안", "기타"];
@@ -26,7 +28,8 @@ export default function ContactPage() {
 
   return (
     <div className="bg-white">
-      <Header />
+      <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+      <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
 
       {/* 상단 배너 */}
 

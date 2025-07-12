@@ -7,6 +7,7 @@ import {
   SubmitButton,
   TextInput,
 } from "@/components/authFormComponents";
+import MobileMenu from "@/components/mobileMenu";
 
 const SignUpPage: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -17,6 +18,7 @@ const SignUpPage: React.FC = () => {
     collect: false,
     marketing: false,
   });
+  const [menuOpen, setMenuOpen] = useState(false);
   const handleAllAgree = (checked: boolean) => {
     setAgreements({
       all: checked,
@@ -42,7 +44,8 @@ const SignUpPage: React.FC = () => {
 
   return (
     <div className="bg-white min-h-screen">
-      <Header />
+      <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+      <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <main className="flex justify-center px-4 py-16">
         <div className="w-full max-w-[550px] flex flex-col items-center text-center">
           <AuthHeader />

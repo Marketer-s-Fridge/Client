@@ -1,13 +1,18 @@
 "use client";
 
 import Header from "@/components/header";
+import { useState } from "react";
 import React from "react";
 import { FiPaperclip } from "react-icons/fi";
+import MobileMenu from "@/components/mobileMenu";
 
 const InquiryDetailPage: React.FC = () => {
+  const [menuOpen, setMenuOpen] = useState(false);
+
   return (
     <div className="flex flex-col bg-white text-[#1D1D1D]">
-      <Header />
+      <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+      <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />{" "}
       <main className="w-full flex justify-center px-4">
         <div className="w-full px-[5%] lg:px-[22.5%] mt-20">
           {/* 문의 카테고리 */}
@@ -87,7 +92,6 @@ const InquiryDetailPage: React.FC = () => {
           확인
         </button>
       </div>
-
       {/* 버튼 */}
       <div className="flex justify-end w-full px-[5%] lg:px-[22.5%] pt-[3%] pb-[8%]">
         <button className="bg-[#FF4545] text-white px-6 py-1.5 rounded-full text-sm font-medium cursor-pointer">

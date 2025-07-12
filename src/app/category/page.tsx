@@ -8,6 +8,7 @@ import Image from "next/image";
 import Footer from "@/components/footer";
 import Pagination from "@/components/pagination";
 import CardGrid from "@/components/cardGrid"; // ✅ 새 컴포넌트 import
+import MobileMenu from "@/components/mobileMenu";
 
 interface Category {
   name: string;
@@ -102,6 +103,7 @@ export default function Page() {
   const [likedItems, setLikedItems] = useState<number[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const toggleLike = (id: number) => {
     setLikedItems((prev) =>
@@ -111,7 +113,8 @@ export default function Page() {
 
   return (
     <div className="w-full bg-white">
-      <Header />
+      <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+      <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
 
       {/* 검색 영역 */}
       <section className="flex flex-col items-center main-red pt-10 pb-6 gap-3 px-4 sm:px-8 lg:px-20 sm:pt-16 lg:pt-20 sm:pb-10">

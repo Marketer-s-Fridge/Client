@@ -8,11 +8,13 @@ import DoughnutChart from "@/components/doughnutChart";
 import ChangeNicknameModal from "@/components/changeNicknameModal";
 import Image from "next/image";
 import Footer from "@/components/footer";
+import MobileMenu from "@/components/mobileMenu";
 
 export default function MyPage() {
   const router = useRouter();
   const [isNicknameModalOpen, setIsNicknameModalOpen] = useState(false);
   const [slideIndex, setSlideIndex] = useState(0); // 🔁 최근 본 콘텐츠 슬라이드 인덱스 상태
+  const [menuOpen, setMenuOpen] = useState(false);
 
   // 최근 본 콘텐츠와 MY 냉장고 데이터
   const recentlyViewedContents = [
@@ -33,19 +35,17 @@ export default function MyPage() {
   const cardsPerPage = 3; // 📦 슬라이드 한 페이지당 카드 수
   const maxSlideIndex =
     Math.ceil(recentlyViewedContents.length / cardsPerPage) - 1;
-    const [likedItems, setLikedItems] = useState<number[]>([]);
+  const [likedItems, setLikedItems] = useState<number[]>([]);
 
-
-    const handleToggleLike = (id: number) => {
-      setLikedItems((prev) =>
-        prev.includes(id)
-          ? prev.filter((item) => item !== id)
-          : [...prev, id]
-      );
-    };
+  const handleToggleLike = (id: number) => {
+    setLikedItems((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+    );
+  };
   return (
     <div className="bg-white">
-      <Header />
+      <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+      <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
 
       {/* 👤 프로필 영역 */}
       <section className="flex py-10 px-[5%] lg:px-[17%] main-red text-white w-full">
@@ -131,7 +131,7 @@ export default function MyPage() {
                               pageIndex * cardsPerPage,
                               pageIndex * cardsPerPage + cardsPerPage
                             )
-                            .map((item,index) => (
+                            .map((item, index) => (
                               <div
                                 key={index}
                                 className="w-[140px] flex-shrink-0"

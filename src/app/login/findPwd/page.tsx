@@ -8,12 +8,14 @@ import {
   TextInput,
   SubmitButton,
 } from "@/components/authFormComponents";
+import MobileMenu from "@/components/mobileMenu";
 
 const FindPwdPage: React.FC = () => {
   const [name, setName] = useState("");
   const [userId, setUserId] = useState("");
   const [email, setEmail] = useState("");
   const [foundAccount, setFoundAccount] = useState(true);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const router = useRouter();
 
@@ -36,7 +38,8 @@ const FindPwdPage: React.FC = () => {
 
   return (
     <div className="bg-white">
-      <Header />
+      <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+      <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
 
       <div className="flex justify-center bg-white py-[16vh] px-4">
         <div className="w-full max-w-[480px] flex flex-col items-center">

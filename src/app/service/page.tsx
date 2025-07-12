@@ -2,15 +2,16 @@
 
 import { useEffect, useRef } from "react";
 import Header from "@/components/header";
+import { useState } from "react";
 import Footer from "@/components/footer";
 import Image from "next/image";
 import CharacterSection from "./charactorSection";
 import { useRouter } from "next/navigation";
 import { SubmitButton } from "@/components/authFormComponents";
+import MobileMenu from "@/components/mobileMenu";
 
 function FadeInSection({ children }: { children: React.ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -40,6 +41,7 @@ function FadeInSection({ children }: { children: React.ReactNode }) {
 
 export default function HomePage() {
   const router = useRouter();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const problemTexts = [
     "지금 마케팅이 막막한가요?",
@@ -49,7 +51,8 @@ export default function HomePage() {
 
   return (
     <main className="min-h-screen bg-white">
-      <Header />
+      <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+      <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
 
       {/* 로고 */}
       <section className="flex flex-col items-start pl-6 sm:pl-[10%] lg:pl-[17%] pt-[8%] sm:pt-[6%] lg:pt-[4%]">

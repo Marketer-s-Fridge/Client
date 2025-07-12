@@ -7,6 +7,7 @@ import React, { useState } from "react";
 import { useEffect } from "react";
 import { TextInput } from "@/components/authFormComponents";
 import CustomDropdown from "@/components/customDropdown";
+import MobileMenu from "@/components/mobileMenu";
 
 export default function EmailJoinPage() {
   const [email, setEmail] = useState("");
@@ -19,6 +20,7 @@ export default function EmailJoinPage() {
   const [passwordCheck, setPasswordCheck] = useState("");
   const [birth, setBirth] = useState({ year: "", month: "", day: "" });
   const [modalOpen, setModalOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const [errors, setErrors] = useState({
     email: false,
@@ -90,10 +92,10 @@ export default function EmailJoinPage() {
   };
   console.log(birth); // 예시: 임시로라도 써주면 빌드 통과함
 
-
   return (
     <div className="bg-white">
-      <Header />
+      <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+      <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <div className="bg-white min-h-screen px-4 sm:px-6 md:px-8 py-16 flex justify-center">
         <div className="w-full max-w-[550px]">
           <AuthHeader />
@@ -120,7 +122,6 @@ export default function EmailJoinPage() {
               rightButtonText="인증 완료"
               onRightButtonClick={() => alert("인증 완료!")}
               className="rounded-lg"
-
             />
 
             <TextInput
@@ -133,7 +134,6 @@ export default function EmailJoinPage() {
               onRightButtonClick={() => alert("중복 확인 메세지 전송!")}
               error={errors.id ? "이미 사용중인 아이디입니다." : ""}
               className="rounded-lg"
-
             />
 
             <TextInput
@@ -146,7 +146,6 @@ export default function EmailJoinPage() {
               onRightButtonClick={() => alert("중복 확인 메세지 전송!")}
               error={errors.nickname ? "중복된 닉네임입니다." : ""}
               className="rounded-lg"
-
             />
 
             <TextInput
@@ -156,7 +155,6 @@ export default function EmailJoinPage() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="rounded-lg"
-
             />
 
             <TextInput
@@ -166,7 +164,6 @@ export default function EmailJoinPage() {
               onChange={(e) => setPhone(e.target.value)}
               placeholder="- 없이 숫자만"
               className="rounded-lg"
-
             />
 
             <InputRow label="생년월일">
@@ -216,7 +213,6 @@ export default function EmailJoinPage() {
                   : ""
               }
               className="rounded-lg"
-
             />
 
             <TextInput
@@ -229,7 +225,6 @@ export default function EmailJoinPage() {
                 errors.passwordCheck ? "비밀번호를 다시 확인해주세요." : ""
               }
               className="rounded-lg"
-
             />
 
             {/* 동의 체크박스 */}

@@ -71,6 +71,7 @@ const contents = [
 export default function MyFridgePage() {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [likedItems, setLikedItems] = useState<number[]>(
     contents.map((item) => item.id) // ✅ 모든 아이템을 liked 상태로 초기화
   );
@@ -91,7 +92,7 @@ export default function MyFridgePage() {
 
   return (
     <div>
-      <Header />
+      <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <div className=" px-[10%] sm:px-[17%] py-8">
         <h1 className="text-lg sm:text-2xl font-bold mb-4">MY 냉장고</h1>
         <CategoryFilter
