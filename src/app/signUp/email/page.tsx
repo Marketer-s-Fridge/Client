@@ -17,7 +17,7 @@ export default function EmailJoinPage() {
   const [code, setCode] = useState("");
   const [password, setPassword] = useState("");
   const [passwordCheck, setPasswordCheck] = useState("");
-  const [_, setBirth] = useState({ year: "", month: "", day: "" });
+  const [, setBirth] = useState({ year: "", month: "", day: "" });
   const [modalOpen, setModalOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
