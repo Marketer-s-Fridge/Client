@@ -52,43 +52,43 @@ export const TextInput: React.FC<TextInputProps> = ({
   error,
   rightButtonText,
   onRightButtonClick,
-  rounded = "rounded", // 기본값
+  rounded = "rounded",
   borderColor = "border-[#C2C2C2]",
   textColor = "text-gray-900",
   bgColor = "bg-white",
 }) => {
   return (
-    <div className="w-7/9 mx-auto flex flex-col">
-      <div className="flex items-center gap-2">
-        <label className="text-[14.5px] w-28 font-semibold whitespace-nowrap">
+    <div className="w-full px-4 sm:px-0 max-w-[500px] mx-auto flex flex-col">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+        <label className="text-[14px] sm:text-[14.5px] min-w-[80px] sm:w-28 font-semibold whitespace-nowrap">
           {label}
           {required && <span className="text-red-500 ml-1">*</span>}
         </label>
 
-        <input
-          type={type}
-          value={value}
-          onChange={onChange}
-          placeholder={placeholder}
-          className={`text-[13px] flex-1 border ${textColor} ${bgColor} ${
-            error ? "border-red-500" : borderColor
-          } ${rounded} px-3 py-2 ${className}`}
-        />
+        <div className="flex-1 flex gap-2">
+          <input
+            type={type}
+            value={value}
+            onChange={onChange}
+            placeholder={placeholder}
+            className={`w-full text-[13px] border ${textColor} ${bgColor} ${
+              error ? "border-red-500" : borderColor
+            } ${rounded} px-3 py-2 ${className}`}
+          />
 
-        {rightButtonText && (
-          <button
-            type="button"
-            onClick={onRightButtonClick}
-            className="text-[13px] bg-gray-200 rounded px-3 py-2"
-          >
-            {rightButtonText}
-          </button>
-        )}
+          {rightButtonText && (
+            <button
+              type="button"
+              onClick={onRightButtonClick}
+              className="text-[13px] whitespace-nowrap bg-gray-200 rounded px-3 py-2"
+            >
+              {rightButtonText}
+            </button>
+          )}
+        </div>
       </div>
 
-      {error && (
-        <p className="text-red-500 text-xs mt-1 ml-31">{error}</p>
-      )}
+      {error && <p className="text-red-500 text-xs mt-1 ml-[80px]">{error}</p>}
     </div>
   );
 };
