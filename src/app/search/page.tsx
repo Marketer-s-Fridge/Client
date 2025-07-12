@@ -1,3 +1,4 @@
+"use client"
 import Header from "@/components/header";
 import { Suspense } from "react";
 import SearchClient from "./searchClient";
