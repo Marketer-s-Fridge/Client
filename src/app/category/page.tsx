@@ -118,7 +118,9 @@ export default function Page() {
 
       {/* 검색 영역 */}
       <section className="flex flex-col items-center main-red pt-10 pb-6 gap-3 px-4 sm:px-8 lg:px-20 sm:pt-16 lg:pt-20 sm:pb-10">
-        <SearchInput showInstagramButton={false} />
+        <div className="hidden md:block">
+          <SearchInput showInstagramButton={false} />
+        </div>
 
         {/* 카테고리 아이콘들 */}
         <div className="flex justify-center mt-6 mb-4 sm:mt-10 sm:mb-6 gap-2 sm:gap-6 lg:gap-10">

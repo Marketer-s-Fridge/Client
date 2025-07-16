@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 
 interface CardItem {
@@ -21,7 +21,17 @@ export default function CardGrid({
   likedItems,
   onToggleLike,
 }: CardGridProps) {
-  // ✅ columns 값에 따라 Tailwind 클래스를 수동으로 지정
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768); // Tailwind 기준 md 미만이면 모바일
+    };
+    handleResize(); // 초기 실행
+    window.addEventListener("resize", handleResize); // 리사이즈 대응
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const getLgGridColsClass = () => {
     switch (columns) {
       case 1:
@@ -37,15 +47,18 @@ export default function CardGrid({
       case 6:
         return "lg:grid-cols-6";
       default:
-        return "lg:grid-cols-4"; // 기본값
+        return "lg:grid-cols-4";
     }
   };
+
+  // ✅ 모바일이면 최대 6개로 제한
+  const displayedItems = isMobile ? items.slice(0, 6) : items;
 
   return (
     <div
       className={`grid grid-cols-2 sm:grid-cols-3 ${getLgGridColsClass()} gap-x-4 sm:gap-x-6 gap-y-8 sm:gap-y-10`}
     >
-      {items.map((item) => (
+      {displayedItems.map((item) => (
         <div key={item.id} className="w-full">
           <div className="aspect-[3/4] w-full rounded-lg overflow-hidden bg-gray-100">
             <Image

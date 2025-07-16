@@ -14,8 +14,7 @@ const menuItems = [
   { label: "My Page", path: "/myPage" },
   { label: "Log In | Sign Up", path: "/login" },
 ];
-
-const MobileMenu = ({ menuOpen, setMenuOpen }: MobileMenuProps) => {
+export const MobileMenu = ({ menuOpen, setMenuOpen }: MobileMenuProps) => {
   const router = useRouter();
 
   return (
@@ -23,11 +22,13 @@ const MobileMenu = ({ menuOpen, setMenuOpen }: MobileMenuProps) => {
       className={`fixed inset-0 z-50 transition-all duration-300 ${
         menuOpen ? "bg-black/40" : "bg-transparent pointer-events-none"
       }`}
+      onClick={() => setMenuOpen(false)} // ✅ 오버레이 클릭 시 닫기
     >
       <aside
         className={`fixed top-0 right-0 h-full w-64 bg-white p-6 shadow-md transition-transform duration-300 ease-in-out ${
           menuOpen ? "translate-x-0" : "translate-x-full"
         }`}
+        onClick={(e) => e.stopPropagation()} // ✅ aside 클릭은 전파 막기
       >
         <button
           className="text-right block ml-auto mb-4"
