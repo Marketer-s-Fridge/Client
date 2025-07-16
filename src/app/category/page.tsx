@@ -117,8 +117,8 @@ export default function Page() {
       <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
 
       {/* 검색 영역 */}
-      <section className="flex flex-col items-center main-red pt-10 pb-6 gap-3 px-4 sm:px-8 lg:px-20 sm:pt-16 lg:pt-20 sm:pb-10">
-        <div className="hidden md:block">
+      <section className="flex flex-col items-center main-red pt-5 pb-6 gap-3 px-4 sm:px-8 lg:px-20 sm:pt-10 lg:pt-15 sm:pb-10">
+        <div className="hidden md:flex w-[100vw]">
           <SearchInput showInstagramButton={false} />
         </div>
 
