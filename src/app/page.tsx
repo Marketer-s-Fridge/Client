@@ -49,8 +49,35 @@ export default function HomePage() {
           </div>
         </div>
 
+        {/* 모바일: 슬라이드 드래그형 카드뉴스 */}
+        <div className="block md:hidden relative mt-4 px-5 w-full py-8">
+          <h3 className="text-xl md:text-2xl font-bold mb-4">New Contents</h3>
+          <Swiper
+            slidesPerView={"auto"}
+            spaceBetween={10}
+            modules={[Autoplay]}
+            className="w-full"
+          >
+            {[1, 2, 3, 4].map((i) => (
+              <SwiperSlide
+                key={i}
+                className="!w-[40%] max-w-xs shrink-0" // 👈 핵심: 슬라이드 크기 고정
+              >
+                <Image
+                  alt={`카드뉴스 ${i}`}
+                  src={`/images/cardNews/${i}/001.png`}
+                  className="aspect-[3/4] object-cover shadow cursor-pointer rounded-lg"
+                  onClick={() => router.push("/cardNews")}
+                  width={300}
+                  height={400}
+                />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
+
         {/* 모바일: 슬라이드 하나씩 */}
-        <div className="block md:hidden relative mt-4">
+        {/* <div className="block md:hidden relative mt-4">
           <Swiper
             slidesPerView={1}
             loop
@@ -71,10 +98,10 @@ export default function HomePage() {
               </SwiperSlide>
             ))}
           </Swiper>
-        </div>
+        </div> */}
       </section>
       {/* 인기 콘텐츠 + 에디터 픽 */}
-      <section className="bg-white py-12 px-5 sm:px-10 lg:px-[25%]">
+      <section className="hidden md:block bg-white py-12 px-5 sm:px-10 lg:px-[25%]">
         <div className="max-w-[1024px] mx-auto grid grid-cols-1 gap-16">
           {/* 인기 콘텐츠 */}
           <div className="flex flex-col">
@@ -188,6 +215,60 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Hot Contents */}
+      <div className="md:hidden flex flex-col px-5">
+        <div className="flex items-start gap-2 mb-4">
+          <Image
+            alt="인기콘텐츠 아이콘"
+            src="/icons/popular-icon.png"
+            width={28}
+            height={28}
+            className="w-7 h-7"
+          />
+          <h3 className="text-xl md:text-2xl font-bold">Hot Contents</h3>
+        </div>
+        <Swiper slidesPerView={1} spaceBetween={20} className=" w-full">
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <SwiperSlide key={i} className="!w-full">
+              <Image
+                alt={`Hot 콘텐츠 ${i}`}
+                src={`/images/cardNews/2/00${i}.png`}
+                className="w-full aspect-[3/4] object-cover rounded-lg shadow cursor-pointer"
+                width={600}
+                height={800}
+              />
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </div>
+
+      {/* Editor Pick */}
+      <div className="md:hidden flex flex-col mt-14 px-5">
+        <div className="flex items-start gap-2 mb-4">
+          <Image
+            alt="에디터픽 아이콘"
+            src="/icons/editorPick-icon.png"
+            width={28}
+            height={28}
+            className="w-7 h-7"
+          />
+          <h3 className="text-xl md:text-2xl font-bold">Editor Pick</h3>
+        </div>
+        <Swiper slidesPerView={1} spaceBetween={20} className="w-full">
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <SwiperSlide key={i} className="!w-full">
+              <Image
+                alt={`Editor 콘텐츠 ${i}`}
+                src={`/images/cardNews/3/00${i}.png`}
+                className="w-full aspect-[3/4] object-cover rounded-lg shadow cursor-pointer"
+                width={600}
+                height={800}
+              />
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </div>
 
       <Footer />
     </main>

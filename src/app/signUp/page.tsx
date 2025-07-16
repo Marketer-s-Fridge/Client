@@ -26,7 +26,7 @@ const SignUpPage: React.FC = () => {
               <Image
                 src="/icons/kakao-join-bt.png"
                 alt="카카오로 시작하기"
-                className="w-5/8  mb-4 mx-auto"
+                className="w-full max-w-[350px]  mb-4 mx-auto"
                 width={600}
                 height={200}
               />
@@ -37,7 +37,7 @@ const SignUpPage: React.FC = () => {
               <Image
                 src="/icons/naver-join-bt.png"
                 alt="네이버로 시작하기"
-                className="w-5/8 mb-4 mx-auto"
+                className="w-full max-w-[350px] mb-4 mx-auto"
                 width={600}
                 height={200}
               />
@@ -48,7 +48,7 @@ const SignUpPage: React.FC = () => {
               <Image
                 src="/icons/google-join-bt.png"
                 alt="Google로 시작하기"
-                className="w-5/8 mb-4 mx-auto"
+                className="w-full max-w-[350px] mb-4 mx-auto"
                 width={600}
                 height={200}
               />
@@ -59,7 +59,7 @@ const SignUpPage: React.FC = () => {
               <Image
                 src="/icons/email-join-bt.png"
                 alt="이메일로 시작하기"
-                className="w-5/8 mb-4 mx-auto"
+                className="w-full max-w-[350px] mb-4 mx-auto"
                 width={600}
                 height={200}
               />

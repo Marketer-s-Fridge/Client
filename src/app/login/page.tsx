@@ -31,8 +31,6 @@ const LoginPage: React.FC = () => {
 필요한 마케팅 콘텐츠를 골라보는 냉장고, 지금 로그인하세요!`}
           />
 
-          <h2 className="text-[24px] font-semibold mb-4">일반 로그인</h2>
-
           <div className="w-9/11 flex flex-col items-center gap-y-4 mb-3">
             <input
               placeholder="아이디"
@@ -148,35 +146,79 @@ const LoginPage: React.FC = () => {
 
           {/* ✅ 소셜 로그인 이미지 버튼 */}
           <div className="w-full flex flex-col items-center gap-y-3 mb-10">
-            <button onClick={() => alert("카카오 로그인")}>
+            <button
+              onClick={() => alert("카카오 로그인")}
+              className="hidden md:block"
+            >
               <Image
                 src="/icons/kakao-login-bt.png"
                 alt="카카오 로그인"
-                className="w-full max-w-[400px]"
+                className="w-full max-w-[300px]"
                 width={500}
                 height={100}
               />
             </button>
 
-            <button onClick={() => alert("네이버 로그인")}>
+            <button
+              onClick={() => alert("네이버 로그인")}
+              className="hidden md:block"
+            >
               <Image
                 src="/icons/naver-login-bt.png"
                 alt="네이버 로그인"
-                className="w-full max-w-[400px]"
+                className="w-full max-w-[300px]"
                 width={500}
                 height={100}
               />
             </button>
 
-            <button onClick={() => alert("Google 로그인")}>
+            <button
+              onClick={() => alert("Google 로그인")}
+              className="hidden md:block"
+            >
               <Image
                 src="/icons/google-login-bt.png"
                 alt="Google 로그인"
-                className="w-full max-w-[400px]"
+                className="w-full max-w-[300px]"
                 width={500}
                 height={100}
               />
             </button>
+
+            <div className="md:hidden flex flex-row gap-5">
+              <button onClick={() => alert("카카오 로그인")} className="">
+                <Image
+                  src="/icons/kakao-round.png"
+                  alt="카카오 로그인"
+                  className="w-full max-w-[50px] "
+                  width={500}
+                  height={100}
+                />
+              </button>
+
+              <button onClick={() => alert("네이버 로그인")}>
+                <Image
+                  src="/icons/naver-round.png"
+                  alt="네이버 로그인"
+                  className="w-full max-w-[50px] "
+                  width={500}
+                  height={100}
+                />
+              </button>
+
+              <button
+                onClick={() => alert("Google 로그인")}
+                className="rounded-full border-1 border-gray-300"
+              >
+                <Image
+                  src="/icons/google-round.png"
+                  alt="Google 로그인"
+                  className="w-full max-w-[50px] "
+                  width={500}
+                  height={100}
+                />
+              </button>
+            </div>
           </div>
         </div>
       </div>
