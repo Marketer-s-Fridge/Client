@@ -13,7 +13,7 @@ const SignUpPage: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <div className="bg-white">
+    <div className="bg-white pt-11 md:pt-0">
       <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <main className="flex justify-center px-4 py-16">

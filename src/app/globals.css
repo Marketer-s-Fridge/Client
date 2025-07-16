@@ -26,6 +26,8 @@
   display: none;
 }
 
+
+
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -70,4 +72,17 @@ body {
 
 .fade-in-visible {
   opacity: 1;
+  
+}
+/* 초기 상태 */
+.fade-in-section2 {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+/* 보이는 상태 */
+.fade-in-visible2 {
+  opacity: 1;
+  transform: translateY(0px);
 }

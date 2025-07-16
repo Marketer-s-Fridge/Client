@@ -9,17 +9,29 @@ import CharacterSection from "./charactorSection";
 import { useRouter } from "next/navigation";
 import { SubmitButton } from "@/components/authFormComponents";
 import MobileMenu from "@/components/mobileMenu";
-
-function FadeInSection({ children }: { children: React.ReactNode }) {
+function FadeInSection({
+  children,
+  delay = 0,
+  mode,
+}: {
+  children: React.ReactNode;
+  delay?: number;
+  mode?: "translate"; // 선택적으로 "translate" 모드 지원
+}) {
   const ref = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (ref.current) {
           if (entry.isIntersecting) {
-            ref.current.classList.add("fade-in-visible");
+            ref.current.classList.add(
+              mode === "translate" ? "fade-in-visible2" : "fade-in-visible"
+            );
           } else {
-            ref.current.classList.remove("fade-in-visible");
+            ref.current.classList.remove(
+              mode === "translate" ? "fade-in-visible2" : "fade-in-visible"
+            );
           }
         }
       },
@@ -27,12 +39,15 @@ function FadeInSection({ children }: { children: React.ReactNode }) {
     );
     if (ref.current) observer.observe(ref.current);
     return () => observer.disconnect();
-  }, []);
+  }, [mode]);
 
   return (
     <div
       ref={ref}
-      className="opacity-0 transition-opacity duration-1500 fade-in-section"
+      style={{ transitionDelay: `${delay}ms` }}
+      className={`opacity-0 transition-opacity duration-1000 ${
+        mode === "translate" ? "fade-in-section2" : "fade-in-section"
+      }`}
     >
       {children}
     </div>
@@ -50,7 +65,7 @@ export default function HomePage() {
   ];
 
   return (
-    <main className="min-h-screen bg-white">
+    <main className="min-h-screen bg-white pt-11 md:pt-0">
       <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
 
@@ -108,14 +123,66 @@ export default function HomePage() {
               우리는 콘텐츠에 이런 이야기들을 담습니다.
             </p>
           </div>
-          <div className="w-full flex justify-center">
-            <Image
-              src="/images/contents2.png"
-              alt="콘텐츠 설명"
-              width={1059}
-              height={501}
-              className="w-full max-w-[800px]"
-            />
+          <div className="relative w-full flex mt-20 justify-center">
+            {/* 종이 + 위에 덮일 요소들 감싸는 부모 */}
+            <div className="relative w-full max-w-[300px] ">
+              <Image
+                src="/images/종이.png"
+                alt="콘텐츠 설명"
+                width={1059}
+                height={501}
+                className="w-full  "
+              />
+
+              {/* 겹쳐질 이미지들 */}
+              <FadeInSection delay={0} mode="translate">
+                <div className="absolute  right-[70%] bottom-[300px] w-full max-w-[300px] z-40">
+                  <Image
+                    src="/images/트렌드리포트.png"
+                    alt="트렌드리포트"
+                    width={408}
+                    height={161}
+                    className="object-contain w-full"
+                  />
+                </div>
+              </FadeInSection>
+
+              <FadeInSection delay={600} mode="translate">
+                <div className="absolute  left-[70%] bottom-[300px] w-full max-w-[300px] z-40">
+                  <Image
+                    src="/images/광고사례분석.png"
+                    alt="광고사례분석"
+                    width={408}
+                    height={161}
+                    className="object-contain w-full"
+                  />
+                </div>
+              </FadeInSection>
+
+              <FadeInSection delay={1200} mode="translate">
+                <div className="absolute right-[70%] bottom-[100px] w-full max-w-[300px] z-40">
+                  <Image
+                    src="/images/캠페인모음.png"
+                    alt="캠페인모음"
+                    width={408}
+                    height={161}
+                    className="object-contain w-full"
+                  />
+                </div>
+              </FadeInSection>
+
+              <FadeInSection delay={1800} mode="translate">
+                <div className="absolute left-[70%] bottom-[100px] w-full max-w-[300px] z-40">
+                  <Image
+                    src="/images/브랜드전략코멘터리.png"
+                    alt="브랜드전략코멘터리"
+                    width={408}
+                    height={161}
+                    className="object-contain w-full"
+                  />
+                </div>
+              </FadeInSection>
+            </div>
           </div>
         </section>
       </FadeInSection>

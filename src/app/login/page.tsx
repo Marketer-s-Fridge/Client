@@ -20,7 +20,7 @@ const LoginPage: React.FC = () => {
   const router = useRouter();
 
   return (
-    <div className="bg-white">
+    <div className="bg-white pt-11 md:pt-0">
       <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <div className="flex justify-center bg-white py-16 px-4">

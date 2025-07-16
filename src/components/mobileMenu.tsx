@@ -7,12 +7,12 @@ interface MobileMenuProps {
 }
 
 const menuItems = [
-  { label: "홈", path: "/" },
-  { label: "서비스 소개", path: "/service" },
-  { label: "카테고리", path: "/category" },
-  { label: "문의하기", path: "/contact" },
-  { label: "마이페이지", path: "/myPage" },
-  { label: "로그인 | 회원가입", path: "/login" },
+  { label: "Home", path: "/" },
+  { label: "About Us", path: "/service" },
+  { label: "Category", path: "/category" },
+  { label: "Contact Us", path: "/contact" },
+  { label: "My Page", path: "/myPage" },
+  { label: "Log In | Sign Up", path: "/login" },
 ];
 
 const MobileMenu = ({ menuOpen, setMenuOpen }: MobileMenuProps) => {

@@ -37,7 +37,7 @@ const FindPwdPage: React.FC = () => {
   };
 
   return (
-    <div className="bg-white">
+    <div className="bg-white pt-11 md:pt-0">
       <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
 

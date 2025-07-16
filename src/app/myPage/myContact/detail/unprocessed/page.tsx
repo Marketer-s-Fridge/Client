@@ -10,7 +10,7 @@ const InquiryDetailPage: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <div className="flex flex-col bg-white text-[#1D1D1D]">
+    <div className="flex flex-col bg-white text-[#1D1D1D] pt-11 md:pt-0">
       <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />{" "}
       <main className="w-full flex justify-center px-4">

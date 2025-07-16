@@ -16,7 +16,7 @@ export default function PasswordChangePage() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <div className="bg-white min-h-screen">
+    <div className="bg-white min-h-screen pt-11 md:pt-0">
       <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <Banner title="계정 관리" />

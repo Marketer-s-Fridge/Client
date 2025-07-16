@@ -46,7 +46,7 @@ export default function CharacterSection() {
             />
 
             {/* 호버 시 정보 */}
-            <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-black text-white rounded-lg px-4 py-2 text-xs md:text-sm text-center z-10 opacity-0 group-hover:opacity-90 transition-opacity duration-200 whitespace-nowrap">
+            <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-white text-black rounded-lg px-4 py-2 text-xs md:text-sm text-center z-10 opacity-0 group-hover:opacity-90 transition-opacity duration-200 whitespace-nowrap">
               <p className="font-bold text-sm md:text-lg">{char.name}</p>
               <p className="opacity-80">{char.tags.join(" ")}</p>
             </div>

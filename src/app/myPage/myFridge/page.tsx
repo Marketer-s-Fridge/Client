@@ -7,6 +7,7 @@ import Pagination from "@/components/pagination";
 import ScrollToTopButton from "@/components/scrollToTopButton";
 import CardGrid from "@/components/cardGrid";
 import CategoryFilter from "@/components/categoryFilter";
+import MobileMenu from "@/components/mobileMenu";
 
 const categories = ["전체", "Beauty", "Fashion", "Food", "Lifestyle", "Tech"];
 
@@ -91,8 +92,9 @@ export default function MyFridgePage() {
         );
 
   return (
-    <div>
+    <div className="pt-11 md:pt-0">
       <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+      <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <div className=" px-[10%] sm:px-[17%] py-8">
         <h1 className="text-lg sm:text-2xl font-bold mb-4">MY 냉장고</h1>
         <CategoryFilter

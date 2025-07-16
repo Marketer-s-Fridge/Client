@@ -14,36 +14,50 @@ export default function ContactPage() {
   const [content, setContent] = useState("");
   const [agreed, setAgreed] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [fileName, setFileName] = useState("");
 
   const isFormValid = category && title && email && content && agreed;
-  const categoryOptions = ["버그 신고", "기능 제안", "기타"];
+
+  const categoryOptions = [
+    "시스템 오류",
+    "회원/계정 관련",
+    "콘텐츠 관련",
+    "제안/피드백",
+    "광고/제휴 문의",
+    "기타",
+  ];
+
+  const placeholderMap: Record<string, string> = {
+    "시스템 오류":
+      "어떤 오류가 발생했는지 가능한 한 자세히 알려주세요! (예: 로그인 시 로딩이 멈춰요)",
+    "회원/계정 관련":
+      "회원가입/로그인/계정 정보와 관련된 문의 내용을 입력해주세요 :)",
+    "콘텐츠 관련":
+      "오탈자, 이미지 깨짐, 잘못된 정보 등 콘텐츠에서 발견한 내용을 알려주시면 빠르게 확인할게요!",
+    "제안/피드백": "더 나은 서비스를 위한 의견이 있다면 편하게 말씀해주세요 :)",
+    "광고/제휴 문의":
+      "광고나 제휴 관련 내용을 자유롭게 작성해주세요. 담당자가 빠르게 확인할게요!",
+    기타: "어떤 문의든 괜찮아요! 궁금한 점이나 불편한 점을 자유롭게 적어주세요 :)",
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!isFormValid) return;
-
-    // 제출 처리 로직
     alert("문의가 제출되었습니다.");
   };
 
   return (
-    <div className="bg-white">
+    <div className="bg-white pt-11 md:pt-0">
       <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+      <Banner title="문의하기" />
 
-      {/* 상단 배너 */}
-
-      <Banner title="문의하기"></Banner>
-
-      {/* 폼 섹션 */}
       <main className="max-w-[800px] mx-auto px-[5%] sm:px-4 py-12 relative">
         <form className="space-y-6" onSubmit={handleSubmit}>
-          {/* 분류 */}
           <div className="flex flex-col md:flex-row md:items-center gap-y-2">
             <label className="w-[100px] text-medium sm:text-lg text-gray-800 font-bold">
               분류
             </label>
-
             <div className="flex-1">
               <CustomDropdown
                 options={categoryOptions}
@@ -54,21 +68,19 @@ export default function ContactPage() {
             </div>
           </div>
 
-          {/* 제목 */}
           <div className="flex flex-col md:flex-row md:items-center gap-y-2">
             <label className="w-[100px] text-medium sm:text-lg text-gray-800 font-bold">
               제목
             </label>
             <input
               type="text"
-              placeholder="ex) 콘텐츠를 저장할 수 없어요."
+              placeholder="문의 제목을 적어주세요"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               className="flex-1 border border-gray-300 rounded px-3 py-2 text-sm"
             />
           </div>
 
-          {/* 이메일 */}
           <div className="flex flex-col md:flex-row md:items-center gap-y-2">
             <label className="w-[100px] text-medium sm:text-lg text-gray-800 font-bold">
               이메일
@@ -88,17 +100,30 @@ export default function ContactPage() {
               파일첨부
             </label>
             <div className="flex-1 flex items-center gap-3">
+              {/* 숨겨진 input */}
               <input
+                id="file-upload"
                 type="file"
-                className="border border-gray-300 rounded px-3 py-1 text-sm"
+                className="hidden"
+                onChange={(e) => {
+                  const fileName = e.target.files?.[0]?.name || "";
+                  setFileName(fileName);
+                }}
               />
-              <span className="text-xs text-gray-500">
-                PNG, JPG, PDF 가능 (최대 10MB)
+              {/* 커스텀 버튼 */}
+              <label
+                htmlFor="file-upload"
+                className="cursor-pointer text-white bg-[#555555] hover:bg-[#959595] rounded px-3 py-2 text-sm"
+              >
+                파일 선택
+              </label>
+              {/* 파일 이름 표시 */}
+              <span className="text-sm text-gray-600">
+                {fileName || "PNG, JPG, PDF 가능 (최대 10MB)"}
               </span>
             </div>
           </div>
 
-          {/* 내용 */}
           <div className="flex flex-col md:flex-row md:items-start gap-y-2">
             <label className="w-[100px] text-medium sm:text-lg text-gray-800 font-bold">
               내용
@@ -109,15 +134,16 @@ export default function ContactPage() {
                 maxLength={1000}
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
-                placeholder="문제가 발생한 화면과 증상을 자세히 작성해주세요."
+                placeholder={
+                  placeholderMap[category] ||
+                  "문제가 발생한 화면과 증상을 자세히 작성해주세요."
+                }
                 className="w-full border border-gray-300 rounded px-3 py-2 text-sm"
               />
               <div className="absolute text-right text-xs text-gray-500 right-3 bottom-12">
                 {`${content.length}/1000`}
               </div>
 
-              {/* 개인정보 수집 동의 */}
-              {/* 개인정보 수집 동의 */}
               <div className="flex items-start mt-4 text-sm gap-2">
                 <div className="relative w-5 h-5">
                   <input
@@ -151,7 +177,6 @@ export default function ContactPage() {
                     )}
                   </div>
                 </div>
-
                 <label htmlFor="agree" className="text-gray-500 leading-5">
                   개인정보 수집 및 이용에 동의합니다. [필수]
                   <a href="#" className="underline ml-2">
@@ -162,7 +187,6 @@ export default function ContactPage() {
             </div>
           </div>
 
-          {/* 제출버튼 */}
           <div className="text-end mt-10">
             <button
               type="submit"

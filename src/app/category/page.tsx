@@ -112,7 +112,7 @@ export default function Page() {
   };
 
   return (
-    <div className="w-full bg-white">
+    <div className="w-full bg-white pt-11 md:pt-0">
       <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
 

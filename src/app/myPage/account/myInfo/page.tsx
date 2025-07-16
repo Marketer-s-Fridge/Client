@@ -17,7 +17,7 @@ export default function AccountPage() {
   const [phone, setPhone] = useState("");
 
   return (
-    <div className="bg-white min-h-screen">
+    <div className="bg-white min-h-screen pt-11 md:pt-0">
       <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <Banner title="계정 관리" />
