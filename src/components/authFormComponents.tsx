@@ -10,7 +10,7 @@ interface AuthHeaderProps {
 
 export const AuthHeader: React.FC<AuthHeaderProps> = ({
   title = "회원가입",
-  description = `마케터의 냉장고에 처음 오셨군요!\n신선한 마케팅 아이디어를 꺼내보기 전에\n 먼저 나만의 냉장고를 만들어보세요.`,
+  description = `마케터의 냉장고에 처음 오셨군요!\n신선한 마케팅 아이디어를 꺼내보기 전에\n먼저 나만의 냉장고를 만들어보세요.`,
 }) => {
   return (
     <div className="w-full max-w-[550px] mx-auto text-center mb-10">
@@ -160,7 +160,8 @@ export const SubmitButton: React.FC<SubmitButtonProps> = ({
   color = "#FF4545",
   className = "",
 }) => {
-  const baseStyle = "cursor-pointer text-[17px] font-bold py-3 rounded-lg place-self-center";
+  const baseStyle =
+    "cursor-pointer text-[17px] font-bold py-3 rounded-lg place-self-center";
   const widthStyle = fullWidth ? "w-9/11" : "px-6";
   const solidStyle = `bg-[${color}] text-white`;
   const outlineStyle = `bg-white border border-[${color}] text-[${color}]`;
@@ -176,4 +177,3 @@ export const SubmitButton: React.FC<SubmitButtonProps> = ({
     </button>
   );
 };
-

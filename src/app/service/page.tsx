@@ -127,7 +127,7 @@ export default function HomePage() {
             {/* 종이 + 위에 덮일 요소들 감싸는 부모 */}
             <div className="relative w-full max-w-[300px] ">
               <Image
-                src="/images/종이.png"
+                src="/images/paper.png"
                 alt="콘텐츠 설명"
                 width={1059}
                 height={501}
@@ -138,7 +138,7 @@ export default function HomePage() {
               <FadeInSection delay={0} mode="translate">
                 <div className="absolute  right-[70%] bottom-[300px] w-full max-w-[300px] z-40">
                   <Image
-                    src="/images/트렌드리포트.png"
+                    src="/images/trend_report.png"
                     alt="트렌드리포트"
                     width={408}
                     height={161}
@@ -150,7 +150,7 @@ export default function HomePage() {
               <FadeInSection delay={600} mode="translate">
                 <div className="absolute  left-[70%] bottom-[300px] w-full max-w-[300px] z-40">
                   <Image
-                    src="/images/광고사례분석.png"
+                    src="/images/ad_case_analysis.png"
                     alt="광고사례분석"
                     width={408}
                     height={161}
@@ -162,7 +162,7 @@ export default function HomePage() {
               <FadeInSection delay={1200} mode="translate">
                 <div className="absolute right-[70%] bottom-[100px] w-full max-w-[300px] z-40">
                   <Image
-                    src="/images/캠페인모음.png"
+                    src="/images/campaign_collection.png"
                     alt="캠페인모음"
                     width={408}
                     height={161}
@@ -174,7 +174,7 @@ export default function HomePage() {
               <FadeInSection delay={1800} mode="translate">
                 <div className="absolute left-[70%] bottom-[100px] w-full max-w-[300px] z-40">
                   <Image
-                    src="/images/브랜드전략코멘터리.png"
+                    src="/images/brand_strategy_commentary.png"
                     alt="브랜드전략코멘터리"
                     width={408}
                     height={161}
