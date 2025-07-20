@@ -92,7 +92,7 @@ export default function EmailJoinPage() {
     <div className="bg-white pt-11 md:pt-0">
       <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
-      <div className="bg-white px-4 sm:px-6 md:px-8 pt-28 pb-16 min-h-screen flex justify-center">
+      <div className="bg-white px-4 sm:px-6 md:px-8 py-16 min-h-screen flex justify-center">
         <div className="w-full max-w-[550px]">
           <AuthHeader />
           <form className="w-full flex flex-col gap-6 text-sm">
@@ -157,7 +157,7 @@ export default function EmailJoinPage() {
               className="rounded-lg"
             />
             <InputRow label="생년월일">
-              <div className="flex flex-col sm:flex-row gap-2 w-full">
+              <div className="flex flex-col flex-1 sm:flex-row gap-2 w-full">
                 <CustomDropdown
                   label="년도"
                   options={Array.from({ length: 50 }, (_, i) =>

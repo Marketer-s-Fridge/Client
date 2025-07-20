@@ -20,9 +20,9 @@ const Footer: React.FC = () => {
           {/* 회사 정보 및 타이틀 */}
 
           {/* 하단 정책 관련 */}
-          <div className="flex flex-col md:flex-row justify-between items-center w-full gap-4">
+          <div className="flex  flex-row justify-between items-center w-full gap-4">
             {/* 왼쪽 정책 메뉴 */}
-            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center w-full mb-4 gap-6">
+            <div className="flex lg:flex-row justify-between items-start lg:items-center w-full mb-4 gap-6">
               <div className="flex flex-col gap-2 self-center items-start">
                 {/* 인스타 링크 */}
                 <a
@@ -32,7 +32,7 @@ const Footer: React.FC = () => {
                   className="flex flex-row items-center gap-2"
                 >
                   <Image
-                    src="/icons/insta-bt2.png"
+                    src="/icons/insta-bt3.png"
                     width={150}
                     height={150}
                     alt="인스타그램버튼"
@@ -46,7 +46,7 @@ const Footer: React.FC = () => {
                 {/* 메일 주소 */}
                 <div className="flex flex-row items-center gap-2">
                   <Image
-                    src="/icons/mail-icon.png" // 아이콘 경로는 실제 프로젝트에 맞게 조정
+                    src="/icons/mail-icon2.png" // 아이콘 경로는 실제 프로젝트에 맞게 조정
                     width={150}
                     height={150}
                     alt="메일 아이콘"

@@ -62,7 +62,7 @@ export default function ChangeNicknameModal({ onClose }: Props) {
               type="text"
               value={email}
               disabled
-              className="flex-1 bg-white text-gray-500 border border-gray-300 rounded-lg px-3 py-1.5 text-sm"
+              className="flex flex-1 bg-white text-gray-500 border border-gray-300 rounded-lg px-3 py-1.5 text-sm"
             />
           </div>
 
@@ -75,7 +75,7 @@ export default function ChangeNicknameModal({ onClose }: Props) {
               type="text"
               value={currentNickname}
               disabled
-              className="flex-1 bg-white text-gray-500 border border-gray-300 rounded-lg px-3 py-1.5 text-sm"
+              className="flex flex-1 bg-white text-gray-500 border border-gray-300 rounded-lg px-3 py-1.5 text-sm"
             />
           </div>
 
