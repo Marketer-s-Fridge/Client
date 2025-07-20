@@ -89,13 +89,13 @@ export default function EmailJoinPage() {
   };
 
   return (
-    <div className="bg-white pt-11 md:pt-0">
+    <div className="bg-white pt-18 md:pt-0">
       <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <div className="bg-white px-4 sm:px-6 md:px-8 py-16 min-h-screen flex justify-center">
         <div className="w-full max-w-[550px]">
-          <AuthHeader />
-          <form className="w-full flex flex-col gap-6 text-sm">
+          <AuthHeader description="" />
+          <form className="flex w-full px-2 md:px-0  md:w-7/9 place-self-center flex-col gap-6 text-sm">
             <TextInput
               required
               label="이메일주소"
@@ -116,7 +116,7 @@ export default function EmailJoinPage() {
               error={errors.code ? "인증번호를 다시 확인해주세요." : ""}
               rightButtonText="인증 완료"
               onRightButtonClick={() => alert("인증 완료!")}
-              className="rounded-lg"
+              className="rounded-lg "
             />
             <TextInput
               required
@@ -148,47 +148,32 @@ export default function EmailJoinPage() {
               onChange={(e) => setName(e.target.value)}
               className="rounded-lg"
             />
-            <TextInput
-              label="휴대폰"
-              type="text"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              placeholder="- 없이 숫자만"
-              className="rounded-lg"
-            />
-            <InputRow label="생년월일">
-              <div className="flex flex-col flex-1 sm:flex-row gap-2 w-full">
-                <CustomDropdown
-                  label="년도"
-                  options={Array.from({ length: 50 }, (_, i) =>
-                    String(1980 + i)
-                  )}
-                  onSelect={(val) =>
-                    setBirth((prev) => ({ ...prev, year: val }))
-                  }
-                  buttonClassName="rounded-lg"
-                />
-                <CustomDropdown
-                  label="월"
-                  options={Array.from({ length: 12 }, (_, i) =>
-                    String(i + 1).padStart(2, "0")
-                  )}
-                  onSelect={(val) =>
-                    setBirth((prev) => ({ ...prev, month: val }))
-                  }
-                  buttonClassName="rounded-lg"
-                />
-                <CustomDropdown
-                  label="일"
-                  options={Array.from({ length: 31 }, (_, i) =>
-                    String(i + 1).padStart(2, "0")
-                  )}
-                  onSelect={(val) =>
-                    setBirth((prev) => ({ ...prev, day: val }))
-                  }
-                  buttonClassName="rounded-lg"
-                />
-              </div>
+            <InputRow label="생년월일" required>
+              <CustomDropdown
+                label="년도"
+                options={Array.from({ length: 50 }, (_, i) => String(1980 + i))}
+                onSelect={(val) => setBirth((prev) => ({ ...prev, year: val }))}
+                buttonClassName="rounded-lg border-[#C2C2C2]"
+                className="border-[#C2C2C2]"
+              />
+              <CustomDropdown
+                label="월"
+                options={Array.from({ length: 12 }, (_, i) =>
+                  String(i + 1).padStart(2, "0")
+                )}
+                onSelect={(val) =>
+                  setBirth((prev) => ({ ...prev, month: val }))
+                }
+                buttonClassName="rounded-lg border-[#C2C2C2]"
+              />
+              <CustomDropdown
+                label="일"
+                options={Array.from({ length: 31 }, (_, i) =>
+                  String(i + 1).padStart(2, "0")
+                )}
+                onSelect={(val) => setBirth((prev) => ({ ...prev, day: val }))}
+                buttonClassName="rounded-lg border-[#C2C2C2]"
+              />
             </InputRow>
             <TextInput
               required
@@ -272,7 +257,6 @@ export default function EmailJoinPage() {
     </div>
   );
 }
-
 const InputRow = ({
   label,
   required = false,
@@ -283,12 +267,14 @@ const InputRow = ({
   children: React.ReactNode;
 }) => {
   return (
-    <div className="w-11/12 sm:w-7/9 mx-auto grid grid-cols-[100px_1fr] sm:grid-cols-[112px_1fr] items-start gap-x-2 gap-y-0">
-      <label className="text-[13px] font-semibold whitespace-nowrap leading-[38px]">
+    <div className="place-self-center w-11/12 sm:w-full flex flex-col sm:grid sm:grid-cols-[112px_1fr] items-start sm:items-center gap-y-1 sm:gap-x-2">
+      <label className="text-[14px] sm:text-[14.5px] font-semibold whitespace-nowrap mb-1 sm:mb-0">
         {label}
-        {required && <span className="text-red-500 ml-1">*</span>}
+        {required && <span className="text-red-500 "> *</span>}
       </label>
-      <div className="flex flex-col gap-1">{children}</div>
+      <div className="flex flex-col sm:flex-row w-full sm:pl-1 gap-1.5">
+        {children}
+      </div>
     </div>
   );
 };

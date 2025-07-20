@@ -32,6 +32,12 @@ export default function MyPage() {
     "재테크를 위한 중요한 전략",
   ];
 
+  const myFridgeContents2 = [
+    "건강한 라이프스타일을 위한 팁",
+    "재테크 초보자를 위한 금융 상식",
+    "재테크를 위한 중요한 전략",
+  ];
+
   const cardsPerPage = 3; // 📦 슬라이드 한 페이지당 카드 수
   const maxSlideIndex =
     Math.ceil(recentlyViewedContents.length / cardsPerPage) - 1;
@@ -48,9 +54,9 @@ export default function MyPage() {
       <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
 
       {/* 👤 프로필 영역 */}
-      <section className="flex py-10 px-[5%] lg:px-[17%] main-red text-white w-full">
-        <div className="w-full flex md:flex-row justify-between items-center ">
-          <div className="flex w-[1/2] gap-[5%] sm:gap-[10%]">
+      <section className="flex py-5 md:py-10 px-[5%] lg:px-[17%] main-red text-white w-full">
+        <div className="w-full flex flex-col md:flex-row justify-between items-center ">
+          <div className="flex flex-col md:flex-row place-items-center w-[1/2] gap-[5%] sm:gap-[10%]">
             <Image
               src="/images/profile-character.png"
               alt="프로필"
@@ -58,18 +64,18 @@ export default function MyPage() {
               width={230}
               height={230}
             />
-            <div className="w-full items-center self-center">
+            <div className="w-full flex flex-col items-center self-center place-items-center md:place-items-start">
               <h2 className="text-medium sm:text-3xl font-bold">마케터</h2>
               <p className="text-xs sm:text-sm">a123456789@gmail.com</p>
               <button
                 onClick={() => setIsNicknameModalOpen(true)}
-                className="w-full flex-1 cursor-pointer mt-2  border border-white rounded-full text-xs px-2 py-1 sm:px-4 sm:py-1 sm:text-sm"
+                className="w-full cursor-pointer mt-2  border border-white rounded-full text-xs px-4 py-1 sm:px-4 sm:py-1 sm:text-sm"
               >
                 프로필 편집
               </button>
             </div>
           </div>
-          <div className="place-content-end flex w-[50%] text-sm sm:text-lg gap-5 sm:gap-15 md:text-2xl font-semibold">
+          <div className="mt-10 md:mt-0 place-content-start md:place-content-end flex w-[100%] md:w-[50%] text-sm sm:text-lg gap-5 sm:gap-15 md:text-2xl font-semibold">
             <button
               onClick={() => router.push("/myPage/account/myInfo")}
               className="cursor-pointer"
@@ -90,9 +96,9 @@ export default function MyPage() {
       <section className="px-8 py-14">
         <div className="max-w-[1024px] mx-auto grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-12 items-start">
           {/* 📚 왼쪽 콘텐츠 */}
-          <div className="space-y-12">
+          <div className=" space-y-12">
             {/* 📌 최근 본 콘텐츠 슬라이드 */}
-            <div className="relative">
+            <div className="hidden md:block relative">
               <h3 className="text-2xl font-bold mb-4">최근 본 콘텐츠</h3>
 
               <div className="relative w-full max-w-[480px] mx-0">
@@ -195,6 +201,51 @@ export default function MyPage() {
               </div>
             </div>
 
+            {/* ✅ 모바일용 최근 본 콘텐츠 슬라이드 */}
+            <div className="md:hidden">
+              <h3 className="text-2xl font-bold mb-4">최근 본 콘텐츠</h3>
+              <div className="flex overflow-x-auto gap-4 no-scrollbar snap-x snap-mandatory">
+                {recentlyViewedContents.map((item, index) => (
+                  <div
+                    key={index}
+                    className="flex-shrink-0 w-[35vw] snap-start"
+                  >
+                    <div className="aspect-[3/4] w-full rounded-lg overflow-hidden bg-gray-100">
+                      <Image
+                        src="/icons/rectangle-gray.png"
+                        alt={item}
+                        width={300}
+                        height={350}
+                        className="w-full h-full object-cover cursor-pointer"
+                      />
+                    </div>
+                    <div className="pt-2 px-1 text-[10px] sm:text-[13px] font-semibold flex items-center justify-between">
+                      <span className="truncate whitespace-nowrap overflow-hidden pr-2 flex-1">
+                        {item}
+                      </span>
+                      <button onClick={() => handleToggleLike(index)}>
+                        <Image
+                          src={
+                            likedItems.includes(index)
+                              ? "/icons/redheart.png"
+                              : "/icons/grayheart.png"
+                          }
+                          alt="찜하기"
+                          width={20}
+                          height={20}
+                          className={`w-4.5 h-5 cursor-pointer ${
+                            likedItems.includes(index)
+                              ? ""
+                              : "opacity-30 grayscale"
+                          }`}
+                        />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
             {/* ❤️ MY 냉장고 */}
             <div>
               <div className="flex justify-between items-center mb-4">
@@ -215,9 +266,10 @@ export default function MyPage() {
                   />
                 </div>
               </div>
-              <div className="flex gap-6 justify-center">
+              {/* 💡 반응형: 모바일에선 2열 그리드, 데스크탑에선 가로 정렬 */}
+              <div className="grid grid-cols-2 gap-x-4 gap-y-8 md:flex md:gap-6 md:justify-center">
                 {myFridgeContents.map((title, i) => (
-                  <div key={i} className="w-[140px]">
+                  <div key={i} className="w-full md:w-[140px]">
                     <div className="relative aspect-[3/4] rounded-lg overflow-hidden bg-gray-100">
                       <Image
                         src="/icons/rectangle-gray.png"
@@ -246,9 +298,9 @@ export default function MyPage() {
           {/* 🍩 오른쪽 리포트 */}
           <div>
             <h3 className="text-2xl font-bold mb-10">콘텐츠 소비 리포트</h3>
-            <div className="flex flex-col sm:flex-row sm:items-center pl-5">
+            <div className="flex flex-col sm:flex-row sm:items-center md:pl-5">
               <DoughnutChart />
-              <ul className="pl-10 text-sm space-y-2 font-semibold whitespace-nowrap">
+              <ul className="md:pl-10 text-sm space-y-2 font-semibold whitespace-nowrap">
                 <li className="flex items-center gap-2">
                   <div className="w-3 h-3 bg-red-600 rounded-sm" />
                   <span className="flex-1">Food</span>
