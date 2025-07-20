@@ -24,13 +24,13 @@ export default function AccountPage() {
 
       <main className="w-full max-w-[1024px] grid grid-cols-1 md:grid-cols-[280px_1fr] justify-self-center">
         <AccountSidebar />
-        <section className="place-items-center md:place-items-start  flex flex-1 flex-col w-full px-15 pt-17.5 pb-25">
+        <section className="place-items-center md:place-items-start  flex flex-1 flex-col w-full px-6 md:px-15 pt-17.5 pb-25">
           <h3 className="text-[20px] sm:text-[22px] font-bold mb-10">
             회원정보 수정
           </h3>
 
           <div className="w-full flex flex-1 flex-col gap-5 max-w-[400px]">
-            <div className="flex  flex-col gap-2 text-sm ">
+            <div className="flex flex-col gap-2 text-sm ">
               {/* 계정 (readonly) */}
               <TextInput
                 label="계정"
@@ -43,7 +43,7 @@ export default function AccountPage() {
               />
 
               {/* 간편 로그인 */}
-              <div className="flex flex-1 justify-between sm:justify-start gap-6 sm:gap-[25%] mt-1 pl-2 sm:pl-[145px]">
+              <div className="flex flex-1 justify-center md:justify-between sm:justify-start gap-13 md:gap-6 mt-1 pl-2 sm:pl-[145px]">
                 {[
                   {
                     name: "카카오",
@@ -68,7 +68,7 @@ export default function AccountPage() {
                     <Image
                       src={sns.src}
                       alt={sns.name}
-                      className="w-8 h-8 cursor-pointer"
+                      className="w-12 h-12 md:w-8 md:h-8 cursor-pointer"
                       width={50}
                       height={50}
                     />

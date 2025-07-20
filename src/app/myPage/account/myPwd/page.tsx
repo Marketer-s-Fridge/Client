@@ -23,7 +23,7 @@ export default function PasswordChangePage() {
       <main className="w-full h-full max-w-[1024px] grid grid-cols-1 md:grid-cols-[280px_1fr] justify-self-center">
         <AccountSidebar />
 
-        <section className="h-full place-items-center md:place-items-start  flex flex-1 flex-col w-full px-15 pt-17.5 pb-25">
+        <section className="h-full place-items-center md:place-items-start  flex flex-1 flex-col w-full px-6 md:px-15 pt-17.5 pb-25">
           <h3 className="text-[20px] sm:text-[22px] font-bold mb-10">
             비밀번호 변경
           </h3>
