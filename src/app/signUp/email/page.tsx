@@ -13,7 +13,6 @@ export default function EmailJoinPage() {
   const [id, setId] = useState("");
   const [nickname, setNickname] = useState("");
   const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
   const [code, setCode] = useState("");
   const [password, setPassword] = useState("");
   const [passwordCheck, setPasswordCheck] = useState("");
