@@ -32,12 +32,6 @@ export default function MyPage() {
     "재테크를 위한 중요한 전략",
   ];
 
-  const myFridgeContents2 = [
-    "건강한 라이프스타일을 위한 팁",
-    "재테크 초보자를 위한 금융 상식",
-    "재테크를 위한 중요한 전략",
-  ];
-
   const cardsPerPage = 3; // 📦 슬라이드 한 페이지당 카드 수
   const maxSlideIndex =
     Math.ceil(recentlyViewedContents.length / cardsPerPage) - 1;
