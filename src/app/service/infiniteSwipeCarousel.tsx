@@ -62,7 +62,7 @@ export default function InfiniteSwipeCarousel() {
   };
 
   const overlapOffset = 26;
-  const cardHeight = 186;
+  // const cardHeight = 186;
   const bgColors = ["#FF4545", "#FF6C6C", "#FF9999", "#FFDADA"];
   const textColors = ["white", "white", "white", "black"];
 
@@ -93,6 +93,11 @@ export default function InfiniteSwipeCarousel() {
                   bottom: `${offset}px`,
                   zIndex: zIndex,
                 }}
+
+                // 니하오 재빈 니하오 셰쎼 아리가또입니다 ㅋㅋ  
+                // ㅋㅋ
+
+
                 onTransitionEnd={isTopCard ? handleTransitionEnd : undefined}
               >
                 <div
