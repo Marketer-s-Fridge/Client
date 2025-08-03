@@ -93,11 +93,6 @@ export default function InfiniteSwipeCarousel() {
                   bottom: `${offset}px`,
                   zIndex: zIndex,
                 }}
-
-                // 니하오 재빈 니하오 셰쎼 아리가또입니다 ㅋㅋ  
-                // ㅋㅋ
-
-
                 onTransitionEnd={isTopCard ? handleTransitionEnd : undefined}
               >
                 <div

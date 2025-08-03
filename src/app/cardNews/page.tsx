@@ -47,12 +47,12 @@ export default function CardNewsDetailPage() {
   }, []);
 
   return (
-    <div className="bg-white pt-11 md:pt-0">
+    <div className="bg-white pt-17 md:pt-0">
       <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
 
       {/* 상단 카테고리 탭 */}
-      <nav className="flex border-b border-gray-200 text-sm font-medium mt-1 overflow-x-auto no-scrollbar gap-5 px-[10%] md:px-[5%] lg:px-[17%]">
+      <nav className="flex border-b border-gray-200 text-sm font-medium mt-1 overflow-x-auto no-scrollbar gap-5 px-[5%] lg:px-[17%]">
         {categories.map((cat) => (
           <span
             key={cat}
@@ -71,7 +71,7 @@ export default function CardNewsDetailPage() {
       <Breadcrumb category={activeCategory} />
 
       {/* 본문 */}
-      <main className="flex justify-center px-4 sm:px-[8%] lg:px-[17%] py-14 min-h-[80vh]">
+      <main className="flex justify-center px-4 sm:px-[8%] lg:px-[17%] mt-10 mb-10 md:py-14 min-h-[80vh]">
         <div className="w-full max-w-screen-lg flex flex-col sm:flex-row gap-10">
           {/* 카드 슬라이드 */}
           <div className="relative w-full sm:w-[45%] flex flex-col items-center">

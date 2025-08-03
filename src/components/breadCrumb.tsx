@@ -8,7 +8,7 @@ interface BreadcrumbProps {
 
 export default function Breadcrumb({ category }: BreadcrumbProps) {
   return (
-    <div className="flex px-4 sm:px-6 xl:px-65 text-xs pt-5 text-gray-500 mb-8">
+    <div className="flex px-[5%] lg:px-[17%] text-xs pt-5 text-gray-500 mb-8">
       <Link href="/" className="hover:text-black">
         홈
       </Link>
