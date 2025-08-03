@@ -119,7 +119,7 @@ export default function HomePage() {
         <section className="block md:hidden  flex-col items-center py-[15%] px-6 sm:px-10 lg:px-20">
           <h1 className="font-bold text-[20px] mb-14 text-center leading-relaxed">
             <span className="text-gray-400 font-normal text-xl">
-              Marketer's Fridge
+              Marketer&rsquo;s Fridge
             </span>
             <br></br>마케터를 위한 정보 큐레이션 플랫폼
           </h1>
