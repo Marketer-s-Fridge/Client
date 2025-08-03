@@ -5,9 +5,9 @@ import Header from "@/components/header";
 import { useState } from "react";
 import Footer from "@/components/footer";
 import Image from "next/image";
-import CharacterSection from "./charactorSection";
 import { useRouter } from "next/navigation";
 import { SubmitButton } from "@/components/authFormComponents";
+import InfiniteSwipeCarousel from "./infiniteSwipeCarousel";
 import MobileMenu from "@/components/mobileMenu";
 function FadeInSection({
   children,
@@ -70,7 +70,7 @@ export default function HomePage() {
       <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
 
       {/* 로고 */}
-      <section className="flex flex-col items-start pl-6 sm:pl-[10%] lg:pl-[17%] pt-[8%] sm:pt-[6%] lg:pt-[4%]">
+      <section className="flex flex-col items-start pl-6 md:pb-[0%] sm:pl-[10%] lg:pl-[17%] pt-[8%] sm:pt-[6%] lg:pt-[4%]">
         <Image
           alt="서비스 로고"
           src="/icons/service-logo.png"
@@ -81,10 +81,12 @@ export default function HomePage() {
       </section>
 
       {/* 캐릭터 */}
-      <CharacterSection />
+      {/* <section className="hidden md:block">
+        <CharacterSection />
+      </section> */}
 
       {/* 카테고리 바 */}
-      <section className="flex flex-row relative mt-4">
+      {/* <section className="flex flex-row relative mt-4 hidden md:block">
         <Image
           src="/images/categoryBar2.jpg"
           alt=""
@@ -92,11 +94,11 @@ export default function HomePage() {
           height={50}
           className="w-full"
         />
-      </section>
+      </section> */}
 
       {/* 정보 소개 */}
       <FadeInSection>
-        <section className="flex flex-col items-center py-[10%] px-6 sm:px-10 lg:px-20">
+        <section className="hidden md:block flex-col items-center py-[10%] px-6 sm:px-10 lg:px-20">
           <h1 className="font-bold text-2xl sm:text-3xl lg:text-4xl mb-10 text-center leading-relaxed">
             마케터를 위한 정보 큐레이션 플랫폼
           </h1>
@@ -112,9 +114,50 @@ export default function HomePage() {
         </section>
       </FadeInSection>
 
+      {/* 정보 소개 - 모바일*/}
+      <FadeInSection>
+        <section className="block md:hidden  flex-col items-center py-[15%] px-6 sm:px-10 lg:px-20">
+          <h1 className="font-bold text-[20px] mb-14 text-center leading-relaxed">
+            <span className="text-gray-400 font-normal text-xl">
+              Marketer's Fridge
+            </span>
+            <br></br>마케터를 위한 정보 큐레이션 플랫폼
+          </h1>
+          <div className="text-center text-base space-y-10">
+            매일같이 쏟아지는 <br />
+            광고 사례, 소비자 반응, 트렌드 리포트 <br />그 안에서
+            <span className="font-bold"> 지금 진짜 필요한 정보</span>를 골라내는
+            건<br /> 쉽지 않은 일이죠
+            <br />
+            <br />
+          </div>
+          <div className="text-center text-base space-y-10">
+            <br /> 그래서 우리는 마케터의 시선으로 <br />쓸 수 있는 정보만
+            선별하고 <br />
+            꺼내 쓰기 좋게 보관합니다.
+            <br />
+            <br />
+          </div>
+          <div className="text-center text-base space-y-10">
+            <br />
+            마치 냉장고 안에서
+            <br /> 먹고 싶은 음식을 꺼내 먹듯이 <br />
+            <br />
+          </div>
+          <div className="text-center text-base space-y-10">
+            <br />
+            이곳에서는 당신이 필요한 순간, <br />
+            원하는 <span className="font-bold text-red-600">
+              인사이트
+            </span>만 <span className="font-bold">콕! </span>
+            집어갈 수 있습니다.
+          </div>
+        </section>
+      </FadeInSection>
+
       {/* 인사이트 설명 */}
       <FadeInSection>
-        <section className="flex flex-col items-center py-16 bg-[#F0F0F0] px-6 sm:px-10 lg:px-20">
+        <section className="hidden md:block  flex-col items-center py-16 bg-[#F0F0F0] px-6 sm:px-10 lg:px-20">
           <div className="mb-10 text-center">
             <h1 className="font-bold text-2xl sm:text-3xl lg:text-4xl mb-4">
               관찰, 분석, 재구성된 마케팅 인사이트 저장소
@@ -187,9 +230,22 @@ export default function HomePage() {
         </section>
       </FadeInSection>
 
+      {/* 인사이트 설명 - 모바일*/}
+      <FadeInSection>
+        <section className="block md:hidden  flex-col items-center py-[40%] px-6 sm:px-10 lg:px-20">
+          <h1 className="font-bold text-[20px] mb-14 text-center leading-relaxed">
+            <span className="text-gray-400 font-normal text-xl">
+              어떤 인사이트가 필요하신가요?
+            </span>
+            <br></br>관찰, 분석, 재구성된 마케팅 인사이트 저장소
+          </h1>
+          <InfiniteSwipeCarousel></InfiniteSwipeCarousel>
+        </section>
+      </FadeInSection>
+
       {/* 서비스 소개 배경 */}
       <FadeInSection>
-        <div className="relative w-full py-16 px-6 sm:px-10 lg:px-20">
+        <div className="hidden md:block relative w-full py-16 px-6 sm:px-10 lg:px-20">
           <Image
             src="/images/service-background!.jpg"
             alt="배경"
@@ -219,17 +275,49 @@ export default function HomePage() {
         </div>
       </FadeInSection>
 
+      {/* 서비스 소개 배경 - 모바일 */}
+      <FadeInSection>
+        <div className="block md:hidden relative w-full aspect-[1] py-16 px-6 sm:px-10 lg:px-20">
+          <Image
+            src="/images/service-background-mobile.jpg"
+            alt="배경"
+            fill
+            className="absolute object-cover w-full h-full z-0"
+          />
+          <div className="relative z-10 py-50 text-white text-center flex flex-col items-center">
+            <h1 className="font-bold text-4xl mb-15">왜 ‘Fridge’ 일까요?</h1>
+            <div className="text-md space-y-10 leading-relaxed">
+              <p>
+                우리는 정보를 그냥 흘려보내지 않습니다
+                <br /> 꺼내 쓰기 좋은 형태로 정리하고 차갑게 보관합니다
+              </p>
+
+              <p>
+                그래서 오늘은 지나쳤어도
+                <br />
+                다음 회의에서 문득 생각나면 다시 열어볼 수 있습니다
+              </p>
+
+              <p>
+                그래서 <span className="font-bold">Marketer’s Fridge</span>
+                입니다
+              </p>
+            </div>
+          </div>
+        </div>
+      </FadeInSection>
+
       {/* 강조 섹션 */}
-      <section className="flex flex-col items-center px-6 sm:px-10 lg:px-20 pt-[10%] text-center">
+      <section className="hidden md:flex flex-col items-center px-6 sm:px-10 lg:px-20 pt-[10%] text-center">
         {problemTexts.map((text, idx) => (
           <FadeInSection key={idx}>
-            <h1 className="font-bold text-lg sm:text-xl lg:text-3xl py-[35%] ">
+            <h1 className="font-bold text-lg sm:text-xl lg:text-3xl py-[30%] ">
               {text}
             </h1>
           </FadeInSection>
         ))}
         <FadeInSection>
-          <h3 className="font-bold text-xs sm:text-base lg:text-lg mt-[40%] mb-[10%] leading-relaxed">
+          <h3 className=" font-bold text-xs sm:text-base lg:text-lg mt-[40%] mb-[10%] leading-relaxed">
             필요할 때 꺼내보고 꺼낸 정보로 다시 요리할 수 있도록.
             <br />
             <span className="font-playfair text-red-500 font-bold">
@@ -240,8 +328,41 @@ export default function HomePage() {
           <SubmitButton
             text="회원가입하고 바로 시작하기"
             onClick={() => router.push("/signUp")}
-            className="w-[70%] sm:w-[50%] lg:w-[45%] mb-[15%] rounded-sm"
+            className=" mb-[15%] rounded-sm"
           />
+        </FadeInSection>
+      </section>
+
+      {/* 강조 섹션 - 모바일 */}
+      <section className="block md:hidden flex-col items-center px-6 sm:px-10 lg:px-20 pt-[10%] text-center">
+        <FadeInSection>
+          <section className="py-70">
+            {problemTexts.map((text, idx) => (
+              <h1 key={idx} className="font-bold text-lg py-[10%]">
+                {text}
+              </h1>
+            ))}
+          </section>
+        </FadeInSection>
+        <FadeInSection>
+          <section className="py-70">
+            <h3 className="font-bold text-lg mb-[50%] leading-relaxed">
+              필요할 때 꺼내보고
+              <br />
+              꺼낸 정보로 다시 요리할 수 있도록.
+              <br />
+              <br />
+              <span className="font-playfair text-red-500 font-bold">
+                Marketer’s Fridge
+              </span>
+              는<br /> 마케팅에 진심인 당신을 위한 정보 저장소입니다.
+            </h3>
+            <SubmitButton
+              text="회원가입하고 바로 시작하기"
+              onClick={() => router.push("/signUp")}
+              className="w-full sm:w-[70%]"
+            />
+          </section>
         </FadeInSection>
       </section>
 

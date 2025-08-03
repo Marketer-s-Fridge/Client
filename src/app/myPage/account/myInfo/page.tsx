@@ -8,6 +8,7 @@ import Banner from "@/components/banner";
 import Image from "next/image";
 import ConfirmModal from "@/components/confirmModal";
 import MobileMenu from "@/components/mobileMenu";
+import ToggleButtons from "../toggleButtons";
 
 export default function AccountPage() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -24,8 +25,10 @@ export default function AccountPage() {
 
       <main className="w-full max-w-[1024px] grid grid-cols-1 md:grid-cols-[280px_1fr] justify-self-center">
         <AccountSidebar />
-        <section className="place-items-center md:place-items-start  flex flex-1 flex-col w-full px-6 md:px-15 pt-17.5 pb-25">
-          <h3 className="text-[20px] sm:text-[22px] font-bold mb-10">
+        <ToggleButtons></ToggleButtons>
+
+        <section className="place-items-center md:place-items-start  flex flex-1 flex-col w-full px-6 md:px-15 pt-6 md:pt-17.5 pb-25">
+          <h3 className="hidden md:block text-[20px] sm:text-[22px] font-bold mb-10">
             회원정보 수정
           </h3>
 

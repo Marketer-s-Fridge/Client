@@ -45,7 +45,7 @@ export default function Header({ menuOpen, setMenuOpen }: headerProps) {
         <div className="relative flex flex-1 justify-between items-center ">
           <Link
             href="/"
-            className=" text-white md:text-red-500 font-bold text-xl sm:text-2xl md:text-sm font-playfair"
+            className=" text-white md:text-red-500 font-bold text-2xl sm:text-2xl md:text-sm font-playfair"
           >
             Marketer&apos;s Fridge
           </Link>
