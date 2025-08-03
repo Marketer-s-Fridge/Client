@@ -61,7 +61,7 @@ const Footer: React.FC = () => {
 
             {/* 오른쪽 로고 텍스트 */}
             <div className="flex flex-col gap-4">
-              <span className="font-playfair text-white text-2xl sm:text-3xl md:text-4xl font-bold whitespace-nowrap">
+              <span className="font-playfair text-white text-lg sm:text-3xl md:text-4xl font-bold whitespace-nowrap">
                 Marketer’s Fridge
               </span>
               <div className="flex flex-row text-[10px] sm:text-xs gap-4 self-end">
