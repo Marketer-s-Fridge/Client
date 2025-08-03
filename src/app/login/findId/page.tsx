@@ -44,7 +44,7 @@ const FindIdPage: React.FC = () => {
           />
 
           {/* 입력 필드 */}
-          <div className="w-full md:w-7/9 mb-10 flex flex-col items-center gap-y-4 ">
+          <div className="w-8/9 md:w-7/9 mb-10 flex flex-col items-center gap-y-4 ">
             <TextInput
               label="이름"
               value={name}

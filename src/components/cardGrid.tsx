@@ -69,7 +69,7 @@ export default function CardGrid({
               className="w-full h-full object-cover cursor-pointer"
             />
           </div>
-          <div className="pt-2 px-1 text-[10px] sm:text-sm font-semibold flex items-center justify-between">
+          <div className="pt-2 px-1 text-[15px] text-sm font-semibold flex items-center justify-between">
             <span className="truncate whitespace-nowrap overflow-hidden pr-2 flex-1">
               {item.title}
             </span>

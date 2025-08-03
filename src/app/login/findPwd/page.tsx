@@ -51,7 +51,7 @@ const FindPwdPage: React.FC = () => {
           />
 
           {/* ✅ 입력 필드 */}
-          <div className="w-full md:w-7/9 flex flex-col items-center gap-y-4 mb-10">
+          <div className="w-8/9 md:w-7/9 flex flex-col items-center gap-y-4 mb-10">
             <TextInput
               label="이름"
               value={name}

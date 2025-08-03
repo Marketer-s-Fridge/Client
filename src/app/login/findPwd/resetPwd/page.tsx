@@ -62,7 +62,7 @@ const ResetPwdPage: React.FC = () => {
 
           {/* 입력 필드 */}
           <form
-            className="w-full md:w-7/9 mb-10 flex flex-col items-center gap-y-4 "
+            className="w-8/9 md:w-7/9 mb-10 flex flex-col items-center gap-y-4 "
             onSubmit={(e) => {
               e.preventDefault();
               handleSubmit();

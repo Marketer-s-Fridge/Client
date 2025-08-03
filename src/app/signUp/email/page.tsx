@@ -94,7 +94,7 @@ export default function EmailJoinPage() {
       <div className="bg-white px-4 sm:px-6 md:px-8 py-16 min-h-screen flex justify-center">
         <div className="w-full max-w-[550px]">
           <AuthHeader description="" />
-          <form className="flex w-full px-2 md:px-0  md:w-7/9 place-self-center flex-col gap-6 text-sm">
+          <form className="place-items-center flex w-full px-2 md:px-0  md:w-7/9 place-self-center flex-col gap-6 text-sm">
             <TextInput
               required
               label="이메일주소"
@@ -241,7 +241,7 @@ export default function EmailJoinPage() {
               )}
             </div>
 
-            <div className="text-center mt-10">
+            <div className="w-full text-center mt-10">
               <SubmitButton
                 text="나의 냉장고 열어보기"
                 onClick={handleSubmit}
@@ -266,12 +266,12 @@ const InputRow = ({
   children: React.ReactNode;
 }) => {
   return (
-    <div className="place-self-center w-11/12 sm:w-full flex flex-col sm:grid sm:grid-cols-[112px_1fr] items-start sm:items-center gap-y-1 sm:gap-x-2">
-      <label className="text-[14px] sm:text-[14.5px] font-semibold whitespace-nowrap mb-1 sm:mb-0">
+    <div className="place-self-center w-full max-w-[500px] flex flex-col sm:grid sm:grid-cols-[112px_1fr] items-start sm:items-center gap-y-1 sm:gap-x-2">
+      <label className="justify-self-start text-[14px] sm:text-[14.5px] font-semibold whitespace-nowrap mb-1   sm:mb-0">
         {label}
         {required && <span className="text-red-500 "> *</span>}
       </label>
-      <div className="flex flex-col sm:flex-row w-full sm:pl-1 gap-1.5">
+      <div className="place-self-center flex flex-1 flex-row w-full sm:pl-1 gap-1.5">
         {children}
       </div>
     </div>
