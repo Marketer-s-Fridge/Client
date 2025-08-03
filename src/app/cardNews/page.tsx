@@ -160,10 +160,15 @@ export default function CardNewsDetailPage() {
 
           {/* 텍스트 + 버튼 */}
           <div
-            className="w-full sm:w-[55%] flex flex-col"
+            className="w-full sm:w-[55%] flex flex-col mb-15 md:mb-0"
             style={{ height: slideHeight || "auto" }}
           >
-            <div className="flex-1 overflow-y-auto pr-2 py-2 no-scrollbar">
+            <div
+              className={`
+      pr-2 py-2
+      ${slideHeight ? "sm:flex-1 sm:overflow-y-auto sm:no-scrollbar" : ""}
+    `}
+            >
               <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-2">
                 뭐라고? 쿠션이 40가지나 된다고?!
               </h1>
@@ -196,7 +201,7 @@ export default function CardNewsDetailPage() {
               </p>
             </div>
 
-            <div className="bg-white flex justify-end gap-4 mt-4">
+            <div className="bg-white flex justify-end gap-4 mt-4 ">
               <button className="border border-gray-300 rounded-full px-4 py-1 text-sm flex items-center gap-2 cursor-pointer">
                 <Image
                   src="/icons/pinkheart.png"
