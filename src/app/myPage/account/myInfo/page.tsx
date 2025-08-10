@@ -18,12 +18,12 @@ export default function AccountPage() {
   const [phone, setPhone] = useState("");
 
   return (
-    <div className="bg-white min-h-screen pt-11 md:pt-0">
+    <div className="flex flex-1 flex-col bg-white min-h-screen pt-11 md:pt-0">
       <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <Banner title="계정 관리" />
 
-      <main className="w-full max-w-[1024px] grid grid-cols-1 md:grid-cols-[280px_1fr] justify-self-center">
+      <main className="w-full max-w-[1024px] grid grid-cols-1 md:grid-cols-[280px_1fr] justify-self-center self-center">
         <AccountSidebar />
         <ToggleButtons></ToggleButtons>
 

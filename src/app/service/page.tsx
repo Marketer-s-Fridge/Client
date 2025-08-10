@@ -9,6 +9,8 @@ import { useRouter } from "next/navigation";
 import { SubmitButton } from "@/components/authFormComponents";
 import InfiniteSwipeCarousel from "./infiniteSwipeCarousel";
 import MobileMenu from "@/components/mobileMenu";
+
+import CharacterSlideSection from "./characterSlideSection";
 function FadeInSection({
   children,
   delay = 0,
@@ -366,6 +368,19 @@ export default function HomePage() {
         </FadeInSection>
       </section>
 
+      <section className="w-full hidden md:block">
+        <div className="mt-[5%] flex flex-1 flex-col gap-[45px] place-content-center place-items-center text-[34px] font-bold main-red w-full h-[35vh] text-white">
+          <p>Meet the Marketers Fridge Characters!</p>
+          <Image
+            src={"/icons/character/characters.png"}
+            width={600}
+            height={150}
+            alt="캐릭터들"
+            className="w-[610px] h-[100px]"
+          ></Image>
+        </div>
+        <CharacterSlideSection></CharacterSlideSection>
+      </section>
       <Footer />
     </main>
   );

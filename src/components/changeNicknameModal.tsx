@@ -54,15 +54,15 @@ export default function ChangeNicknameModal({ onClose }: Props) {
           <div className="h-[1px] bg-red-300 w-full" />
         </div>
 
-        <div className="space-y-3.5 text-sm px-5">
+        <div className="flex-col flex flex-1 space-y-3.5 text-sm px-5">
           {/* 계정 */}
-          <div className="flex items-center">
+          <div className="flex flex-row items-center">
             <label className="w-28 font-bold text-sm shrink-0">계정</label>
             <input
               type="text"
               value={email}
               disabled
-              className="flex flex-1 bg-white text-gray-500 border border-gray-300 rounded-lg px-3 py-1.5 text-sm"
+              className="flex flex-1 w-full bg-white text-gray-500 border border-gray-300 rounded-lg px-3 py-1.5 text-sm"
             />
           </div>
 
@@ -75,7 +75,7 @@ export default function ChangeNicknameModal({ onClose }: Props) {
               type="text"
               value={currentNickname}
               disabled
-              className="flex flex-1 bg-white text-gray-500 border border-gray-300 rounded-lg px-3 py-1.5 text-sm"
+              className="flex flex-1 w-full bg-white text-gray-500 border border-gray-300 rounded-lg px-3 py-1.5 text-sm"
             />
           </div>
 

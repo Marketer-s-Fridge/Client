@@ -52,7 +52,7 @@ export default function CardNewsDetailPage() {
       <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
 
       {/* 상단 카테고리 탭 */}
-      <nav className="flex border-b border-gray-200 text-sm font-medium mt-1 overflow-x-auto no-scrollbar gap-5 px-[5%] lg:px-[17%] py-[15] md:py-0">
+      <nav className="flex border-b border-gray-200 text-sm font-medium mt-1 overflow-x-auto no-scrollbar gap-5 px-[5%] lg:px-[17%] ">
         {categories.map((cat) => (
           <span
             key={cat}
@@ -71,10 +71,10 @@ export default function CardNewsDetailPage() {
       <Breadcrumb category={activeCategory} />
 
       {/* 본문 */}
-      <main className="flex justify-center px-4 sm:px-[8%] lg:px-[17%] mt-10 mb-10 min-h-[80vh]">
-        <div className="w-full max-w-screen-lg flex flex-col sm:flex-row gap-10">
+      <main className="flex justify-center px-4 sm:px-[8%] lg:px-[17%] mt-10 mb-10 min-h-[70vh] pb-[-0]">
+        <div className=" w-full max-w-screen-lg flex flex-col sm:flex-row gap-10">
           {/* 카드 슬라이드 */}
-          <div className="relative w-full sm:w-[45%] flex flex-col items-center">
+          <div className="self-center relative w-full sm:w-[45%] flex flex-col items-center">
             <div
               ref={slideBoxRef}
               className="relative w-full overflow-hidden"
@@ -160,7 +160,7 @@ export default function CardNewsDetailPage() {
 
           {/* 텍스트 + 버튼 */}
           <div
-            className="w-full sm:w-[55%] flex flex-col mb-15 md:mb-0"
+            className="self-center w-full sm:w-[55%] flex flex-col mb-15 md:mb-0"
             style={{ height: slideHeight || "auto" }}
           >
             <div

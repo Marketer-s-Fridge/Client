@@ -50,41 +50,86 @@ export default function MyContact() {
           </div>
         </div>
 
-        {/* 테이블 */}
-        <div className="overflow-x-auto text-[10px] sm:text-[13px]">
-          <table className="w-full text-center border-t">
-            <thead className="border-b-2 border-t-2 border-black ">
-              <tr className="h-10">
-                <th className="w-[50px]">NO</th>
-                <th>제목</th>
-                <th className="w-[150px]">작성일</th>
-                <th className="w-[100px]">처리상태</th>
+      {/* 테이블 (데스크탑/태블릿 이상) */}
+      <div className="hidden sm:block overflow-x-auto text-[10px] sm:text-[13px]">
+        <table className="w-full text-center border-t">
+          <thead className="border-b-2 border-t-2 border-black ">
+            <tr className="h-10">
+              <th className="w-[50px]">NO</th>
+              <th>제목</th>
+              <th className="w-[150px]">작성일</th>
+              <th className="w-[100px]">처리상태</th>
+            </tr>
+          </thead>
+          <tbody>
+            {inquiries.map((item) => (
+              <tr
+                key={item.no}
+                onClick={() =>
+                  router.push(
+                    item.status === "답변완료"
+                      ? `./myContact/detail/processed`
+                      : `./myContact/detail/unprocessed`
+                  )
+                }
+                className="h-10 hover:bg-gray-100 cursor-pointer"
+              >
+                <td className="rounded-l-lg">{item.no}</td>
+                <td className="text-left px-4">{item.title}</td>
+                <td>{item.date}</td>
+                <td className="rounded-r-lg">{item.status}</td>
               </tr>
-            </thead>
-            <tbody>
-              {inquiries.map((item) => (
-                <tr
-                  key={item.no}
-                  onClick={() =>
-                    router.push(
-                      item.status === "답변완료"
-                        ? `./myContact/detail/processed`
-                        : `./myContact/detail/unprocessed`
-                    )
-                  }
-                  className="h-10 hover:bg-gray-100 cursor-pointer"
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* 리스트 (모바일 전용) */}
+      <div className="sm:hidden space-y-3">
+        {inquiries.map((item) => {
+          const isDone = item.status === "답변완료";
+          return (
+            <button
+              key={item.no}
+              onClick={() =>
+                router.push(
+                  isDone
+                    ? `./myContact/detail/processed`
+                    : `./myContact/detail/unprocessed`
+                )
+              }
+              className="w-full text-left rounded-lg border border-gray-200 px-3 py-3 active:bg-gray-50"
+            >
+              {/* 상단: 제목 + NO */}
+              <div className="flex items-start justify-between gap-3">
+                <div className="font-medium text-[13px] leading-5">
+                  {item.title}
+                </div>
+                <div className="shrink-0 text-[11px] text-gray-400">NO {item.no}</div>
+              </div>
+
+              {/* 처리상태 */}
+              <div className="mt-2">
+                <span
+                  className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] ${
+                    isDone
+                      ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                      : "bg-gray-100 text-gray-700 border border-gray-200"
+                  }`}
                 >
-                  <td className="rounded-l-lg hover:bg-gray-100 h-10">
-                    {item.no}
-                  </td>
-                  <td className="text-left px-4">{item.title}</td>
-                  <td>{item.date}</td>
-                  <td className="rounded-r-lg">{item.status}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                  {item.status}
+                </span>
+              </div>
+
+              {/* 작성일 (처리상태 바로 아래) */}
+              <div className="mt-1 text-[11px] text-gray-500">{item.date}</div>
+            </button>
+          );
+        })}
+      </div>
+
+
+     
 
         {/* 하단 버튼 + 페이지네이션 */}
         <div className="flex justify-between items-center mt-6">

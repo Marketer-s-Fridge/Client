@@ -86,3 +86,75 @@ body {
   opacity: 1;
   transform: translateY(0px);
 }
+
+/* 처음 상태: 살짝 아래+작게+블러 */
+.rise {
+  opacity: 0;
+  transform: translateY(24px) scale(0.96);
+  filter: blur(6px);
+}
+
+/* 등장 상태: 또렷+제자리 */
+.rise-in {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  filter: blur(0);
+  transition:
+    transform 700ms cubic-bezier(.22,1,.36,1), /* 살짝 스프링 느낌 */
+    opacity 600ms ease,
+    filter 600ms ease;
+}
+
+/* 카드 안에서 이미지가 “마스크 위로 스르륵” 올라오는 효과 */
+.mask-reveal {
+  overflow: hidden;
+  border-radius: 20px;      /* 취향대로 */
+  background: rgba(0,0,0,0.02); /* 살짝 병풍 느낌 */
+}
+.mask-reveal .art {
+  transform: translateY(14%);
+  transition: transform 800ms cubic-bezier(.22,1,.36,1);
+}
+.rise-in .art {
+  transform: translateY(0);
+}
+
+/* 살짝 살아있는 듯한 idle float */
+@keyframes floaty {
+  0%   { transform: translateY(0) }
+  50%  { transform: translateY(-6px) }
+  100% { transform: translateY(0) }
+}
+.float-after {
+  animation: floaty 3.6s ease-in-out infinite;
+  animation-delay: var(--float-delay, 0ms);
+  will-change: transform;
+}
+
+/* 살짝 그림자 튕김 */
+@keyframes dropShadowPop {
+  0%   { box-shadow: 0 0 0 rgba(0,0,0,0) }
+  100% { box-shadow: 0 12px 28px rgba(0,0,0,0.12) }
+}
+.shadow-pop { animation: dropShadowPop 700ms ease forwards }
+
+
+/* 섹션 내용이 아래에서 살짝 올라오면서 보이는 효과 */
+section .slide-enter {
+  transform: translateY(20%);
+  opacity: 0;
+  transition: transform 600ms cubic-bezier(.22,1,.36,1), opacity 500ms ease;
+}
+section:is(:target, :hover, :focus-within),
+section:has(:is(h1,div):in-view) .slide-enter {} /* 옵션 */
+
+@supports selector(:has(*)) {
+  /* 스크롤 스냅일 때 보이는 섹션만 활성화 (크로스브라우저 고려 필요) */
+  section:has(h1:is(:hover, :focus, :active)) .slide-enter { transform: translateY(0); opacity: 1; }
+}
+
+/* 실무에선 JS로 in-view 제어가 안정적 */
+.in-view .slide-enter { transform: translateY(0); opacity: 1; }
+
+.touch-none { touch-action: none; }
+.overscroll-contain { overscroll-behavior: contain; }
