@@ -14,17 +14,26 @@ const InquiryDetailPage: React.FC = () => {
       <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />{" "}
       <main className="w-full flex justify-center px-4">
-        <div className="w-full px-[5%] lg:px-[22.5%] mt-20">
+        <div className="w-full px-[5%] lg:px-[22.5%] mt-10 md:mt-20">
           {/* 문의 카테고리 */}
-          <p className="text-lg font-bold mb-2">[ 기술적 문제 ]</p>
+          <p className="text-base md:text-lg font-bold mb-2">[ 기술적 문제 ]</p>
 
           {/* 유저 정보 */}
           <div className="flex items-center gap-3 mb-1 border-gray-600 border-y-1 py-2">
-            <div className="w-8 h-8 rounded-full bg-gray-300" />
-            <span className="text-sm font-medium">마케터</span>
-            <span className="text-sm text-[#8E8E8E]">a123456789@gmail.com</span>
-            <span className="ml-auto text-sm">2025-05-02</span>
-            <span className="text-sm ">[답변완료]</span>
+            <div className="w-4 h-4 md:w-8 md:h-8 rounded-full bg-gray-300" />
+            <span className=" text-[10px] md:text-sm font-medium">마케터</span>
+            <span className="text-[10px] md:text-sm text-[#8E8E8E]">
+              a123456789@gmail.com
+            </span>
+            <div className="md:hidden flex flex-1 justify-self-end flex-col">
+              <span className="text-[10px] md: self-end">[답변완료]</span>
+              <span className="ml-auto text-[10px] md:">2025-05-02</span>
+            </div>
+
+            <div className="hidden md:flex flex-1 justify-self-end gap-5">
+              <span className="ml-auto text-sm">2025-05-02</span>
+              <span className="text-sm ">[답변완료]</span>
+            </div>
           </div>
 
           <div className="py-8">
@@ -76,8 +85,8 @@ const InquiryDetailPage: React.FC = () => {
         </div>
       </main>
       {/* 피드백 */}
-      <div className="w-full flex flex-col px-[5%] lg:px-[22.5%] py-[2%] bg-gray-100 gap-4">
-        <p className="text-xl font-bold ">답변이 도움이 되셨나요?</p>
+      <div className="w-full flex flex-col px-[5%] lg:px-[22.5%] py-[5%] md:py-[2%]  bg-gray-100 gap-4">
+        <p className="text-lg md:text-xl font-bold ">답변이 도움이 되셨나요?</p>
         <div className="flex gap-10">
           <label className="flex items-center gap-2 text-medium">
             <input type="radio" name="feedback" />
@@ -88,7 +97,7 @@ const InquiryDetailPage: React.FC = () => {
             도움이 되지 않았어요.
           </label>
         </div>
-        <button className="w-1/11 px-6 bg-white border border-gray-300 text-sm py-0.5 cursor-pointer">
+        <button className="w-3/11 md:w-1/11 px-6 bg-white border rounded border-gray-300 text-sm py-0.5 cursor-pointer">
           확인
         </button>
       </div>
