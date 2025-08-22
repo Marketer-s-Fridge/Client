@@ -230,7 +230,7 @@ export default function CharacterSlideSection() {
   return (
     <section
       ref={sectionRef}
-      className="relative h-screen w-full overflow-hidden"
+      className="hidden md:block relative h-screen w-full overflow-hidden"
       style={{ background: "#f9f9f9" }}
       onWheel={onWheel}
       onTouchStart={onTouchStart}

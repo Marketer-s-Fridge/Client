@@ -15,6 +15,25 @@
 }
 */
 
+/* 한 화면 꽉/정중앙 유틸 */
+.page-inner {
+  min-height: 100svh;         /* 모바일 브라우저 UI 제외 실제 화면 높이 */
+  display: grid;
+  place-content: center;       /* 수직/수평 중앙 정렬 */
+  padding-left: 5vw;
+  padding-right: 5vw;
+  margin-inline: auto;
+  width: min(100%, 680px);     /* 모바일 가독 폭 제한 */
+}
+
+/* iOS 안전 영역 보정(옵션) */
+:root {
+  --safe-top: env(safe-area-inset-top);
+  --safe-bottom: env(safe-area-inset-bottom);
+}
+.safe-pt { padding-top: max(var(--safe-top), 12px); }
+.safe-pb { padding-bottom: max(var(--safe-bottom), 12px); }
+
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
@@ -158,3 +177,10 @@ section:has(:is(h1,div):in-view) .slide-enter {} /* 옵션 */
 
 .touch-none { touch-action: none; }
 .overscroll-contain { overscroll-behavior: contain; }
+/* 안드 크롬 P2R 방지 + 스크롤 체이닝 차단 */
+html, body {
+  overscroll-behavior-y: none;
+  overscroll-behavior-x: none; /* 수평 체이닝도 방지 */
+}
+
+.scroll-anchor-none { overflow-anchor: none; }

@@ -61,7 +61,7 @@ export default function InfiniteSwipeCarousel() {
     }
   };
 
-  const overlapOffset = 26;
+  const overlapOffset = 25;
   // const cardHeight = 186;
   const bgColors = ["#FF4545", "#FF6C6C", "#FF9999", "#FFDADA"];
   const textColors = ["white", "white", "white", "black"];
@@ -84,7 +84,7 @@ export default function InfiniteSwipeCarousel() {
             return (
               <div
                 key={card.title}
-                className={`absolute left-0 w-full px-4 transition-transform duration-500 ease-in-out ${
+                className={`absolute left-0 text-left w-full px-4 transition-transform duration-500 ease-in-out ${
                   isSliding && isTopCard
                     ? "-translate-y-[26px]"
                     : "translate-y-0"
@@ -96,7 +96,7 @@ export default function InfiniteSwipeCarousel() {
                 onTransitionEnd={isTopCard ? handleTransitionEnd : undefined}
               >
                 <div
-                  className="flex flex-col rounded-xl px-5 py-6 h-[186px] text-[20px] font-bold transition-all duration-300"
+                  className="flex flex-col rounded-xl px-5 py-6 h-[186px] text-base md:text-[20px] font-bold transition-all duration-300"
                   style={{
                     backgroundColor: bgColor,
                     color: textColor,
@@ -119,14 +119,14 @@ export default function InfiniteSwipeCarousel() {
 
                   {isTopCard && (
                     <div
-                      className="flex items-center justify-end text-sm mt-8 cursor-pointer gap-1"
+                      className="flex items-center justify-end text-sm mt-4 cursor-pointer gap-1"
                       onClick={handleClickNext}
                     >
                       <span className="animate-pulse text-[13px] font-medium">
                         옆으로 스와이프
                       </span>
-                      <FiChevronRight className="animate-pulse text-[18px]" />
-                      <FiChevronRight className="animate-pulse text-[18px] -ml-1" />
+                      <FiChevronRight className="animate-pulse text-xs md:text-[18px]" />
+                      <FiChevronRight className="animate-pulse text-xs md:text-[18px] -ml-1" />
                     </div>
                   )}
                 </div>
