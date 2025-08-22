@@ -1,8 +1,9 @@
 "use client";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { motion, useMotionValue, animate } from "framer-motion";
-import { useTransform } from "framer-motion";
+import { motion, useMotionValue, animate, useTransform } from "framer-motion";
+import type { PanInfo } from "framer-motion";
 import Image from "next/image";
+
 /*****************
  * Types
  *****************/
@@ -24,8 +25,6 @@ export type CharacterIntroduceProps = {
   onIndexChange?: (index: number) => void;
 };
 
-const PERSPECTIVE = 1000;
-
 /*****************
  * Component
  *****************/
@@ -38,15 +37,13 @@ export default function CharacterIntroduce({
   const [index, setIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false); // 현재 카드만 플립
   const dragStartX = useRef(0);
-  const onDragStart = (_: any, info: any) => {
-    dragStartX.current = info.point?.x ?? 0;
-  };
 
   // 드래그용 X 모션값(카드만 움직임, 화면 고정)
   const x = useMotionValue(0);
   const draggingRef = useRef(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
@@ -65,8 +62,8 @@ export default function CharacterIntroduce({
       const t = e.touches[0];
       const dx = t.clientX - sx;
       const dy = t.clientY - sy;
-      const x = t.clientX;
-      const nearEdge = x < EDGE || x > window.innerWidth - EDGE;
+      const cx = t.clientX;
+      const nearEdge = cx < EDGE || cx > window.innerWidth - EDGE;
 
       // 엣지에서 가로로 크게 움직이면 브라우저 제스처 막기
       if (nearEdge && Math.abs(dx) > Math.abs(dy)) {
@@ -103,6 +100,14 @@ export default function CharacterIntroduce({
     preload(data[index + 1]?.imageUri);
   }, [index, data]);
 
+  // 스와이프 시작
+  const onDragStart = useCallback(
+    (_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+      dragStartX.current = info.point.x ?? 0;
+    },
+    []
+  );
+
   // 스와이프 완료 후 인덱스 변경 애니메이션
   const commitSwipe = useCallback(
     async (dir: "next" | "prev") => {
@@ -126,10 +131,10 @@ export default function CharacterIntroduce({
   );
 
   const onDragEnd = useCallback(
-    (_: any, info: any) => {
+    (_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
       if (draggingRef.current) return;
-      const dx = (info.point?.x ?? 0) - dragStartX.current;
-      const vx = info.velocity?.x ?? 0;
+      const dx = (info.point.x ?? 0) - dragStartX.current;
+      const vx = info.velocity.x ?? 0;
       const DIST = 60; // 거리 임계치(부드럽게)
       const VEL = 500; // 속도 임계치(플릭)
 
@@ -145,16 +150,6 @@ export default function CharacterIntroduce({
     },
     [commitSwipe, data.length, index, x]
   );
-
-  // const handlePrev = useCallback(() => {
-  //   if (index === 0) return;
-  //   commitSwipe("prev");
-  // }, [commitSwipe, index]);
-
-  // const handleNext = useCallback(() => {
-  //   if (index === data.length - 1) return;
-  //   commitSwipe("next");
-  // }, [commitSwipe, data.length, index]);
 
   const current = data[index];
 
@@ -174,7 +169,6 @@ export default function CharacterIntroduce({
           {
             width: "var(--card-w)",
             aspectRatio: cardAspectRatio, // ← 부모도 고정 비율로 높이 확보
-
             "--card-w": cardWidth,
           } as React.CSSProperties
         }
@@ -188,7 +182,7 @@ export default function CharacterIntroduce({
               width={359}
               height={439}
               className="self-center relative place-self-center bottom-[7.5%] w-[115%] h-[115%] object-contain z-0 "
-            ></Image>
+            />
           </div>
           <motion.div
             drag="x"
@@ -218,9 +212,8 @@ export default function CharacterIntroduce({
 }
 
 /*****************
- * FlipCard (same)
+ * FlipCard
  *****************/
-
 function FlipCard({
   imageUri,
   name,
@@ -281,7 +274,7 @@ function FlipCard({
         <motion.div
           className="absolute inset-0 pointer-events-none z-10"
           style={{
-            backfaceVisibility: "hidden" as any,
+            backfaceVisibility: "hidden",
             opacity: frontOpacity,
             transform: "translateZ(0.1px)",
           }}
@@ -297,12 +290,9 @@ function FlipCard({
                 src={imageUri}
                 alt={name}
                 fill
-                // 카드 실제 표시폭: cardWidth의 83%라 가정 (최대 520px → 약 432px)
-                // 2x로 충분히 날카롭게 뽑히도록 sizes를 넉넉하게 줌
                 sizes="(max-width: 768px) 80vw, 520px"
-                // Next가 webp/avif로 변환해주면서 고품질
                 quality={95}
-                priority // 현재 카드 이미지는 가장 먼저, 가장 고우선
+                priority
                 className="object-contain pointer-events-none select-none"
                 draggable={false}
               />
@@ -310,15 +300,14 @@ function FlipCard({
           </div>
         </motion.div>
 
-        {/* Back: 순수 흰 배경 + 텍스트 (앞면 완전 사라진 후에만 보이도록) */}
+        {/* Back: 순수 흰 배경 + 텍스트 */}
         <motion.div
-          className="absolute inset-0 bg-white z-20 -scale-x-100" // ← 이 한 줄로 동일
+          className="absolute inset-0 bg-white z-20 -scale-x-100"
           style={{
-            backfaceVisibility: "hidden" as any,
-            transform: "scaleX(-1)", // ← 좌우 반전 복구 (부모 180°에 의해 생긴 반전을 되돌림)
+            backfaceVisibility: "hidden",
+            transform: "scaleX(-1) translateZ(0)",
             opacity: backOpacity,
             transformOrigin: "center",
-            translateZ: 0, // 타입스크립트 경고 피하려면 아래처럼 문자열 transform에 포함해도 OK
           }}
           aria-hidden={!isFlipped}
         >

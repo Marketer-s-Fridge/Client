@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useState, useEffect, Children } from "react";
+import React, { useRef, useEffect, Children } from "react";
 
 export default function MobileSectionPager({
   children,
@@ -15,8 +15,8 @@ export default function MobileSectionPager({
     const el = ref.current;
     if (!el) return;
     const onScroll = () => {
-      const h = el.clientHeight;
-      const i = Math.round(el.scrollTop / h);
+      // const h = el.clientHeight;
+      // const i = Math.round(el.scrollTop / h);
       // setIdx(i);
     };
     el.addEventListener("scroll", onScroll, { passive: true });
