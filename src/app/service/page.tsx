@@ -9,7 +9,9 @@ import { useRouter } from "next/navigation";
 import { SubmitButton } from "@/components/authFormComponents";
 import InfiniteSwipeCarousel from "./infiniteSwipeCarousel";
 import MobileMenu from "@/components/mobileMenu";
-import EdgeGuards from "@/components/edgeGuards";
+// import EdgeGuards from "@/components/edgeGuards";
+import { motion } from "framer-motion";
+
 const characters = [
   {
     id: "melo",
@@ -160,7 +162,7 @@ export default function HomePage() {
 
   return (
     <>
-      <EdgeGuards />
+      {/* <EdgeGuards /> */}
       <main className="min-h-screen bg-white pt-11 md:pt-0">
         <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
         <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
@@ -355,50 +357,50 @@ export default function HomePage() {
               priority
             />
             <div className="mt-8 space-y-6">
-              <h1 className="font-bold text-base leading-relaxed">
-                <span className="text-gray-400 font-normal text-sm">
+              <h1 className="font-bold text-lg leading-relaxed">
+                <span className="text-gray-400 font-normal text-base">
                   Marketer&rsquo;s Fridge
                 </span>
                 <br />
                 마케터를 위한 정보 큐레이션 플랫폼
               </h1>
 
-              <p className="text-xs mb-[0px]">매일같이 쏟아지는</p>
+              <p className="text-sm mb-[0px]">매일같이 쏟아지는</p>
 
               {/* ⚠️ 웹에선 <view> 금지 — div/span로 교체 */}
               <div className="flex items-center justify-center gap-2 py-[7px] mb-[0px]">
-                <span className="text-xs main-red px-2.5 py-1.5 text-white font-semibold ">
+                <span className="text-sm main-red px-2.5 py-1.5 text-white font-semibold ">
                   광고 사례
                 </span>
-                <span className="text-xs main-red px-2.5 py-1.5 text-white font-semibold ">
+                <span className="text-sm main-red px-2.5 py-1.5 text-white font-semibold ">
                   소비자 반응
                 </span>
-                <span className="text-xs main-red px-2.5 py-1.5 text-white font-semibold ">
+                <span className="text-sm main-red px-2.5 py-1.5 text-white font-semibold ">
                   트렌드 리포트
                 </span>
               </div>
 
-              <p className="text-xs ">
+              <p className="text-sm ">
                 그 안에서{" "}
                 <span className="font-bold">지금 진짜 필요한 정보</span>를
                 골라내는 건 <br />
                 쉽지 않은 일이죠
               </p>
 
-              <p className="text-xs">
+              <p className="text-sm">
                 그래서 우리는{" "}
                 <span className="font-semibold">마케터의 시선</span>으로
                 <br />쓸 수 있는 정보만 선별하고
                 <br /> 꺼내쓰기 좋게 보관합니다.
               </p>
 
-              <p className="text-xs">
+              <p className="text-sm">
                 마치 냉장고 안에서
                 <br />
                 먹고 싶은 음식을 꺼내 먹듯이
               </p>
 
-              <p className="text-xs">
+              <p className="text-sm">
                 이곳에서는 당신이 필요한 순간
                 <br /> 원하는{" "}
                 <span className="text-red-500 font-semibold">인사이트</span>만
@@ -408,8 +410,8 @@ export default function HomePage() {
           </div>
           {/* 3) 인사이트 설명(캐러셀) */}
           <div className="page-inner  text-center ">
-            <h1 className="font-bold text-base mb-[-10%] leading-relaxed">
-              <span className="text-gray-400 font-normal text-sm">
+            <h1 className="font-bold text-lg mb-[-10%] leading-relaxed">
+              <span className="text-gray-400 font-normal text-base">
                 어떤 인사이트가 필요하신가요?
               </span>
               <br />
@@ -430,8 +432,8 @@ export default function HomePage() {
             </div>
 
             <div className="px-[5vw] text-white">
-              <h1 className="font-bold text-2xl mb-10">왜 ‘Fridge’ 일까요?</h1>
-              <div className="text-sm space-y-6 leading-relaxed">
+              <h1 className="font-bold text-3xl mb-10">왜 ‘Fridge’ 일까요?</h1>
+              <div className="text-base space-y-6 leading-relaxed">
                 <p>
                   우리는 정보를 그냥 흘려보내지 않습니다
                   <br />
@@ -451,9 +453,9 @@ export default function HomePage() {
           </div>
           {/* 5) 문제 제기 */}
           <div className="page-inner text-center">
-            <div className="space-y-8">
+            <div className="space-y-15">
               {problemTexts.map((t, i) => (
-                <h2 key={i} className="font-bold text-sm">
+                <h2 key={i} className="font-bold text-base">
                   {t}
                 </h2>
               ))}
@@ -461,7 +463,7 @@ export default function HomePage() {
           </div>
           {/* 6) CTA */}
           <div className="page-inner text-center">
-            <h3 className="font-bold text-sm leading-relaxed mb-30">
+            <h3 className="font-bold text-base leading-relaxed mb-30">
               필요할 때 꺼내보고
               <br />
               꺼낸 정보로 다시 요리할 수 있도록.
@@ -478,6 +480,59 @@ export default function HomePage() {
               onClick={() => router.push("/signUp")}
               className="mx-auto w-[92%] max-w-[420px] "
             />
+
+            {/* 안내 텍스트 + 아래 화살표 2개 */}
+            <div className="absolute place-self-center bottom-[10%] flex flex-col items-center">
+              <p className="mb-1 text-xs text-gray-500">
+                밑으로 더 내려서 캐릭터 구경하기
+              </p>
+              <div
+                className="flex flex-col items-center gap-1.5"
+                aria-hidden="true"
+              >
+                {/* 첫 번째 화살표 */}
+                <motion.svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  className="text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  animate={{ y: [0, 6, 0], opacity: [0.6, 1, 0.6] }}
+                  transition={{
+                    duration: 1.2,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                >
+                  <path d="M6 9l6 6 6-6" />
+                </motion.svg>
+                {/* 두 번째 화살표 (약간 딜레이) */}
+                <motion.svg
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  className="text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  animate={{ y: [0, 6, 0], opacity: [0.4, 0.9, 0.4] }}
+                  transition={{
+                    duration: 1.2,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: 0.2,
+                  }}
+                >
+                  <path d="M6 9l6 6 6-6" />
+                </motion.svg>
+              </div>
+            </div>
           </div>
           {/* 7) 캐릭터 소개 */}
           <div className="page-inner !max-w-none">

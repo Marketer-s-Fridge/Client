@@ -88,13 +88,13 @@ export default function EmailJoinPage() {
   };
 
   return (
-    <div className="bg-white pt-18 md:pt-0">
+    <div className="w-full bg-white pt-18 md:pt-0">
       <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
-      <div className="bg-white px-4 sm:px-6 md:px-8 py-16 min-h-screen flex justify-center">
-        <div className="w-full max-w-[550px]">
+      <div className="w-full bg-white px-4 sm:px-6 md:px-8 min-h-[100svh] py-16 flex items-center justify-center">
+        <div className="w-full max-w-[550px] self-center">
           <AuthHeader description="" />
-          <form className="place-items-center flex w-full px-2 md:px-0  md:w-7/9 place-self-center flex-col gap-6 text-sm">
+          <form className="flex w-full px-2 md:px-0 flex-col gap-6 text-sm items-center">
             <TextInput
               required
               label="이메일주소"

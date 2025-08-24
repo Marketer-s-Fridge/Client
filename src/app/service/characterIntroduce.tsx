@@ -1,3 +1,4 @@
+// components/CharacterIntroduce.tsx
 "use client";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { motion, useMotionValue, animate, useTransform } from "framer-motion";
@@ -18,7 +19,7 @@ export type CharacterCard = {
 
 export type CharacterIntroduceProps = {
   data: CharacterCard[];
-  /** px or any CSS length. Default: clamp(240px, 76vw, 360px) */
+  /** px or any CSS length. Default: clamp(320px, 92vw, 520px) */
   cardWidth?: string;
   /** width/height. Default: 313/396 */
   cardAspectRatio?: number; // e.g. 313/396
@@ -44,13 +45,13 @@ export default function CharacterIntroduce({
 
   const containerRef = useRef<HTMLDivElement>(null);
 
+  // iOS/안드로이드 브라우저 뒤로가기 엣지 제스처 방지
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
 
-    let sx = 0,
-      sy = 0;
-    const EDGE = 24; // 화면 가장자리 24px은 히스토리 제스처 방지
+    let sx = 0, sy = 0;
+    const EDGE = 24; // 화면 가장자리 24px 히스토리 제스처 방지
 
     const onStart = (e: TouchEvent) => {
       const t = e.touches[0];
@@ -87,7 +88,7 @@ export default function CharacterIntroduce({
     onIndexChange?.(index);
   }, [index, onIndexChange]);
 
-  // ← 추가: 이전/다음 카드 이미지 미리 로드(전환 끊김 방지)
+  // 이전/다음 카드 이미지 프리로드
   useEffect(() => {
     const preload = (src?: string) => {
       if (!src) return;
@@ -159,23 +160,19 @@ export default function CharacterIntroduce({
       className="relative flex-1 w-full flex flex-col items-center overscroll-contain mb-[50px] scroll-anchor-none"
       style={{ touchAction: "pan-y" }} // 가로 제스처는 내가 처리
     >
-      {/* 고정 화면: 가운데에 카드 1장만 */}
-      <p className="mt-[25%] mb-20 text-sm text-gray-500">
-        밑으로 더 내려서 캐릭터 구경하기
-      </p>
       <div
         className="relative"
         style={
           {
             width: "var(--card-w)",
-            aspectRatio: cardAspectRatio, // ← 부모도 고정 비율로 높이 확보
+            aspectRatio: cardAspectRatio, // 부모가 높이 확보
             "--card-w": cardWidth,
           } as React.CSSProperties
         }
       >
         {/* 카드(드래그로 좌우 넘기기) */}
-        <div className="relative flex items-center">
-          <div className="w-[100%] h-[100%] bottom-0 absolute pointer-events-none items-center">
+        <div className="relative flex items-center bottom-[-10%]">
+          <div className="w-[100%] h-[100%] absolute pointer-events-none items-center">
             <Image
               alt={"뒷배경"}
               src={"/icons/character/back.png"}
@@ -259,12 +256,12 @@ function FlipCard({
   return (
     <div className="w-full relative" style={{ width, perspective: 1000 }}>
       <motion.div
-        onTap={toggle} // ← 드래그했을 땐 실행 안 됨
+        onTap={toggle} // 드래그 중에는 실행 안 됨
         style={{
           width: "75%",
           aspectRatio,
           transformStyle: "preserve-3d",
-          rotateY, // 회전 애니메이션
+          rotateY, // 회전 애니메이션 (deg)
           touchAction: "pan-y", // 브라우저 가로제스처 방지
           willChange: "transform, opacity",
         }}
@@ -284,7 +281,6 @@ function FlipCard({
             className="absolute inset-3 bg-white rounded-xl"
             style={{ opacity: "inherit" }}
           >
-            {/* inset-2 = 0.5rem 여백 */}
             <div className="relative w-[95%] h-[95%] place-self-center">
               <Image
                 src={imageUri}
@@ -300,9 +296,9 @@ function FlipCard({
           </div>
         </motion.div>
 
-        {/* Back: 순수 흰 배경 + 텍스트 */}
+        {/* Back: 순수 흰 배경 + 텍스트 (좌우반전) */}
         <motion.div
-          className="absolute inset-0 bg-white z-20 -scale-x-100"
+          className="absolute inset-0 bg-white z-20"
           style={{
             backfaceVisibility: "hidden",
             transform: "scaleX(-1) translateZ(0)",

@@ -46,7 +46,7 @@ export default function AccountPage() {
               />
 
               {/* 간편 로그인 */}
-              <div className="flex flex-1 justify-center md:justify-between sm:justify-start gap-13 md:gap-6 mt-1 pl-2 sm:pl-[145px]">
+              <div className="flex flex-1   items-center flex-row justify-center sm:justify-start gap-4  mt-1 pl-2 sm:pl-[250px]">
                 {[
                   {
                     name: "카카오",
