@@ -462,7 +462,7 @@ export default function HomePage() {
             </div>
           </div>
           {/* 6) CTA */}
-          <div className="page-inner text-center">
+           <div className="page-inner relative text-center">
             <h3 className="font-bold text-base leading-relaxed mb-30">
               필요할 때 꺼내보고
               <br />
@@ -482,8 +482,8 @@ export default function HomePage() {
             />
 
             {/* 안내 텍스트 + 아래 화살표 2개 */}
-            <div className="absolute place-self-center bottom-[10%] flex flex-col items-center">
-              <p className="mb-1 text-xs text-gray-500">
+            <div className="flex flex-1 w-full absolute place-self-center bottom-[10%]  flex-col items-center">
+              <p className=" mb-1 text-xs text-gray-500">
                 밑으로 더 내려서 캐릭터 구경하기
               </p>
               <div

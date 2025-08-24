@@ -2,7 +2,6 @@
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { motion, useMotionValue, animate, PanInfo } from "framer-motion";
-import { FiChevronRight } from "react-icons/fi";
 
 type Card = { title: string; description: string };
 
