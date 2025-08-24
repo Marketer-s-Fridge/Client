@@ -1,7 +1,13 @@
-// components/CharacterSlideSection.tsx
+// src/app/service/characterSlideSection.tsx
 "use client";
 
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import {
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  useCallback,
+} from "react";
 import { AnimatePresence, motion, Variants, PanInfo } from "framer-motion";
 import Image from "next/image";
 
@@ -15,70 +21,108 @@ const SLIDES = [
 
 type Dir = "down" | "up";
 
-// ===== 스와이프/휠 민감도 =====
+/* ===== 튜닝 ===== */
 const SWIPE_OFFSET_PX = 80;
 const SWIPE_VELOCITY = 600;
 
-// 휠 입력
 const WHEEL_STEP_PX = 220;
 const WHEEL_DEADZONE = 10;
 const WHEEL_MAX_EVENT = 40;
 const COOLDOWN_MS = 500;
 
-// ===== 스냅(완전 진입) 판정 =====
 const SNAP_VISIBLE_RATIO = 1;
 const SNAP_SLOP = 24;
 
-// ===== 이미지 연출 튜닝 =====
-const FINAL_SCALE = 0.32; // 최종 크기
-const ENTER_SCALE = 0.32; // 시작 크기
-const PEAK_SCALE = 0.37; // 중앙 팝 크기
+const FINAL_SCALE = 0.2;
+const ENTER_SCALE = 0.2;
+const PEAK_SCALE = 0.25;
 
-// 좌측 치우침(음수=왼쪽)
-const FORCE_SHIFT_X = 150;
+/* 퍼센트/숫자 허용 (음수면 왼쪽으로) */
+const FORCE_SHIFT_X: number | string = "10%";
+/* 작을수록 위 포커스 */
+const OBJ_TOP_BIAS_PCT = 16;
+/* 퍼센트로 상향 리프트(컨테이너 대비) */
+const LIFT_Y = "90%";
 
-// 세로 포커스(작을수록 위)
-const OBJ_TOP_BIAS_PCT = 18;
+/* ===== 데스크톱 판별 훅 (타입 안정) ===== */
+function useIsDesktop() {
+  const [ok, setOk] = useState(false);
 
-// ✅ 추가: 이미지 자체를 더 위로 끌어올리는 픽셀 오프셋
-const LIFT_Y_PX = 764; // ← 더 위로 올리고 싶으면 숫자 키워(예: 80, 96)
+  useEffect(() => {
+    type Mql = MediaQueryList & {
+      addListener?: (
+        listener: (this: MediaQueryList, ev: MediaQueryListEvent) => void
+      ) => void;
+      removeListener?: (
+        listener: (this: MediaQueryList, ev: MediaQueryListEvent) => void
+      ) => void;
+    };
+
+    const mql = window.matchMedia("(min-width: 768px)") as Mql;
+
+    const onChange = () => setOk(mql.matches);
+    onChange();
+
+    if (typeof mql.addEventListener === "function") {
+      mql.addEventListener("change", onChange);
+      return () => mql.removeEventListener?.("change", onChange);
+    }
+
+    // Safari 레거시
+    const legacy: (this: MediaQueryList, ev: MediaQueryListEvent) => void =
+      () => onChange();
+    mql.addListener?.(legacy);
+    return () => mql.removeListener?.(legacy);
+  }, []);
+
+  return ok;
+}
 
 export default function CharacterSlideSection() {
+  const isDesktop = useIsDesktop();
+  return isDesktop ? <CharacterSlideSectionDesktop /> : null;
+}
+
+/* ===== 실제 섹션 (훅 순서 고정) ===== */
+function CharacterSlideSectionDesktop() {
   const [stage, setStage] = useState(0);
   const [dir, setDir] = useState<Dir>("down");
+  const [engaged, setEngaged] = useState(false);
 
-  // iOS 주소창 변동 대응: 실측 vh
+  const engagedRef = useRef(false);
+  useEffect(() => {
+    engagedRef.current = engaged;
+  }, [engaged]);
+
+  /* visualViewport 안전 접근(타입 명시, any 제거) */
   const [vh, setVh] = useState<number | null>(null);
   useLayoutEffect(() => {
     const update = () => {
-      const vv = (globalThis as any).visualViewport;
+      const vv: VisualViewport | null = window.visualViewport;
       const h = vv?.height ?? window.innerHeight;
       setVh(Math.round(h));
     };
     update();
-    const vv = (globalThis as any).visualViewport;
-    vv?.addEventListener?.("resize", update);
+
+    const onViewportResize = () => update();
     window.addEventListener("resize", update);
+    window.visualViewport?.addEventListener("resize", onViewportResize);
     return () => {
-      vv?.removeEventListener?.("resize", update);
       window.removeEventListener("resize", update);
+      window.visualViewport?.removeEventListener("resize", onViewportResize);
     };
   }, []);
 
   const sectionRef = useRef<HTMLDivElement>(null);
 
-  // 근방 접근/완전 진입
-  const activeRef = useRef(false);
-  const engagedRef = useRef(false);
-
-  // 휠 누적/방향/쿨다운
   const wheelAccum = useRef(0);
   const lastWheelDir = useRef<Dir | null>(null);
   const lastStepAt = useRef(0);
 
   /** 바디 스크롤 락/언락 */
   const lockScrollY = useRef(0);
-  const lockScroll = () => {
+
+  const lockScroll = useCallback(() => {
     if (document.body.style.position === "fixed") return;
     lockScrollY.current = window.scrollY || window.pageYOffset;
     const body = document.body;
@@ -89,8 +133,9 @@ export default function CharacterSlideSection() {
     body.style.width = "100%";
     body.style.overflow = "hidden";
     document.documentElement.style.overscrollBehavior = "none";
-  };
-  const unlockScroll = () => {
+  }, []);
+
+  const unlockScroll = useCallback(() => {
     if (document.body.style.position !== "fixed") return;
     const body = document.body;
     body.style.position = "";
@@ -101,27 +146,25 @@ export default function CharacterSlideSection() {
     body.style.overflow = "";
     document.documentElement.style.overscrollBehavior = "";
     window.scrollTo(0, lockScrollY.current);
-  };
+  }, []);
 
-  /** IO: 근방 진입만 감지(완전 진입은 스크롤에서 판정) */
+  /** IO + 스냅 진입 */
   useEffect(() => {
     const el = sectionRef.current;
     if (!el) return;
 
+    let active = false;
     const io = new IntersectionObserver(
       ([e]) => {
-        activeRef.current = e.isIntersecting && e.intersectionRatio > 0.2;
-        if (!activeRef.current && !engagedRef.current) {
-          unlockScroll();
-        }
+        active = e.isIntersecting && e.intersectionRatio > 0.2;
+        if (!active && !engagedRef.current) unlockScroll();
       },
       { threshold: [0, 0.2, 0.6, 0.9, 1] }
     );
     io.observe(el);
 
-    // 스크롤 시 "완전 진입" 판정 → 그때만 스냅+락
     const onScroll = () => {
-      if (!activeRef.current || engagedRef.current) return;
+      if (!active || engagedRef.current) return;
       const rect = el.getBoundingClientRect();
       const vpH = window.innerHeight;
       const visibleH = Math.min(
@@ -132,9 +175,9 @@ export default function CharacterSlideSection() {
       const nearTop = Math.abs(rect.top) <= SNAP_SLOP;
 
       if (ratio >= SNAP_VISIBLE_RATIO || nearTop) {
-        engagedRef.current = true;
+        setEngaged(true);
         el.scrollIntoView({ behavior: "smooth", block: "start" });
-        setTimeout(() => lockScroll(), 80);
+        setTimeout(lockScroll, 80);
       }
     };
 
@@ -146,43 +189,54 @@ export default function CharacterSlideSection() {
       io.disconnect();
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
-      if (!engagedRef.current) unlockScroll();
+      setEngaged(false);
+      unlockScroll();
     };
-  }, []);
+  }, [lockScroll, unlockScroll]);
 
-  /** 엣지(첫/마지막)에서만 탈출 허용 */
-  const scrollToSibling = (which: "prev" | "next") => {
-    engagedRef.current = false;
-    const target =
-      which === "next"
-        ? (sectionRef.current?.nextElementSibling as HTMLElement | null)
-        : (sectionRef.current?.previousElementSibling as HTMLElement | null);
-    unlockScroll();
-    target?.scrollIntoView({
-      behavior: "smooth",
-      block: which === "next" ? "start" : "end",
-    });
-  };
+  /** 탈출(첫/마지막에서만) */
+  const scrollToSibling = useCallback(
+    (which: "prev" | "next") => {
+      setEngaged(false);
+      const target =
+        which === "next"
+          ? (sectionRef.current?.nextElementSibling as HTMLElement | null)
+          : (sectionRef.current?.previousElementSibling as HTMLElement | null);
+      unlockScroll();
+      target?.scrollIntoView({
+        behavior: "smooth",
+        block: which === "next" ? "start" : "end",
+      });
+    },
+    [unlockScroll]
+  );
 
-  const goNext = () => {
+  const goNext = useCallback(() => {
     setDir("down");
-    if (stage < SLIDES.length - 1) setStage((s) => s + 1);
-    else scrollToSibling("next");
-  };
-  const goPrev = () => {
+    setStage((s) => {
+      if (s < SLIDES.length - 1) return s + 1;
+      scrollToSibling("next");
+      return s;
+    });
+  }, [scrollToSibling]);
+
+  const goPrev = useCallback(() => {
     setDir("up");
-    if (stage > 0) setStage((s) => s - 1);
-    else scrollToSibling("prev");
-  };
+    setStage((s) => {
+      if (s > 0) return s - 1;
+      scrollToSibling("prev");
+      return s;
+    });
+  }, [scrollToSibling]);
 
   /** 스와이프 처리 (쿨다운 포함) */
-  const tryStepWithCooldown = (step: () => void) => {
+  const tryStepWithCooldown = useCallback((step: () => void) => {
     const now = Date.now();
     if (now - lastStepAt.current < COOLDOWN_MS) return;
-    if (!engagedRef.current) engagedRef.current = true;
+    if (!engagedRef.current) setEngaged(true);
     lastStepAt.current = now;
     step();
-  };
+  }, []);
 
   const handleDragEnd = (_: unknown, info: PanInfo) => {
     const moved = info.offset.y;
@@ -193,8 +247,10 @@ export default function CharacterSlideSection() {
       return tryStepWithCooldown(goPrev);
   };
 
-  /** 휠/트랙패드: 완전 진입 중에만 캡처 */
+  /** 전역 wheel (타입 고정, any 제거) */
   useEffect(() => {
+    if (!engaged) return;
+
     const onWheel = (e: WheelEvent) => {
       if (!engagedRef.current) return;
       if (Date.now() - lastStepAt.current < COOLDOWN_MS) {
@@ -222,11 +278,12 @@ export default function CharacterSlideSection() {
         tryStepWithCooldown(goPrev);
       }
     };
-    window.addEventListener("wheel", onWheel, { passive: false });
-    return () => window.removeEventListener("wheel", onWheel as any);
-  }, [stage]);
 
-  /** 전환 애니메이션 */
+    window.addEventListener("wheel", onWheel, { passive: false });
+    return () => window.removeEventListener("wheel", onWheel);
+  }, [engaged, goNext, goPrev, tryStepWithCooldown]);
+
+  /** 애니메이션 */
   const imageVariants: Variants = {
     enter: (d: Dir) =>
       d === "down"
@@ -247,7 +304,7 @@ export default function CharacterSlideSection() {
     center: {
       y: "0%",
       x: FORCE_SHIFT_X,
-      scale: [ENTER_SCALE, PEAK_SCALE, FINAL_SCALE], // 팝
+      scale: [ENTER_SCALE, PEAK_SCALE, FINAL_SCALE],
       opacity: 1,
       filter: "brightness(1)",
       transition: {
@@ -292,7 +349,7 @@ export default function CharacterSlideSection() {
         scrollMarginTop: 0,
       }}
     >
-      {/* 중앙 레이아웃 고정, 내부 뷰만 전환 */}
+      {/* 중앙 레이아웃 고정 */}
       <div className="absolute inset-0 z-10 grid place-items-center">
         <div className="w-full h-full flex flex-col items-center justify-center">
           <motion.div
@@ -315,10 +372,10 @@ export default function CharacterSlideSection() {
                 className="absolute inset-0 will-change-transform"
                 style={{ transformOrigin: "left center" }}
               >
-                {/* ✅ 이미지만 추가로 위로 끌어올림 (부모는 그대로) */}
+                {/* 퍼센트 상향 리프트 */}
                 <div
                   className="absolute inset-0"
-                  style={{ transform: `translateY(-${LIFT_Y_PX}px)` }}
+                  style={{ transform: `translateY(-${LIFT_Y})` }}
                 >
                   <Image
                     src={SLIDES[stage].img}
