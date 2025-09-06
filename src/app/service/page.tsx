@@ -1,110 +1,51 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Header from "@/components/header";
-import { useState } from "react";
 import Footer from "@/components/footer";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { SubmitButton } from "@/components/authFormComponents";
-import InfiniteSwipeCarousel from "./infiniteSwipeCarousel";
 import MobileMenu from "@/components/mobileMenu";
-// import EdgeGuards from "@/components/edgeGuards";
 import { motion } from "framer-motion";
 
-const characters = [
+import InfiniteSwipeCarousel from "./infiniteSwipeCarousel";
+import MobileSectionPager from "./mobileSectionPager";
+import CharacterSlideOverlay, { type Slide } from "./characterSlideOverlay";
+import CharacterSlider from "./characterSlide";
+// import CharacterSlideOverlay from "./characterHandSection";
+
+// ✅ 파일명/시그니처 유지: 고정 오버레이
+// import CharacterSlideOverlay, { type Slide } from "./characterSlideOverlay";
+
+/** 유틸: 데스크톱 체크 */
+function useIsDesktop(minWidth = 768) {
+  const [ok, setOk] = useState(false);
+  useEffect(() => {
+    const mql = window.matchMedia(`(min-width:${minWidth}px)`);
+    const on = () => setOk(mql.matches);
+    on();
+    mql.addEventListener?.("change", on);
+    return () => mql.removeEventListener?.("change", on);
+  }, [minWidth]);
+  return ok;
+}
+
+/** 캐릭터 슬라이드 데이터 */
+const SLIDES: Slide[] = [
   {
-    id: "melo",
-    name: "멜로는 항상 진심을 다해 먹어요",
-    // handle: "(melo)",
-    tags: ["#해안의", "#수두르반카페", "#아시아이트", "#푸피"],
-    imageUri: "/icons/character/melo-card.png",
-    description: `배달앱 VIP, 동네 맛집 리스트를 엑셀로 정리해두는 철저함
-
-인스타 릴스에 매일 식사 기록 올리는
-‘푸드로그 인플루언서’
-(종종 맛집 현찬도 들어와요)
-
-먹는 게 곧 힐링이고, 사람들과 함께 나누는 게 또 다른 기쁨
-
-친구들이 오늘 뭐 먹을지 고민될 땐 멜로한테 물어봅니다
-
-식단, 디저트, 야식까지 다 코치해주는
-푸드 라이프 컨설턴트`,
+    name: "메인",
+    image: "/icons/character/fridge.png",
+    bg: "#f9f9f9",
+    cam: { x: 25, y: 45, scale: 0.3 },
   },
-  {
-    id: "berry",
-    name: "베리는 새벽 독서가 제일 좋아요",
-    // handle: "(Berry)",
-    tags: ["#공원산책", "#브런치", "#느린산책"],
-    imageUri: "/icons/character/berry-card.png",
-    description: `사람이 많은 곳은 부담스러워 혼자 인센스 스틱을 피우고선 유튜브에서 잔잔한 플레이리스트 고르는 것에 집중해요
-
-라이프스타일 편집숍과 도쿄 감성 여행
-브이로그를 좋아해요
-
-인스타그램 감성이 물씬 풍기는 사진을
-아주 잘 찍어서 친구들이 감성 브이로그를
-찍어보라고 칭찬합니다`,
-  },
-  {
-    id: "seri_lio",
-    name: "뷰티 인플루언서 세리와 그루밍 리오",
-    tags: ["#뷰티남성", "#뷰티리뷰", "#코덕", "#뷰티팁"],
-    imageUri: "/icons/character/seri-rio-card.png",
-    description: `세리는 뷰티 제품 리뷰가 주력 콘텐츠에요
-신상 쿠션이나 틴트는 무조건 사용한답니다
-
-뷰티 브랜드들이 선물로 보내준 뜯지도 못한
-화장품이 한가득
-
-리오는 누나 덕분에 자연스럽게 화장품에 눈떠
-친구들에게 제품 추천해주는 걸 즐기는 끼쟁이
-
-둘은 항상 각종 뷰티 팝업, 콜라보 행사에
-출석해요 트렌디함과 정보력으로 뷰티 업계
-동향을 꿰고 있답니다!`,
-  },
-  {
-    id: "max",
-    name: "맥스는 테크기기 리뷰 블로그 운영자에요",
-    // handle: "(Max)",
-    tags: ["#리뷰크리에이터", "#성능측정", "#주방가전"],
-    imageUri: "/icons/character/max-card.png",
-    description: `일상부터 운동 루틴까지 자기 삶을 자동화한
-시스템 덕후제품 스펙을 읽는 눈썰미와 사진 촬영 스킬
-
-매주 신제품 기능을 노션에 정리해 써두고
-어떤 제품을 언제 어디서 어떻게 사는게
-이득인지 알려줘요
-
-테크 브랜드 언팩 행사에 참여해 누구보다
-빠르게 리뷰해요`,
-  },
-  {
-    id: "tomi",
-    name: `토미는 매일 아침 미니 
-    패션쇼를 열어요`,
-    tags: ["#루틴일기", "#OOTD", "#코디추천", "#오늘의패션"],
-    imageUri: "/icons/character/tommy-card.png",
-    description: `옷장 앞에서 미니 패션쇼를 여는 것으로
-하루를 시작해요
-
-홍대 셀렉샵부터 디자이너 브랜드까지
-모르는게 없어요
-
-직접 올리는 룩북 일기나 OOTD는 조회수
-1만은 거뜬히 넘어요
-
-양말, 키링, 소품 하나하나 신경 쓰는
-까칠한 패셔니스타!
-`,
-  },
+  { name: "수박", bg: "#f9f9f9", cam: { x: -3, y: 7, scale: 1.35 } },
+  { name: "딸기", bg: "#f9f9f9", cam: { x: 40, y: 35, scale: 1.35 } },
+  { name: "체리", bg: "#f9f9f9", cam: { x: 0, y: 63, scale: 1.35 } },
+  { name: "사과", bg: "#f9f9f9", cam: { x: 55, y: 63, scale: 1.35 } },
+  { name: "토마토", bg: "#f9f9f9", cam: { x: 18, y: 90, scale: 1.35 } },
 ];
 
-import CharacterSlideSection from "./characterSlideSection";
-import CharacterIntroduce from "./characterIntroduce";
-import MobileSectionPager from "./mobileSectionPager";
 function FadeInSection({
   children,
   delay = 0,
@@ -112,29 +53,27 @@ function FadeInSection({
 }: {
   children: React.ReactNode;
   delay?: number;
-  mode?: "translate"; // 선택적으로 "translate" 모드 지원
+  mode?: "translate";
 }) {
   const ref = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
-    const observer = new IntersectionObserver(
+    const obs = new IntersectionObserver(
       ([entry]) => {
-        if (ref.current) {
-          if (entry.isIntersecting) {
-            ref.current.classList.add(
-              mode === "translate" ? "fade-in-visible2" : "fade-in-visible"
-            );
-          } else {
-            ref.current.classList.remove(
-              mode === "translate" ? "fade-in-visible2" : "fade-in-visible"
-            );
-          }
+        if (!ref.current) return;
+        if (entry.isIntersecting) {
+          ref.current.classList.add(
+            mode === "translate" ? "fade-in-visible2" : "fade-in-visible"
+          );
+        } else {
+          ref.current.classList.remove(
+            mode === "translate" ? "fade-in-visible2" : "fade-in-visible"
+          );
         }
       },
       { threshold: 0.5 }
     );
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
+    if (ref.current) obs.observe(ref.current);
+    return () => obs.disconnect();
   }, [mode]);
 
   return (
@@ -150,9 +89,50 @@ function FadeInSection({
   );
 }
 
-export default function HomePage() {
+export default function Page() {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
+  const isDesktop = useIsDesktop();
+
+  /** ⛳️ 오버레이 트리거 제어 */
+  const [showOverlay, setShowOverlay] = useState(false);
+  const overlayTriggered = useRef(false); // 최초 1회 트리거 방지
+  const sentinelRef = useRef<HTMLDivElement>(null);
+  const afterOverlayRef = useRef<HTMLDivElement>(null);
+
+  // 스크롤로 내려오다 센티넬에 "아래에서 위로" 닿을 때 오버레이 띄우기
+  useEffect(() => {
+    if (!isDesktop) return; // 데스크톱에서만
+    const el = sentinelRef.current;
+    if (!el) return;
+
+    let prevY = 0;
+    const io = new IntersectionObserver(
+      (entries) => {
+        const e = entries[0];
+        const y = e.boundingClientRect.y;
+        const scrollingDown = y < prevY; // 내려오는 중
+        prevY = y;
+
+        if (!overlayTriggered.current && e.isIntersecting && scrollingDown) {
+          overlayTriggered.current = true;
+          setShowOverlay(true); // → 오버레이 mount: y:100% → 0%로 올라옴
+          // 덮는 느낌 강화를 위해 트리거 지점으로 스냅
+          el.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      },
+      { threshold: 0.6 } // 60% 보일 때 트리거
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [isDesktop]);
+
+  // 오버레이가 위로 퇴장 완료 후, 다음 섹션으로 착지
+  const handleOverlayExit = () => {
+    setShowOverlay(false); // 언마운트 (시각적으로는 위로 빠져나간 상태)
+    const next = afterOverlayRef.current;
+    if (next) next.scrollIntoView({ behavior: "auto", block: "start" });
+  };
 
   const problemTexts = [
     "지금 마케팅이 막막한가요?",
@@ -160,9 +140,86 @@ export default function HomePage() {
     "브랜드 전략 회의에 인사이트가 필요한가요?",
   ];
 
+  const characters = [
+    {
+      id: "melo",
+      name: "멜로는 항상 진심을 다해 먹어요",
+      tags: ["#해안의", "#수두르반카페", "#아시아이트", "#푸피"],
+      imageUri: "/icons/character/melo-card.png",
+      description: `배달앱 VIP, 동네 맛집 리스트를 엑셀로 정리해두는 철저함
+
+인스타 릴스에 매일 식사 기록 올리는 ‘푸드로그 인플루언서’
+(종종 맛집 현찬도 들어와요)
+
+먹는 게 곧 힐링이고, 사람들과 함께 나누는 게 또 다른 기쁨
+
+친구들이 오늘 뭐 먹을지 고민될 땐 멜로한테 물어봅니다
+
+식단, 디저트, 야식까지 다 코치해주는
+푸드 라이프 컨설턴트`,
+    },
+    {
+      id: "berry",
+      name: "베리는 새벽 독서가 제일 좋아요",
+      tags: ["#공원산책", "#브런치", "#느린산책"],
+      imageUri: "/icons/character/berry-card.png",
+      description: `사람이 많은 곳은 부담스러워 혼자 인센스 스틱을 피우고선 
+      유튜브에서 잔잔한 플레이리스트 고르는 것에 집중해요
+
+라이프스타일 편집숍과 도쿄 감성 여행 브이로그를 좋아해요
+
+인스타그램 감성이 물씬 풍기는 사진을 아주 잘 찍어서 
+친구들이 감성 브이로그를 찍어보라고 칭찬합니다`,
+    },
+    {
+      id: "seri_lio",
+      name: "뷰티 인플루언서 세리와 그루밍 리오",
+      tags: ["#뷰티남성", "#뷰티리뷰", "#코덕", "#뷰티팁"],
+      imageUri: "/icons/character/seri-rio-card.png",
+      description: `세리는 뷰티 제품 리뷰가 주력 콘텐츠에요
+신상 쿠션이나 틴트는 무조건 사용한답니다
+
+뷰티 브랜드들이 선물로 보내준 뜯지도 못한 화장품이 한가득
+
+리오는 누나 덕분에 자연스럽게 화장품에 눈떠
+친구들에게 제품 추천해주는 걸 즐기는 끼쟁이
+
+둘은 항상 각종 뷰티 팝업, 콜라보 행사에
+출석해요 트렌디함과 정보력으로 뷰티 업계
+동향을 꿰고 있답니다!`,
+    },
+    {
+      id: "max",
+      name: "맥스는 테크기기 리뷰 블로그 운영자에요",
+      tags: ["#리뷰크리에이터", "#성능측정", "#주방가전"],
+      imageUri: "/icons/character/max-card.png",
+      description: `일상부터 운동 루틴까지 자기 삶을 자동화한
+시스템 덕후제품 스펙을 읽는 눈썰미와 사진 촬영 스킬
+
+매주 신제품 기능을 노션에 정리해 써두고
+어떤 제품을 언제 어디서 어떻게 사는게 이득인지 알려줘요
+
+테크 브랜드 언팩 행사에 참여해 누구보다 빠르게 리뷰해요`,
+    },
+    {
+      id: "tomi",
+      name: `토미는 매일 아침 미니 
+    패션쇼를 열어요`,
+      tags: ["#루틴일기", "#OOTD", "#코디추천", "#오늘의패션"],
+      imageUri: "/icons/character/tommy-card.png",
+      description: `옷장 앞에서 미니 패션쇼를 여는 것으로 하루를 시작해요
+
+홍대 셀렉샵부터 디자이너 브랜드까지 모르는게 없어요
+
+직접 올리는 룩북 일기나 OOTD는 조회수 1만은 거뜬히 넘어요
+
+양말, 키링, 소품 하나하나 신경 쓰는 까칠한 패셔니스타!
+`,
+    },
+  ];
+
   return (
     <>
-      {/* <EdgeGuards /> */}
       <main className="min-h-screen bg-white pt-11 md:pt-0">
         <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
         <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
@@ -208,7 +265,6 @@ export default function HomePage() {
               </p>
             </div>
             <div className="relative w-full flex mt-20 justify-center">
-              {/* 종이 + 위에 덮일 요소들 감싸는 부모 */}
               <div className="relative w-full max-w-[300px] ">
                 <Image
                   src="/images/paper.png"
@@ -218,7 +274,6 @@ export default function HomePage() {
                   className="w-full  "
                 />
 
-                {/* 겹쳐질 이미지들 */}
                 <FadeInSection delay={0} mode="translate">
                   <div className="absolute  right-[70%] bottom-[300px] w-full max-w-[300px] z-40">
                     <Image
@@ -329,22 +384,22 @@ export default function HomePage() {
           </FadeInSection>
         </section>
 
-        <section className="w-full hidden md:block">
-          <div className="mt-[5%] flex flex-1 flex-col gap-[45px] place-content-center place-items-center text-[34px] font-bold main-red w-full h-[35vh] text-white">
-            <p>Meet the Marketers Fridge Characters!</p>
-            <Image
-              src={"/icons/character/characters.png"}
-              width={600}
-              height={150}
-              alt="캐릭터들"
-              className="w-[610px] h-[100px]"
-            ></Image>
-          </div>
-        </section>
+        {/* ⛳️ 오버레이 트리거 지점 (여기 닿으면 아래→위로 덮음) */}
+        {/* <section className="hidden md:block h-[10vh]"  >
+          <div className="w-full h-full grid place-items-center text-gray-400" />
+        </section> */}
 
-        <CharacterSlideSection></CharacterSlideSection>
+        {/* sticky가 아닌 “고정 오버레이” */}
+        {true && (
+          <CharacterSlideOverlay
+            characters={characters} // ← 이 줄만 추가하면 됨!
+            vhPages={7}
+            // onExit={handleOverlayExit}
+            slides={SLIDES}
+          />
+        )}
 
-        {/* 모바일 */}
+        {/* 모바일: 기존 플로우 유지 */}
         <MobileSectionPager offsetTop={0}>
           {/* 1) 로고 + 한줄 소개 */}
           <div className="page-inner safe-pt text-center mt-[-10%]">
@@ -367,7 +422,6 @@ export default function HomePage() {
 
               <p className="text-sm mb-[0px]">매일같이 쏟아지는</p>
 
-              {/* ⚠️ 웹에선 <view> 금지 — div/span로 교체 */}
               <div className="flex items-center justify-center gap-2 py-[7px] mb-[0px]">
                 <span className="text-sm main-red px-2.5 py-1.5 text-white font-semibold ">
                   광고 사례
@@ -408,6 +462,7 @@ export default function HomePage() {
               </p>
             </div>
           </div>
+
           {/* 3) 인사이트 설명(캐러셀) */}
           <div className="page-inner  text-center ">
             <h1 className="font-bold text-lg mb-[-10%] leading-relaxed">
@@ -419,6 +474,7 @@ export default function HomePage() {
             </h1>
             <InfiniteSwipeCarousel />
           </div>
+
           {/* 4) 서비스 배경 섹션 */}
           <div className="page-inner relative !px-0 text-center">
             <div className="absolute inset-0 -z-10">
@@ -451,6 +507,7 @@ export default function HomePage() {
               </div>
             </div>
           </div>
+
           {/* 5) 문제 제기 */}
           <div className="page-inner text-center">
             <div className="space-y-15">
@@ -461,8 +518,9 @@ export default function HomePage() {
               ))}
             </div>
           </div>
+
           {/* 6) CTA */}
-           <div className="page-inner relative text-center">
+          <div className="page-inner relative text-center">
             <h3 className="font-bold text-base leading-relaxed mb-30">
               필요할 때 꺼내보고
               <br />
@@ -481,16 +539,15 @@ export default function HomePage() {
               className="mx-auto w-[92%] max-w-[420px] "
             />
 
-            {/* 안내 텍스트 + 아래 화살표 2개 */}
-            <div className="flex flex-1 w-full absolute place-self-center bottom-[10%]  flex-col items-center">
+            {/* 안내 텍스트 + 아래 화살표 */}
+            <div
+              className="flex flex-1 w-full absolute place-self-center bottom-[10%]  flex-col items-center"
+              aria-hidden="true"
+            >
               <p className=" mb-1 text-xs text-gray-500">
                 밑으로 더 내려서 캐릭터 구경하기
               </p>
-              <div
-                className="flex flex-col items-center gap-1.5"
-                aria-hidden="true"
-              >
-                {/* 첫 번째 화살표 */}
+              <div className="flex flex-col items-center gap-1.5">
                 <motion.svg
                   width="18"
                   height="18"
@@ -510,7 +567,6 @@ export default function HomePage() {
                 >
                   <path d="M6 9l6 6 6-6" />
                 </motion.svg>
-                {/* 두 번째 화살표 (약간 딜레이) */}
                 <motion.svg
                   width="22"
                   height="22"
@@ -534,12 +590,24 @@ export default function HomePage() {
               </div>
             </div>
           </div>
-          {/* 7) 캐릭터 소개 */}
-          <div className="page-inner !max-w-none">
-            <CharacterIntroduce data={characters} />
+
+          {/* 7) 캐릭터 소개 초반 (모바일) */}
+          <div className="page-inner !max-w-none bg-gray-100">
+            <p className="text-red-500 text-6xl font-bold ">Hello!</p>
+            <p className="text-red-500 text-6xl font-bold mb-2">We're Family</p>
+            <Image
+              alt=""
+              width="500"
+              height="600"
+              src="/icons/character/fridge.png"
+            ></Image>
+          </div>
+
+          {/* 8) 캐릭터 소개 리스트 (모바일) */}
+          <div className="page-inner bg-gray-100 mt-[-3%] !max-w-none ">
+            <CharacterSlider></CharacterSlider>
           </div>
         </MobileSectionPager>
-
         <Footer />
       </main>
     </>
