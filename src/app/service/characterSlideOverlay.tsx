@@ -1,7 +1,7 @@
 // components/CharacterStickySection.tsx
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   motion,
   useScroll,
@@ -52,18 +52,26 @@ export default function CharacterStickySection({
   fallbackImage = "/icons/character/default.png",
 }: Props) {
   if (!slides || slides.length === 0) return null;
+  
 
   const ref = useRef<HTMLDivElement>(null);
 
   // 이 섹션의 스크롤 진행도 (0~1)
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ["start start", "end end"], // 시작이 화면 하단에서 0, 끝이 화면 상단에서 1
+    offset: ["start start", "end end"],
   });
 
-  // 페이즈: 0~0.2 입장, 0.2~1 내부 슬라이드
-  const enterT = useTransform(scrollYProgress, [0, 0.2], [1, 0]); // 1→0
-  const holdT = useTransform(scrollYProgress, [0.2, 1], [0, 1]); // 0→1
+  // 페이즈
+  const enterT = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
+  const holdT = useTransform(scrollYProgress, [0.2, 1], [0, 1]);
+
+  // ✅ SSR 시에는 0, 클라에서만 업데이트
+  const [vh, setVh] = useState(0);
+  useEffect(() => {
+    setVh(window.innerHeight);
+  }, []);
+
 
   // 시트 y: ‘입장’만 반영 (퇴장 없음 → 아래 섹션으로 이어짐)
   const yPx = useTransform(
