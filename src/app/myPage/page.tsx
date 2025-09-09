@@ -75,10 +75,10 @@ export default function MyPage() {
           {/* 오른쪽: 계정 관리 & 내 문의 내역 + (모바일) 토글 버튼 */}
           <div className="mt-10 md:mt-0 flex w-full md:w-[50%] text-sm sm:text-lg md:text-2xl font-semibold justify-between">
             <div className="flex flex-1 md:gap-30 gap-5 md:justify-end">
-              <button onClick={() => router.push("/myPage/account/myInfo")}>
+              <button onClick={() => router.push("/myPage/account/myInfo")} className="cursor-pointer">
                 계정 관리
               </button>
-              <button onClick={() => router.push("/myPage/myContact")}>
+              <button onClick={() => router.push("/myPage/myContact")} className="cursor-pointer">
                 내 문의 내역
               </button>
             </div>
@@ -262,11 +262,11 @@ export default function MyPage() {
       {/* ===================== */}
       {/*   데스크탑/태블릿 뷰  */}
       {/* ===================== */}
-      <section className="hidden md:grid max-w-[1024px] mx-auto px-6 py-8 md:py-18 grid-cols-2 gap-15">
+      <section className="hidden md:grid max-w-[1024px] mx-auto px-6 py-8 md:py-18 grid-cols-2 gap-16">
         {/* 1️⃣ 최근 본 콘텐츠 (데스크탑 슬라이드) */}
-        <div>
+        <div className="w-full">
           <h3 className="text-2xl font-bold mb-4">최근 본 콘텐츠</h3>
-          <div className="relative w-full max-w-[480px]">
+          <div className="relative w-full">
             <button
               onClick={() => slideIndex > 0 && setSlideIndex(slideIndex - 1)}
               className="cursor-pointer absolute left-[-33px] top-1/2 -translate-y-1/2 z-10"
@@ -275,7 +275,7 @@ export default function MyPage() {
             </button>
             <div className="overflow-hidden w-full mx-auto">
               <div
-                className="flex transition-transform duration-500 ease-in-out"
+                className=" flex transition-transform duration-500 ease-in-out"
                 style={{
                   transform: `translateX(-${slideIndex * 480}px)`,
                   width: `${(maxSlideIndex + 1) * 480}px`,
@@ -285,7 +285,7 @@ export default function MyPage() {
                   (_, pageIndex) => (
                     <div
                       key={pageIndex}
-                      className="flex gap-6 w-[480px] flex-shrink-0 justify-start"
+                      className="flex gap-4 w-[480px] flex-shrink-0 justify-start"
                     >
                       {recentlyViewedContents
                         .slice(
@@ -379,7 +379,7 @@ export default function MyPage() {
         </div>
 
         {/* 3️⃣ MY 냉장고 */}
-        <div>
+        <div className="w-full">
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-2xl font-bold">MY 냉장고</h3>
             <button
@@ -396,7 +396,7 @@ export default function MyPage() {
               />
             </button>
           </div>
-          <div className="grid grid-cols-2 gap-4 md:flex md:gap-6 md:justify-center">
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-4">
             {myFridgeContents.map((title, i) => (
               <div key={i} className="w-full md:w-[140px]">
                 <div className="relative aspect-[3/4] rounded-lg bg-gray-100 overflow-hidden">
@@ -428,7 +428,7 @@ export default function MyPage() {
           <h3 className="text-2xl font-bold mb-4">
             마케터님에게 딱 맞는 추천 콘텐츠
           </h3>
-          <div className="grid grid-cols-2 gap-4 md:flex md:gap-6 md:justify-center">
+          <div className="grid grid-cols-2 gap-4 md:flex md:gap-4 md:justify-center">
             {myFridgeContents.map((title, i) => (
               <div key={i} className="w-full md:w-[140px]">
                 <div className="relative aspect-[3/4] rounded-lg bg-gray-100 overflow-hidden">
