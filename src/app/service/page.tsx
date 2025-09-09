@@ -156,7 +156,7 @@ export default function Page() {
 친구들이 오늘 뭐 먹을지 고민될 땐 멜로한테 물어봅니다
 
 식단, 디저트, 야식까지 다 코치해주는 푸드 라이프 컨설턴트
-\b`,
+\u200B`,
     },
     {
       id: "berry",
@@ -170,8 +170,8 @@ export default function Page() {
 
 인스타그램 감성이 물씬 풍기는 사진을 아주 잘 찍어서 
 친구들이 감성 브이로그를 찍어보라고 칭찬합니다
-\b
-\b`,
+\u200B
+\u200B`,
     },
     {
       id: "seri_lio",
@@ -200,9 +200,9 @@ export default function Page() {
 어떤 제품을 언제 어디서 어떻게 사는게 이득인지 알려줘요
 
 테크 브랜드 언팩 행사에 참여해 누구보다 빠르게 리뷰해요
-\b
-\b
-\b`,
+\u200B
+\u200B
+\u200B`,
     },
     {
       id: "tomi",
@@ -217,9 +217,9 @@ export default function Page() {
 직접 올리는 룩북 일기나 OOTD는 조회수 1만은 거뜬해요
 
 양말, 키링, 소품 하나하나 신경 쓰는 까칠한 패셔니스타!
-\b
-\b
-\b`,
+\u200B
+\u200B
+\u200B`,
     },
   ];
 
@@ -599,7 +599,7 @@ export default function Page() {
           {/* 7) 캐릭터 소개 초반 (모바일) */}
           <div className="page-inner !max-w-none bg-gray-100">
             <p className="text-red-500 text-6xl font-bold ">Hello!</p>
-            <p className="text-red-500 text-6xl font-bold mb-2">We&apos;re Family</p>
+            <p className="text-red-500 text-6xl font-bold mb-2">We&rsquo;re Family</p>
             <Image
               alt=""
               width="500"
