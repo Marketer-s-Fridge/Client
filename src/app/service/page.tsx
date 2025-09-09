@@ -39,11 +39,11 @@ const SLIDES: Slide[] = [
     bg: "#f9f9f9",
     cam: { x: 25, y: 45, scale: 0.3 },
   },
-  { name: "수박", bg: "#f9f9f9", cam: { x: -3, y: 7, scale: 1.35 } },
-  { name: "딸기", bg: "#f9f9f9", cam: { x: 40, y: 35, scale: 1.35 } },
-  { name: "체리", bg: "#f9f9f9", cam: { x: 0, y: 63, scale: 1.35 } },
-  { name: "사과", bg: "#f9f9f9", cam: { x: 55, y: 63, scale: 1.35 } },
-  { name: "토마토", bg: "#f9f9f9", cam: { x: 18, y: 90, scale: 1.35 } },
+  { name: "수박", bg: "#f9f9f9", cam: { x: -17, y: 3, scale: 1.15 } },
+  { name: "딸기", bg: "#f9f9f9", cam: { x: 36, y: 32, scale: 1.15 } },
+  { name: "체리", bg: "#f9f9f9", cam: { x: -20, y: 63, scale: 1.15 } },
+  { name: "사과", bg: "#f9f9f9", cam: { x: 55, y: 63, scale: 1.15 } },
+  { name: "토마토", bg: "#f9f9f9", cam: { x: -5, y: 97, scale: 1.15 } },
 ];
 
 function FadeInSection({
@@ -149,14 +149,14 @@ export default function Page() {
       description: `배달앱 VIP, 동네 맛집 리스트를 엑셀로 정리해두는 철저함
 
 인스타 릴스에 매일 식사 기록 올리는 ‘푸드로그 인플루언서’
-(종종 맛집 현찬도 들어와요)
+(종종 맛집 협찬도 들어온다.)
 
-먹는 게 곧 힐링이고, 사람들과 함께 나누는 게 또 다른 기쁨
+먹는 게 곧 힐링이고, 사람들과 함께 나누는 게 또 다른 기쁨!
 
 친구들이 오늘 뭐 먹을지 고민될 땐 멜로한테 물어봅니다
 
-식단, 디저트, 야식까지 다 코치해주는
-푸드 라이프 컨설턴트`,
+식단, 디저트, 야식까지 다 코치해주는 푸드 라이프 컨설턴트
+\b`,
     },
     {
       id: "berry",
@@ -164,42 +164,45 @@ export default function Page() {
       tags: ["#공원산책", "#브런치", "#느린산책"],
       imageUri: "/icons/character/berry-card.png",
       description: `사람이 많은 곳은 부담스러워 혼자 인센스 스틱을 피우고선 
-      유튜브에서 잔잔한 플레이리스트 고르는 것에 집중해요
+      유튜브에서 잔잔한 플레이리스트를 고르는 것에 집중해요
 
 라이프스타일 편집숍과 도쿄 감성 여행 브이로그를 좋아해요
 
 인스타그램 감성이 물씬 풍기는 사진을 아주 잘 찍어서 
-친구들이 감성 브이로그를 찍어보라고 칭찬합니다`,
+친구들이 감성 브이로그를 찍어보라고 칭찬합니다
+\b
+\b`,
     },
     {
       id: "seri_lio",
-      name: "뷰티 인플루언서 세리와 그루밍 리오",
+      name: "뷰티 인플루언서 세리 & 그루밍남 리오",
       tags: ["#뷰티남성", "#뷰티리뷰", "#코덕", "#뷰티팁"],
       imageUri: "/icons/character/seri-rio-card.png",
       description: `세리는 뷰티 제품 리뷰가 주력 콘텐츠에요
-신상 쿠션이나 틴트는 무조건 사용한답니다
+신상 쿠션이나 틴트는 무조건 사용한답니다.
 
 뷰티 브랜드들이 선물로 보내준 뜯지도 못한 화장품이 한가득
 
 리오는 누나 덕분에 자연스럽게 화장품에 눈떠
-친구들에게 제품 추천해주는 걸 즐기는 끼쟁이
+친구들에게 제품 추천해주는 걸 즐기는 끼쟁이랍니다
 
-둘은 항상 각종 뷰티 팝업, 콜라보 행사에
-출석해요 트렌디함과 정보력으로 뷰티 업계
-동향을 꿰고 있답니다!`,
+둘은 항상 각종 뷰티 팝업, 콜라보 행사에 출석!
+트렌디함과 정보력으로 뷰티 업계 동향을 꿰고 있답니다!`,
     },
     {
       id: "max",
       name: "맥스는 테크기기 리뷰 블로그 운영자에요",
       tags: ["#리뷰크리에이터", "#성능측정", "#주방가전"],
       imageUri: "/icons/character/max-card.png",
-      description: `일상부터 운동 루틴까지 자기 삶을 자동화한
-시스템 덕후제품 스펙을 읽는 눈썰미와 사진 촬영 스킬
+      description: `일상부터 운동 루틴까지 자기 삶을 자동화한 시스템 덕후
 
 매주 신제품 기능을 노션에 정리해 써두고
 어떤 제품을 언제 어디서 어떻게 사는게 이득인지 알려줘요
 
-테크 브랜드 언팩 행사에 참여해 누구보다 빠르게 리뷰해요`,
+테크 브랜드 언팩 행사에 참여해 누구보다 빠르게 리뷰해요
+\b
+\b
+\b`,
     },
     {
       id: "tomi",
@@ -211,10 +214,12 @@ export default function Page() {
 
 홍대 셀렉샵부터 디자이너 브랜드까지 모르는게 없어요
 
-직접 올리는 룩북 일기나 OOTD는 조회수 1만은 거뜬히 넘어요
+직접 올리는 룩북 일기나 OOTD는 조회수 1만은 거뜬해요
 
 양말, 키링, 소품 하나하나 신경 쓰는 까칠한 패셔니스타!
-`,
+\b
+\b
+\b`,
     },
   ];
 
@@ -594,7 +599,7 @@ export default function Page() {
           {/* 7) 캐릭터 소개 초반 (모바일) */}
           <div className="page-inner !max-w-none bg-gray-100">
             <p className="text-red-500 text-6xl font-bold ">Hello!</p>
-            <p className="text-red-500 text-6xl font-bold mb-2">We're Family</p>
+            <p className="text-red-500 text-6xl font-bold mb-2">We&apos;re Family</p>
             <Image
               alt=""
               width="500"

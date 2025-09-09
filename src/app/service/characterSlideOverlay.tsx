@@ -90,7 +90,7 @@ export default function CharacterStickySection({
   const bg = useTransform(stageMV, (idx) => bgColors[idx]);
 
   const dots = useMemo(
-    () => Array.from({ length: slides.length }),
+    () => Array.from({ length: slides.length - 1 }),
     [slides.length]
   );
 
@@ -98,7 +98,7 @@ export default function CharacterStickySection({
     <section
       className="hidden md:block"
       ref={ref}
-      style={{ height: `calc(${slides.length + 1} * 100vh)` }}
+      style={{ height: `calc(${slides.length + 2} * 100vh)` }}
     >
       <div className="sticky top-0 h-screen overflow-hidden">
         <motion.div
@@ -116,12 +116,15 @@ export default function CharacterStickySection({
             />
           </div>
 
-          {/* 하단 점 네비 (현재 장면 표시) */}
-          <div className="absolute bottom-[37.5%] right-[5%] flex flex-col justify-center gap-6 pointer-events-none">
-            {dots.map((_, i) => (
-              <Dot key={i} idx={i} stageMV={stageMV} />
-            ))}
-          </div>
+          {/* 우측 점 네비 (현재 장면 표시) */}
+
+          {stageNum > 0 && (
+            <div className="absolute bottom-[37.5%] right-[5%] flex flex-col justify-center gap-6 pointer-events-none">
+              {dots.map((_, i) => (
+                <Dot key={i} idx={i + 1} stageMV={stageMV} />
+              ))}
+            </div>
+          )}
         </motion.div>
       </div>
     </section>
@@ -175,7 +178,7 @@ function StageCanvas({
           backgroundImage: `url(${src})`,
           backgroundRepeat: "no-repeat",
           backgroundPosition: "var(--cam-x) var(--cam-y)",
-          backgroundSize: "calc(var(--cam-scale) * 125%) auto",
+          backgroundSize: "calc(var(--cam-scale) * 120%) auto",
           willChange: "background-position, background-size",
         }}
         aria-label={slide?.name ?? "slide"}
@@ -192,23 +195,30 @@ function StageCanvas({
           transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
           style={{
             zIndex: 0,
-            right: "20.3%",
-            top: "20%",
+            right: "12.5%",
+            top: "21.5%",
             transform: "translateY(-50%)",
             pointerEvents: "none",
-            maxWidth: "min(38vw, 520px)",
+            maxWidth: "min(50vw, 700px)",
           }}
         >
-          <div className="rounded-2xl px-4 py-2 ">
-            <p className="text-[#FF4545] font-extrabold leading-33 text-[120px] text-left">
-              Hello
+          <div className="rounded-2xl py-2 ">
+            <p className="relative text-[#FF4545] font-extrabold md:leading-17.5 lg:leading-30 md:text-[60px] lg:text-[100px] text-left">
+              Hello!
               <br />
-              {"\b \b \b \b We're"}
+              We&apos;re
               <br />
-              {"\b Family"}
+              MAF Family
+              <Image
+                src={"/images/line.png"}
+                alt=""
+                width="500"
+                height="50"
+                className="absolute bottom-0 w-[110%] left-[-1.5%] object-contain"
+              ></Image>
             </p>
-            <p className="text-[#FF4545] font-thin leading-33 text-[18px] text-center">
-              Marketer&apos;s fridge character
+            <p className=" text-gray-400 font-thin leading-33 text-[18px] text-left">
+              Characters from Marketer&apos;s fridge
             </p>
           </div>
         </motion.div>
@@ -226,7 +236,7 @@ function StageCanvas({
           style={{ right: "30%", top: "40%", pointerEvents: "none" }}
         >
           <div
-            style={{ width: "clamp(64px, 12vw, 140px)" }}
+            style={{ width: "clamp(64px, 12vw, 150px)" }}
             className="relative"
           >
             <Image
@@ -268,23 +278,23 @@ function SketchText({
       className="absolute left-0 right-0"
       style={{
         top: "18%", // 종이 내부 시작 높이
-        paddingLeft: "6px",
-        paddingRight: "6px",
+        paddingLeft: "12px",
+        paddingRight: "12px",
         pointerEvents: "none",
       }}
     >
       {cur?.name && (
-        <p className="md:text-[6px] lg:text-[7.5px] font-semibold border-b-[0.5px] border-gray-300 pb-[2px] leading-[1.2]">
+        <p className="md:text-[6px] lg:text-[7.5px] font-semibold border-b-[0.5px] border-[#C6C6C6] pb-[2px] leading-[1.2]">
           {cur.name}
         </p>
       )}
       <div className="mt-[2px] space-y-[2px]">
         {(lines.length ? lines : ["소개 문구가 아직 없어요."])
-          .slice(0, 5)
+          .slice(0, 7)
           .map((ln, i) => (
             <p
               key={i}
-              className="md:text-[3.5px] lg:text-[5px] leading-[1.5] border-b-[0.5px] border-gray-200 py-[2px]"
+              className="md:text-[3.5px] lg:text-[5.2px] leading-[1.5] border-b-[0.5px] border-[#C6C6C6] py-[2px]"
             >
               {ln}
             </p>
