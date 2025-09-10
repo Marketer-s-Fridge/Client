@@ -1,34 +1,110 @@
-/* src/styles/bookingUploadPopup.css */
 .react-calendar {
   border: none;
   font-family: inherit;
   width: 100%;
 }
 
+/* 📌 네비게이션 상단 (2025년 5월) */
+.react-calendar__navigation {
+  position: relative;
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+  font-weight: 600;
+  font-size: 18px;
+  color: #333;
+  justify-content: space-between;
+}
+
+
+/* 📌 네비게이션 하단 구분선 */
+.react-calendar__navigation::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 1px;
+  width: 100%;
+  background-color: #ddd;
+}
+
+/* 좌우 화살표 버튼 크기 조절 */
+.react-calendar__navigation button {
+  font-size: 24px !important; /* ← 크기 키우기 */
+  width: 48px;
+  height: 48px;
+  padding: 4px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 📌 요일 헤더 */
+.react-calendar__month-view__weekdays__weekday abbr {
+  text-decoration: none;
+  font-size: 13px;
+  color: #4c4c4c;
+  font-weight: 500;
+}
+
+.react-calendar__tile--now {
+  background:white !important;
+  color: inherit !important;
+}
+
+/* 📌 일반 날짜 */
 .react-calendar__tile {
-  background: none;
-  border: none;
-  padding: 10px 6.6667px;
-  text-align: center;
-  color: #000; /* 기본 날짜: 검정 */
+  padding: 0 !important;
+  width: 40px !important;
+  height: 40px !important;
+  display: flex;
+  font-size: 17px;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  box-sizing: border-box;
+  line-height: 1 !important;
+  aspect-ratio: 1 / 1; /* ✅ 완전 정사각형 */
+}
+
+/* 달력 상단 년/월 텍스트 스타일 */
+.react-calendar__navigation__label,
+.react-calendar__navigation__label > span {
+  color: #666666 !important;
+  font-size: 18px !important; /* 원하는 크기로 조정 */
+  font-weight: 500; /* 필요시 폰트 굵기 조정 */
+}
+
+
+/* 📌 오늘보다 이전 날짜 (회색 처리) */
+.past-date {
+  color: #d4d4d4 !important;
 }
 
 .react-calendar__tile--active {
   background-color: #ff4545 !important;
   color: white !important;
-  border-radius: 9999px;
+  border-radius: 50% !important;
+  width: 40px !important;
+  height: 40px !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  aspect-ratio: 1 / 1;
+  line-height: 1 !important;
+  box-sizing: border-box;
 }
 
+
+/* 📌 hover 시 강조 효과 */
 .react-calendar__tile:enabled:hover:not(.react-calendar__tile--active) {
   background-color: #ffe5e5 !important;
   color: #ff4545 !important;
-  border-radius: 9999px;
+  border-radius: 50% !important;
 }
 
+/* 📌 지난 달, 다음 달 날짜 흐리게 */
 .react-calendar__month-view__days__day--neighboringMonth {
-  color: #d1d5db !important; /* 지난달/다음달 날짜 */
+  color: #e5e5e5 !important;
 }
 
-.react-calendar__month-view__weekdays__weekday abbr {
-  text-decoration: none;
-}

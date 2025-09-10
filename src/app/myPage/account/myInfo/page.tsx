@@ -7,27 +7,33 @@ import AccountSidebar from "@/components/accountSideBar";
 import Banner from "@/components/banner";
 import Image from "next/image";
 import ConfirmModal from "@/components/confirmModal";
+import MobileMenu from "@/components/mobileMenu";
+import ToggleButtons from "../toggleButtons";
 
 export default function AccountPage() {
   const [modalOpen, setModalOpen] = useState(false);
-
+  const [menuOpen, setMenuOpen] = useState(false);
   const [name, setName] = useState("");
   const [nickname, setNickname] = useState("");
   const [phone, setPhone] = useState("");
 
   return (
-    <div className="bg-white min-h-screen">
-      <Header />
+    <div className="flex flex-1 flex-col bg-white min-h-screen pt-11 md:pt-0">
+      <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+      <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <Banner title="계정 관리" />
 
-      <main className="max-w-[1024px] mx-auto h-full grid grid-cols-1 md:grid-cols-[280px_1fr]">
+      <main className="w-full max-w-[1024px] grid grid-cols-1 md:grid-cols-[280px_1fr] justify-self-center self-center">
         <AccountSidebar />
+        <ToggleButtons></ToggleButtons>
 
-        <section className="relative pt-14 h-lvh">
-          <h3 className="text-[22px] font-bold mb-13 ml-15">회원정보 수정</h3>
+        <section className="place-items-center md:place-items-start  flex flex-1 flex-col w-full px-6 md:px-15 pt-6 md:pt-17.5 pb-25">
+          <h3 className="hidden md:block text-[20px] sm:text-[22px] font-bold mb-10">
+            회원정보 수정
+          </h3>
 
-          <div className="flex flex-col w-[75%] relative gap-5">
-            <div className="flex flex-col gap-2 text-sm">
+          <div className="w-full flex flex-1 flex-col gap-5 max-w-[400px]">
+            <div className="flex flex-col gap-2 text-sm ">
               {/* 계정 (readonly) */}
               <TextInput
                 label="계정"
@@ -36,10 +42,11 @@ export default function AccountPage() {
                 onChange={() => {}}
                 rounded="rounded-lg"
                 borderColor="border-gray-300"
+                textColor="text-gray-500"
               />
 
               {/* 간편 로그인 */}
-              <div className="flex gap-8 ml-45 mt-1">
+              <div className="flex flex-1   items-center flex-row justify-center sm:justify-start gap-4  mt-1 pl-2 sm:pl-[250px]">
                 {[
                   {
                     name: "카카오",
@@ -64,7 +71,7 @@ export default function AccountPage() {
                     <Image
                       src={sns.src}
                       alt={sns.name}
-                      className="w-8 h-8 cursor-pointer"
+                      className="w-12 h-12 md:w-8 md:h-8 cursor-pointer"
                       width={50}
                       height={50}
                     />
@@ -81,7 +88,6 @@ export default function AccountPage() {
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="홍길동"
               rounded="rounded-lg"
               borderColor="border-gray-300"
             />
@@ -91,7 +97,6 @@ export default function AccountPage() {
               type="text"
               value={nickname}
               onChange={(e) => setNickname(e.target.value)}
-              placeholder="마케터"
               rounded="rounded-lg"
               borderColor="border-gray-300"
             />
@@ -101,16 +106,14 @@ export default function AccountPage() {
               type="text"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              placeholder="010-1234-5678"
               rounded="rounded-lg"
               borderColor="border-gray-300"
             />
           </div>
-
-          <div className="absolute right-15 bottom-20">
+          <div className="flex flex-1 items-end self-end mt-25 md:mt-8 w-full sm:w-auto">
             <button
               onClick={() => setModalOpen(true)}
-              className="bg-red-500 text-white rounded-full px-5 py-1.5 text-[12px] cursor-pointer font-semibold hover:bg-red-600"
+              className="cursor-pointer w-full sm:w-auto bg-red-500 text-white rounded-lg sm:rounded-full px-4 py-3 sm:py-1.5 text-[15px] sm:text-[11px] font-semibold hover:bg-red-600"
             >
               변경 완료
             </button>

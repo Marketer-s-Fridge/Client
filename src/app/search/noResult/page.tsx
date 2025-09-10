@@ -7,6 +7,7 @@ import CategoryTabBar from "@/components/categoryTabBar";
 import { useState } from "react";
 import Image from "next/image";
 import Footer from "@/components/footer";
+import MobileMenu from "@/components/mobileMenu";
 
 const mockContents = [
   { title: "신규 브랜드 탐방: 떠오르는 핫 브랜드", category: "🔥 인기 콘텐츠" },
@@ -18,13 +19,14 @@ const mockContents = [
 ];
 
 export default function Page() {
+  const [menuOpen, setMenuOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("전체");
   const [selectedSort, setSelectedSort] = useState("최신순");
 
   return (
     <div className="min-h-screen bg-white">
-      <Header />
-
+      <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+      <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <section className="flex flex-col items-center main-red pt-10 pb-10">
         <SearchInput showInstagramButton={false}></SearchInput>
       </section>

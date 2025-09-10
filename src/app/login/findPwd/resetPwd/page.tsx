@@ -5,11 +5,13 @@ import Header from "@/components/header";
 import React, { useState } from "react";
 import ConfirmModal from "@/components/confirmModal";
 import { AuthHeader } from "@/components/authFormComponents";
+import MobileMenu from "@/components/mobileMenu";
 
 const ResetPwdPage: React.FC = () => {
   const [newPwd, setNewPwd] = useState("");
   const [confirmPwd, setConfirmPwd] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const [pwdError, setPwdError] = useState("");
   const [confirmError, setConfirmError] = useState("");
@@ -47,8 +49,9 @@ const ResetPwdPage: React.FC = () => {
   };
 
   return (
-    <div className="bg-white">
-      <Header />
+    <div className="bg-white pt-11 md:pt-0">
+      <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+      <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <div className="flex justify-center bg-white py-[16vh] px-4">
         <div className="w-full max-w-[480px] flex flex-col items-center">
           {/* 공통 헤더 */}
@@ -59,7 +62,7 @@ const ResetPwdPage: React.FC = () => {
 
           {/* 입력 필드 */}
           <form
-            className="w-full flex flex-col items-center gap-y-4 mb-6"
+            className="w-8/9 md:w-7/9 mb-10 flex flex-col items-center gap-y-4 "
             onSubmit={(e) => {
               e.preventDefault();
               handleSubmit();
@@ -86,7 +89,6 @@ const ResetPwdPage: React.FC = () => {
           <SubmitButton text="비밀번호 변경" onClick={handleSubmit} />
         </div>
       </div>
-
       {/* ✅ 비밀번호 변경 완료 모달 */}
       <ConfirmModal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
         <p>비밀번호가 변경되었습니다.</p>

@@ -6,10 +6,13 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Footer from "@/components/footer";
 import Pagination from "@/components/pagination";
+import CustomDropdown from "@/components/customDropdown";
+import MobileMenu from "@/components/mobileMenu";
 
 export default function MyContact() {
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   // 샘플 문의 리스트 생성
   const inquiries = Array.from({ length: 9 }).map((_, idx) => ({
@@ -20,60 +23,113 @@ export default function MyContact() {
   }));
 
   return (
-    <div className="bg-white min-h-screen">
-      <Header />
+    <div className="bg-white min-h-screen pt-11 md:pt-0">
+      <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+      <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <Banner title="내 문의 내역" />
 
       <main className="max-w-[1024px] mx-auto px-4 sm:px-6 py-12 text-sm">
         {/* 상단 요약 */}
         <div className="flex justify-between items-center mb-4">
           <p>
-            총 문의:{" "}
+            총 문의:
             <span className="text-red-500 font-semibold">
               {inquiries.length}건
             </span>
           </p>
-          <div className="relative">
-            <select className="border border-gray-400 rounded px-1 py-1">
-              <option>최신순</option>
-              <option>오래된순</option>
-            </select>
+          <div className="relative w-27">
+            <CustomDropdown
+              options={["최신순", "오래된순"]}
+              label="최신순"
+              onSelect={(value) => {
+                // TODO: 정렬 로직 연결
+                console.log("선택된 정렬:", value);
+              }}
+              buttonClassName="rounded-lg"
+            />
           </div>
         </div>
 
-        {/* 테이블 */}
-        <div className="overflow-x-auto text-[10px] sm:text-[13px]">
-          <table className="w-full text-center border-t">
-            <thead className="border-b-2 border-t-2 border-black">
-              <tr className="h-10">
-                <th className="w-[50px]">NO</th>
-                <th>제목</th>
-                <th className="w-[150px]">작성일</th>
-                <th className="w-[100px]">처리상태</th>
+      {/* 테이블 (데스크탑/태블릿 이상) */}
+      <div className="hidden sm:block overflow-x-auto text-[10px] sm:text-[13px]">
+        <table className="w-full text-center border-t">
+          <thead className="border-b-2 border-t-2 border-black ">
+            <tr className="h-10">
+              <th className="w-[50px]">NO</th>
+              <th>제목</th>
+              <th className="w-[150px]">작성일</th>
+              <th className="w-[100px]">처리상태</th>
+            </tr>
+          </thead>
+          <tbody>
+            {inquiries.map((item) => (
+              <tr
+                key={item.no}
+                onClick={() =>
+                  router.push(
+                    item.status === "답변완료"
+                      ? `./myContact/detail/processed`
+                      : `./myContact/detail/unprocessed`
+                  )
+                }
+                className="h-10 hover:bg-gray-100 cursor-pointer"
+              >
+                <td className="rounded-l-lg">{item.no}</td>
+                <td className="text-left px-4">{item.title}</td>
+                <td>{item.date}</td>
+                <td className="rounded-r-lg">{item.status}</td>
               </tr>
-            </thead>
-            <tbody>
-              {inquiries.map((item) => (
-                <tr
-                  key={item.no}
-                  onClick={() =>
-                    router.push(
-                      item.status === "답변완료"
-                        ? `./myContact/detail/processed`
-                        : `./myContact/detail/unprocessed`
-                    )
-                  }
-                  className="h-10 hover:bg-gray-100 cursor-pointer"
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* 리스트 (모바일 전용) */}
+      <div className="sm:hidden space-y-3">
+        {inquiries.map((item) => {
+          const isDone = item.status === "답변완료";
+          return (
+            <button
+              key={item.no}
+              onClick={() =>
+                router.push(
+                  isDone
+                    ? `./myContact/detail/processed`
+                    : `./myContact/detail/unprocessed`
+                )
+              }
+              className="w-full text-left rounded-lg border border-gray-200 px-3 py-3 active:bg-gray-50"
+            >
+              {/* 상단: 제목 + NO */}
+              <div className="flex items-start justify-between gap-3">
+                <div className="font-medium text-[13px] leading-5">
+                  {item.title}
+                </div>
+                <div className="shrink-0 text-[11px] text-gray-400">NO {item.no}</div>
+              </div>
+
+              {/* 처리상태 */}
+              <div className="mt-2">
+                <span
+                  className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] ${
+                    isDone
+                      ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                      : "bg-gray-100 text-gray-700 border border-gray-200"
+                  }`}
                 >
-                  <td>{item.no}</td>
-                  <td className="text-left px-4">{item.title}</td>
-                  <td>{item.date}</td>
-                  <td>{item.status}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                  {item.status}
+                </span>
+              </div>
+
+              {/* 작성일 (처리상태 바로 아래) */}
+              <div className="mt-1 text-[11px] text-gray-500">{item.date}</div>
+            </button>
+          );
+        })}
+      </div>
+
+
+     
 
         {/* 하단 버튼 + 페이지네이션 */}
         <div className="flex justify-between items-center mt-6">

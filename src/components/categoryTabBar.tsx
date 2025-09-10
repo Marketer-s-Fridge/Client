@@ -1,8 +1,7 @@
 "use client";
 
 import React from "react";
-// import Image from "next/image";
-import CategoryDropdown from "./categoryDropdown";
+import CustomDropdown from "./customDropdown";
 
 type CategoryTabBarProps = {
   categories: string[];
@@ -44,10 +43,11 @@ export default function CategoryTabBar({
         {/* 정렬 드롭다운 */}
 
         <div className="relative  text-xs sm:text-sm text-gray-700 self-center">
-          <CategoryDropdown
-            items={sortOptions}
-            selected={selectedSort}
+          <CustomDropdown
+            options={sortOptions}
+            label={selectedSort}
             onSelect={onSortChange}
+            buttonClassName="rounded-lg"
           />
         </div>
       </div>

@@ -8,12 +8,14 @@ import {
   TextInput,
   SubmitButton,
 } from "@/components/authFormComponents";
+import MobileMenu from "@/components/mobileMenu";
 
 const FindPwdPage: React.FC = () => {
   const [name, setName] = useState("");
   const [userId, setUserId] = useState("");
   const [email, setEmail] = useState("");
   const [foundAccount, setFoundAccount] = useState(true);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const router = useRouter();
 
@@ -24,9 +26,7 @@ const FindPwdPage: React.FC = () => {
     }
 
     const isMatch =
-      name === "테스트" &&
-      userId === "test" &&
-      email === "test@gmail.com";
+      name === "테스트" && userId === "test" && email === "test@gmail.com";
 
     if (isMatch) {
       setFoundAccount(true);
@@ -37,8 +37,9 @@ const FindPwdPage: React.FC = () => {
   };
 
   return (
-    <div className="bg-white">
-      <Header />
+    <div className="bg-white pt-11 md:pt-0">
+      <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+      <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
 
       <div className="flex justify-center bg-white py-[16vh] px-4">
         <div className="w-full max-w-[480px] flex flex-col items-center">
@@ -50,7 +51,7 @@ const FindPwdPage: React.FC = () => {
           />
 
           {/* ✅ 입력 필드 */}
-          <div className="w-full flex flex-col items-center gap-y-4 mb-6">
+          <div className="w-8/9 md:w-7/9 flex flex-col items-center gap-y-4 mb-10">
             <TextInput
               label="이름"
               value={name}
@@ -94,7 +95,7 @@ const FindPwdPage: React.FC = () => {
                   variant="outline"
                   color="#FF4545"
                   fullWidth={false}
-                  className="flex-1"
+                  className="flex-1 text-red-500"
                 />
               </div>
             </div>

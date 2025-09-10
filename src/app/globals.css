@@ -15,6 +15,25 @@
 }
 */
 
+/* 한 화면 꽉/정중앙 유틸 */
+.page-inner {
+  min-height: 100svh;         /* 모바일 브라우저 UI 제외 실제 화면 높이 */
+  display: grid;
+  place-content: center;       /* 수직/수평 중앙 정렬 */
+  padding-left: 5vw;
+  padding-right: 5vw;
+  margin-inline: auto;
+  width: min(100%, 680px);     /* 모바일 가독 폭 제한 */
+}
+
+/* iOS 안전 영역 보정(옵션) */
+:root {
+  --safe-top: env(safe-area-inset-top);
+  --safe-bottom: env(safe-area-inset-bottom);
+}
+.safe-pt { padding-top: max(var(--safe-top), 12px); }
+.safe-pb { padding-bottom: max(var(--safe-bottom), 12px); }
+
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
@@ -25,6 +44,8 @@
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+
 
 .no-scrollbar {
   -ms-overflow-style: none;
@@ -42,14 +63,124 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-  @apply text-black;
+  font-family: "Pretendard", Helvetica, sans-serif;
+  /* @apply text-black font-pretendard; */
 }
 
 .font-playfair {
   font-family: var(--font-playfair);
 }
 
+
 .main-red {
-  background-color: #FF4545;
+  background-color: #ff4545;
 }
+
+@font-face {
+  font-family: "Pretendard";
+  src: url("/fonts/Pretendard-Regular.ttf") format("ttf");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+.fade-in-section {
+  opacity: 0;
+  transition: opacity 1s ease-out;
+}
+
+.fade-in-visible {
+  opacity: 1;
+  
+}
+/* 초기 상태 */
+.fade-in-section2 {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+/* 보이는 상태 */
+.fade-in-visible2 {
+  opacity: 1;
+  transform: translateY(0px);
+}
+
+/* 처음 상태: 살짝 아래+작게+블러 */
+.rise {
+  opacity: 0;
+  transform: translateY(24px) scale(0.96);
+  filter: blur(6px);
+}
+
+/* 등장 상태: 또렷+제자리 */
+.rise-in {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  filter: blur(0);
+  transition:
+    transform 700ms cubic-bezier(.22,1,.36,1), /* 살짝 스프링 느낌 */
+    opacity 600ms ease,
+    filter 600ms ease;
+}
+
+/* 카드 안에서 이미지가 “마스크 위로 스르륵” 올라오는 효과 */
+.mask-reveal {
+  overflow: hidden;
+  border-radius: 20px;      /* 취향대로 */
+  background: rgba(0,0,0,0.02); /* 살짝 병풍 느낌 */
+}
+.mask-reveal .art {
+  transform: translateY(14%);
+  transition: transform 800ms cubic-bezier(.22,1,.36,1);
+}
+.rise-in .art {
+  transform: translateY(0);
+}
+
+/* 살짝 살아있는 듯한 idle float */
+@keyframes floaty {
+  0%   { transform: translateY(0) }
+  50%  { transform: translateY(-6px) }
+  100% { transform: translateY(0) }
+}
+.float-after {
+  animation: floaty 3.6s ease-in-out infinite;
+  animation-delay: var(--float-delay, 0ms);
+  will-change: transform;
+}
+
+/* 살짝 그림자 튕김 */
+@keyframes dropShadowPop {
+  0%   { box-shadow: 0 0 0 rgba(0,0,0,0) }
+  100% { box-shadow: 0 12px 28px rgba(0,0,0,0.12) }
+}
+.shadow-pop { animation: dropShadowPop 700ms ease forwards }
+
+
+/* 섹션 내용이 아래에서 살짝 올라오면서 보이는 효과 */
+section .slide-enter {
+  transform: translateY(20%);
+  opacity: 0;
+  transition: transform 600ms cubic-bezier(.22,1,.36,1), opacity 500ms ease;
+}
+section:is(:target, :hover, :focus-within),
+section:has(:is(h1,div):in-view) .slide-enter {} /* 옵션 */
+
+@supports selector(:has(*)) {
+  /* 스크롤 스냅일 때 보이는 섹션만 활성화 (크로스브라우저 고려 필요) */
+  section:has(h1:is(:hover, :focus, :active)) .slide-enter { transform: translateY(0); opacity: 1; }
+}
+
+/* 실무에선 JS로 in-view 제어가 안정적 */
+.in-view .slide-enter { transform: translateY(0); opacity: 1; }
+
+.touch-none { touch-action: none; }
+.overscroll-contain { overscroll-behavior: contain; }
+/* 안드 크롬 P2R 방지 + 스크롤 체이닝 차단 */
+html, body {
+  overscroll-behavior-y: none;
+  overscroll-behavior-x: none; /* 수평 체이닝도 방지 */
+}
+
+.scroll-anchor-none { overflow-anchor: none; }

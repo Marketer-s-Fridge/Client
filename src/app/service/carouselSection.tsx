@@ -41,26 +41,25 @@ const categories = [
 export default function CarouselSection() {
   const [sliderRef] = useKeenSlider<HTMLDivElement>({
     loop: true,
-    mode: "free-snap",
+    mode: "snap", // ✅ snap으로 변경
     slides: {
       perView: 5,
       spacing: 10,
-      origin: "center", // ✅ 여기로 바꿔야 함
+      origin: "center", // ✅ origin은 유지
     },
-    renderMode: "performance",
   });
 
   return (
     <section className="relative bg-white py-14 text-center">
       <div className="absolute w-full z-10 top-[12%] sm:top-[14%]">
-        <h2 className="text-[12px] sm:text-2xl font-bold text-red-500">
+        <h2 className="text-[12px] md:text-3xl font-bold text-red-500">
           콕! 찝어먹기
         </h2>
-        <p className="text-[9px] sm:text-xs text-gray-600 mt-2 sm:mt-5 sm:leading-5">
+        <p className="text-[9px] text-xs md:text-base text-gray-600 mt-2 sm:mt-5 sm:leading-5">
           마치 냉장고 앞에서 먹고 싶은 음식을 꺼내 먹듯,
           <br />
           <span className="text-red-600 font-semibold font-playfair">
-            Marketer’s Fridge
+            {`Marketer’s Fridge `}
           </span>
           에서는 당신이 필요한 순간, 원하는 인사이트만 쏙 꺼내갈 수 있습니다.
         </p>
@@ -80,7 +79,7 @@ export default function CarouselSection() {
           {categories.map((cat, idx) => (
             <div
               key={idx}
-              className="keen-slider__slide flex justify-center"
+              className="keen-slider__slide flex justify-center min-w-[290px]"
               style={{ perspective: "1000px" }}
             >
               <div className="relative w-[290px] aspect-[3/4] rounded-xl overflow-hidden shadow-xl transition-transform duration-0 transform hover:scale-101">

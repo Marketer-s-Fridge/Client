@@ -2,7 +2,12 @@
 
 import React, { useState } from "react";
 import Header from "@/components/header";
-import { AuthHeader, SubmitButton } from "@/components/authFormComponents";
+import {
+  AuthHeader,
+  SubmitButton,
+  TextInput,
+} from "@/components/authFormComponents";
+import MobileMenu from "@/components/mobileMenu";
 
 const SignUpPage: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -13,6 +18,7 @@ const SignUpPage: React.FC = () => {
     collect: false,
     marketing: false,
   });
+  const [menuOpen, setMenuOpen] = useState(false);
   const handleAllAgree = (checked: boolean) => {
     setAgreements({
       all: checked,
@@ -37,28 +43,25 @@ const SignUpPage: React.FC = () => {
   };
 
   return (
-    <div className="bg-white min-h-screen">
-      <Header />
+    <div className="bg-white min-h-screen pt-18 md:pt-0">
+      <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+      <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <main className="flex justify-center px-4 py-16">
-        <div className="w-full max-w-[550px] flex flex-col items-center text-center">
+        <div className="w-full px-2 md:px-0 md:w-7/9 max-w-[550px] flex flex-col items-center">
           <AuthHeader />
 
           {/* 이메일 입력 */}
-          <div className="w-9/11 flex flex-row items-start text-left mb-14 gap-3">
-            <label className="text-[16px] font-semibold whitespace-nowrap self-center">
-              이메일
-            </label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="kakao1234@kakao.com"
-              className="w-full border border-gray-300 rounded px-3 py-2 text-[16px]"
-            />
-          </div>
+          <TextInput
+            className="gap-10"
+            label="이메일"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="kakao1234@kakao.com"
+          />
 
           {/* 동의 체크 영역 */}
-          <div className="bg-[#F5F5F5] w-9/11 rounded-[18px] px-6 py-6 mb-10 text-left text-[14px]">
+          <div className="bg-[#F5F5F5] w-10/11 rounded-[18px] px-6 py-6 mt-10 mb-10 text-left text-[14px]">
             {/* 모두 동의하기 */}
             <label className="flex items-center gap-2 mb-4 font-bold">
               <input

@@ -8,12 +8,14 @@ import {
   TextInput,
   SubmitButton,
 } from "@/components/authFormComponents";
+import MobileMenu from "@/components/mobileMenu";
 
 const FindIdPage: React.FC = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [foundId, setFoundId] = useState<string | null>(null);
   const [notFound, setNotFound] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const router = useRouter();
 
@@ -29,8 +31,9 @@ const FindIdPage: React.FC = () => {
   };
 
   return (
-    <div className="bg-white">
-      <Header />
+    <div className="bg-white pt-11 md:pt-0">
+      <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+      <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <div className="flex justify-center bg-white py-[16vh] px-4">
         <div className="w-full max-w-[480px] flex flex-col items-center">
           {/* 타이틀 + 설명 */}
@@ -41,7 +44,7 @@ const FindIdPage: React.FC = () => {
           />
 
           {/* 입력 필드 */}
-          <div className="w-full flex flex-col items-center gap-y-4 mb-6">
+          <div className="w-8/9 md:w-7/9 mb-10 flex flex-col items-center gap-y-4 ">
             <TextInput
               label="이름"
               value={name}
@@ -97,6 +100,7 @@ const FindIdPage: React.FC = () => {
                   fullWidth
                   variant="outline"
                   color="#FF4545"
+                  className="text-red-500"
                 />
               </div>
             </div>

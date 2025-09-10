@@ -1,50 +1,54 @@
 "use client";
 
 import React from "react";
+import { useState } from "react";
 import Header from "@/components/header";
 import { useRouter } from "next/navigation"; // ✅ Next.js 클라이언트 라우팅
 import { AuthHeader } from "@/components/authFormComponents";
 import Image from "next/image";
+import MobileMenu from "@/components/mobileMenu";
 
 const SignUpPage: React.FC = () => {
   const router = useRouter(); // ✅ 라우터 객체 사용
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <div className="bg-white">
-      <Header />
+    <div className="bg-white pt-18 md:pt-0">
+      <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+      <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <main className="flex justify-center px-4 py-16">
         <div className="w-full max-w-[550px]">
           <AuthHeader />
 
-          <div className="flex flex-col w-full mb-14 justify-self-center justify-center items-center self-center">
+          <div className="flex flex-col px-8 md:px-0 w-full mb-6 md:mb-14 justify-self-center justify-center items-center self-center">
             {/* ✅ 이미지 버튼: 카카오 */}
-            <button onClick={() => alert("카카오 회원가입")}>
+            <button onClick={() => router.push("signUp/sns")}>
               <Image
                 src="/icons/kakao-join-bt.png"
                 alt="카카오로 시작하기"
-                className="w-5/8  mb-4 mx-auto"
+                className="cursor-pointer w-full max-w-[350px] mb-4 mx-auto"
                 width={600}
                 height={200}
               />
             </button>
 
             {/* ✅ 이미지 버튼: 네이버 */}
-            <button onClick={() => alert("네이버 회원가입")}>
+            <button onClick={() => router.push("signUp/sns")}>
               <Image
                 src="/icons/naver-join-bt.png"
                 alt="네이버로 시작하기"
-                className="w-5/8 mb-4 mx-auto"
+                className="cursor-pointer w-full max-w-[350px] mb-4 mx-auto"
                 width={600}
                 height={200}
               />
             </button>
 
             {/* ✅ 이미지 버튼: 구글 */}
-            <button onClick={() => alert("구글 회원가입")}>
+            <button onClick={() => router.push("signUp/sns")}>
               <Image
                 src="/icons/google-join-bt.png"
                 alt="Google로 시작하기"
-                className="w-5/8 mb-4 mx-auto"
+                className="cursor-pointer w-full max-w-[350px] mb-4 mx-auto"
                 width={600}
                 height={200}
               />
@@ -55,7 +59,7 @@ const SignUpPage: React.FC = () => {
               <Image
                 src="/icons/email-join-bt.png"
                 alt="이메일로 시작하기"
-                className="w-5/8 mb-4 mx-auto"
+                className="cursor-pointer w-full max-w-[350px] mb-4 mx-auto"
                 width={600}
                 height={200}
               />

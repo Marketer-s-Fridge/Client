@@ -1,9 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Header from "@/components/header";
 import Image from "next/image";
 import Footer from "@/components/footer";
+import Breadcrumb from "@/components/breadCrumb";
+import MobileMenu from "@/components/mobileMenu";
 
 const categories = ["Beauty", "Food", "Lifestyle", "Tech", "Fashion"];
 
@@ -20,13 +22,37 @@ export default function CardNewsDetailPage() {
   const [activeCategory, setActiveCategory] = useState("Beauty");
   const [activeSlide, setActiveSlide] = useState(0);
   const slideCount = slideImages.length;
+  const [menuOpen, setMenuOpen] = useState(false);
+  const slideBoxRef = useRef<HTMLDivElement>(null);
+  const [slideHeight, setSlideHeight] = useState<number>(0);
+
+  useEffect(() => {
+    const node = slideBoxRef.current;
+    if (!node) return;
+
+    const updateHeight = () => {
+      setSlideHeight(node.offsetHeight);
+    };
+
+    const resizeObserver = new ResizeObserver(() => {
+      updateHeight();
+    });
+
+    resizeObserver.observe(node);
+    updateHeight(); // 초기 설정
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, []);
 
   return (
-    <div className="bg-white">
-      <Header />
+    <div className="bg-white pt-17 md:pt-0">
+      <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+      <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
 
       {/* 상단 카테고리 탭 */}
-      <nav className="flex border-b border-gray-200 text-sm font-medium mt-1 overflow-x-auto no-scrollbar gap-5 px-[10%] md:px-[5%] lg:px-[17%]">
+      <nav className="flex border-b border-gray-200 text-sm font-medium mt-1 overflow-x-auto no-scrollbar gap-5 px-[5%] lg:px-[17%] ">
         {categories.map((cat) => (
           <span
             key={cat}
@@ -42,23 +68,35 @@ export default function CardNewsDetailPage() {
         ))}
       </nav>
 
-      <div className="flex px-4 sm:px-6 xl:px-65 text-xs pt-5 text-gray-400 mb-8">
-        홈 &gt; 카테고리 &gt;{" "}
-        <span className="text-black font-medium">{activeCategory}</span>
-      </div>
+      <Breadcrumb category={activeCategory} />
 
       {/* 본문 */}
-      <main className="flex justify-center px-4 sm:px-6 xl:px-80 py-15 min-h-[80vh]">
-        <div className="w-full max-w-screen-lg flex flex-col md:flex-row gap-10">
+      <main className="flex justify-center px-4 sm:px-[8%] lg:px-[17%] mt-10 mb-10 min-h-[70vh] pb-[-0]">
+        <div className=" w-full max-w-screen-lg flex flex-col sm:flex-row gap-10">
           {/* 카드 슬라이드 */}
-          <div className="relative w-full md:w-4/9 flex flex-col items-center">
+          <div className="self-center relative w-full sm:w-[45%] flex flex-col items-center">
             <div
+              ref={slideBoxRef}
               className="relative w-full overflow-hidden"
               style={{ aspectRatio: "4 / 5" }}
             >
+              {/* 인디케이터 */}
+              <div className="z-10 absolute bottom-[2%] left-1/2 -translate-x-1/2 flex gap-1">
+                {[...Array(slideCount)].map((_, idx) => (
+                  <div
+                    key={idx}
+                    className={`w-1.5 h-1.5 rounded-full ${
+                      idx === activeSlide
+                        ? "bg-white"
+                        : "bg-gray-500 opacity-85"
+                    }`}
+                  ></div>
+                ))}
+              </div>
+
               {/* 슬라이드 컨테이너 */}
               <div
-                className="flex transition-transform duration-500 ease-in-out"
+                className="relative flex transition-transform duration-500 ease-in-out"
                 style={{
                   width: `${slideCount * 100}%`,
                   transform: `translateX(-${
@@ -86,46 +124,59 @@ export default function CardNewsDetailPage() {
                 ))}
               </div>
 
-              {/* 왼쪽 클릭 영역 */}
+              {/* 좌우 클릭 영역 */}
               <div
                 className="absolute top-0 left-0 h-full w-1/2 z-10 cursor-pointer"
-                onClick={() => {
-                  setActiveSlide((prev) => Math.max(prev - 1, 0));
-                }}
+                onClick={() => setActiveSlide((prev) => Math.max(prev - 1, 0))}
               />
-
-              {/* 오른쪽 클릭 영역 */}
               <div
                 className="absolute top-0 right-0 h-full w-1/2 z-10 cursor-pointer"
-                onClick={() => {
-                  setActiveSlide((prev) => Math.min(prev + 1, slideCount - 1));
-                }}
+                onClick={() =>
+                  setActiveSlide((prev) => Math.min(prev + 1, slideCount - 1))
+                }
               />
-            </div>
-            {/* 인디케이터 */}
-            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 flex gap-1">
-              {[...Array(slideCount)].map((_, idx) => (
-                <div
-                  key={idx}
-                  className={`w-1.5 h-1.5 rounded-full ${
-                    idx === activeSlide ? "bg-red-500" : "bg-gray-300"
-                  }`}
-                ></div>
-              ))}
+
+              {/* 화살표 */}
+              {activeSlide > 0 && (
+                <Image
+                  width={150}
+                  height={150}
+                  className="absolute w-6 h-6 top-[47.5%] left-[1%]"
+                  src="/icons/cardnews-bt-left.png"
+                  alt="←"
+                />
+              )}
+              {activeSlide < slideCount - 1 && (
+                <Image
+                  width={150}
+                  height={150}
+                  className="absolute w-6 h-6 top-[47.5%] right-[1%]"
+                  src="/icons/cardnews-bt-right.png"
+                  alt="→"
+                />
+              )}
             </div>
           </div>
 
           {/* 텍스트 + 버튼 */}
-          <div className="w-full md:w-5/9 flex flex-col">
-            <div className="flex-1 overflow-y-auto pr-2 py-2 no-scrollbar">
-              <h1 className="text-2xl md:text-3xl font-bold mb-2">
+          <div
+            className="self-center w-full sm:w-[55%] flex flex-col mb-15 md:mb-0"
+            style={{ height: slideHeight || "auto" }}
+          >
+            <div
+              className={`
+      pr-2 py-2
+      ${slideHeight ? "sm:flex-1 sm:overflow-y-auto sm:no-scrollbar" : ""}
+    `}
+            >
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-2">
                 뭐라고? 쿠션이 40가지나 된다고?!
               </h1>
               <div className="text-xs text-gray-500 mb-4">
                 2025.05.07 · 12,324 views · 냉장고에 담은 사람 1,231
               </div>
-              <p className="text-sm text-gray-700 leading-relaxed">
-                <strong className="text-xl block mb-2 text-black">
+              <p className="text-sm sm:text-base text-gray-700 leading-relaxed">
+                <strong className="text-lg sm:text-xl block mb-2 text-black">
                   TIRTIR의 마케팅 전략: 소비자 중심과 다양한 색상
                 </strong>
                 TIRTIR는 단순한 뷰티 브랜드가 아닙니다. 소비자의 목소리를
@@ -146,11 +197,11 @@ export default function CardNewsDetailPage() {
                 맞는 다양한 색상을 제공하는 것처럼, 고객이 원하는 맞춤형
                 서비스를 제공하기 위해 끊임없이 발전하고 있습니다. 결국 TIRTIR는
                 소비자 중심의 브랜드로, 고객의 만족과 신뢰를 가장 중요한 가치로
-                삼고 있습니다.
+                삼고 있습니다. {/* 생략 */}
               </p>
             </div>
 
-            <div className="bg-white flex justify-end gap-4 mt-4">
+            <div className="bg-white flex justify-end gap-4 mt-4 ">
               <button className="border border-gray-300 rounded-full px-4 py-1 text-sm flex items-center gap-2 cursor-pointer">
                 <Image
                   src="/icons/pinkheart.png"
