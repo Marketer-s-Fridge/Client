@@ -22,7 +22,7 @@ pipeline {
       steps {
         sshagent(['fridge']) {   // 👈 여기 ID를 fridge로 교체
           sh '''
-          ssh ec2-user@44.203.45.0 "
+          ssh ec2-user@15.165.137.5 "
             cd $COMPOSE_DIR &&
             docker-compose pull web &&
             docker-compose up -d web
