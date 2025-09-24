@@ -19,7 +19,7 @@ export default function ChangeNicknameModal({ onClose }: Props) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/30 flex justify-center items-center z-50">
+    <div className="text-black fixed inset-0 bg-black/30 flex justify-center items-center z-50">
       <div className="bg-white w-[90%] max-w-[460px] rounded-2xl relative py-8 px-6 sm:px-8">
         {/* 닫기 버튼 */}
         <button
@@ -56,7 +56,7 @@ export default function ChangeNicknameModal({ onClose }: Props) {
 
         <div className="flex-col flex flex-1 space-y-3.5 text-sm px-5">
           {/* 계정 */}
-          <div className="flex flex-row items-center">
+          <div className="flex flex-col sm:flex-row sm:items-center mb-4 gap-2 sm:gap-0">
             <label className="w-28 font-bold text-sm shrink-0">계정</label>
             <input
               type="text"
@@ -67,7 +67,7 @@ export default function ChangeNicknameModal({ onClose }: Props) {
           </div>
 
           {/* 현재 닉네임 */}
-          <div className="flex items-center">
+          <div className="flex flex-col sm:flex-row sm:items-center mb-4 gap-2 sm:gap-0">
             <label className="w-28 font-bold text-sm shrink-0">
               현재 닉네임
             </label>
@@ -81,7 +81,7 @@ export default function ChangeNicknameModal({ onClose }: Props) {
 
           {/* 닉네임 변경 */}
           <div>
-            <div className="flex items-center mb-2">
+            <div className="flex flex-col sm:flex-row sm:items-center mb-2 gap-2 sm:gap-0">
               <label className="w-28 font-bold text-sm shrink-0">
                 닉네임 변경
               </label>
@@ -108,11 +108,11 @@ export default function ChangeNicknameModal({ onClose }: Props) {
               </div>
             </div>
 
-            <div className="pl-29 text-[10px] text-gray-500">
+            <div className="pl-0 sm:pl-28 text-[10px] text-gray-500">
               닉네임은 최소 2~8자로 작성해주세요.
             </div>
             {isDuplicate && (
-              <div className="pl-28 text-xs text-red-500 font-semibold mt-1">
+              <div className="pl-0 sm:pl-28 text-xs text-red-500 font-semibold mt-1">
                 중복되는 닉네임입니다.
               </div>
             )}
