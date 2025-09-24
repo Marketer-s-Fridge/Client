@@ -394,7 +394,7 @@ export default function Page() {
           <div className="w-full h-full grid place-items-center text-gray-400" />
         </section> */}
 
-        {/* sticky가 아닌 “고정 오버레이” */}
+        {/* sticky가 아닌 “고정 오버레이” !!*/}
         {true && (
           <CharacterSlideOverlay
             characters={characters} // ← 이 줄만 추가하면 됨!
@@ -416,7 +416,7 @@ export default function Page() {
               className="w-[80%] max-w-[520px] mx-auto h-auto"
               priority
             />
-            <div className="mt-8 space-y-6">
+            <div className="mt-8 space-y-5">
               <h1 className="font-bold text-lg leading-relaxed">
                 <span className="text-gray-400 font-normal text-base">
                   Marketer&rsquo;s Fridge
