@@ -405,9 +405,9 @@ export default function Page() {
         )}
 
         {/* 모바일: 기존 플로우 유지 */}
-        <MobileSectionPager offsetTop={0}>
+        <MobileSectionPager offsetTop={0} >
           {/* 1) 로고 + 한줄 소개 */}
-          <div className="page-inner safe-pt text-center mt-[-10%]">
+          <div className="text-black page-inner safe-pt text-center mt-[-10%]">
             <Image
               alt="서비스 로고"
               src="/icons/service-logo.png"
@@ -416,7 +416,7 @@ export default function Page() {
               className="w-[80%] max-w-[520px] mx-auto h-auto"
               priority
             />
-            <div className="mt-8 space-y-5">
+            <div className="text-black mt-8 space-y-5">
               <h1 className="font-bold text-lg leading-relaxed">
                 <span className="text-gray-400 font-normal text-base">
                   Marketer&rsquo;s Fridge
@@ -427,7 +427,7 @@ export default function Page() {
 
               <p className="text-sm mb-[0px]">매일같이 쏟아지는</p>
 
-              <div className="flex items-center justify-center gap-2 py-[7px] mb-[0px]">
+              <div className="text-black flex items-center justify-center gap-2 py-[7px] mb-[0px]">
                 <span className="text-sm main-red px-2.5 py-1.5 text-white font-semibold ">
                   광고 사례
                 </span>
@@ -439,27 +439,27 @@ export default function Page() {
                 </span>
               </div>
 
-              <p className="text-sm ">
+              <p className="text-black text-sm ">
                 그 안에서{" "}
                 <span className="font-bold">지금 진짜 필요한 정보</span>를
                 골라내는 건 <br />
                 쉽지 않은 일이죠
               </p>
 
-              <p className="text-sm">
+              <p className="text-black text-sm">
                 그래서 우리는{" "}
                 <span className="font-semibold">마케터의 시선</span>으로
                 <br />쓸 수 있는 정보만 선별하고
                 <br /> 꺼내쓰기 좋게 보관합니다.
               </p>
 
-              <p className="text-sm">
+              <p className="text-black text-sm">
                 마치 냉장고 안에서
                 <br />
                 먹고 싶은 음식을 꺼내 먹듯이
               </p>
 
-              <p className="text-sm">
+              <p className="text-black text-sm">
                 이곳에서는 당신이 필요한 순간
                 <br /> 원하는{" "}
                 <span className="text-red-500 font-semibold">인사이트</span>만
@@ -469,7 +469,7 @@ export default function Page() {
           </div>
 
           {/* 3) 인사이트 설명(캐러셀) */}
-          <div className="page-inner  text-center ">
+          <div className="text-black page-inner  text-center ">
             <h1 className="font-bold text-lg mb-[-10%] leading-relaxed">
               <span className="text-gray-400 font-normal text-base">
                 어떤 인사이트가 필요하신가요?
@@ -481,7 +481,7 @@ export default function Page() {
           </div>
 
           {/* 4) 서비스 배경 섹션 */}
-          <div className="page-inner relative !px-0 text-center">
+          <div className="text-black page-inner relative !px-0 text-center">
             <div className="absolute inset-0 -z-10">
               <Image
                 src="/images/service-background-mobile.jpg"
@@ -514,7 +514,7 @@ export default function Page() {
           </div>
 
           {/* 5) 문제 제기 */}
-          <div className="page-inner text-center">
+          <div className="text-black page-inner text-center">
             <div className="space-y-15">
               {problemTexts.map((t, i) => (
                 <h2 key={i} className="font-bold text-base">
@@ -525,7 +525,7 @@ export default function Page() {
           </div>
 
           {/* 6) CTA */}
-          <div className="page-inner relative text-center">
+          <div className="text-black page-inner relative text-center">
             <h3 className="font-bold text-base leading-relaxed mb-30">
               필요할 때 꺼내보고
               <br />
@@ -546,7 +546,7 @@ export default function Page() {
 
             {/* 안내 텍스트 + 아래 화살표 */}
             <div
-              className="flex flex-1 w-full absolute place-self-center bottom-[10%]  flex-col items-center"
+              className="text-black flex flex-1 w-full absolute place-self-center bottom-[10%]  flex-col items-center"
               aria-hidden="true"
             >
               <p className=" mb-1 text-xs text-gray-500">
@@ -597,7 +597,7 @@ export default function Page() {
           </div>
 
           {/* 7) 캐릭터 소개 초반 (모바일) */}
-          <div className="page-inner !max-w-none bg-gray-100">
+          <div className="text-black page-inner !max-w-none bg-gray-100">
             <p className="text-red-500 text-6xl font-bold ">Hello!</p>
             <p className="text-red-500 text-6xl font-bold mb-2">
               We&rsquo;re Family
@@ -611,7 +611,7 @@ export default function Page() {
           </div>
 
           {/* 8) 캐릭터 소개 리스트 (모바일) */}
-          <div className="page-inner bg-gray-100 mt-[-3%] !max-w-none ">
+          <div className="text-black page-inner bg-gray-100 mt-[-3%] !max-w-none ">
             <CharacterSlider></CharacterSlider>
           </div>
         </MobileSectionPager>
