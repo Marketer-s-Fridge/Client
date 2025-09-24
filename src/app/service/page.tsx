@@ -35,15 +35,15 @@ function useIsDesktop(minWidth = 768) {
 const SLIDES: Slide[] = [
   {
     name: "메인",
-    image: "/icons/character/fridge.png",
+    // image: "/icons/character/fridge.png",
     bg: "#f9f9f9",
-    cam: { x: 25, y: 45, scale: 0.3 },
+    cam: { x: 230, y: 130, scale: 1 },
   },
-  { name: "수박", bg: "#f9f9f9", cam: { x: -17, y: 3, scale: 1.15 } },
-  { name: "딸기", bg: "#f9f9f9", cam: { x: 36, y: 32, scale: 1.15 } },
-  { name: "체리", bg: "#f9f9f9", cam: { x: -20, y: 63, scale: 1.15 } },
-  { name: "사과", bg: "#f9f9f9", cam: { x: 55, y: 63, scale: 1.15 } },
-  { name: "토마토", bg: "#f9f9f9", cam: { x: -5, y: 97, scale: 1.15 } },
+  { name: "수박", bg: "#f9f9f9", cam: { x: 2660, y: 900, scale: 4.5 } },
+  { name: "딸기", bg: "#f9f9f9", cam: { x: 2300, y: 500, scale: 4.5 } },
+  { name: "체리", bg: "#f9f9f9", cam: { x: 2660, y: -30, scale: 4.5 } },
+  { name: "사과", bg: "#f9f9f9", cam: { x: 2200, y: -30, scale: 4.5 } },
+  { name: "토마토", bg: "#f9f9f9", cam: { x: 2560, y: -450, scale: 4.5 } },
 ];
 
 function FadeInSection({
@@ -398,7 +398,7 @@ export default function Page() {
         {true && (
           <CharacterSlideOverlay
             characters={characters} // ← 이 줄만 추가하면 됨!
-            vhPages={7}
+            vhPages={8}
             // onExit={handleOverlayExit}
             slides={SLIDES}
           />
@@ -599,7 +599,9 @@ export default function Page() {
           {/* 7) 캐릭터 소개 초반 (모바일) */}
           <div className="page-inner !max-w-none bg-gray-100">
             <p className="text-red-500 text-6xl font-bold ">Hello!</p>
-            <p className="text-red-500 text-6xl font-bold mb-2">We&rsquo;re Family</p>
+            <p className="text-red-500 text-6xl font-bold mb-2">
+              We&rsquo;re Family
+            </p>
             <Image
               alt=""
               width="500"

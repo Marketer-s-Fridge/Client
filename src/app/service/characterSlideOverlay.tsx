@@ -10,53 +10,39 @@ import {
   type MotionValue,
   useMotionValueEvent,
 } from "framer-motion";
+import Link from "next/link";
+import Fridge from "./fridge"; // ✅ 냉장고 컴포넌트 import
 import Image from "next/image";
 
-/** ▶ 슬라이드 1칸 = 화면을 꽉 채운 상태에서 보일 ‘장면’(카메라 포커스/배경색 등) */
+// 슬라이드 타입
 export type Slide = {
   name: string;
-  image?: string; // 큰 배경(없으면 fallback)
-  bg?: string; // 각 장면 배경색
-  cam: { x: number; y: number; scale: number }; // 카메라 포커스
+  bg?: string;
+  cam: { x: number; y: number; scale: number };
 };
 
-/** ▶ 스케치 카드에 뿌릴 캐릭터 텍스트 */
 export type CharacterInfo = {
   id: string;
   name: string;
-  tags?: string[];
-  imageUri?: string;
-  description?: string; // 여러 줄은 \n 구분
+  description?: string;
 };
 
 type Props = {
   slides: Slide[];
-  /** sticky 섹션 높이(뷰포트 배수). 입장 1 + 슬라이드 3 = 4 추천 */
-  vhPages?: number; // default 4
-  /** 2번째 슬라이드부터 오른쪽 종이에 뿌릴 캐릭터 텍스트 */
+  vhPages?: number;
   characters?: CharacterInfo[];
-  /** 배경 기본 이미지(슬라이드 image 없을 때 fallback) */
-  fallbackImage?: string; // default "/icons/character/default.png"
 };
 
-/**
- * 스크롤-구동 sticky 시트:
- * - 섹션 진입(0~0.2): 아래→위로, 스크롤한 만큼만 올라옴(덮는 느낌)
- * - 꽉 차면(>=0.2): 내부 슬라이드(stage) 진행
- * - 섹션 밖으로 나가면 아래 섹션(푸터 등) 자연스럽게 이어짐
- */
 export default function CharacterStickySection({
   slides,
   vhPages = 7,
   characters,
-  fallbackImage = "/icons/character/default.png",
 }: Props) {
   if (!slides || slides.length === 0) return null;
-  
 
   const ref = useRef<HTMLDivElement>(null);
 
-  // 이 섹션의 스크롤 진행도 (0~1)
+  // 스크롤 진행도
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start start", "end end"],
@@ -66,36 +52,30 @@ export default function CharacterStickySection({
   const enterT = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
   const holdT = useTransform(scrollYProgress, [0.2, 1], [0, 1]);
 
-  // ✅ SSR 시에는 0, 클라에서만 업데이트
-  const [vh, setVh] = useState(0);
-  useEffect(() => {
-    setVh(window.innerHeight);
-  }, []);
-
-
-  // 시트 y: ‘입장’만 반영 (퇴장 없음 → 아래 섹션으로 이어짐)
+  // y 이동
   const yPx = useTransform(
     enterT,
     (a) => a * (typeof window !== "undefined" ? window.innerHeight : 0)
   );
   const y = useSpring(yPx, { stiffness: 280, damping: 28 });
 
-  // 슬라이드 인덱스: holdT(0~1) → 0~(slides-1)
+  // stage 계산 (0 ~ slides.length → 마지막은 복귀 stage)
   const stageMV = useTransform(holdT, (v) => {
-    const idx = Math.round(v * Math.max(0, slides.length - 1));
-    return Math.max(0, Math.min(slides.length - 1, idx));
+    const idx = Math.round(v * slides.length);
+    return Math.max(0, Math.min(slides.length, idx));
   });
 
-  // ⚠️ 핵심: MotionValue를 React state로 구독해서 리렌더 유도
   const [stageNum, setStageNum] = useState(0);
   useMotionValueEvent(stageMV, "change", (v) => {
     const n = Math.round(v);
     if (n !== stageNum) setStageNum(n);
   });
 
-  // 배경색(슬라이드별) — 이것도 motion으로 부드럽게
+  // 배경색
   const bgColors = slides.map((s) => s.bg ?? "#f6f6f6");
-  const bg = useTransform(stageMV, (idx) => bgColors[idx]);
+  const bg = useTransform(stageMV, (idx) =>
+    idx >= slides.length ? "#f6f6f6" : bgColors[idx]
+  );
 
   const dots = useMemo(
     () => Array.from({ length: slides.length - 1 }),
@@ -109,25 +89,19 @@ export default function CharacterStickySection({
       style={{ height: `calc(${slides.length + 2} * 100vh)` }}
     >
       <div className="sticky top-0 h-screen overflow-hidden">
-        <motion.div
-          className="absolute inset-0"
-          style={{ y, background: bg }}
-          aria-roledescription="vertical slide gallery"
-        >
-          {/* 본문: 중앙 무대 */}
+        <motion.div className="absolute inset-0" style={{ y, background: bg }}>
           <div className="h-screen w-screen grid place-items-center">
             <StageCanvas
+              stageMV={stageMV}
+              stageNum={stageNum}
               slides={slides}
-              stage={stageNum} // ✅ 숫자 stage로 렌더 트리거
-              fallbackImage={fallbackImage}
               characters={characters}
             />
           </div>
 
-          {/* 우측 점 네비 (현재 장면 표시) */}
-
-          {stageNum > 0 && (
-            <div className="absolute bottom-[37.5%] right-[5%] flex flex-col justify-center gap-6 pointer-events-none">
+          {/* 우측 인디케이터 (마지막에는 숨김) */}
+          {stageNum > 0 && stageNum < slides.length && (
+            <div className="absolute bottom-[37.5%] right-[5%] flex flex-col gap-6 pointer-events-none">
               {dots.map((_, i) => (
                 <Dot key={i} idx={i + 1} stageMV={stageMV} />
               ))}
@@ -139,132 +113,122 @@ export default function CharacterStickySection({
   );
 }
 
-/** 점 네비 하나 (motion으로 색만 바꿔서 부드럽게) */
+/** 점 네비 */
 function Dot({ idx, stageMV }: { idx: number; stageMV: MotionValue<number> }) {
   const color = useTransform(stageMV, (s) =>
     s === idx ? "rgba(0,0,0,0.75)" : "rgba(0,0,0,0.28)"
   );
   return (
     <motion.span
-      className="h-3.5 w-3.5 rounded-full inline-block"
-      style={{ backgroundColor: color, zIndex: 10 }}
+      className="h-3.5 w-3.5 rounded-full"
+      style={{ backgroundColor: color }}
     />
   );
 }
 
-/** ▶ 중앙 무대: 큰 배경(이미지) + 카메라 포커스 + (2번째 슬라이드부터) 오른쪽 스케치 카드 */
+/** 무대 */
 function StageCanvas({
+  stageMV,
+  stageNum,
   slides,
-  stage,
-  fallbackImage,
   characters,
 }: {
+  stageMV: MotionValue<number>;
+  stageNum: number;
   slides: Slide[];
-  stage: number; // ✅ 숫자
-  fallbackImage: string;
   characters?: CharacterInfo[];
 }) {
-  const slide = slides[stage];
-  const cam = slide?.cam ?? { x: 50, y: 50, scale: 1 };
-  const src = slides[0].image ?? fallbackImage;
-  const isFirst = stage === 0;
+  const isFirst = stageNum === 0;
+  const isLast = stageNum === slides.length;
+
+  // 기본 cam (원위치)
+  const baseCam = { x: 600, y: 130, scale: 1 };
+
+  // cam 배열 (슬라이드 cam + 마지막 복귀 cam)
+  const cams = [...slides.map((s) => s.cam), baseCam];
+
+  // stageMV를 cam 좌표로 매핑
+  const camX = useTransform(
+    stageMV,
+    cams.map((_, i) => i),
+    cams.map((c) => c.x)
+  );
+  const camY = useTransform(
+    stageMV,
+    cams.map((_, i) => i),
+    cams.map((c) => c.y)
+  );
+  const camScale = useTransform(
+    stageMV,
+    cams.map((_, i) => i),
+    cams.map((c) => c.scale)
+  );
+
+  // spring 적용
+  const x = useSpring(camX, { stiffness: 100, damping: 20 });
+  const y = useSpring(camY, { stiffness: 100, damping: 20 });
+  const scale = useSpring(camScale, { stiffness: 100, damping: 20 });
 
   return (
-    <div className="relative w-full h-full">
-      {/* 하나의 큰 배경에 카메라만 이동 */}
-      <motion.div
-        className="absolute inset-0"
-        initial={false}
-        animate={{
-          ["--cam-x" as any]: `${cam.x}%`,
-          ["--cam-y" as any]: `${cam.y}%`,
-          ["--cam-scale" as any]: cam.scale,
-        }}
-        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-        style={{
-          zIndex: 1,
-          backgroundImage: `url(${src})`,
-          backgroundRepeat: "no-repeat",
-          backgroundPosition: "var(--cam-x) var(--cam-y)",
-          backgroundSize: "calc(var(--cam-scale) * 120%) auto",
-          willChange: "background-position, background-size",
-        }}
-        aria-label={slide?.name ?? "slide"}
-      />
+    <div className="relative w-full h-full bg-[#f6f6f6] overflow-hidden">
+      {/* 냉장고 (하나만 렌더링) */}
+      <motion.div style={{ x, y, scale }} className="relative z-40">
+        <Fridge stageNum={stageNum} slidesLength={slides.length} />
+      </motion.div>
 
-      {/* 첫 슬라이드 문구 */}
+      {/* 첫 슬라이드 텍스트 */}
       {isFirst && (
         <motion.div
-          key="first-copy"
-          className="absolute z-20"
+          className="absolute right-[10%] bottom-[25%] text-left"
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-          style={{
-            zIndex: 0,
-            right: "12.5%",
-            top: "21.5%",
-            transform: "translateY(-50%)",
-            pointerEvents: "none",
-            maxWidth: "min(50vw, 700px)",
-          }}
+          transition={{ duration: 0.4 }}
         >
-          <div className="rounded-2xl py-2 ">
-            <p className="relative text-[#FF4545] font-extrabold md:leading-17.5 lg:leading-30 md:text-[60px] lg:text-[100px] text-left">
-              Hello!
-              <br />
-              We&apos;re
-              <br />
-              MAF Family
-              <Image
-                src={"/images/line.png"}
-                alt=""
-                width="500"
-                height="50"
-                className="absolute bottom-0 w-[110%] left-[-1.5%] object-contain"
-              ></Image>
-            </p>
-            <p className=" text-gray-400 font-thin leading-33 text-[18px] text-left">
-              Characters from Marketer&apos;s fridge
-            </p>
-          </div>
+          <p className="text-[#FF4545] font-extrabold leading-tight md:text-[60px] lg:text-[100px]">
+            Hello!
+            <br />
+            We&apos;re
+            <br />
+            MAF Family
+          </p>
+          <p className="mt-2 text-gray-400 font-thin text-[18px]">
+            Characters from Marketer&apos;s fridge
+          </p>
         </motion.div>
       )}
 
-      {/* 2번째 슬라이드부터: 오른쪽 스케치 카드 + 텍스트 */}
-      {!isFirst && (
-        <motion.div
-          key={`sheet-${stage}`}
-          className="absolute z-30"
-          initial={{ opacity: 0, scale: 3.2, x: 16 }}
-          animate={{ opacity: 1, scale: 3.2, x: 0 }}
-          exit={{ opacity: 0, scale: 0.9 }}
-          transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-          style={{ right: "30%", top: "40%", pointerEvents: "none" }}
-        >
-          <div
-            style={{ width: "clamp(64px, 12vw, 150px)" }}
-            className="relative"
-          >
-            <Image
-              src="/icons/character/sketch.png"
-              alt="character note"
-              width={500}
-              height={500}
-              priority
-              style={{ width: "100%", height: "auto" }}
-              className="shadow-md rounded"
-            />
-            <SketchText characters={characters} stage={stage} />
+      {/* 중간 슬라이드 캐릭터 소개 */}
+      {stageNum > 0 && stageNum < slides.length && (
+        <div>
+          <SketchText characters={characters} stage={stageNum} />
+        </div>
+      )}
+
+      {/* 마지막 화면 */}
+      {isLast && (
+        <div className=" absolute inset-0 flex flex-col items-center justify-center">
+          <p className="absolute z-0  top-20 font-bold text-center text-[220px] text-[#E4E4E4] pointer-events-none">
+            {"Marketer's Fridge"}
+          </p>
+          <div className="absolute z-60 bottom-40 flex w-1/2 justify-center gap-100">
+            <Link href="/" passHref>
+              <button className="relative cursor-pointer z-60  px-4 py-2 bg-black text-white font-bold rounded-md hover:bg-gray-800 flex items-center gap-2">
+                🏠 홈으로 돌아가기
+              </button>
+            </Link>
+            <Link href="/service" passHref>
+              <button className="relative cursor-pointer z-60  px-4 py-2 bg-[#868686] text-white font-bold rounded-md hover:bg-gray-400 flex items-center gap-2">
+                🔄 서비스 소개 다시보기
+              </button>
+            </Link>
           </div>
-        </motion.div>
+        </div>
       )}
     </div>
   );
 }
 
-/** ▶ 스케치 카드 위 캐릭터 텍스트(2번째 슬라이드부터) */
+/** 캐릭터 소개 */
 function SketchText({
   characters,
   stage,
@@ -272,9 +236,9 @@ function SketchText({
   characters?: CharacterInfo[];
   stage: number;
 }) {
-  if (!characters || characters.length === 0 || stage < 1) return null;
-
+  if (!characters || characters.length === 0) return null;
   const cur = characters[(stage - 1) % characters.length];
+
   const lines =
     cur?.description
       ?.split(/\n+/)
@@ -282,32 +246,32 @@ function SketchText({
       .filter(Boolean) ?? [];
 
   return (
-    <div
-      className="absolute left-0 right-0"
-      style={{
-        top: "18%", // 종이 내부 시작 높이
-        paddingLeft: "12px",
-        paddingRight: "12px",
-        pointerEvents: "none",
-      }}
-    >
-      {cur?.name && (
-        <p className="md:text-[6px] lg:text-[7.5px] font-semibold border-b-[0.5px] border-[#C6C6C6] pb-[2px] leading-[1.2]">
-          {cur.name}
-        </p>
-      )}
-      <div className="mt-[2px] space-y-[2px]">
-        {(lines.length ? lines : ["소개 문구가 아직 없어요."])
-          .slice(0, 7)
-          .map((ln, i) => (
-            <p
-              key={i}
-              className="md:text-[3.5px] lg:text-[5.2px] leading-[1.5] border-b-[0.5px] border-[#C6C6C6] py-[2px]"
-            >
-              {ln}
-            </p>
-          ))}
+    <div className="absolute z-50  top-[20%] right-[20%] w-[470px]  text-center bg-transparent rounded-2xl">
+      <div className="text-left z-10 relative w-full px-[8%] pt-[15%]">
+        {cur?.name && (
+          <p className="space-y-3 pb-1 text-[24px] font-bold border-b-[1.7px] border-[#C6C6C6] mb-2 ">
+            {cur.name}
+          </p>
+        )}
+        {lines.length > 0 ? (
+          <ul className=" space-y-3 text-[16.5px] text-gray-800">
+            {lines.slice(0, 5).map((ln, i) => (
+              <li key={i} className="py-1.5 border-b-[1.7px] border-[#C6C6C6]">
+                {ln}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-[18px] text-gray-400">소개 문구가 아직 없어요.</p>
+        )}
       </div>
+      <Image
+        width={500}
+        height={600}
+        alt="dd"
+        src="/icons/character/sketch.png"
+        className="w-full rounded-2xl absolute z-0 top-0 shadow-2xl"
+      ></Image>
     </div>
   );
 }
