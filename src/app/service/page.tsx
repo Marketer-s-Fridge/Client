@@ -615,12 +615,30 @@ export default function Page() {
             </div>
           </div>
 
-          {/* 7) 캐릭터 소개 초반 (모바일) */}
-          <div className="text-black page-inner !max-w-none bg-gray-100">
-            <p className="text-red-500 text-6xl font-bold ">Hello!</p>
-            <p className="text-red-500 text-6xl font-bold mb-2">
-              We&rsquo;re Family
+          {/* 7) 캐릭터 소개 초반 1 (모바일) */}
+          <div className=" text-black w-full h-full !max-w-none bg-gray-100 pt-[10%] px-[2%]">
+            <p className="text-red-500 text-[26vw] text-left font-bold mb-7">
+              Hello
             </p>
+            <p className="text-red-500 text-[26vw] mb-14 font-bold text-right">
+              We&rsquo;re
+            </p>
+            <p className="text-red-500 text-[26vw] text-left font-bold mb-[-13%]">
+              MAF
+            </p>
+            <p className="text-red-500 text-[26vw] text-right font-bold ">
+              Family
+            </p>
+            {/* <Image
+              alt="밑줄"
+              width={280}
+              height={10}
+              src="/images/line.png"
+              className="contain-size object-contain absolute right-0"
+            ></Image> */}
+          </div>
+          {/* 7) 캐릭터 소개 초반 2 (모바일) */}
+          <div className="text-black page-inner !max-w-none bg-gray-100">
             <Image
               alt=""
               width="500"
