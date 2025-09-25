@@ -14,7 +14,7 @@ export default function Fridge({
 }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, amount: 0.5 }); 
+  const inView = useInView(ref, { once: true, amount: 0.5 });
   // 👉 화면의 50% 이상 보이면 true (once: true → 최초 1번만)
 
   useEffect(() => {
@@ -33,7 +33,12 @@ export default function Fridge({
   return (
     <div
       ref={ref}
-      className="z-50 relative w-[300px] h-[500px] perspective-[1200px]"
+      className="
+    z-50 relative
+    w-[20vw]
+    h-auto aspect-[3/5]
+    perspective-[1200px]
+  "
     >
       {/* 본체 */}
       <Image
@@ -47,7 +52,7 @@ export default function Fridge({
       <motion.div
         className="absolute top-0 right-0 h-full"
         style={{
-          width: "300px",
+          width: "100%", // ✅ 고정값 대신 컨테이너 너비에 맞춤
           transformStyle: "preserve-3d",
           transformOrigin: "right center",
         }}

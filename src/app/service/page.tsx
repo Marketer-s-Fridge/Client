@@ -35,15 +35,34 @@ function useIsDesktop(minWidth = 768) {
 const SLIDES: Slide[] = [
   {
     name: "메인",
-    // image: "/icons/character/fridge.png",
     bg: "#f9f9f9",
-    cam: { x: 230, y: 130, scale: 1 },
+    cam: { x: 0.15, y: 0.17, scale: 1 }, // 230px / 1536, 130px / 1024
   },
-  { name: "수박", bg: "#f9f9f9", cam: { x: 2660, y: 900, scale: 4.5 } },
-  { name: "딸기", bg: "#f9f9f9", cam: { x: 2300, y: 500, scale: 4.5 } },
-  { name: "체리", bg: "#f9f9f9", cam: { x: 2660, y: -30, scale: 4.5 } },
-  { name: "사과", bg: "#f9f9f9", cam: { x: 2200, y: -30, scale: 4.5 } },
-  { name: "토마토", bg: "#f9f9f9", cam: { x: 2560, y: -450, scale: 4.5 } },
+  {
+    name: "수박",
+    bg: "#f9f9f9",
+    cam: { x: 0.25, y: 1.45, scale: 4.5 }, // 2660/1536, 900/1024
+  },
+  {
+    name: "딸기",
+    bg: "#f9f9f9",
+    cam: { x: 0, y: 0.6, scale: 4.5 }, // 2300/1536, 500/1024
+  },
+  {
+    name: "체리",
+    bg: "#f9f9f9",
+    cam: { x: 0.25, y: -0.3, scale: 4.5 }, // 2660/1536, -30/1024
+  },
+  {
+    name: "사과",
+    bg: "#f9f9f9",
+    cam: { x: -0.1, y: -0.3, scale: 4.5 }, // 2200/1536, -30/1024
+  },
+  {
+    name: "토마토",
+    bg: "#f9f9f9",
+    cam: { x: 0.1, y: -1.3, scale: 4.5 }, // 2560/1536, -450/1024
+  },
 ];
 
 function FadeInSection({
@@ -405,7 +424,7 @@ export default function Page() {
         )}
 
         {/* 모바일: 기존 플로우 유지 */}
-        <MobileSectionPager offsetTop={0} >
+        <MobileSectionPager offsetTop={0}>
           {/* 1) 로고 + 한줄 소개 */}
           <div className="text-black page-inner safe-pt text-center mt-[-10%]">
             <Image

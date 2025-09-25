@@ -127,6 +127,8 @@ function Dot({ idx, stageMV }: { idx: number; stageMV: MotionValue<number> }) {
 }
 
 /** 무대 */
+/** 무대 */
+/** 무대 */
 function StageCanvas({
   stageMV,
   stageNum,
@@ -141,13 +143,62 @@ function StageCanvas({
   const isFirst = stageNum === 0;
   const isLast = stageNum === slides.length;
 
-  // 기본 cam (원위치)
-  const baseCam = { x: 600, y: 130, scale: 1 };
+  // ✅ 뷰포트 크기 저장
+  const [viewport, setViewport] = useState({
+    width: typeof window !== "undefined" ? window.innerWidth : 1920,
+    height: typeof window !== "undefined" ? window.innerHeight : 1080,
+  });
 
-  // cam 배열 (슬라이드 cam + 마지막 복귀 cam)
-  const cams = [...slides.map((s) => s.cam), baseCam];
+  useEffect(() => {
+    const handleResize = () =>
+      setViewport({ width: window.innerWidth, height: window.innerHeight });
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
-  // stageMV를 cam 좌표로 매핑
+  // ✅ cam 비율 정의 (px 대신 비율값)
+  // ✅ cam 비율 정의 (px 대신 비율값)
+  const firstCamRatio = { x: 0, y: 0, scale: 1 }; // 첫 슬라이드: 더 크게!
+  const baseCamRatio = { x: 0.3, y: 0, scale: 0.8 }; // 마지막 슬라이드: 작게!
+  function adjustY(baseY: number) {
+    const h = viewport.height;
+
+    if (h < 800) {
+      // 작은 노트북 화면
+      return baseY * 0.7;
+    } else if (h < 1000) {
+      // 중간 크기 화면
+      return baseY * 0.85;
+    } else {
+      // 큰 모니터
+      return baseY;
+    }
+  }
+
+  // ✅ 뷰포트 크기에 맞게 실제 px 좌표 계산
+  // ✅ cams 계산
+  const cams = [
+    {
+      // 첫 슬라이드 인트로 냉장고
+      x: viewport.width * firstCamRatio.x,
+      y: adjustY(viewport.height * firstCamRatio.y),
+      scale: firstCamRatio.scale,
+    },
+    ...slides.slice(1).map((s) => ({
+      // 두 번째 슬라이드부터 캐릭터 cam 적용
+      x: viewport.width * s.cam.x,
+      y: adjustY(viewport.height * s.cam.y),
+      scale: s.cam.scale,
+    })),
+    {
+      // 마지막 복귀 위치
+      x: viewport.width * baseCamRatio.x,
+      y: adjustY(viewport.height * baseCamRatio.y),
+      scale: baseCamRatio.scale,
+    },
+  ];
+
+  // ✅ stageMV → cam 좌표 매핑
   const camX = useTransform(
     stageMV,
     cams.map((_, i) => i),
@@ -164,27 +215,30 @@ function StageCanvas({
     cams.map((c) => c.scale)
   );
 
-  // spring 적용
+  // ✅ spring 적용
   const x = useSpring(camX, { stiffness: 100, damping: 20 });
   const y = useSpring(camY, { stiffness: 100, damping: 20 });
   const scale = useSpring(camScale, { stiffness: 100, damping: 20 });
 
   return (
     <div className="relative w-full h-full bg-[#f6f6f6] overflow-hidden">
-      {/* 냉장고 (하나만 렌더링) */}
-      <motion.div style={{ x, y, scale }} className="relative z-40">
+      {/* 냉장고 */}
+      <motion.div
+        style={{ x, y, scale }}
+        className="absolute z-40 left-[10vw]  bottom-[32.5vh] lg:bottom-[17.5vh]  text-left"
+      >
         <Fridge stageNum={stageNum} slidesLength={slides.length} />
       </motion.div>
 
       {/* 첫 슬라이드 텍스트 */}
       {isFirst && (
         <motion.div
-          className="absolute right-[10%] bottom-[25%] text-left"
+          className="absolute right-[10vw] lg:right-[15vw] bottom-[32.5vh] lg:bottom-[25vh] text-left"
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
         >
-          <p className="text-[#FF4545] font-extrabold leading-tight md:text-[60px] lg:text-[100px]">
+          <p className="text-[#FF4545] font-extrabold leading-tight lg:text-[6.5vw] text-[7.5vw]">
             Hello!
             <br />
             We&apos;re
@@ -199,26 +253,38 @@ function StageCanvas({
 
       {/* 중간 슬라이드 캐릭터 소개 */}
       {stageNum > 0 && stageNum < slides.length && (
-        <div>
-          <SketchText characters={characters} stage={stageNum} />
-        </div>
+        <SketchText characters={characters} stage={stageNum} />
       )}
 
       {/* 마지막 화면 */}
       {isLast && (
-        <div className=" absolute inset-0 flex flex-col items-center justify-center">
-          <p className="absolute z-0  top-20 font-bold text-center text-[220px] text-[#E4E4E4] pointer-events-none">
+        <div className="absolute inset-0 flex flex-col items-center justify-center">
+          <p className="absolute z-0 top-20 lg:top-10 tracking-wide lg:tracking-wider leading-40 lg:leading-60 font-bold text-center text-[145px] lg:text-[225px] text-[#E4E4E4] pointer-events-none">
             {"Marketer's Fridge"}
           </p>
-          <div className="absolute z-60 bottom-40 flex w-1/2 justify-center gap-100">
+          <div className="absolute z-60 bottom-40 flex w-full justify-center gap-[25%]">
             <Link href="/" passHref>
-              <button className="relative cursor-pointer z-60  px-4 py-2 bg-black text-white font-bold rounded-md hover:bg-gray-800 flex items-center gap-2">
-                🏠 홈으로 돌아가기
+              <button className="text-center justify-center relative cursor-pointer z-60 px-3.5 py-2 bg-black text-white font-bold rounded-md hover:bg-gray-800 flex items-center gap-3">
+                <Image
+                  alt=""
+                  width={23}
+                  height={23}
+                  src={"/icons/service/home-rounded.png"}
+                  className="object-contain"
+                />
+                홈으로 돌아가기
               </button>
             </Link>
             <Link href="/service" passHref>
-              <button className="relative cursor-pointer z-60  px-4 py-2 bg-[#868686] text-white font-bold rounded-md hover:bg-gray-400 flex items-center gap-2">
-                🔄 서비스 소개 다시보기
+              <button className="text-center relative cursor-pointer z-60 px-3.5 py-2 bg-[#868686] text-white font-bold rounded-md hover:bg-gray-400 flex items-center gap-3">
+                <Image
+                  alt=""
+                  width={23}
+                  height={23}
+                  src={"/icons/service/replay.png"}
+                  className="object-contain"
+                />
+                서비스 소개 다시보기
               </button>
             </Link>
           </div>
@@ -246,23 +312,58 @@ function SketchText({
       .filter(Boolean) ?? [];
 
   return (
-    <div className="absolute z-50  top-[20%] right-[20%] w-[470px]  text-center bg-transparent rounded-2xl">
-      <div className="text-left z-10 relative w-full px-[8%] pt-[15%]">
+    <div
+      className="
+        absolute z-50 top-[15%] right-[10%] 
+        w-[35vw]  max-w-[470px] 
+        text-center bg-transparent rounded-2xl
+        sm:top-[18%] sm:right-[15%] 
+        md:top-[20%] md:right-[20%] 
+      "
+    >
+      <div
+        className="
+          relative z-10 w-full 
+          px-[6%] pt-[10%] text-left
+          sm:px-[8%] sm:pt-[12%]
+          md:px-[8%] md:pt-[15%]
+        "
+      >
         {cur?.name && (
-          <p className="space-y-3 pb-1 text-[24px] font-bold border-b-[1.7px] border-[#C6C6C6] mb-2 ">
+          <p
+            className="
+              pb-1 text-[1.8vw]
+              font-bold border-b-[1.7px] border-[#C6C6C6] mb-2
+            "
+          >
             {cur.name}
           </p>
         )}
         {lines.length > 0 ? (
-          <ul className=" space-y-3 text-[16.5px] text-gray-800">
+          <ul
+            className="
+              space-y-2 sm:space-y-3 
+         text-[1.25vw]
+              text-gray-800
+            "
+          >
             {lines.slice(0, 5).map((ln, i) => (
-              <li key={i} className="py-1.5 border-b-[1.7px] border-[#C6C6C6]">
+              <li
+                key={i}
+                className="
+                  py-1 sm:py-1.5 
+                  border-b-[1.5px] sm:border-b-[1.7px] 
+                  border-[#C6C6C6]
+                "
+              >
                 {ln}
               </li>
             ))}
           </ul>
         ) : (
-          <p className="text-[18px] text-gray-400">소개 문구가 아직 없어요.</p>
+          <p className="text-[14px] sm:text-[16px] md:text-[18px] text-gray-400">
+            소개 문구가 아직 없어요.
+          </p>
         )}
       </div>
       <Image
@@ -270,8 +371,10 @@ function SketchText({
         height={600}
         alt="dd"
         src="/icons/character/sketch.png"
-        className="w-full rounded-2xl absolute z-0 top-0 shadow-2xl"
-      ></Image>
+        className="
+          w-full rounded-2xl absolute z-0 top-0 shadow-2xl
+        "
+      />
     </div>
   );
 }
