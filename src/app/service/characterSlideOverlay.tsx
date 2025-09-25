@@ -332,7 +332,7 @@ function SketchText({
         {cur?.name && (
           <p
             className="
-              pb-1 text-[1.8vw]
+              pb-1 text-[1.6vw]
               font-bold border-b-[1.7px] border-[#C6C6C6] mb-2
             "
           >
@@ -343,7 +343,7 @@ function SketchText({
           <ul
             className="
               space-y-2 sm:space-y-3 
-         text-[1.25vw]
+         text-[1.15vw]
               text-gray-800
             "
           >
