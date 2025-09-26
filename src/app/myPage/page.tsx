@@ -65,7 +65,7 @@ export default function MyPage() {
               <p className="text-xs sm:text-sm">a123456789@gmail.com</p>
               <button
                 onClick={() => setIsNicknameModalOpen(true)}
-                className="w-9/13 mt-2 border border-white rounded-full text-xs px-4 py-1 sm:text-sm"
+                className="cursor-pointer w-9/13 mt-2 border border-white rounded-full text-xs px-4 py-1 sm:text-sm"
               >
                 프로필 편집
               </button>
