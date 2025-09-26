@@ -10,3 +10,4 @@ export function useEnquiry(id: number) {
     enabled: !!id,
   });
 }
+

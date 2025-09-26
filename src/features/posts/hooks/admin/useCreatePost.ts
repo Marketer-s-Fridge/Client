@@ -1,7 +1,7 @@
 // useCreatePost.ts
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createPost } from "../api/postsApi";
-import { PostRequestDto, PostResponseDto } from "../types";
+import { createPost } from "../../api/postsApi";
+import { PostRequestDto, PostResponseDto } from "../../types";
 
 export function useCreatePost() {
   const queryClient = useQueryClient();
