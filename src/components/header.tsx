@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { Menu, X } from "lucide-react"; // 햄버거 아이콘 (lucide 사용)
+import { Menu, Search, X } from "lucide-react"; // 햄버거 아이콘 (lucide 사용)
 import { SetStateAction } from "react";
 import { Dispatch } from "react";
 import { useRouter } from "next/navigation";
@@ -51,24 +51,18 @@ export default function Header({ menuOpen, setMenuOpen }: headerProps) {
           </Link>
           <div className="place-self-center place-items-center">
             <button
-              className="cursor-pointer md:hidden mr-3"
+              className="cursor-pointer md:hidden mr-3 align-middle"
               onClick={() => setShowMobileSearch(true)}
               aria-label="모바일 검색 열기"
             >
-              <Image
-                src="/icons/search1.png"
-                alt="검색"
-                width={20}
-                height={20}
-                className="w-5 h-5"
-              />
+              <Search size={20} className="text-white"></Search>
             </button>
             <button
-              className="cursor-pointer md:hidden"
+              className="cursor-pointer md:hidden align-middle"
               onClick={() => setMenuOpen(!menuOpen)}
               aria-label="메뉴 열기"
             >
-              <Menu size={24} />
+              <Menu size={24} className="text-white" />
             </button>
           </div>
         </div>
@@ -81,14 +75,8 @@ export default function Header({ menuOpen, setMenuOpen }: headerProps) {
         {showMobileSearch && (
           <div className="absolute top-[60px] left-0 w-full z-40 main-red px-4 pt-4 pb-8 shadow-md md:hidden">
             <div className="flex w-full items-center gap-2">
-              <button className="absolute top-2/5 left-6 -translate-y-1/2">
-                <Image
-                  src="/icons/search.png"
-                  alt="검색"
-                  className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 cursor-pointer"
-                  width={50}
-                  height={50}
-                />
+              <button className="absolute top-2/5 left-8 -translate-y-1/2">
+                <Search size={16} className="text-gray-400"></Search>
               </button>
               <input
                 type="text"
