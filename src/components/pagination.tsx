@@ -15,16 +15,16 @@ const Pagination: React.FC<PaginationProps> = ({
   onPageChange,
 }) => {
   return (
-    <div className="flex justify-center items-center gap-8 mt-15 text-xs xs:mt-30 mb-0 sm:text-sm  text-gray-600">
+    <div className="flex justify-center items-center mt-15 text-xs xs:mt-30 mb-0 sm:text-sm  text-gray-600">
       <button
-        className="cursor-pointer disabled:opacity-40"
+        className="cursor-pointer disabled:opacity-40 p-2"
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
       >
         <Image
           src="/icons/left.png"
           alt="이전"
-          className="w-5 h-5"
+          className="w-5.5 h-5.5 "
           width={30}
           height={30}
         />
@@ -38,21 +38,21 @@ const Pagination: React.FC<PaginationProps> = ({
             page === currentPage
               ? " text-red-500 font-semibold"
               : "hover:text-black cursor-pointer"
-          }`}
+          } p-4`}
         >
           {page}
         </button>
       ))}
 
       <button
-        className="cursor-pointer disabled:opacity-40"
+        className="cursor-pointer disabled:opacity-40 p-2"
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
       >
         <Image
           src="/icons/right.png"
           alt="이전"
-          className="w-5 h-5"
+          className="w-5.5 h-5.5"
           width={30}
           height={30}
         />

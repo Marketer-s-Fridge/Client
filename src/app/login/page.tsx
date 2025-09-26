@@ -83,7 +83,9 @@ const LoginPage: React.FC = () => {
                   }
                   alt="아이디 저장 체크박스"
                   fill
-                  className="object-contain"
+                  className={` object-contain ${
+                    rememberId ? "scale-120" : "scale-100"
+                  }`}
                 />
               </div>
               <span className="text-sm text-[#666]">아이디 저장</span>
@@ -106,8 +108,9 @@ const LoginPage: React.FC = () => {
                   }
                   alt="로그인 상태 유지 체크박스"
                   fill
-                  className="object-contain"
-                />
+                  className={` object-contain ${
+                    autoLogin ? "scale-120" : "scale-100"
+                  }`}                />
               </div>
               <span className="text-sm text-[#666]">로그인 상태 유지</span>
             </label>
@@ -148,7 +151,7 @@ const LoginPage: React.FC = () => {
           <div className="w-full flex flex-col items-center gap-y-3 mb-10">
             <button
               onClick={() => alert("카카오 로그인")}
-              className="hidden md:block"
+              className="cursor-pointer hidden md:block"
             >
               <Image
                 src="/icons/kakao-login-bt.png"
@@ -161,7 +164,7 @@ const LoginPage: React.FC = () => {
 
             <button
               onClick={() => alert("네이버 로그인")}
-              className="hidden md:block"
+              className="cursor-pointer hidden md:block"
             >
               <Image
                 src="/icons/naver-login-bt.png"
@@ -174,7 +177,7 @@ const LoginPage: React.FC = () => {
 
             <button
               onClick={() => alert("Google 로그인")}
-              className="hidden md:block"
+              className="cursor-pointer hidden md:block"
             >
               <Image
                 src="/icons/google-login-bt.png"
