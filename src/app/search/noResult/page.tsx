@@ -27,7 +27,7 @@ export default function Page() {
     <div className="min-h-screen bg-white mt-16 md:mt-0">
       <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
-      <section className="hidden md:flex flex-col items-center main-red pt-10 pb-10">
+      <section className="hidden md:flex flex-col items-center main-red pb-10">
         <SearchInput showInstagramButton={false}></SearchInput>
       </section>
 
