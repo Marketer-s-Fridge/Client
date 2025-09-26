@@ -175,3 +175,58 @@ export const SubmitButton: React.FC<SubmitButtonProps> = ({
     </button>
   );
 };
+// components/authFormComponents.tsx
+// components/authFormComponents.tsx
+
+interface GenderRadioGroupProps {
+  label?: string;
+  value: string;
+  onChange: (value: string) => void;
+  options?: { value: string; label: string }[];
+  required?: boolean;
+  error?: string; // ⬅️ 에러 메시지 추가
+}
+
+export const GenderRadioGroup: React.FC<GenderRadioGroupProps> = ({
+  label = "성별",
+  value,
+  onChange,
+  options = [
+    { value: "male", label: "남성" },
+    { value: "female", label: "여성" },
+  ],
+  required = false,
+  error,
+}) => {
+  return (
+    <div className="w-full max-w-[500px] flex flex-col gap-1">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
+        <label className="text-[15.5px] sm:text-[14.5px] font-semibold min-w-[80px] sm:w-28 whitespace-nowrap">
+          {label}
+          {required && <span className="text-red-500 ml-1">*</span>}
+        </label>
+        <div className="flex gap-6 sm:pl-[5px]">
+          {options.map((opt) => (
+            <label
+              key={opt.value}
+              className="flex items-center gap-2 cursor-pointer py-2"
+            >
+              <input
+                type="radio"
+                name="gender"
+                value={opt.value}
+                checked={value === opt.value}
+                onChange={() => onChange(opt.value)}
+                className="accent-red-500"
+              />
+              {opt.label}
+            </label>
+          ))}
+        </div>
+      </div>
+
+      {/* 에러 메시지 출력 */}
+      {error && <p className="text-red-500 text-xs mt-1 sm:ml-[130px] ml-1">{error}</p>}
+    </div>
+  );
+};

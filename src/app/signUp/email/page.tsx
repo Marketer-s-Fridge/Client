@@ -1,6 +1,10 @@
 "use client";
 
-import { AuthHeader, SubmitButton } from "@/components/authFormComponents";
+import {
+  AuthHeader,
+  GenderRadioGroup,
+  SubmitButton,
+} from "@/components/authFormComponents";
 import ConfirmModal from "@/components/confirmModal";
 import Header from "@/components/header";
 import React, { useState, useEffect } from "react";
@@ -19,11 +23,13 @@ export default function EmailJoinPage() {
   const [, setBirth] = useState({ year: "", month: "", day: "" });
   const [modalOpen, setModalOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [gender, setGender] = useState("");
 
   const [errors, setErrors] = useState({
     email: false,
     id: false,
     nickname: false,
+    gender: false,
     code: false,
     password: false,
     passwordCheck: false,
@@ -47,6 +53,7 @@ export default function EmailJoinPage() {
       email: !email.includes("@"),
       id: !id.trim(),
       nickname: !nickname.trim(),
+      gender: !gender, // 성별이 비어 있으면 에러
       code: code !== "123456",
       password: !isPasswordValid(password),
       passwordCheck: password !== passwordCheck,
@@ -146,7 +153,17 @@ export default function EmailJoinPage() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="rounded-lg"
+              error={errors.nickname ? "이름을 입력해주세요." : ""}
             />
+
+            {/* 성별 선택 */}
+            <GenderRadioGroup
+              value={gender}
+              onChange={setGender}
+              required
+              error={errors.gender ? "성별을 선택해주세요." : ""}
+            />
+
             <InputRow label="생년월일" required>
               <CustomDropdown
                 label="년도"
