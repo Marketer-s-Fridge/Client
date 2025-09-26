@@ -27,8 +27,8 @@ export default function CardGrid({
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768); // Tailwind 기준 md 미만이면 모바일
     };
-    handleResize(); // 초기 실행
-    window.addEventListener("resize", handleResize); // 리사이즈 대응
+    handleResize();
+    window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
@@ -51,8 +51,15 @@ export default function CardGrid({
     }
   };
 
-  // ✅ 모바일이면 최대 6개로 제한
   const displayedItems = isMobile ? items.slice(0, 6) : items;
+
+  if (displayedItems.length === 0) {
+    return (
+      <div className="w-full flex flex-col items-center justify-center py-16 text-gray-500 text-sm sm:text-base">
+        게시물이 없습니다.
+      </div>
+    );
+  }
 
   return (
     <div

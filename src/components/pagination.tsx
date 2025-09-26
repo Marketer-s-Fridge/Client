@@ -15,7 +15,7 @@ const Pagination: React.FC<PaginationProps> = ({
   onPageChange,
 }) => {
   return (
-    <div className="flex justify-center items-center mt-15 text-xs xs:mt-30 mb-0 sm:text-sm  text-gray-600">
+    <div className="flex justify-center items-center mt-20 text-xs mb-0 sm:text-sm  text-gray-600">
       <button
         className="cursor-pointer disabled:opacity-40 p-2"
         onClick={() => onPageChange(currentPage - 1)}

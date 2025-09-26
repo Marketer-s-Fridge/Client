@@ -5,7 +5,7 @@ import Link from "next/link";
 
 const Footer: React.FC = () => {
   return (
-    <div className="flex flex-col bg-white mt-10 sm:mt-16 md:mt-24 lg:mt-32 xl:mt-37 mb-10">
+    <div className="flex flex-col bg-white mt-10  mb-10">
       <div className="self-stretch bg-white">
         <div className="flex flex-col items-start self-stretch bg-[#FF4545] py-5 sm:py-8 px-[5%] lg:px-[17%]">
           {/* 상단 네비게이션 */}
