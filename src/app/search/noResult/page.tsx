@@ -24,10 +24,10 @@ export default function Page() {
   const [selectedSort, setSelectedSort] = useState("최신순");
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white mt-16 md:mt-0">
       <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
-      <section className="flex flex-col items-center main-red pt-10 pb-10">
+      <section className="hidden md:flex flex-col items-center main-red pt-10 pb-10">
         <SearchInput showInstagramButton={false}></SearchInput>
       </section>
 

@@ -52,7 +52,7 @@ export default function Header({ menuOpen, setMenuOpen }: headerProps) {
           <div className="place-self-center place-items-center">
             <button
               className="cursor-pointer md:hidden mr-3 align-middle"
-              onClick={() => setShowMobileSearch(true)}
+              onClick={() => setShowMobileSearch((prev) => !prev)}
               aria-label="모바일 검색 열기"
             >
               <Search size={20} className="text-white"></Search>
@@ -66,12 +66,7 @@ export default function Header({ menuOpen, setMenuOpen }: headerProps) {
             </button>
           </div>
         </div>
-        {/* {showMobileSearch && (
-          <div
-            className="fixed inset-0 top-20 bg-black/60 z-30"
-            onClick={() => setShowMobileSearch(false)}
-          />
-        )} */}
+
         {showMobileSearch && (
           <div className="absolute top-[60px] left-0 w-full z-40 main-red px-4 pt-4 pb-8 shadow-md md:hidden">
             <div className="flex w-full items-center gap-2">
@@ -91,7 +86,7 @@ export default function Header({ menuOpen, setMenuOpen }: headerProps) {
                 }}
               />
               <button onClick={() => setShowMobileSearch(false)}>
-                <X size={20} />
+                <X size={20} className="text-white self-center"/>
               </button>
             </div>
             <div className="absolute left-0 top-20 bg-white z-100 w-[100%] h-[100vh]"></div>

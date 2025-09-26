@@ -36,7 +36,7 @@ export default function SearchClient() {
   return (
     <>
       {/* 검색 영역 */}
-      <section className="flex flex-col items-center main-red pt-10 pb-10 px-4">
+      <section className="hidden md:flex flex-col items-center main-red pt-10 pb-10 px-4">
         <SearchInput showInstagramButton={false} />
       </section>
 

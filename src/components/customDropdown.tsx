@@ -29,12 +29,17 @@ export default function CustomDropdown({
   };
 
   return (
-    <div className={clsx("relative w-full text-sm font-medium", className)}>
+    <div
+      className={clsx(
+        "relative w-full text-xs md:text-sm font-medium",
+        className
+      )}
+    >
       {/* 드롭다운 버튼 */}
       <div
         onClick={() => setIsOpen((prev) => !prev)}
         className={clsx(
-          "flex items-center justify-between w-full gap-2 px-4 py-2 border border-gray-300 bg-white cursor-pointer",
+          "flex items-center justify-between w-full gap-2 px-3 py-2 md:px-4 md:py-2 border border-gray-300 bg-white cursor-pointer",
           buttonClassName
         )}
       >
@@ -44,7 +49,7 @@ export default function CustomDropdown({
           alt="드롭다운 열기"
           width={16}
           height={16}
-          className=" w-5 h-5"
+          className=" w-3.5 h-3.5 md:w-5 md:h-5"
         />
       </div>
 
@@ -58,7 +63,7 @@ export default function CustomDropdown({
         >
           {/* 현재 선택된 항목 표시 */}
           <div
-            className="flex justify-between items-center px-4 py-2 cursor-pointer"
+            className="flex justify-between items-center  px-3 py-2 md:px-4 md:py-2 cursor-pointer"
             onClick={() => setIsOpen(false)}
           >
             <span>{selected}</span>
@@ -67,7 +72,7 @@ export default function CustomDropdown({
               src="/icons/down.png"
               width={20}
               height={20}
-              className="w-5 h-5"
+              className=" w-3.5 h-3.5 md:w-5 md:h-5"
             />
           </div>
 
