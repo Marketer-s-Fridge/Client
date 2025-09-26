@@ -6,6 +6,7 @@ import Image from "next/image";
 import Footer from "@/components/footer";
 import Breadcrumb from "@/components/breadCrumb";
 import MobileMenu from "@/components/mobileMenu";
+import SaveToFridgeButton from "@/components/saveToFridgeButton";
 
 const categories = ["Beauty", "Food", "Lifestyle", "Tech", "Fashion"];
 
@@ -202,15 +203,7 @@ export default function CardNewsDetailPage() {
             </div>
 
             <div className="bg-white flex justify-end gap-4 mt-4 ">
-              <button className="border border-gray-300 rounded-full px-4 py-1 text-sm flex items-center gap-2 cursor-pointer">
-                <Image
-                  src="/icons/pinkheart.png"
-                  alt="하트"
-                  width={16}
-                  height={16}
-                />
-                MY냉장고에 저장
-              </button>
+            <SaveToFridgeButton></SaveToFridgeButton>
               <button className="border border-gray-300 rounded-full px-2 py-1 text-sm cursor-pointer">
                 <Image
                   src="/icons/share.png"

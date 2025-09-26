@@ -11,6 +11,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/autoplay";
 import { Autoplay } from "swiper/modules";
+import SaveToFridgeButton from "@/components/saveToFridgeButton";
 
 export default function HomePage() {
   const router = useRouter();
@@ -146,15 +147,9 @@ export default function HomePage() {
                     몰입도를 높였습니다. ...
                   </p>
                 </div>
-                <button className="mt-6 flex self-start text-gray-500 border border-gray-300 rounded-full px-4 py-1 text-sm items-center gap-2 cursor-pointer">
-                  <Image
-                    src="/icons/pinkheart.png"
-                    alt="하트"
-                    width={16}
-                    height={16}
-                  />
-                  MY냉장고에 저장
-                </button>
+                <div className="mt-6">
+                  <SaveToFridgeButton></SaveToFridgeButton>
+                </div>
               </div>
             </div>
           </div>
@@ -200,16 +195,9 @@ export default function HomePage() {
                     있습니다. ...
                   </p>
                 </div>
-
-                <button className="mt-6  flex self-start text-gray-500 border border-gray-300 rounded-full px-4 py-1 text-sm items-center gap-2 cursor-pointer">
-                  <Image
-                    src="/icons/pinkheart.png"
-                    alt="하트"
-                    width={16}
-                    height={16}
-                  />
-                  MY냉장고에 저장
-                </button>
+                <div className="mt-6">
+                  <SaveToFridgeButton></SaveToFridgeButton>
+                </div>
               </div>
             </div>
           </div>
