@@ -1,5 +1,7 @@
 "use client";
 
+export const dynamic = "force-dynamic"; // ✅ 이 한 줄 추가 (CSR 전용으로 강제)
+
 import Header from "@/components/header";
 import SearchInput from "@/components/searchInput";
 import React, { useState } from "react";
