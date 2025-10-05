@@ -7,10 +7,12 @@ import { AuthHeader, SubmitButton } from "@/components/authFormComponents";
 import Image from "next/image";
 import ConfirmModal from "@/components/confirmModal";
 import MobileMenu from "@/components/mobileMenu";
+import { SigninRequestDto } from "@/features/auth/types";
+import { useSignin } from "@/features/auth/hooks/useSignin"; // ✅ 훅 import
 
 const LoginPage: React.FC = () => {
-  const [input1, onChangeInput1] = useState("");
-  const [input2, onChangeInput2] = useState("");
+  const [input1, onChangeInput1] = useState(""); // 아이디
+  const [input2, onChangeInput2] = useState(""); // 비밀번호
   const [menuOpen, setMenuOpen] = useState(false);
   const [rememberId, setRememberId] = useState(false);
   const [autoLogin, setAutoLogin] = useState(false);
@@ -18,6 +20,44 @@ const LoginPage: React.FC = () => {
   const [showConfirm, setShowConfirm] = useState(false);
 
   const router = useRouter();
+
+  // ✅ React Query 훅 사용
+  const { mutate: signinMutate, isPending } = useSignin();
+
+  // ✅ 로그인 처리 함수
+  const handleLogin = () => {
+    if (!input1.trim() || !input2.trim()) {
+      alert("아이디와 비밀번호를 입력해주세요.");
+      return;
+    }
+
+    const dto: SigninRequestDto = { id: input1, pw: input2 };
+
+    signinMutate(dto, {
+      onSuccess: (userData) => {
+        console.log("로그인 성공:", userData);
+
+        // ✅ 로그인 성공 시 유저 정보 저장
+        localStorage.setItem("user", JSON.stringify(userData));
+
+        if (autoLogin) {
+          localStorage.setItem("autoLogin", "true");
+        }
+
+        setShowConfirm(true);
+      },
+      onError: (error) => {
+        console.error("로그인 실패:", error);
+        alert("아이디 또는 비밀번호가 올바르지 않습니다.");
+      },
+    });
+  };
+
+  // ✅ 모달 닫기 후 이동
+  const handleCloseModal = () => {
+    setShowConfirm(false);
+    router.push("/"); // 로그인 후 홈으로 이동
+  };
 
   return (
     <div className="bg-white pt-18 md:pt-0">
@@ -31,6 +71,7 @@ const LoginPage: React.FC = () => {
 필요한 마케팅 콘텐츠를 골라보는 냉장고, 지금 로그인하세요!`}
           />
 
+          {/* 아이디/비밀번호 입력 */}
           <div className="w-9/11 flex flex-col items-center gap-y-4 mb-3">
             <input
               placeholder="아이디"
@@ -44,7 +85,7 @@ const LoginPage: React.FC = () => {
                 type={showPassword ? "text" : "password"}
                 value={input2}
                 onChange={(e) => onChangeInput2(e.target.value)}
-                className="w-full border border-[#ccc] rounded px-4 py-3 text-[16px] pr-10" // pr-10로 여백 확보!
+                className="w-full border border-[#ccc] rounded px-4 py-3 text-[16px] pr-10"
               />
               <button
                 type="button"
@@ -65,8 +106,8 @@ const LoginPage: React.FC = () => {
             </div>
           </div>
 
+          {/* 체크박스 */}
           <div className="w-9/11 flex justify-baseline text-xs text-[#666] mb-6 px-1 gap-5">
-            {/* 아이디 저장 */}
             <label className="flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
@@ -83,15 +124,12 @@ const LoginPage: React.FC = () => {
                   }
                   alt="아이디 저장 체크박스"
                   fill
-                  className={` object-contain ${
-                    rememberId ? "scale-120" : "scale-100"
-                  }`}
+                  className="object-contain"
                 />
               </div>
               <span className="text-sm text-[#666]">아이디 저장</span>
             </label>
 
-            {/* 로그인 상태 유지 */}
             <label className="flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
@@ -108,51 +146,52 @@ const LoginPage: React.FC = () => {
                   }
                   alt="로그인 상태 유지 체크박스"
                   fill
-                  className={` object-contain ${
-                    autoLogin ? "scale-120" : "scale-100"
-                  }`}                />
+                  className="object-contain"
+                />
               </div>
               <span className="text-sm text-[#666]">로그인 상태 유지</span>
             </label>
           </div>
 
-          <SubmitButton text="로그인" onClick={() => setShowConfirm(true)} />
+          {/* 로그인 버튼 */}
+          <SubmitButton
+            text={isPending ? "로그인 중..." : "로그인"}
+            onClick={handleLogin}
+          />
 
+          {/* 회원가입/찾기 버튼 */}
           <div className="flex justify-center gap-4 text-[11px] text-[#757575] mb-10 mt-3">
             <button
-              onClick={() => router.push("/signUp")}
               className="cursor-pointer"
+              onClick={() => router.push("/signUp")}
             >
               회원가입
             </button>
             <span>|</span>
             <button
-              onClick={() => router.push("/login/findId")}
               className="cursor-pointer"
+              onClick={() => router.push("/login/findId")}
             >
               아이디 찾기
             </button>
             <span>|</span>
             <button
-              onClick={() => router.push("/login/findPwd")}
               className="cursor-pointer"
+              onClick={() => router.push("/login/findPwd")}
             >
               비밀번호 찾기
             </button>
           </div>
 
+          {/* 소셜 로그인 */}
           <div className="flex items-center w-full mb-8">
             <div className="flex-1 h-[1px] bg-[#ccc]"></div>
             <span className="mx-4 text-[#757575] text-xs">또는</span>
             <div className="flex-1 h-[1px] bg-[#ccc]"></div>
           </div>
 
-          {/* ✅ 소셜 로그인 이미지 버튼 */}
           <div className="w-full flex flex-col items-center gap-y-3 mb-10">
-            <button
-              onClick={() => alert("카카오 로그인")}
-              className="cursor-pointer hidden md:block"
-            >
+            <button onClick={() => alert("카카오 로그인")}>
               <Image
                 src="/icons/kakao-login-bt.png"
                 alt="카카오 로그인"
@@ -161,11 +200,7 @@ const LoginPage: React.FC = () => {
                 height={100}
               />
             </button>
-
-            <button
-              onClick={() => alert("네이버 로그인")}
-              className="cursor-pointer hidden md:block"
-            >
+            <button onClick={() => alert("네이버 로그인")}>
               <Image
                 src="/icons/naver-login-bt.png"
                 alt="네이버 로그인"
@@ -174,11 +209,7 @@ const LoginPage: React.FC = () => {
                 height={100}
               />
             </button>
-
-            <button
-              onClick={() => alert("Google 로그인")}
-              className="cursor-pointer hidden md:block"
-            >
+            <button onClick={() => alert("Google 로그인")}>
               <Image
                 src="/icons/google-login-bt.png"
                 alt="Google 로그인"
@@ -187,46 +218,12 @@ const LoginPage: React.FC = () => {
                 height={100}
               />
             </button>
-
-            <div className="md:hidden flex flex-row gap-5">
-              <button onClick={() => alert("카카오 로그인")} className="">
-                <Image
-                  src="/icons/kakao-round.png"
-                  alt="카카오 로그인"
-                  className="w-full max-w-[50px] "
-                  width={500}
-                  height={100}
-                />
-              </button>
-
-              <button onClick={() => alert("네이버 로그인")}>
-                <Image
-                  src="/icons/naver-round.png"
-                  alt="네이버 로그인"
-                  className="w-full max-w-[50px] "
-                  width={500}
-                  height={100}
-                />
-              </button>
-
-              <button
-                onClick={() => alert("Google 로그인")}
-                className="rounded-full border-1 border-gray-300"
-              >
-                <Image
-                  src="/icons/google-round.png"
-                  alt="Google 로그인"
-                  className="w-full max-w-[50px] "
-                  width={500}
-                  height={100}
-                />
-              </button>
-            </div>
           </div>
         </div>
       </div>
 
-      <ConfirmModal isOpen={showConfirm} onClose={() => setShowConfirm(false)}>
+      {/* 로그인 성공 모달 */}
+      <ConfirmModal isOpen={showConfirm} onClose={handleCloseModal}>
         <p>마케터의 냉장고에 오신 걸 환영합니다!</p>
       </ConfirmModal>
     </div>

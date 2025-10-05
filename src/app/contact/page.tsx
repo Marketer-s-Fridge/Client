@@ -6,15 +6,19 @@ import Footer from "@/components/footer";
 import Banner from "@/components/banner";
 import CustomDropdown from "@/components/customDropdown";
 import MobileMenu from "@/components/mobileMenu";
+import { createEnquiry } from "@/features/enquiries/api/enquiriesApi";
+import { EnquiryRequestDto } from "@/features/enquiries/types";
 
 export default function ContactPage() {
   const [category, setCategory] = useState("");
   const [title, setTitle] = useState("");
   const [email, setEmail] = useState("");
   const [content, setContent] = useState("");
+  const [file, setFile] = useState<File | null>(null);
+  const [fileName, setFileName] = useState("");
   const [agreed, setAgreed] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [fileName, setFileName] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const isFormValid = category && title && email && content && agreed;
 
@@ -40,10 +44,41 @@ export default function ContactPage() {
     기타: "어떤 문의든 괜찮아요! 궁금한 점이나 불편한 점을 자유롭게 적어주세요 :)",
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // ✅ 문의 등록 API 연결
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!isFormValid) return;
-    alert("문의가 제출되었습니다.");
+
+    try {
+      setLoading(true);
+
+      const dto: EnquiryRequestDto = {
+        category,
+        title,
+        writerEmail: email, // ✅ 여기 수정됨!
+        content,
+        agreement: agreed,
+        imageURL: file?.name ?? undefined,
+      };
+
+      const res = await createEnquiry(dto);
+      console.log("문의 등록 성공:", res);
+      alert("문의가 성공적으로 제출되었습니다! 💌");
+
+      // 폼 초기화
+      setCategory("");
+      setTitle("");
+      setEmail("");
+      setContent("");
+      setFile(null);
+      setFileName("");
+      setAgreed(false);
+    } catch (error: any) {
+      console.error("문의 등록 실패:", error);
+      alert("문의 등록 중 오류가 발생했습니다. 다시 시도해주세요.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -54,8 +89,9 @@ export default function ContactPage() {
 
       <main className="max-w-[800px] mx-auto px-[5%] sm:px-4 py-12 relative">
         <form className="space-y-6" onSubmit={handleSubmit}>
+          {/* 분류 */}
           <div className="flex flex-col md:flex-row md:items-center gap-y-2">
-            <label className="w-[100px] text-medium sm:text-lg text-gray-800 font-bold">
+            <label className="w-[100px] sm:text-lg text-gray-800 font-bold">
               분류
             </label>
             <div className="flex-1">
@@ -68,8 +104,9 @@ export default function ContactPage() {
             </div>
           </div>
 
+          {/* 제목 */}
           <div className="flex flex-col md:flex-row md:items-center gap-y-2">
-            <label className="w-[100px] text-medium sm:text-lg text-gray-800 font-bold">
+            <label className="w-[100px] sm:text-lg text-gray-800 font-bold">
               제목
             </label>
             <input
@@ -81,8 +118,9 @@ export default function ContactPage() {
             />
           </div>
 
+          {/* 이메일 */}
           <div className="flex flex-col md:flex-row md:items-center gap-y-2">
-            <label className="w-[100px] text-medium sm:text-lg text-gray-800 font-bold">
+            <label className="w-[100px] sm:text-lg text-gray-800 font-bold">
               이메일
             </label>
             <input
@@ -96,36 +134,35 @@ export default function ContactPage() {
 
           {/* 파일첨부 */}
           <div className="flex flex-col md:flex-row md:items-center gap-y-2">
-            <label className="w-[100px] text-medium sm:text-lg text-gray-800 font-bold">
+            <label className="w-[100px] sm:text-lg text-gray-800 font-bold">
               파일첨부
             </label>
             <div className="flex-1 flex items-center gap-3">
-              {/* 숨겨진 input */}
               <input
                 id="file-upload"
                 type="file"
                 className="hidden"
                 onChange={(e) => {
-                  const fileName = e.target.files?.[0]?.name || "";
-                  setFileName(fileName);
+                  const file = e.target.files?.[0] || null;
+                  setFile(file);
+                  setFileName(file?.name || "");
                 }}
               />
-              {/* 커스텀 버튼 */}
               <label
                 htmlFor="file-upload"
                 className="cursor-pointer text-white bg-[#555555] hover:bg-[#959595] rounded px-3 py-2 text-sm"
               >
                 파일 선택
               </label>
-              {/* 파일 이름 표시 */}
               <span className="text-sm text-gray-600">
                 {fileName || "PNG, JPG, PDF 가능 (최대 10MB)"}
               </span>
             </div>
           </div>
 
+          {/* 내용 */}
           <div className="flex flex-col md:flex-row md:items-start gap-y-2">
-            <label className="w-[100px] text-medium sm:text-lg text-gray-800 font-bold">
+            <label className="w-[100px] sm:text-lg text-gray-800 font-bold">
               내용
             </label>
             <div className="flex-1 relative">
@@ -144,6 +181,7 @@ export default function ContactPage() {
                 {`${content.length}/1000`}
               </div>
 
+              {/* 개인정보 동의 */}
               <div className="flex items-start mt-4 text-sm gap-2">
                 <div className="relative w-5 h-5">
                   <input
@@ -187,17 +225,18 @@ export default function ContactPage() {
             </div>
           </div>
 
+          {/* 제출 버튼 */}
           <div className="text-end mt-10">
             <button
               type="submit"
-              disabled={!isFormValid}
+              disabled={!isFormValid || loading}
               className={`rounded-full px-6 py-1.5 text-sm font-medium transition-colors ${
                 isFormValid
                   ? "bg-red-500 text-white hover:bg-red-600"
                   : "bg-gray-100 text-gray-400 cursor-not-allowed"
               }`}
             >
-              제출하기
+              {loading ? "제출 중..." : "제출하기"}
             </button>
           </div>
         </form>

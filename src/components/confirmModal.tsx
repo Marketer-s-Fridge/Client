@@ -18,7 +18,7 @@ export default function ConfirmModal({
         <p className="text-lg font-normal my-5">{children}</p>
         <button
           onClick={onClose}
-          className="bg-red-500 text-white text-xs font-semibold px-8 py-1 rounded-2xl hover:bg-red-600"
+          className="cursor-pointer bg-red-500 text-white text-xs font-semibold px-8 py-1 rounded-2xl hover:bg-red-600"
         >
           확인
         </button>

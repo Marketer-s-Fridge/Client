@@ -10,6 +10,7 @@ import Pagination from "@/components/pagination";
 import CardGrid from "@/components/cardGrid";
 import MobileMenu from "@/components/mobileMenu";
 import { usePosts } from "@/features/posts/hooks/usePosts";
+import NoContentView from "@/components/noContentView";
 interface Category {
   name: string;
   icon: string;
@@ -29,10 +30,8 @@ export default function Page() {
   const [currentPage, setCurrentPage] = useState(1);
   const [menuOpen, setMenuOpen] = useState(false);
 
-
   // ✅ 훅 사용 (지금은 mock 데이터 반환)
   const { data, isLoading, error } = usePosts(selectedCategory);
-
 
   const toggleLike = (id: number) => {
     setLikedItems((prev) =>
@@ -88,27 +87,36 @@ export default function Page() {
       <section className="bg-white w-full max-w-screen-xl mx-auto px-4 sm:px-8 lg:px-20 py-10 sm:py-16">
         {isLoading && <p className="text-center">로딩중...</p>}
         {error && <p className="text-center text-red-500">에러 발생!</p>}
-        {data && (
-          <CardGrid
-            items={data.map((post) => ({
-              id: post.id,
-              title: post.title,
-              image: post.images,
-            }))}
-            columns={4}
-            likedItems={likedItems}
-            onToggleLike={toggleLike}
-          />
+
+        {/* ✅ 결과 있음 */}
+        {data && data.length > 0 ? (
+          <>
+            <CardGrid
+              items={data.map((post) => ({
+                id: post.id,
+                title: post.title,
+                image: post.images,
+              }))}
+              columns={4}
+              likedItems={likedItems}
+              onToggleLike={toggleLike}
+            />
+
+            {/* ✅ 결과가 있을 때만 페이지네이션 표시 */}
+            <Pagination
+              currentPage={currentPage}
+              totalPages={5}
+              onPageChange={(page) => setCurrentPage(page)}
+            />
+          </>
+        ) : (
+          // ✅ 결과 없음 뷰
+          <NoContentView></NoContentView>
         )}
 
-        {/* 페이지네이션 */}
-        <Pagination
-          currentPage={currentPage}
-          totalPages={5}
-          onPageChange={(page) => setCurrentPage(page)}
-        />
         <ScrollToTopButton />
       </section>
+
       <Footer />
     </div>
   );

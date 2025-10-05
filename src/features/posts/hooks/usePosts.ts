@@ -36,7 +36,7 @@ const mockContents: Content[] = [
 
 // ✅ 훅 (isMock 플래그로 전환 가능)
 export function usePosts(selectedCategory: string | null, isMock = true) {
-    if (isMock) {
+    if (!isMock) {
         const [data] = useState<Content[]>(mockContents);
 
         const filtered = selectedCategory

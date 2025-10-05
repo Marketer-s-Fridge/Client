@@ -9,24 +9,43 @@ import {
   SubmitButton,
 } from "@/components/authFormComponents";
 import MobileMenu from "@/components/mobileMenu";
+import { findId } from "@/features/auth/api/authApi"; // ✅ 아이디 찾기 API import
 
 const FindIdPage: React.FC = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [foundId, setFoundId] = useState<string | null>(null);
   const [notFound, setNotFound] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
   const router = useRouter();
 
-  const handleFindId = () => {
-    // 예시 로직 (API로 교체 예정)
-    if (name === "test" && email === "test@gmail.com") {
-      setFoundId("a123456789");
+  const handleFindId = async () => {
+    if (!name.trim() || !email.trim()) {
+      alert("이름과 이메일을 모두 입력해주세요.");
+      return;
+    }
+
+    try {
+      setLoading(true);
       setNotFound(false);
-    } else {
       setFoundId(null);
+
+      // ✅ 실제 API 호출
+      const res = await findId(name, email);
+
+      if (res?.id) {
+        setFoundId(res.id);
+        setNotFound(false);
+      } else {
+        setNotFound(true);
+      }
+    } catch (error: any) {
+      console.error("아이디 찾기 실패:", error);
       setNotFound(true);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -60,13 +79,17 @@ const FindIdPage: React.FC = () => {
             />
           </div>
 
-          <SubmitButton text="내 아이디 찾기" onClick={handleFindId} />
+          <SubmitButton
+            text={loading ? "조회 중..." : "내 아이디 찾기"}
+            onClick={handleFindId}
+          />
 
           {/* 아이디 찾기 성공 */}
           {foundId && (
             <div className="relative max-w-[480px] flex-col my-10 text-center w-full ">
               <p className="text-lg font-semibold pb-10">
-                내 아이디: <span className="text-black">{foundId}</span>
+                내 아이디:{" "}
+                <span className="text-black font-bold text-xl">{foundId}</span>
               </p>
               <div className="w-full flex flex-row gap-4">
                 <SubmitButton

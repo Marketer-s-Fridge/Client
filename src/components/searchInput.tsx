@@ -8,21 +8,43 @@ type SearchInputProps = {
   showInstagramButton?: boolean;
 };
 
+// 🔍 임시 mock 데이터 (실제론 API로 대체 가능)
+const mockContents = [
+  "신규 브랜드 탐방: 떠오르는 핫 브랜드",
+  "패션 아이콘들이 선택한 신상템",
+  "셀럽들의 공항 패션 스타일",
+  "KOREADB 2025 뉴 브랜드",
+  "시간을 초월한 클래식 아이템",
+  "포인트 컬러로 완성하는 룩",
+];
+
 export default function SearchInput({
   showInstagramButton = true,
 }: SearchInputProps) {
   const [query, setQuery] = useState("");
   const router = useRouter();
 
-  const handleSearch = () => {
-    if (query.trim()) {
-      // router.push(`/search?q=${encodeURIComponent(query.trim())}`);
-      router.push(`/search/noResult`);
+  const handleSearch = (e: React.FormEvent | React.KeyboardEvent) => {
+    e.preventDefault();
+
+    const trimmed = query.trim();
+    if (!trimmed) {
+      alert("검색어를 입력해주세요");
+      return;
+    }
+
+    // ✅ 검색 결과 존재 여부 확인
+    const hasResult = mockContents.some((title) => title.includes(trimmed));
+
+    if (hasResult) {
+      router.push(`/search?q=${encodeURIComponent(trimmed)}`);
+    } else {
+      router.push(`/search/noResult?q=${encodeURIComponent(trimmed)}`);
     }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") handleSearch();
+    if (e.key === "Enter") handleSearch(e);
   };
 
   return (
@@ -57,7 +79,6 @@ export default function SearchInput({
           rel="noopener noreferrer"
           className="block text-right place-self-end "
         >
-          {/* sm ~ lg 이하: insta-bt2.png */}
           <Image
             src="/icons/insta-bt2.png"
             alt="Marketer's Fridge Instagram"
@@ -65,8 +86,6 @@ export default function SearchInput({
             width={50}
             height={50}
           />
-
-          {/* lg 이상: insta-bt.png */}
           <Image
             src="/icons/insta-bt.png"
             alt="Marketer's Fridge Instagram"

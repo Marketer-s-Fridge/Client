@@ -107,19 +107,22 @@ export default function HomePage() {
           {/* 인기 콘텐츠 */}
           <div className="flex flex-col">
             <div className="flex items-start gap-2 mb-4">
-              <Image
+              {/* <Image
                 alt="인기콘텐츠 아이콘"
                 src="/icons/popular-icon.png"
                 width={28}
                 height={28}
                 className="w-7 h-7"
-              />
+              /> */}
               <h3 className="text-xl md:text-2xl font-bold">Hot Contents</h3>
             </div>
-            <div className="flex flex-col lg:flex-row gap-10">
-              <div className="w-full lg:w-[40%] aspect-[3/4] relative rounded-lg overflow-hidden shadow">
+            <div className=" flex flex-col lg:flex-row gap-10">
+              <div
+                className=" transition duration-300 ease-in-out hover:scale-103 cursor-pointer w-full lg:w-[40%] aspect-[3/4] relative rounded-lg overflow-hidden shadow"
+                onClick={() => router.push("/cardNews")}
+              >
                 <Image
-                  src="/icons/rectangle-gray.png"
+                  src="/images/cardNews/hot/001.png"
                   alt=""
                   fill
                   className="object-cover"
@@ -128,23 +131,24 @@ export default function HomePage() {
               <div className="lg:w-[60%] flex flex-col justify-between lg:h-full py-2">
                 <div>
                   <p className="text-lg sm:text-xl font-bold mt-1">
-                    마크는 왜 당근마켓에 글을 올렸을까?
+                    콜라보의 새로운 기준 제니 X 스탠리{" "}
                   </p>
                   <div className="flex flex-wrap text-gray-400 gap-x-4 text-xs mt-2">
-                    <p>2025.05.07</p>
+                    <p>2025.10.05</p>
                   </div>
-                  <p className="text-sm text-gray-600 mt-8 leading-relaxed">
-                    NCT 마크(@onyourm__ark)는 첫 솔로 앨범 ‘The Firstfruity’를
-                    독특한 방식으로 알렸습니다. 중고거래 플랫폼 ‘당근마켓’을
-                    활용해 팬들과의 새로운 접점을 만들었고, 일상 공간 속
-                    자연스러운 힌트들을 통해 앨범 세계관을 확장했습니다.
+                  <p className="text-sm text-gray-600 mt-5 leading-relaxed">
+                    제니(@jennierubyjane)의 취향은 곧 모두의 취향이 된다는 ’제니
+                    효과‘의 비밀은 단순한 유명세가 아니었어요. 제니는 단순한
+                    모델 역할을 넘어, 직접 디자인에 참여하는 크리에이터로서 한국
+                    전통 나전칠기의 우아한 감성을 담아냈죠. 패키지부터 텀블러에
+                    달린 귀여운 참까지, 그녀의 섬세한 터치는 팬들의 소장 욕구를
+                    완벽하게 자극했어요. <br />
                     <br />
-                    <br />
-                    ‘Lee’라는 이름으로 당근마켓에 올라온 글과 유튜브 브이로그 속
-                    장면들이 연결되면서 팬들은 스스로 퍼즐을 맞추듯 세계관을
-                    탐험하게 되었고, 공항 패션을 통한 앨범명 및 발매일 공개,
-                    성수동 거리 곳곳에 설치된 과일 포스터와 QR코드까지 이어지며
-                    몰입도를 높였습니다. ...
+                    여기에 스탠리(@stanley_korea)는 팝업 스토어에 팬들을 위한
+                    백스테이지 무드를 구현하고, 한정판 출시로 색다른 경험을
+                    선물했습니다. 이처럼 팬심을 이해하고 소통하는 마케팅은
+                    역대급 반응을 일으키며, 스탠리가 110년 전통을 넘어
+                    라이프스타일의 완성으로 자리 잡게 했어요...
                   </p>
                 </div>
                 <div className="mt-6">
@@ -157,19 +161,22 @@ export default function HomePage() {
           {/* 에디터 픽 */}
           <div className="flex flex-col">
             <div className="flex items-start gap-2 mb-4">
-              <Image
+              {/* <Image
                 alt="에디터픽 아이콘"
                 src="/icons/editorPick-icon.png"
                 width={28}
                 height={28}
                 className="w-7 h-7"
-              />
+              /> */}
               <h3 className="text-2xl font-bold">Editor Pick</h3>
             </div>
-            <div className="flex flex-col lg:flex-row gap-10">
-              <div className="w-full lg:w-[40%] aspect-[3/4] relative rounded-lg overflow-hidden shadow">
+            <div className=" flex flex-col lg:flex-row gap-10">
+              <div
+                className=" transition duration-300 ease-in-out hover:scale-103 cursor-pointer w-full lg:w-[40%] aspect-[3/4] relative rounded-lg overflow-hidden shadow"
+                onClick={() => router.push("/cardNews")}
+              >
                 <Image
-                  src="/icons/rectangle-gray.png"
+                  src="/images/cardNews/editor/001.png"
                   alt=""
                   fill
                   className="object-cover"
@@ -178,21 +185,26 @@ export default function HomePage() {
               <div className="lg:w-[60%] flex flex-col justify-between lg:h-full py-2">
                 <div>
                   <p className="text-lg sm:text-xl font-semibold mt-1">
-                    시니어 마케팅의 시대 성장하는 어른을 위한 전략
+                    CEO 스캔들, 마케팅으로 뒤집다?
                   </p>
                   <div className="flex flex-wrap text-gray-400 gap-x-4 text-xs mt-2">
-                    <p>2025.05.07</p>
+                    <p>2025.10.05</p>
                   </div>
-                  <p className="text-sm text-gray-600 mt-8 leading-relaxed">
-                    경제적 자원과 소비력을 갖춘 시니어층은 중요한 소비층으로
-                    떠올랐으며, 시니어층의 새로운 취미, 학습, 자기계발 수요가
-                    증가하면서 관련 제품과 서비스 시장도 함께 확대되고 있습니다.
+                  <p className="text-sm text-gray-600 mt-5 leading-relaxed">
+                    💔 CEO 스캔들? PR 교과서로 만들었습니다.
+                    <br />
+                    2025년 7월, 콜드플레이 콘서트 전광판 한 장면이 전 세계를
+                    뒤흔들었습니다. 아스트로노머 CEO & CPO 스캔들 -임원 사임 -
+                    기업 이미지 추락. 보통이라면 사과문, 활동 중단… 하지만
+                    아스트로노머는 사과 대신 브랜드 스토리 전환을 선택했습니다.
                     <br />
                     <br />
-                    이들은 단순한 고령 소비자가 아닌, 능동적이고 주체적인 삶을
-                    추구하며 브랜드와의 정서적 교감을 중요시합니다. 따라서
-                    시니어 마케팅은 더이상 선택이 아닌 필수 전략으로 자리잡고
-                    있습니다. ...
+                    할리우드 배우 기네스 팰트로를 전격 투입해, 스캔들은 빼고
+                    웃음과 메시지만 남긴 영상. 결과는 2,700만 조회수와 ‘PR의
+                    정석’이라는 찬사. 그리고, 예상치 못한 2차 전개 콜드플레이
+                    커플 장면은 ‘불륜밈’이 되어 방송·행사·SNS를 뒤덮었습니다.
+                    기업이 뜻하지 않은 패러디와 콘텐츠가 .. <br />
+                    <br />
                   </p>
                 </div>
                 <div className="mt-6">

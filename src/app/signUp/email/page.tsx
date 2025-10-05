@@ -4,13 +4,15 @@ import {
   AuthHeader,
   GenderRadioGroup,
   SubmitButton,
+  TextInput,
 } from "@/components/authFormComponents";
 import ConfirmModal from "@/components/confirmModal";
 import Header from "@/components/header";
 import React, { useState, useEffect } from "react";
-import { TextInput } from "@/components/authFormComponents";
 import CustomDropdown from "@/components/customDropdown";
 import MobileMenu from "@/components/mobileMenu";
+import { useSignup } from "@/features/auth/hooks/useSignup"; // ✅ 훅 import
+import { SignupRequestDto } from "@/features/auth/types";
 
 export default function EmailJoinPage() {
   const [email, setEmail] = useState("");
@@ -20,7 +22,7 @@ export default function EmailJoinPage() {
   const [code, setCode] = useState("");
   const [password, setPassword] = useState("");
   const [passwordCheck, setPasswordCheck] = useState("");
-  const [, setBirth] = useState({ year: "", month: "", day: "" });
+  const [birth, setBirth] = useState({ year: "", month: "", day: "" });
   const [modalOpen, setModalOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [gender, setGender] = useState("");
@@ -36,10 +38,6 @@ export default function EmailJoinPage() {
     agreements: false,
   });
 
-  const isPasswordValid = (pwd: string) => {
-    return /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[^\w\s]).{8,20}$/.test(pwd);
-  };
-
   const [agreements, setAgreements] = useState({
     all: false,
     age: false,
@@ -48,12 +46,19 @@ export default function EmailJoinPage() {
     marketing: false,
   });
 
+  const isPasswordValid = (pwd: string) => {
+    return /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[^\w\s]).{8,20}$/.test(pwd);
+  };
+
+  // ✅ React Query 훅 사용
+  const { mutate: signupMutate, isPending } = useSignup();
+
   const handleSubmit = () => {
     const newErrors = {
       email: !email.includes("@"),
       id: !id.trim(),
       nickname: !nickname.trim(),
-      gender: !gender, // 성별이 비어 있으면 에러
+      gender: !gender,
       code: code !== "123456",
       password: !isPasswordValid(password),
       passwordCheck: password !== passwordCheck,
@@ -62,9 +67,30 @@ export default function EmailJoinPage() {
     setErrors(newErrors);
 
     const hasError = Object.values(newErrors).some(Boolean);
-    if (!hasError) {
-      setModalOpen(true);
-    }
+    if (hasError) return;
+
+    // 생년월일 조합
+    const birthday = `${birth.year}-${birth.month}-${birth.day}`;
+
+    const signupData: SignupRequestDto = {
+      id,
+      pw: password,
+      email,
+      name,
+      birthday,
+      nickname,
+    };
+
+    signupMutate(signupData, {
+      onSuccess: (res) => {
+        console.log("회원가입 성공:", res);
+        setModalOpen(true);
+      },
+      onError: (err) => {
+        console.error("회원가입 실패:", err);
+        alert("회원가입 중 오류가 발생했습니다. 다시 시도해주세요.");
+      },
+    });
   };
 
   useEffect(() => {
@@ -101,7 +127,13 @@ export default function EmailJoinPage() {
       <div className="w-full bg-white px-4 sm:px-6 md:px-8 min-h-[100svh] py-16 flex items-center justify-center">
         <div className="w-full max-w-[550px] self-center">
           <AuthHeader description="" />
-          <form className="flex w-full px-2 md:px-0 flex-col gap-6 text-sm items-center">
+          <form
+            className="flex w-full px-2 md:px-0 flex-col gap-6 text-sm items-center"
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSubmit();
+            }}
+          >
             <TextInput
               required
               label="이메일주소"
@@ -122,7 +154,7 @@ export default function EmailJoinPage() {
               error={errors.code ? "인증번호를 다시 확인해주세요." : ""}
               rightButtonText="인증 완료"
               onRightButtonClick={() => alert("인증 완료!")}
-              className="rounded-lg "
+              className="rounded-lg"
             />
             <TextInput
               required
@@ -191,6 +223,7 @@ export default function EmailJoinPage() {
                 buttonClassName="rounded-lg border-[#C2C2C2]"
               />
             </InputRow>
+
             <TextInput
               required
               label="비밀번호"
@@ -216,6 +249,7 @@ export default function EmailJoinPage() {
               className="rounded-lg"
             />
 
+            {/* 동의 체크박스 */}
             <div className="w-11/12 sm:w-7/9 place-self-center mt-6 border-gray-200 pt-6 space-y-2 text-sm">
               {[
                 { key: "all", text: "모두 동의하기", bold: true },
@@ -242,11 +276,7 @@ export default function EmailJoinPage() {
                           [key]: e.target.checked,
                         }));
                     }}
-                    className={`w-3 h-3 ${
-                      agreements[key as keyof typeof agreements]
-                        ? "accent-red-500"
-                        : "accent-gray-300"
-                    }`}
+                    className="w-3 h-3 accent-red-500"
                   />
                   {bold ? <b>{text}</b> : text}
                 </label>
@@ -260,8 +290,8 @@ export default function EmailJoinPage() {
 
             <div className="w-full text-center mt-10">
               <SubmitButton
-                text="나의 냉장고 열어보기"
-                onClick={handleSubmit}
+                onClick={() => null}
+                text={isPending ? "가입 중..." : "나의 냉장고 열어보기"}
               />
             </div>
           </form>
@@ -273,6 +303,7 @@ export default function EmailJoinPage() {
     </div>
   );
 }
+
 const InputRow = ({
   label,
   required = false,
@@ -284,7 +315,7 @@ const InputRow = ({
 }) => {
   return (
     <div className="place-self-center w-full max-w-[500px] flex flex-col sm:grid sm:grid-cols-[112px_1fr] items-start sm:items-center gap-y-1 sm:gap-x-2">
-      <label className="justify-self-start text-[14px] sm:text-[14.5px] font-semibold whitespace-nowrap mb-1   sm:mb-0">
+      <label className="justify-self-start text-[14px] sm:text-[14.5px] font-semibold whitespace-nowrap mb-1 sm:mb-0">
         {label}
         {required && <span className="text-red-500 "> *</span>}
       </label>

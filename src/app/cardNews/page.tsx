@@ -11,12 +11,12 @@ import SaveToFridgeButton from "@/components/saveToFridgeButton";
 const categories = ["Beauty", "Food", "Lifestyle", "Tech", "Fashion"];
 
 const slideImages = [
-  "/images/001.png",
-  "/images/002.png",
-  "/images/003.png",
-  "/images/004.png",
-  "/images/005.png",
-  "/images/006.png",
+  "/images/cardNews/hot/001.png",
+  "/images/cardNews/hot/002.png",
+  "/images/cardNews/hot/003.png",
+  "/images/cardNews/hot/004.png",
+  "/images/cardNews/hot/005.png",
+  "/images/cardNews/hot/006.png",
 ];
 
 export default function CardNewsDetailPage() {
@@ -171,39 +171,37 @@ export default function CardNewsDetailPage() {
     `}
             >
               <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-2">
-                뭐라고? 쿠션이 40가지나 된다고?!
+                콜라보의 새로운 기준 제니 X 스탠리
               </h1>
-              <div className="text-xs text-gray-500 mb-4">
+              <div className="text-xs text-gray-500 mb-6">
                 2025.05.07 · 12,324 views · 냉장고에 담은 사람 1,231
               </div>
               <p className="text-sm sm:text-base text-gray-700 leading-relaxed">
-                <strong className="text-lg sm:text-xl block mb-2 text-black">
-                  TIRTIR의 마케팅 전략: 소비자 중심과 다양한 색상
+                <strong className="text-lg sm:text-xl block mb-4 text-black">
+                  제니효과 ✨ 들어보셨나요?
                 </strong>
-                TIRTIR는 단순한 뷰티 브랜드가 아닙니다. 소비자의 목소리를
-                진지하게 듣고, 그들의 필요를 충족시키기 위해 끊임없이 노력하는
-                브랜드입니다. 특히 40가지 다양한 쿠션 색상으로 모든 피부 톤을
-                아우르는 제품을 선보이며, 누구나 자신에게 맞는 제품을 쉽게 찾을
-                수 있도록 배려하고 있습니다.
+                제니(@jennierubyjane)의 취향은 곧 모두의 취향이 된다는 ’제니
+                효과‘의 비밀은 단순한 유명세가 아니었어요. 제니는 단순한 모델
+                역할을 넘어, 직접 디자인에 참여하는 크리에이터로서 한국 전통
+                나전칠기의 우아한 감성을 담아냈죠.
+                <br />
+                <br /> 패키지부터 텀블러에 달린 귀여운 참까지, 그녀의 섬세한
+                터치는 팬들의 소장 욕구를 완벽하게 자극했어요. 여기에
+                스탠리(@stanley_korea)는 팝업 스토어에 팬들을 위한 백스테이지
+                무드를 구현하고, 한정판 출시로 색다른 경험을 선물했습니다.
                 <br />
                 <br />
-                TIRTIR는 고객의 피드백을 반영해 제품을 개선하고, SNS와 온라인
-                소통을 통해 브랜드에 대한 신뢰를 쌓아가고 있습니다. 그 결과,
-                대중적인 인기를 얻고, 글로벌 시장에서도 인정받는 브랜드로 자리
-                잡았죠.
+                이처럼 팬심을 이해하고 소통하는 마케팅은 역대급 반응을 일으키며,
+                스탠리가 110년 전통을 넘어 라이프스타일의 완성으로 자리 잡게
+                했어요. 이 콜라보가 성공할 수밖에 없었던 이유! 오늘도 제니
+                스탠리와 함께 힙한 하루를 즐겨보세요! <br />
                 <br />
-                <br />
-                가장 중요한 건 바로 소비자 중심. 고객이 원하는 것을 듣고,
-                반영하는 브랜드가 되기 위해 항상 노력하고 있습니다. 피부 톤에
-                맞는 다양한 색상을 제공하는 것처럼, 고객이 원하는 맞춤형
-                서비스를 제공하기 위해 끊임없이 발전하고 있습니다. 결국 TIRTIR는
-                소비자 중심의 브랜드로, 고객의 만족과 신뢰를 가장 중요한 가치로
-                삼고 있습니다. {/* 생략 */}
+                에디터 │ 지은
               </p>
             </div>
 
             <div className="bg-white flex justify-end gap-4 mt-4 ">
-            <SaveToFridgeButton></SaveToFridgeButton>
+              <SaveToFridgeButton></SaveToFridgeButton>
               <button className="border border-gray-300 rounded-full px-2 py-1 text-sm cursor-pointer">
                 <Image
                   src="/icons/share.png"

@@ -26,7 +26,7 @@ export default function MobileSectionPager({
   const pageH = `calc(100svh - ${offsetTop}px)`;
 
   return (
-    <div className="md:hidden relative w-full h-full">
+    <div className="md:hidden relative w-full h-full ">
       {/* 스냅 컨테이너 */}
       <div
         ref={ref}
