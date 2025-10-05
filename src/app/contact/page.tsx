@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import Banner from "@/components/banner";
@@ -8,6 +8,7 @@ import CustomDropdown from "@/components/customDropdown";
 import MobileMenu from "@/components/mobileMenu";
 import { createEnquiry } from "@/features/enquiries/api/enquiriesApi";
 import { EnquiryRequestDto } from "@/features/enquiries/types";
+import LoginRequiredModal from "@/components/loginRequiredModal";
 
 export default function ContactPage() {
   const [category, setCategory] = useState("");
@@ -19,6 +20,17 @@ export default function ContactPage() {
   const [agreed, setAgreed] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false); // ✅ 추가
+
+  // ✅ 로그인 여부 체크
+  const isLoggedIn =
+    typeof window !== "undefined" && !!localStorage.getItem("accessToken");
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      setIsLoginModalOpen(true);
+    }
+  }, [isLoggedIn]);
 
   const isFormValid = category && title && email && content && agreed;
 
@@ -86,6 +98,14 @@ export default function ContactPage() {
       <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <Banner title="문의하기" />
+
+      {/* 🔒 로그인 유도 모달 */}
+      <LoginRequiredModal
+        isOpen={isLoginModalOpen}
+        onClose={() => setIsLoginModalOpen(false)}
+        message="로그인 후 문의를 남기실 수 있습니다"
+        redirectPath="/login"
+      />
 
       <main className="max-w-[800px] mx-auto px-[5%] sm:px-4 py-12 relative">
         <form className="space-y-6" onSubmit={handleSubmit}>

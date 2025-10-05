@@ -55,7 +55,7 @@ export default function MyContact() {
         {/* 상단 요약 */}
         <div className="flex justify-between items-center mb-4">
           <p>
-            총 문의:
+            총 문의: {}
             <span className="text-red-500 font-semibold">
               {inquiries.length}건
             </span>

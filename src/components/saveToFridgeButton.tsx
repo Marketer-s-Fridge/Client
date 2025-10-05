@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import BaseModal from "@/components/baseModal";
+import LoginRequiredModal from "@/components/loginRequiredModal";
 import { useRouter } from "next/navigation";
 
 interface SaveToFridgeButtonProps {
@@ -24,7 +25,7 @@ export default function SaveToFridgeButton({
     typeof window !== "undefined" && !!localStorage.getItem("accessToken");
 
   const handleClick = () => {
-    if (isLoggedIn) {
+    if (!isLoggedIn) {
       setIsLoginModalOpen(true);
       return;
     }
@@ -36,13 +37,13 @@ export default function SaveToFridgeButton({
     // ✅ 저장 성공 모달 (저장할 때만 표시)
     if (newState) {
       setIsSuccessModalOpen(true);
-      setTimeout(() => setIsSuccessModalOpen(false), 1000); // 1.5초 후 자동 닫힘
+      setTimeout(() => setIsSuccessModalOpen(false), 1000); // 1초 후 자동 닫힘
     }
   };
 
   return (
     <>
-      {/* ❤️ 버튼 */}
+      {/* ❤️ 저장 버튼 */}
       <button
         type="button"
         onClick={handleClick}
@@ -61,35 +62,13 @@ export default function SaveToFridgeButton({
       </button>
 
       {/* 🔒 로그인 안내 모달 */}
-      <BaseModal
+      <LoginRequiredModal
         isOpen={isLoginModalOpen}
         onClose={() => setIsLoginModalOpen(false)}
-      >
-        <h2 className="text-lg font-semibold mt-2 mb-2">
-          아직 로그인 안 하셨네요!
-        </h2>
-        <p className="text-sm text-gray-600 mb-6">
-          로그인하면 나만의 냉장고에 콘텐츠를 담을 수 있어요 🧊
-        </p>
-
-        <div className="flex justify-center gap-4">
-          <button
-            onClick={() => setIsLoginModalOpen(false)}
-            className="cursor-pointer px-5 py-2 border border-gray-300 rounded-2xl text-xs hover:bg-gray-100"
-          >
-            닫기
-          </button>
-          <button
-            onClick={() => {
-              setIsLoginModalOpen(false);
-              router.push("/login");
-            }}
-            className="cursor-pointer px-5 py-2 bg-red-500 text-white rounded-2xl text-xs hover:bg-red-600"
-          >
-            로그인
-          </button>
-        </div>
-      </BaseModal>
+        // title="로그인이 필요해요!"
+        message="로그인 후 MY 냉장고에 콘텐츠를 담을 수 있어요"
+        redirectPath="/login"
+      />
 
       {/* ✅ 저장 성공 모달 */}
       <BaseModal
@@ -97,8 +76,8 @@ export default function SaveToFridgeButton({
         onClose={() => setIsSuccessModalOpen(false)}
       >
         <div className="flex flex-col items-center justify-center py-1.5 px-3">
-          <p className="text-medium font-medium text-gray-700">
-            <strong className="text-lg font-medium">저장 완료!</strong>
+          <p className="text-medium font-medium text-gray-700 text-center">
+            <strong className="text-lg font-semibold">저장 완료!</strong>
             <br />
             MY 냉장고에서 확인해보세요 🧊
           </p>

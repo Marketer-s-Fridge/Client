@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Header from "@/components/header";
 import DoughnutChart from "@/components/doughnutChart";
@@ -8,6 +8,8 @@ import ChangeNicknameModal from "@/components/changeNicknameModal";
 import Image from "next/image";
 import Footer from "@/components/footer";
 import MobileMenu from "@/components/mobileMenu";
+import BaseModal from "@/components/baseModal";
+import LoginRequiredModal from "@/components/loginRequiredModal";
 
 export default function MyPage() {
   const router = useRouter();
@@ -16,6 +18,17 @@ export default function MyPage() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [likedItems, setLikedItems] = useState<number[]>([]);
   const [mobileReportView, setMobileReportView] = useState(false); // ✅ 모바일 토글
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false); // ✅ 추가
+
+  // ✅ 로그인 여부 체크
+  const isLoggedIn =
+    typeof window !== "undefined" && !!localStorage.getItem("accessToken");
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      setIsLoginModalOpen(true);
+    }
+  }, [isLoggedIn]);
 
   // 🧊 콘텐츠 데이터
   const recentlyViewedContents = [
@@ -37,16 +50,25 @@ export default function MyPage() {
   const maxSlideIndex =
     Math.ceil(recentlyViewedContents.length / cardsPerPage) - 1;
 
-  const handleToggleLike = (id: number) => {
-    setLikedItems((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
-    );
-  };
+    const handleToggleLike = (id: number) => {
+      setLikedItems((prev) =>
+        prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+      );
+    };
 
   return (
     <div className="bg-white pt-11 md:pt-0">
       <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+
+         {/* 🔒 로그인 유도 모달 */}
+         <LoginRequiredModal
+        isOpen={isLoginModalOpen}
+        onClose={() => setIsLoginModalOpen(false)}
+        message="로그인 후 MY 페이지를 자유롭게 이용해보세요"
+        buttonText="로그인"
+        redirectPath="/login"
+      />
 
       {/* 👤 프로필 영역 */}
       <section className="flex py-5 md:py-10 px-[5%] lg:px-[17%] main-red text-white w-full">
@@ -75,10 +97,16 @@ export default function MyPage() {
           {/* 오른쪽: 계정 관리 & 내 문의 내역 + (모바일) 토글 버튼 */}
           <div className="mt-10 md:mt-0 flex w-full md:w-[50%] text-sm sm:text-lg md:text-2xl font-semibold justify-between">
             <div className="flex flex-1 md:gap-30 gap-5 md:justify-end">
-              <button onClick={() => router.push("/myPage/account/myInfo")} className="cursor-pointer">
+              <button
+                onClick={() => router.push("/myPage/account/myInfo")}
+                className="cursor-pointer"
+              >
                 계정 관리
               </button>
-              <button onClick={() => router.push("/myPage/myContact")} className="cursor-pointer">
+              <button
+                onClick={() => router.push("/myPage/myContact")}
+                className="cursor-pointer"
+              >
                 내 문의 내역
               </button>
             </div>
