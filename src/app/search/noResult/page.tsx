@@ -3,7 +3,7 @@ import NoResultClient from "./noResultClient";
 
 export default function Page() {
   return (
-    <Suspense fallback={<div className="text-center py-20">로딩 중...</div>}>
+    <Suspense fallback={<div className="text-center py-20"></div>}>
       <NoResultClient />
     </Suspense>
   );

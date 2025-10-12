@@ -638,14 +638,14 @@ export default function Page() {
             ></Image> */}
           </div>
           {/* 7) 캐릭터 소개 초반 2 (모바일) */}
-          <div className="text-black page-inner !max-w-none bg-gray-100">
+          {/* <div className="text-black page-inner !max-w-none bg-gray-100">
             <Image
               alt=""
               width="500"
               height="600"
               src="/icons/character/fridge.png"
             ></Image>
-          </div>
+          </div> */}
 
           {/* 8) 캐릭터 소개 리스트 (모바일) */}
           <div className="text-black page-inner bg-gray-100 mt-[-3%] !max-w-none ">

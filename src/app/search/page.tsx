@@ -12,7 +12,7 @@ export default function Page() {
     <div className="bg-white min-h-screen mt-16 md:mt-0">
       <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />{" "}
-      <Suspense fallback={<div className="text-center py-10">로딩 중...</div>}>
+      <Suspense fallback={<div className="text-center py-10"></div>}>
         <SearchClient />
       </Suspense>
       <Footer />

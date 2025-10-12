@@ -5,40 +5,45 @@ import Image from "next/image";
 import BaseModal from "@/components/baseModal";
 import LoginRequiredModal from "@/components/loginRequiredModal";
 import { useRouter } from "next/navigation";
+import { useBookmarks } from "@/features/bookmarks/hooks/useBookmarks";
 
 interface SaveToFridgeButtonProps {
-  initialSaved?: boolean;
-  onToggle?: (saved: boolean) => void;
+  postId?: number; // ✅ 선택적 (필수 아님)
 }
 
-export default function SaveToFridgeButton({
-  initialSaved = false,
-  onToggle,
-}: SaveToFridgeButtonProps) {
-  const [saved, setSaved] = useState(initialSaved);
+export default function SaveToFridgeButton({ postId }: SaveToFridgeButtonProps) {
+  const router = useRouter();
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
-  const router = useRouter();
 
-  // ✅ 로그인 여부 체크 (토큰 여부 기준)
+  // ✅ 로그인 여부 체크
   const isLoggedIn =
     typeof window !== "undefined" && !!localStorage.getItem("accessToken");
 
+  // ✅ 북마크 훅
+  const { bookmarkIds, toggleBookmarkMutate, isLoading } = useBookmarks();
+
+  // ✅ postId가 있을 때만 북마크 상태 확인
+  const saved = postId ? bookmarkIds.includes(postId) : false;
+
+  // ✅ 클릭 핸들러
   const handleClick = () => {
     if (!isLoggedIn) {
       setIsLoginModalOpen(true);
       return;
     }
 
-    const newState = !saved;
-    setSaved(newState);
-    if (onToggle) onToggle(newState);
+    if (!postId) return; // postId가 없으면 동작 안 함
 
-    // ✅ 저장 성공 모달 (저장할 때만 표시)
-    if (newState) {
-      setIsSuccessModalOpen(true);
-      setTimeout(() => setIsSuccessModalOpen(false), 1000); // 1초 후 자동 닫힘
-    }
+    toggleBookmarkMutate(postId, {
+      onSuccess: () => {
+        // 북마크 추가 시에만 모달 띄움
+        if (!saved) {
+          setIsSuccessModalOpen(true);
+          setTimeout(() => setIsSuccessModalOpen(false), 1000);
+        }
+      },
+    });
   };
 
   return (
@@ -47,7 +52,13 @@ export default function SaveToFridgeButton({
       <button
         type="button"
         onClick={handleClick}
-        className="flex self-start text-gray-500 border border-gray-300 rounded-full px-4 py-1 text-sm items-center gap-2 cursor-pointer hover:bg-gray-100 transition"
+        disabled={isLoading || !postId} // postId 없으면 클릭 불가
+        className={`flex self-start items-center gap-2 px-4 py-1 text-sm border rounded-full transition
+          ${
+            isLoading || !postId
+              ? "text-gray-400 border-gray-200 cursor-not-allowed"
+              : "text-gray-500 border-gray-300 hover:bg-gray-100 cursor-pointer"
+          }`}
       >
         <Image
           src={saved ? "/icons/redheart.png" : "/icons/pinkheart.png"}
@@ -58,14 +69,17 @@ export default function SaveToFridgeButton({
             saved ? "scale-105" : "scale-100"
           }`}
         />
-        {saved ? "MY냉장고에 저장됨" : "MY냉장고에 저장"}
+        {saved
+          ? "MY냉장고에 저장됨"
+          : postId
+          ? "MY냉장고에 저장"
+          : "준비중인 기능입니다"}
       </button>
 
       {/* 🔒 로그인 안내 모달 */}
       <LoginRequiredModal
         isOpen={isLoginModalOpen}
         onClose={() => setIsLoginModalOpen(false)}
-        // title="로그인이 필요해요!"
         message="로그인 후 MY 냉장고에 콘텐츠를 담을 수 있어요"
         redirectPath="/login"
       />

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Header from "@/components/header";
 import DoughnutChart from "@/components/doughnutChart";
@@ -10,70 +10,92 @@ import Footer from "@/components/footer";
 import MobileMenu from "@/components/mobileMenu";
 import BaseModal from "@/components/baseModal";
 import LoginRequiredModal from "@/components/loginRequiredModal";
+import { useRecentBookmarkedPosts } from "@/features/bookmarks/hooks/useRecentBookmarksPost";
+import { useBookmarks } from "@/features/bookmarks/hooks/useBookmarks";
 
 export default function MyPage() {
   const router = useRouter();
   const [isNicknameModalOpen, setIsNicknameModalOpen] = useState(false);
-  const [slideIndex, setSlideIndex] = useState(0); // 데스크탑 슬라이더용
+  const [slideIndex, setSlideIndex] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [likedItems, setLikedItems] = useState<number[]>([]);
-  const [mobileReportView, setMobileReportView] = useState(false); // ✅ 모바일 토글
-  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false); // ✅ 추가
+  const [mobileReportView, setMobileReportView] = useState(false);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
 
-  // ✅ 로그인 여부 체크
+  const { data: myFridgeContents = [], isLoading: isFridgeLoading } =
+    useRecentBookmarkedPosts(3);
+  const {
+    bookmarkIds,
+    toggleBookmarkMutate,
+    isLoading: isBookmarkLoading,
+  } = useBookmarks();
+
   const isLoggedIn =
     typeof window !== "undefined" && !!localStorage.getItem("accessToken");
 
-  useEffect(() => {
-    if (!isLoggedIn) {
-      setIsLoginModalOpen(true);
-    }
-  }, [isLoggedIn]);
-
-  // 🧊 콘텐츠 데이터
   const recentlyViewedContents = [
+    { id: 101, title: "KOREADB 2025 뉴 컬렉션" },
+    { id: 102, title: "기능성과 스타일의 완벽 조화" },
+    { id: 103, title: "환경을 생각한 지속 가능한 브랜드" },
+    { id: 104, title: "셀럽들의 공항 패션 스타일" },
+    { id: 105, title: "에센셜 드레스 스타일링" },
+    { id: 106, title: "재테크 가이드" },
+  ];
+
+  const tempcontents = [
     "KOREADB 2025 뉴 컬렉션",
     "기능성과 스타일의 완벽 조화",
     "환경을 생각한 지속 가능한 브랜드",
-    "셀럽들의 공항 패션 스타일",
-    "에센셜 드레스 스타일링",
-    "재테크 가이드",
-  ];
-
-  const myFridgeContents = [
-    "건강한 라이프스타일을 위한 팁",
-    "재테크 초보자를 위한 금융 상식",
-    "재테크를 위한 중요한 전략",
   ];
 
   const cardsPerPage = 3;
   const maxSlideIndex =
     Math.ceil(recentlyViewedContents.length / cardsPerPage) - 1;
 
-    const handleToggleLike = (id: number) => {
-      setLikedItems((prev) =>
-        prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
-      );
-    };
+  const handleToggleBookmark = (postId: number, isSaved: boolean) => {
+    if (!isLoggedIn) {
+      setIsLoginModalOpen(true);
+      return;
+    }
+
+    toggleBookmarkMutate(postId, {
+      onSuccess: () => {
+        if (!isSaved) {
+          setIsSuccessModalOpen(true);
+          setTimeout(() => setIsSuccessModalOpen(false), 1000);
+        }
+      },
+    });
+  };
 
   return (
     <div className="bg-white pt-11 md:pt-0">
       <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
-
-         {/* 🔒 로그인 유도 모달 */}
-         <LoginRequiredModal
+      {/* 🔒 로그인 유도 모달 */}
+      <LoginRequiredModal
         isOpen={isLoginModalOpen}
         onClose={() => setIsLoginModalOpen(false)}
         message="로그인 후 MY 페이지를 자유롭게 이용해보세요"
         buttonText="로그인"
         redirectPath="/login"
       />
-
+      {/* ✅ 저장 완료 모달 */}
+      <BaseModal
+        isOpen={isSuccessModalOpen}
+        onClose={() => setIsSuccessModalOpen(false)}
+      >
+        <div className="flex flex-col items-center justify-center py-1.5 px-3">
+          <p className="text-medium font-medium text-gray-700 text-center">
+            <strong className="text-lg font-semibold">저장 완료!</strong>
+            <br />
+            MY 냉장고에서 확인해보세요 🧊
+          </p>
+        </div>
+      </BaseModal>
       {/* 👤 프로필 영역 */}
       <section className="flex py-5 md:py-10 px-[5%] lg:px-[17%] main-red text-white w-full">
         <div className="w-full flex flex-col md:flex-row justify-between items-center">
-          {/* 왼쪽: 프로필 이미지 + 닉네임 */}
           <div className="flex flex-col md:flex-row items-center w-1/2 gap-[5%] sm:gap-[10%]">
             <Image
               src="/images/profile-character.png"
@@ -94,7 +116,6 @@ export default function MyPage() {
             </div>
           </div>
 
-          {/* 오른쪽: 계정 관리 & 내 문의 내역 + (모바일) 토글 버튼 */}
           <div className="mt-10 md:mt-0 flex w-full md:w-[50%] text-sm sm:text-lg md:text-2xl font-semibold justify-between">
             <div className="flex flex-1 md:gap-30 gap-5 md:justify-end">
               <button
@@ -110,9 +131,8 @@ export default function MyPage() {
                 내 문의 내역
               </button>
             </div>
-            {/* ✅ 모바일 토글 버튼 */}
             <button
-              className="block md:hidden "
+              className="block md:hidden"
               onClick={() => setMobileReportView((v) => !v)}
             >
               {mobileReportView ? "콘텐츠 목록 보기" : "콘텐츠 소비 리포트"}
@@ -120,9 +140,8 @@ export default function MyPage() {
           </div>
         </div>
       </section>
-
       {/* ===================== */}
-      {/*    모바일 전용 뷰   */}
+      {/* 모바일 전용 뷰 */}
       {/* ===================== */}
       <section className="md:hidden max-w-[1024px] mx-auto px-6 py-8 space-y-12">
         {!mobileReportView ? (
@@ -131,42 +150,50 @@ export default function MyPage() {
             <div>
               <h3 className="text-2xl font-bold mb-4">최근 본 콘텐츠</h3>
               <div className="flex overflow-x-auto gap-4 no-scrollbar snap-x snap-mandatory">
-                {recentlyViewedContents.map((item, index) => (
-                  <div
-                    key={index}
-                    className="flex-shrink-0 w-[35vw] snap-start"
-                  >
-                    <div className="aspect-[3/4] bg-gray-100 rounded-lg overflow-hidden">
-                      <Image
-                        src="/icons/rectangle-gray.png"
-                        alt={item}
-                        width={300}
-                        height={350}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div className="pt-2 px-1 text-sm font-semibold flex items-center justify-between">
-                      <span className="truncate pr-2 flex-1">{item}</span>
-                      <button onClick={() => handleToggleLike(index)}>
+                {recentlyViewedContents.map((item) => {
+                  const isSaved = bookmarkIds.includes(item.id);
+                  return (
+                    <div
+                      key={item.id}
+                      className="flex-shrink-0 w-[35vw] snap-start"
+                    >
+                      <div className="aspect-[3/4] bg-gray-100 rounded-lg overflow-hidden">
                         <Image
-                          src={
-                            likedItems.includes(index)
-                              ? "/icons/redheart.png"
-                              : "/icons/grayheart.png"
-                          }
-                          alt="찜"
-                          width={20}
-                          height={20}
-                          className={`w-4.5 h-5 ${
-                            likedItems.includes(index)
-                              ? ""
-                              : "opacity-30 grayscale"
-                          }`}
+                          src="/icons/rectangle-gray.png"
+                          alt={item.title}
+                          width={300}
+                          height={350}
+                          className="w-full h-full object-cover"
                         />
-                      </button>
+                      </div>
+                      <div className="pt-2 px-1 text-sm font-semibold flex items-center justify-between">
+                        <span className="truncate pr-2 flex-1">
+                          {item.title}
+                        </span>
+                        <button
+                          onClick={() => handleToggleBookmark(item.id, isSaved)}
+                          disabled={isBookmarkLoading}
+                        >
+                          <Image
+                            src={
+                              isSaved
+                                ? "/icons/redheart.png"
+                                : "/icons/grayheart.png"
+                            }
+                            alt="찜"
+                            width={20}
+                            height={20}
+                            className={`w-4.5 h-5 transition-transform ${
+                              isSaved
+                                ? "scale-105"
+                                : "opacity-30 grayscale scale-100"
+                            }`}
+                          />
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
 
@@ -184,34 +211,42 @@ export default function MyPage() {
                     alt="더보기"
                     width={16}
                     height={16}
-                    className=" ml-1"
+                    className="ml-1"
                   />
                 </button>
               </div>
               <div className="grid grid-cols-2 gap-4">
-                {myFridgeContents.map((title, i) => (
-                  <div key={i} className="w-full">
-                    <div className="relative aspect-[3/4] rounded-lg bg-gray-100 overflow-hidden">
-                      <Image
-                        src="/icons/rectangle-gray.png"
-                        alt={title}
-                        width={200}
-                        height={250}
-                        className="w-full h-full object-cover"
-                      />
-                      <Image
-                        src="/icons/redheart.png"
-                        alt="찜"
-                        width={30}
-                        height={30}
-                        className="absolute right-2 bottom-2 w-4 h-4"
-                      />
+                {isFridgeLoading ? (
+                  <p className="text-gray-400 text-sm">불러오는 중...</p>
+                ) : myFridgeContents.length === 0 ? (
+                  <p className="text-gray-400 text-sm">
+                    담은 콘텐츠가 없습니다
+                  </p>
+                ) : (
+                  myFridgeContents.map((post) => (
+                    <div key={post.id} className="w-full md:w-[140px]">
+                      <div className="relative aspect-[3/4] rounded-lg bg-gray-100 overflow-hidden">
+                        <Image
+                          src={post.images?.[0] || "/icons/rectangle-gray.png"}
+                          alt={post.title}
+                          width={200}
+                          height={250}
+                          className="w-full h-full object-cover"
+                        />
+                        <Image
+                          src="/icons/redheart.png"
+                          alt="찜"
+                          width={30}
+                          height={30}
+                          className="absolute right-2 bottom-2 w-4 h-4"
+                        />
+                      </div>
+                      <div className="pt-2 text-sm font-semibold truncate">
+                        {post.title}
+                      </div>
                     </div>
-                    <div className="pt-2 text-sm font-semibold truncate">
-                      {title}
-                    </div>
-                  </div>
-                ))}
+                  ))
+                )}
               </div>
             </div>
           </>
@@ -258,7 +293,7 @@ export default function MyPage() {
                 마케터님에게 딱 맞는 추천 콘텐츠
               </h3>
               <div className="grid grid-cols-2 gap-4">
-                {myFridgeContents.map((title, i) => (
+                {tempcontents.map((title, i) => (
                   <div key={i} className="w-full">
                     <div className="relative aspect-[3/4] rounded-lg bg-gray-100 overflow-hidden">
                       <Image
@@ -286,9 +321,8 @@ export default function MyPage() {
           </>
         )}
       </section>
-
       {/* ===================== */}
-      {/*   데스크탑/태블릿 뷰  */}
+      {/* 데스크탑/태블릿 뷰 */}
       {/* ===================== */}
       <section className="hidden md:grid max-w-[1024px] mx-auto px-6 py-8 md:py-18 grid-cols-2 gap-16">
         {/* 1️⃣ 최근 본 콘텐츠 (데스크탑 슬라이드) */}
@@ -303,7 +337,7 @@ export default function MyPage() {
             </button>
             <div className="overflow-hidden w-full mx-auto">
               <div
-                className=" flex transition-transform duration-500 ease-in-out"
+                className="flex transition-transform duration-500 ease-in-out"
                 style={{
                   transform: `translateX(-${slideIndex * 480}px)`,
                   width: `${(maxSlideIndex + 1) * 480}px`,
@@ -320,41 +354,49 @@ export default function MyPage() {
                           pageIndex * cardsPerPage,
                           pageIndex * cardsPerPage + cardsPerPage
                         )
-                        .map((item, index) => (
-                          <div key={index} className="w-[140px]">
-                            <div className="aspect-[3/4] bg-gray-100 rounded-lg overflow-hidden">
-                              <Image
-                                src="/icons/rectangle-gray.png"
-                                alt={item}
-                                width={300}
-                                height={350}
-                                className="w-full h-full object-cover cursor-pointer"
-                              />
-                            </div>
-                            <div className="pt-2 px-1 text-sm font-semibold flex items-center justify-between">
-                              <span className="truncate pr-2 flex-1">
-                                {item}
-                              </span>
-                              <button onClick={() => handleToggleLike(index)}>
+                        .map((item) => {
+                          const isSaved = bookmarkIds.includes(item.id);
+                          return (
+                            <div key={item.id} className="w-[140px]">
+                              <div className="aspect-[3/4] bg-gray-100 rounded-lg overflow-hidden">
                                 <Image
-                                  src={
-                                    likedItems.includes(index)
-                                      ? "/icons/redheart.png"
-                                      : "/icons/grayheart.png"
-                                  }
-                                  alt="찜"
-                                  width={20}
-                                  height={20}
-                                  className={`w-4.5 h-5 ${
-                                    likedItems.includes(index)
-                                      ? ""
-                                      : "opacity-30 grayscale"
-                                  }`}
+                                  src="/icons/rectangle-gray.png"
+                                  alt={item.title}
+                                  width={300}
+                                  height={350}
+                                  className="w-full h-full object-cover cursor-pointer"
                                 />
-                              </button>
+                              </div>
+                              <div className="pt-2 px-1 text-sm font-semibold flex items-center justify-between">
+                                <span className="truncate pr-2 flex-1">
+                                  {item.title}
+                                </span>
+                                <button
+                                  onClick={() =>
+                                    handleToggleBookmark(item.id, isSaved)
+                                  }
+                                  disabled={isBookmarkLoading}
+                                >
+                                  <Image
+                                    src={
+                                      isSaved
+                                        ? "/icons/redheart.png"
+                                        : "/icons/grayheart.png"
+                                    }
+                                    alt="찜"
+                                    width={20}
+                                    height={20}
+                                    className={`cursor-pointer w-4.5 h-5 transition-transform ${
+                                      isSaved
+                                        ? "scale-105"
+                                        : "opacity-30 grayscale scale-100"
+                                    }`}
+                                  />
+                                </button>
+                              </div>
                             </div>
-                          </div>
-                        ))}
+                          );
+                        })}
                     </div>
                   )
                 )}
@@ -420,44 +462,51 @@ export default function MyPage() {
                 alt="더보기"
                 width={16}
                 height={16}
-                className=" ml-1"
+                className="ml-1"
               />
             </button>
           </div>
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-4">
-            {myFridgeContents.map((title, i) => (
-              <div key={i} className="w-full md:w-[140px]">
-                <div className="relative aspect-[3/4] rounded-lg bg-gray-100 overflow-hidden">
-                  <Image
-                    src="/icons/rectangle-gray.png"
-                    alt={title}
-                    width={200}
-                    height={250}
-                    className="w-full h-full object-cover"
-                  />
-                  <Image
-                    src="/icons/redheart.png"
-                    alt="찜"
-                    width={30}
-                    height={30}
-                    className="absolute right-2 bottom-2 w-4 h-4"
-                  />
+          <div className="grid grid-cols-3 gap-6">
+            {isFridgeLoading ? (
+              <p className="text-gray-400 text-sm">불러오는 중...</p>
+            ) : myFridgeContents.length === 0 ? (
+              <p className="text-gray-400 text-sm">
+                담은 콘텐츠가 없습니다
+              </p>
+            ) : (
+              myFridgeContents.map((post) => (
+                <div key={post.id} className="w-full">
+                  <div className="relative aspect-[3/4] rounded-lg bg-gray-100 overflow-hidden">
+                    <Image
+                      src={post.images?.[0] || "/icons/rectangle-gray.png"}
+                      alt={post.title}
+                      width={200}
+                      height={250}
+                      className="w-full h-full object-cover"
+                    />
+                    <Image
+                      src="/icons/redheart.png"
+                      alt="찜"
+                      width={30}
+                      height={30}
+                      className="absolute right-2 bottom-2 w-4 h-4"
+                    />
+                  </div>
+                  <div className="pt-2 text-sm font-semibold truncate">
+                    {post.title}
+                  </div>
                 </div>
-                <div className="pt-2 text-sm font-semibold truncate">
-                  {title}
-                </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </div>
-
         {/* 4️⃣ 추천 콘텐츠 */}
         <div>
           <h3 className="text-2xl font-bold mb-4">
             마케터님에게 딱 맞는 추천 콘텐츠
           </h3>
           <div className="grid grid-cols-2 gap-4 md:flex md:gap-4 md:justify-center">
-            {myFridgeContents.map((title, i) => (
+            {tempcontents.map((title, i) => (
               <div key={i} className="w-full md:w-[140px]">
                 <div className="relative aspect-[3/4] rounded-lg bg-gray-100 overflow-hidden">
                   <Image
@@ -484,11 +533,10 @@ export default function MyPage() {
         </div>
       </section>
 
-      {/* ✏️ 닉네임 변경 모달 */}
+      {/* 닉네임 변경 모달 */}
       {isNicknameModalOpen && (
         <ChangeNicknameModal onClose={() => setIsNicknameModalOpen(false)} />
       )}
-
       <Footer />
     </div>
   );

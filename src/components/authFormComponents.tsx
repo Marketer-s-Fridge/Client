@@ -142,6 +142,7 @@ export const ConsentCheckbox: React.FC<ConsentCheckboxProps> = ({
   </label>
 );
 interface SubmitButtonProps {
+  type?: "submit" | "button" | "reset"; // ✅ 이렇게 고쳐야 함!
   text: string;
   onClick: () => void;
   fullWidth?: boolean;
@@ -151,6 +152,7 @@ interface SubmitButtonProps {
 }
 
 export const SubmitButton: React.FC<SubmitButtonProps> = ({
+  type = "submit", // 기본값
   text,
   onClick,
   fullWidth = true,
@@ -167,7 +169,7 @@ export const SubmitButton: React.FC<SubmitButtonProps> = ({
 
   return (
     <button
-      type="button"
+      type={type} // ✅ props 전달
       onClick={onClick}
       className={`${baseStyle} ${widthStyle} ${variantStyle} ${className}`}
     >
@@ -226,7 +228,9 @@ export const GenderRadioGroup: React.FC<GenderRadioGroupProps> = ({
       </div>
 
       {/* 에러 메시지 출력 */}
-      {error && <p className="text-red-500 text-xs mt-1 sm:ml-[130px] ml-1">{error}</p>}
+      {error && (
+        <p className="text-red-500 text-xs mt-1 sm:ml-[130px] ml-1">{error}</p>
+      )}
     </div>
   );
 };

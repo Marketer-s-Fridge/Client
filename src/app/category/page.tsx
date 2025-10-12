@@ -25,7 +25,7 @@ const categories: Category[] = [
 ];
 
 export default function Page() {
-  const [likedItems, setLikedItems] = useState<number[]>([]);
+  const [_, setLikedItems] = useState<number[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -98,8 +98,6 @@ export default function Page() {
                 image: post.images,
               }))}
               columns={4}
-              likedItems={likedItems}
-              onToggleLike={toggleLike}
             />
 
             {/* ✅ 결과가 있을 때만 페이지네이션 표시 */}

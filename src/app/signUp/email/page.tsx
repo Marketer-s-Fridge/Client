@@ -11,10 +11,13 @@ import Header from "@/components/header";
 import React, { useState, useEffect } from "react";
 import CustomDropdown from "@/components/customDropdown";
 import MobileMenu from "@/components/mobileMenu";
-import { useSignup } from "@/features/auth/hooks/useSignup"; // ✅ 훅 import
+import { useSignup } from "@/features/auth/hooks/useSignup";
 import { SignupRequestDto } from "@/features/auth/types";
+import { useRouter } from "next/navigation";
 
 export default function EmailJoinPage() {
+  const router = useRouter();
+
   const [email, setEmail] = useState("");
   const [id, setId] = useState("");
   const [nickname, setNickname] = useState("");
@@ -50,7 +53,6 @@ export default function EmailJoinPage() {
     return /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[^\w\s]).{8,20}$/.test(pwd);
   };
 
-  // ✅ React Query 훅 사용
   const { mutate: signupMutate, isPending } = useSignup();
 
   const handleSubmit = () => {
@@ -69,7 +71,6 @@ export default function EmailJoinPage() {
     const hasError = Object.values(newErrors).some(Boolean);
     if (hasError) return;
 
-    // 생년월일 조합
     const birthday = `${birth.year}-${birth.month}-${birth.day}`;
 
     const signupData: SignupRequestDto = {
@@ -84,7 +85,7 @@ export default function EmailJoinPage() {
     signupMutate(signupData, {
       onSuccess: (res) => {
         console.log("회원가입 성공:", res);
-        setModalOpen(true);
+        setModalOpen(true); // ✅ 성공 시 모달 오픈
       },
       onError: (err) => {
         console.error("회원가입 실패:", err);
@@ -188,7 +189,6 @@ export default function EmailJoinPage() {
               error={errors.nickname ? "이름을 입력해주세요." : ""}
             />
 
-            {/* 성별 선택 */}
             <GenderRadioGroup
               value={gender}
               onChange={setGender}
@@ -202,7 +202,6 @@ export default function EmailJoinPage() {
                 options={Array.from({ length: 50 }, (_, i) => String(1980 + i))}
                 onSelect={(val) => setBirth((prev) => ({ ...prev, year: val }))}
                 buttonClassName="rounded-lg border-[#C2C2C2]"
-                className="border-[#C2C2C2]"
               />
               <CustomDropdown
                 label="월"
@@ -290,15 +289,26 @@ export default function EmailJoinPage() {
 
             <div className="w-full text-center mt-10">
               <SubmitButton
-                onClick={() => null}
+                onClick={handleSubmit}
                 text={isPending ? "가입 중..." : "나의 냉장고 열어보기"}
               />
             </div>
           </form>
         </div>
       </div>
-      <ConfirmModal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
-        <p>회원가입이 완료되었습니다.</p>
+
+      {/* ✅ 회원가입 성공 모달 */}
+      <ConfirmModal
+        isOpen={modalOpen}
+        onClose={() => {
+          setModalOpen(false);
+          router.push("/login"); // 로그인 페이지로 이동
+        }}
+      >
+        <p className="text-lg font-semibold text-gray-800 mb-3">
+          회원가입이 완료되었습니다 🎉
+        </p>
+        <p className="text-sm text-gray-500">이제 로그인해주세요!</p>
       </ConfirmModal>
     </div>
   );
