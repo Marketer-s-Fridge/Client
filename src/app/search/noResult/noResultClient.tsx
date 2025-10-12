@@ -20,15 +20,8 @@ export default function NoResultClient() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("전체");
   const [selectedSort, setSelectedSort] = useState("최신순");
-  const [likedItems, setLikedItems] = useState<number[]>([]);
   const searchParams = useSearchParams();
   const query = searchParams.get("q") || "";
-
-  const toggleLike = (id: number) => {
-    setLikedItems((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
-    );
-  };
 
   return (
     <div className="min-h-screen bg-white mt-16 md:mt-0">

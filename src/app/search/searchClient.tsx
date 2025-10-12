@@ -23,13 +23,7 @@ export default function SearchClient() {
   const [selectedSort, setSelectedSort] = useState("최신순");
   const [selectedCategory, setSelectedCategory] = useState("전체");
   const [currentPage, setCurrentPage] = useState(1);
-  const [likedItems, setLikedItems] = useState<number[]>([]);
 
-  const toggleLike = (id: number) => {
-    setLikedItems((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
-    );
-  };
 
   // ✅ 검색어 필터링
   const filteredContents = useMemo(() => {
@@ -66,8 +60,7 @@ export default function SearchClient() {
             <CardGrid
               items={filteredContents}
               columns={3}
-              likedItems={likedItems}
-              onToggleLike={toggleLike}
+         
             />
             <Pagination
               currentPage={currentPage}
