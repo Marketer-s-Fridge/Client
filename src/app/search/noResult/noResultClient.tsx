@@ -68,12 +68,7 @@ export default function NoResultClient() {
             이런 콘텐츠는 어떠세요?
           </h3>
 
-          <CardGrid
-            items={mockContents}
-            columns={3}
-            likedItems={likedItems}
-            onToggleLike={toggleLike}
-          />
+          <CardGrid items={mockContents} columns={3} />
         </section>
       </section>
 
