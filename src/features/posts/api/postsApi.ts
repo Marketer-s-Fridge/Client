@@ -3,7 +3,9 @@ import { PostRequestDto, PostResponseDto, PostHitResponseDto } from "../types";
 
 // ✅ 전체 게시물 조회
 export const fetchPosts = async (): Promise<PostResponseDto[]> => {
+  console.log("📡 [API 요청] /posts"); // ✅ 요청 시점 로그
   const res = await api.get<PostResponseDto[]>("/posts");
+  console.log("✅ [API 성공]", res.data); // ✅ 응답 로그
   return res.data;
 };
 
