@@ -9,9 +9,15 @@ const nextConfig: NextConfig = {
 
   async rewrites() {
     return [
+      // ✅ auth 요청은 /api 없이 바로 백엔드로
       {
-        source: "/api/:path*", // 클라이언트에서 호출할 경로
-        destination: "http://mf-api:8081/api/:path*", // ✅ Docker 내부의 Spring Boot 컨테이너로 전달
+        source: "/auth/:path*",
+        destination: "http://mf-api:8081/auth/:path*",
+      },
+      // ✅ 나머지는 /api 그대로 백엔드로 전달
+      {
+        source: "/api/:path*",
+        destination: "http://mf-api:8081/api/:path*",
       },
     ];
   },

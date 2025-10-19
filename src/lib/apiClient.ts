@@ -2,7 +2,7 @@ import axios from "axios";
 
 // .env 파일에 NEXT_PUBLIC_API_URL=https://api.yourdomain.com 이런 식으로 설정
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || "/api",
+  baseURL: process.env.NEXT_PUBLIC_API_URL || "/",
   withCredentials: true, // 쿠키/세션 인증 필요할 때 true
   headers: {
     "Content-Type": "application/json",
