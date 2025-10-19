@@ -10,7 +10,7 @@ export const fetchEnquiries = async (
 ): Promise<PaginatedResponse<EnquiryResponseDto>> => {
   console.log("📋 [전체 문의 조회 요청]", { page, size, sortBy, direction });
   try {
-    const res = await api.get<PaginatedResponse<EnquiryResponseDto>>("/enquiries", {
+    const res = await api.get<PaginatedResponse<EnquiryResponseDto>>("/api/enquiries", {
       params: { page, size, sortBy, direction },
     });
     console.log("✅ [전체 문의 조회 성공]", res.data);
@@ -30,7 +30,7 @@ export const fetchMyEnquiries = async (
 ): Promise<PaginatedResponse<EnquiryResponseDto>> => {
   console.log("🙋‍♀️ [내 문의 목록 조회 요청]", { page, size, sortBy, direction });
   try {
-    const res = await api.get<PaginatedResponse<EnquiryResponseDto>>("/enquiries/my", {
+    const res = await api.get<PaginatedResponse<EnquiryResponseDto>>("/api/enquiries/my", {
       params: { page, size, sortBy, direction },
     });
     console.log("✅ [내 문의 목록 조회 성공]", res.data);
@@ -45,7 +45,7 @@ export const fetchMyEnquiries = async (
 export const fetchEnquiry = async (id: number): Promise<EnquiryResponseDto> => {
   console.log(`🔍 [문의 상세 조회 요청] enquiryId=${id}`);
   try {
-    const res = await api.get<EnquiryResponseDto>(`/enquiries/${id}`);
+    const res = await api.get<EnquiryResponseDto>(`/api/enquiries/${id}`);
     console.log("✅ [문의 상세 조회 성공]", res.data);
     return res.data;
   } catch (error: any) {
@@ -58,7 +58,7 @@ export const fetchEnquiry = async (id: number): Promise<EnquiryResponseDto> => {
 export const createEnquiry = async (dto: EnquiryRequestDto): Promise<EnquiryResponseDto> => {
   console.log("✉️ [문의 작성 요청]", dto);
   try {
-    const res = await api.post<EnquiryResponseDto>("/enquiries", dto);
+    const res = await api.post<EnquiryResponseDto>("/api/enquiries", dto);
     console.log("✅ [문의 작성 성공]", res.data);
     return res.data;
   } catch (error: any) {
@@ -74,7 +74,7 @@ export const updateEnquiry = async (
 ): Promise<EnquiryResponseDto> => {
   console.log(`🛠️ [문의 수정 요청] enquiryId=${id}`, dto);
   try {
-    const res = await api.put<EnquiryResponseDto>(`/enquiries/${id}`, dto);
+    const res = await api.put<EnquiryResponseDto>(`/api/enquiries/${id}`, dto);
     console.log("✅ [문의 수정 성공]", res.data);
     return res.data;
   } catch (error: any) {
@@ -87,7 +87,7 @@ export const updateEnquiry = async (
 export const deleteEnquiry = async (id: number): Promise<void> => {
   console.log(`🗑️ [문의 삭제 요청] enquiryId=${id}`);
   try {
-    await api.delete(`/enquiries/${id}`);
+    await api.delete(`/api/api/enquiries/${id}`);
     console.log("✅ [문의 삭제 성공]");
   } catch (error: any) {
     console.error("❌ [문의 삭제 실패]:", error);

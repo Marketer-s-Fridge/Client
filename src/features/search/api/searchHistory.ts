@@ -7,7 +7,7 @@ export const saveSearchKeyword = async (
 ): Promise<void> => {
   console.log("💾 [검색어 저장 요청]", dto);
   try {
-    await api.post("/searchHistory", dto);
+    await api.post("/api/searchHistory", dto);
     console.log("✅ [검색어 저장 성공]");
   } catch (error: any) {
     console.error("❌ [검색어 저장 실패]:", error);
@@ -19,7 +19,7 @@ export const saveSearchKeyword = async (
 export const fetchPopularSearchKeywords = async (): Promise<PopularSearchResponse> => {
   console.log("📊 [인기 검색어 조회 요청]");
   try {
-    const res = await api.get<PopularSearchResponse>("/searchHistory");
+    const res = await api.get<PopularSearchResponse>("/api/searchHistory");
     console.log("✅ [인기 검색어 조회 성공]", res.data);
     return res.data;
   } catch (error: any) {

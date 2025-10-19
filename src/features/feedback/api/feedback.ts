@@ -8,7 +8,7 @@ export const fetchFeedbackByEnquiryId = async (
 ): Promise<FeedbackResponseDto> => {
   console.log(`🔍 [피드백 조회 요청] enquiryId=${enquiryId}`);
   try {
-    const res = await api.get<FeedbackResponseDto>(`/enquiries/${enquiryId}/feedback`);
+    const res = await api.get<FeedbackResponseDto>(`/api/enquiries/${enquiryId}/feedback`);
     console.log("✅ [피드백 조회 성공]", res.data);
     return res.data;
   } catch (error: any) {
@@ -21,7 +21,7 @@ export const fetchFeedbackByEnquiryId = async (
 export const fetchAllFeedbacks = async (): Promise<FeedbackResponseDto[]> => {
   console.log("📋 [전체 피드백 조회 요청]");
   try {
-    const res = await api.get<FeedbackResponseDto[]>("/feedbacks");
+    const res = await api.get<FeedbackResponseDto[]>("/api/feedbacks");
     console.log("✅ [전체 피드백 조회 성공]", res.data);
     return res.data;
   } catch (error: any) {
@@ -36,7 +36,7 @@ export const createFeedback = async (
 ): Promise<FeedbackResponseDto> => {
   console.log("📝 [피드백 등록 요청]", dto);
   try {
-    const res = await api.post<FeedbackResponseDto>("/feedbacks", dto);
+    const res = await api.post<FeedbackResponseDto>("/api/feedbacks", dto);
     console.log("✅ [피드백 등록 성공]", res.data);
     return res.data;
   } catch (error: any) {
