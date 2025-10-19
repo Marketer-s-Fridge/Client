@@ -47,7 +47,7 @@ export const signup = async (dto: SignupRequestDto): Promise<string> => {
 export const checkEmailDuplication = async (email: string): Promise<boolean> => {
   console.log("🔍 [이메일 중복체크 요청]", email);
   try {
-    const res = await api.get<boolean>("/auth/signup/email_duplication_check", {
+    const res = await api.get<boolean>("/auth/signup/duplication_check", {
       params: { email },
     });
     console.log("✅ [이메일 중복체크 완료]", res.data);
