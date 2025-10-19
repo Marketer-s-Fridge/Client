@@ -20,6 +20,7 @@ export default function EmailJoinPage() {
   const router = useRouter();
 
   const [email, setEmail] = useState("");
+  const [isEmailChecked, setIsEmailChecked] = useState(false); // ✅ 중복체크 여부
   const [id, setId] = useState("");
   const [nickname, setNickname] = useState("");
   const [name, setName] = useState("");
@@ -52,34 +53,40 @@ export default function EmailJoinPage() {
 
   const { mutate: signupMutate, isPending } = useSignup();
 
-  // ✅ 이메일 중복 체크 훅 사용
+  // ✅ 이메일 중복 체크 훅
   const {
-    data: isEmailDuplicated,
+    data: isDuplicated,
     isFetching: isCheckingEmail,
     refetch: refetchEmailCheck,
   } = useCheckEmailDuplication(email);
 
+  // ✅ 이메일 중복 확인 버튼 클릭 시
   const handleEmailCheck = async () => {
     if (!email.includes("@")) {
       alert("올바른 이메일 주소를 입력해주세요.");
       return;
     }
-
-    const { data } = await refetchEmailCheck();
-    if (data) {
-      alert("이미 사용 중인 이메일입니다.");
-    } else {
-      alert("사용 가능한 이메일입니다 ✅");
+    try {
+      const { data } = await refetchEmailCheck();
+      if (data) {
+        alert("이미 사용 중인 이메일입니다 ❌");
+        setIsEmailChecked(false);
+      } else {
+        alert("사용 가능한 이메일입니다 ✅");
+        setIsEmailChecked(true);
+      }
+    } catch {
+      alert("이메일 중복 확인 중 오류가 발생했습니다.");
+      setIsEmailChecked(false);
     }
   };
-
   const isPasswordValid = (pwd: string) => {
     return /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[^\w\s]).{8,20}$/.test(pwd);
   };
 
   const handleSubmit = () => {
     const newErrors = {
-      email: !email.includes("@"),
+      email: !email.includes("@") || !isEmailChecked, // ✅ 중복체크 통과 필수
       id: !id.trim(),
       nickname: !nickname.trim(),
       gender: !gender,
@@ -116,6 +123,7 @@ export default function EmailJoinPage() {
     });
   };
 
+  // ✅ 전체 동의 체크 동기화
   useEffect(() => {
     const allChecked =
       agreements.age &&
@@ -125,13 +133,7 @@ export default function EmailJoinPage() {
     if (agreements.all !== allChecked) {
       setAgreements((prev) => ({ ...prev, all: allChecked }));
     }
-  }, [
-    agreements.age,
-    agreements.provide,
-    agreements.collect,
-    agreements.marketing,
-    agreements.all,
-  ]);
+  }, [agreements.age, agreements.provide, agreements.collect, agreements.marketing]);
 
   const handleAllAgree = (checked: boolean) => {
     setAgreements({
@@ -164,8 +166,18 @@ export default function EmailJoinPage() {
               type="text"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              error={errors.email ? "올바른 이메일 주소를 입력해주세요." : ""}
-              rightButtonText={isCheckingEmail ? "확인 중..." : "중복 확인"}
+              error={
+                errors.email
+                  ? "이메일을 입력하고 중복확인을 완료해주세요."
+                  : ""
+              }
+              rightButtonText={
+                isCheckingEmail
+                  ? "확인 중..."
+                  : isEmailChecked
+                  ? "확인 완료"
+                  : "중복 확인"
+              }
               onRightButtonClick={handleEmailCheck}
               className="rounded-lg"
             />
