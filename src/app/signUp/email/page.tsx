@@ -12,6 +12,7 @@ import React, { useState, useEffect } from "react";
 import CustomDropdown from "@/components/customDropdown";
 import MobileMenu from "@/components/mobileMenu";
 import { useSignup } from "@/features/auth/hooks/useSignup";
+import { useCheckEmailDuplication } from "@/features/auth/hooks/useCheckEmailDuplication";
 import { SignupRequestDto } from "@/features/auth/types";
 import { useRouter } from "next/navigation";
 
@@ -49,11 +50,32 @@ export default function EmailJoinPage() {
     marketing: false,
   });
 
+  const { mutate: signupMutate, isPending } = useSignup();
+
+  // ✅ 이메일 중복 체크 훅 사용
+  const {
+    data: isEmailDuplicated,
+    isFetching: isCheckingEmail,
+    refetch: refetchEmailCheck,
+  } = useCheckEmailDuplication(email);
+
+  const handleEmailCheck = async () => {
+    if (!email.includes("@")) {
+      alert("올바른 이메일 주소를 입력해주세요.");
+      return;
+    }
+
+    const { data } = await refetchEmailCheck();
+    if (data) {
+      alert("이미 사용 중인 이메일입니다.");
+    } else {
+      alert("사용 가능한 이메일입니다 ✅");
+    }
+  };
+
   const isPasswordValid = (pwd: string) => {
     return /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[^\w\s]).{8,20}$/.test(pwd);
   };
-
-  const { mutate: signupMutate, isPending } = useSignup();
 
   const handleSubmit = () => {
     const newErrors = {
@@ -135,6 +157,7 @@ export default function EmailJoinPage() {
               handleSubmit();
             }}
           >
+            {/* ✅ 이메일 입력란 */}
             <TextInput
               required
               label="이메일주소"
@@ -142,10 +165,11 @@ export default function EmailJoinPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               error={errors.email ? "올바른 이메일 주소를 입력해주세요." : ""}
-              rightButtonText="인증번호 전송"
-              onRightButtonClick={() => alert("인증번호 전송!")}
+              rightButtonText={isCheckingEmail ? "확인 중..." : "중복 확인"}
+              onRightButtonClick={handleEmailCheck}
               className="rounded-lg"
             />
+
             <TextInput
               required
               label="인증번호"
@@ -248,7 +272,7 @@ export default function EmailJoinPage() {
               className="rounded-lg"
             />
 
-            {/* 동의 체크박스 */}
+            {/* ✅ 동의 체크박스 */}
             <div className="w-11/12 sm:w-7/9 place-self-center mt-6 border-gray-200 pt-6 space-y-2 text-sm">
               {[
                 { key: "all", text: "모두 동의하기", bold: true },
@@ -302,7 +326,7 @@ export default function EmailJoinPage() {
         isOpen={modalOpen}
         onClose={() => {
           setModalOpen(false);
-          router.push("/login"); // 로그인 페이지로 이동
+          router.push("/login");
         }}
       >
         <p className="text-lg font-semibold text-gray-800 mb-3">
