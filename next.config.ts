@@ -5,20 +5,20 @@ const nextConfig = {
 
   async rewrites() {
     return [
-      // ✅ auth 요청은 /api 없이 바로 백엔드로
+      // ✅ auth 요청
       {
         source: "/auth/:path*",
         destination:
           process.env.NODE_ENV === "production"
-            ? "http://mf-api:8080/auth/:path*"
+            ? "http://15.165.137.5:8081/auth/:path*" // ✅ 실제 EC2 백엔드 주소
             : "http://localhost:8081/auth/:path*",
       },
-      // ✅ 나머지 /api 요청
+      // ✅ 나머지 api 요청
       {
         source: "/api/:path*",
         destination:
           process.env.NODE_ENV === "production"
-            ? "http://mf-api:8080/api/:path*"
+            ? "http://15.165.137.5:8081/api/:path*" // ✅ 동일하게 수정
             : "http://localhost:8081/api/:path*",
       },
     ];
