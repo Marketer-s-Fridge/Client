@@ -50,14 +50,16 @@ export const checkEmailDuplication = async (email: string): Promise<boolean> => 
     const res = await api.get<string>("/auth/signup/duplication_check", {
       params: { email },
     });
-    console.log("✅ [이메일 중복체크 완료]", res.data);
+
+    const result = res.data.trim(); // 공백 제거
+    console.log("✅ [이메일 중복체크 완료]", result);
 
     // ✅ 문자열 결과를 boolean으로 변환
-    const isAvailable = res.data === "Successful"; // 사용 가능
+    const isAvailable = result === "Successful"; // 사용 가능
     return isAvailable;
-  } catch (error) {
-    console.error("🚨 [이메일 중복체크 실패]", error);
-    throw error;
+  } catch (error: any) {
+    console.error("🚨 [이메일 중복체크 실패 - 네트워크]", error?.message || error);
+    throw error; // 진짜 네트워크 실패일 때만 throw
   }
 };
 
