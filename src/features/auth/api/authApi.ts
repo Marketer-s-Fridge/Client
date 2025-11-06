@@ -47,11 +47,14 @@ export const signup = async (dto: SignupRequestDto): Promise<string> => {
 export const checkEmailDuplication = async (email: string): Promise<boolean> => {
   console.log("🔍 [이메일 중복체크 요청]", email);
   try {
-    const res = await api.get<boolean>("/auth/signup/duplication_check", {
+    const res = await api.get<string>("/auth/signup/duplication_check", {
       params: { email },
     });
     console.log("✅ [이메일 중복체크 완료]", res.data);
-    return res.data;
+
+    // ✅ 문자열 결과를 boolean으로 변환
+    const isAvailable = res.data === "Successful"; // 사용 가능
+    return isAvailable;
   } catch (error) {
     console.error("🚨 [이메일 중복체크 실패]", error);
     throw error;
