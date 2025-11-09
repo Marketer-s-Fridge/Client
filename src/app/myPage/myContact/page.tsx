@@ -28,10 +28,10 @@ export default function MyContact() {
         setLoading(true);
         // page는 0부터 시작해야 하니까 currentPage - 1
         const res = await fetchMyEnquiries({
-          page: currentPage - 1, // 0-base
+          page: currentPage - 1,
           size: 10,
-          sortBy: "createdAt",
-          sortOrder: sortOrder === "ASC" ? "ASC" : "DESC", // 타입 안전
+          sortBy: 'createdAt',
+          sortOrder, // 'asc' | 'desc' 그대로
         });
         setInquiries(res.content);
         setTotalPages(res.totalPages);
