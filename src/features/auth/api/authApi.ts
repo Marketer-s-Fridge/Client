@@ -88,14 +88,14 @@ export const signin = async (dto: SigninRequestDto): Promise<string> => {
 };
 
 /** ✅ 아이디 찾기 */
-export const findId = async (
-  name: string,
-  email: string
-): Promise<UserResponseDto> => {
-  const res = await api.get<UserResponseDto>("/auth/signin/find_id", {
-    params: { name, email },
-  });
-  return res.data;
+export const findId = async (name: string, email: string): Promise<UserResponseDto | null> => {
+  try {
+    const res = await api.get<UserResponseDto>("/auth/signin/find_id", { params: { name, email } });
+    return res.data;
+  } catch (e: any) {
+    if (e?.response?.status === 404) return null;
+    throw e;
+  }
 };
 
 /** ✅ 비밀번호 찾기 */

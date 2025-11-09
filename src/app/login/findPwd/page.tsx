@@ -9,7 +9,7 @@ import {
   SubmitButton,
 } from "@/components/authFormComponents";
 import MobileMenu from "@/components/mobileMenu";
-import { useFindPwd } from "@/features/auth/hooks/useFindPwd"; // ✅ 훅 import
+import { useFindPwd } from "@/features/auth/hooks/useFindPwd";
 
 const FindPwdPage: React.FC = () => {
   const [name, setName] = useState("");
@@ -20,7 +20,6 @@ const FindPwdPage: React.FC = () => {
 
   const router = useRouter();
 
-  // ✅ useFindPw 훅 사용
   const {
     data: pwResult,
     isFetching,
@@ -38,13 +37,14 @@ const FindPwdPage: React.FC = () => {
     const { data } = await refetch();
     setShowResult(true);
 
-    if (data) {
-      // ✅ 비밀번호 재설정 단계로 이동
+    // ✅ 서버가 200으로 "Successful" 또는 "Failed" 문자열을 반환한다는 전제
+    if (data?.trim() === "Successful") {
       router.push("/login/findPwd/resetPwd");
     }
   };
 
-  const notFound = showResult && !pwResult && !isFetching && !isError;
+  const notFound =
+    showResult && pwResult?.trim() === "Failed" && !isFetching && !isError;
 
   return (
     <div className="bg-white pt-11 md:pt-0">
@@ -59,7 +59,6 @@ const FindPwdPage: React.FC = () => {
 걱정 마세요, 금방 찾아드릴게요.`}
           />
 
-          {/* ✅ 입력 필드 */}
           <div className="w-8/9 md:w-7/9 flex flex-col items-center gap-y-4 mb-10">
             <TextInput
               label="이름"
@@ -87,7 +86,6 @@ const FindPwdPage: React.FC = () => {
             onClick={handleFindAccount}
           />
 
-          {/* ✅ 실패 시 */}
           {notFound && (
             <div className="w-full mt-10 text-center">
               <p className="text-base text-black font-medium">
@@ -112,7 +110,6 @@ const FindPwdPage: React.FC = () => {
             </div>
           )}
 
-          {/* ✅ 에러 시 */}
           {isError && (
             <p className="text-sm text-red-500 mt-5">
               비밀번호 찾기 중 오류가 발생했습니다.
