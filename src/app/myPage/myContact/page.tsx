@@ -28,8 +28,8 @@ export default function MyContact() {
         setLoading(true);
         // page는 0부터 시작해야 하니까 currentPage - 1
         const res = await fetchMyEnquiries();
-        setInquiries(res.content);
-        setTotalPages(res.totalPages);
+        setInquiries(res);
+        setTotalPages(Math.max(1, Math.ceil(res.length / 10))); // 클라에서 페이지 수 계산
       } catch (error) {
         console.error("내 문의 내역 조회 실패:", error);
       } finally {
