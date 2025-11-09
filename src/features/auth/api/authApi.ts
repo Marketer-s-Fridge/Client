@@ -59,9 +59,22 @@ export const checkEmailDuplication = async (email: string): Promise<boolean> => 
 /** ✅ 로그인 */
 export const signin = async (dto: SigninRequestDto): Promise<string> => {
   const res = await api.post("/auth/signin", dto);
-  const token = typeof res.data === "string" ? res.data : null;
-  if (token) localStorage.setItem("accessToken", token);
-  return token!;
+
+  // 타입을 any로 강제해서 구조 해제 가능하게 함
+  const body = res.data as any;
+
+  const token =
+    body?.data?.token ??
+    body?.token ??
+    (typeof body === "string" ? body : null);
+
+  if (!token) {
+    console.error("🚨 로그인 응답 구조 이상:", body);
+    throw new Error("토큰 응답 없음");
+  }
+
+  localStorage.setItem("accessToken", token);
+  return token;
 };
 
 /** ✅ 아이디 찾기 */
@@ -131,6 +144,7 @@ export const fetchUserCount = async (): Promise<number> => {
   const res = await api.get<number>("/auth/count");
   return res.data;
 };
+
 export const fetchUserInfo = async (): Promise<UserResponseDto> => {
   const res = await api.get<UserResponseDto>("/auth/me", {
     headers: { ...authHeader() },
