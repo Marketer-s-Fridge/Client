@@ -10,20 +10,17 @@ export type MyEnquiryParams = {
   sortOrder?: SortOrder; // 소문자
 };
 
-export const fetchMyEnquiries = async (
-  params: MyEnquiryParams = {}
-): Promise<PaginatedResponse<EnquiryResponseDto>> => {
-  const orderUpper = ((params.sortOrder ?? 'desc').toUpperCase()) as 'ASC' | 'DESC';
-
-  const res = await api.get<PaginatedResponse<EnquiryResponseDto>>('/api/enquiries/my', {
-    params: {
-      page: params.page ?? 0,
-      size: params.size ?? 10,
-      sortBy: params.sortBy ?? 'createdAt',
-      sortOrder: orderUpper, // 서버엔 대문자 보내기
-    },
-  });
-  return res.data;
+/** ✅ 내 문의 조회 (단순 List 응답) */
+export const fetchMyEnquiries = async (): Promise<EnquiryResponseDto[]> => {
+  console.log("🙋‍♀️ [내 문의 목록 조회 요청]");
+  try {
+    const res = await api.get<EnquiryResponseDto[]>("/api/enquiries/my");
+    console.log("✅ [내 문의 목록 조회 성공]", res.data);
+    return res.data;
+  } catch (error: any) {
+    console.error("❌ [내 문의 목록 조회 실패]:", error);
+    throw error;
+  }
 };
 
 
