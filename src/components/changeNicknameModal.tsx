@@ -1,43 +1,154 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
+import { useAuthStatus } from "@/features/auth/hooks/useAuthStatus";
+import { useCheckNickname } from "@/features/auth/hooks/useCheckNickname";
+import { useUpdateNickname } from "@/features/auth/hooks/useUpdateNickname";
+import { useUpdateProfileImage } from "@/features/auth/hooks/useUpdateProfileImage";
+import { useQueryClient } from "@tanstack/react-query";
 
-type Props = {
-  onClose: () => void;
-};
+type Props = { onClose: () => void; onUpdated?: () => void };
 
-export default function ChangeNicknameModal({ onClose }: Props) {
-  const [nickname, setNickname] = useState("");
-  const [isDuplicate, setIsDuplicate] = useState(false);
-  const [previewImage, setPreviewImage] = useState(
-    "/images/profile-character.png"
-  ); // ✅ 초기 이미지
+export default function ChangeNicknameModal({ onClose, onUpdated }: Props) {
+  const { user, isAuthenticated } = useAuthStatus();
+
+  const initialNickname = user?.nickname ?? user?.name ?? "";
+  const initialEmail = user?.email ?? "";
+  const initialAvatar =
+    (user as any)?.profileImageUrl || "/images/profile-character.png";
+
+  const [nickname, setNickname] = useState(initialNickname);
+  const [previewImage, setPreviewImage] = useState<string>(initialAvatar);
+  const [fileObj, setFileObj] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const currentNickname = "마케터";
-  const email = "a123456789@gmail.com";
+  // 닉네임 유효성
+  const nickLen = nickname.trim().length;
+  const nickValid = nickLen >= 2 && nickLen <= 8;
 
-  const handleDuplicateCheck = () => {
-    setIsDuplicate(nickname === "애플테크"); // 예시
+  const nicknameChanged = useMemo(
+    () => nickname.trim() !== initialNickname,
+    [nickname, initialNickname]
+  );
+  const avatarChanged = useMemo(
+    () => previewImage !== initialAvatar,
+    [previewImage, initialAvatar]
+  );
+
+  // 중복 체크 훅(버튼으로 수동 실행)
+  const queryClient = useQueryClient();
+
+  const {
+    data: dupRaw,
+    refetch: refetchDup,
+    isFetching: dupLoading,
+  } = useCheckNickname(nickname);
+
+  // 서버 응답 문자열 → 중복 여부 해석
+  const dupOk = useMemo(() => {
+    if (dupRaw == null) return null as null | boolean;
+    const lower = String(dupRaw).toLowerCase();
+    const isDuplicate =
+      lower.includes("fail") ||
+      lower.includes("exist") ||
+      lower.includes("duplicate") ||
+      lower.includes("중복");
+    return !isDuplicate; // true면 사용 가능
+  }, [dupRaw]);
+
+  // 닉 입력 바뀌면 이전 dup 결과 리셋
+  useEffect(() => {
+    queryClient.removeQueries({ queryKey: ["nicknameDup", nickname] });
+  }, [nickname, queryClient]);
+
+  // 닉네임 변경 훅
+  const { mutateAsync: mutateNickname, isPending: nickSaving } =
+    useUpdateNickname();
+
+  // 프로필 이미지 변경 훅(이미지 URL 필요)
+  const { mutateAsync: mutateAvatar, isPending: avatarSaving } =
+    useUpdateProfileImage();
+
+  const handleDuplicateCheck = async () => {
+    if (!nickValid) {
+      alert("닉네임은 2~8자여야 합니다.");
+      return;
+    }
+    await refetchDup();
   };
+
+  const handleFileSelect = () => fileInputRef.current?.click();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setPreviewImage(imageUrl); // ✅ 미리보기 반영
+    if (!file) return;
+    setFileObj(file);
+    const url = URL.createObjectURL(file);
+    setPreviewImage(url);
+  };
+
+  const handleSubmit = async () => {
+    if (!isAuthenticated) {
+      alert("로그인이 필요합니다.");
+      return;
+    }
+    if (!nicknameChanged && !avatarChanged) {
+      onClose();
+      return;
+    }
+
+    // 닉네임 변경이 포함되면 중복 확인 강제
+    if (nicknameChanged) {
+      if (!nickValid) {
+        alert("닉네임은 2~8자여야 합니다.");
+        return;
+      }
+      if (dupOk !== true) {
+        await refetchDup();
+        // refetch 이후 dupOk는 메모값이라 한 틱 늦을 수 있음 → 다시 판정
+        // 안전하게 한 번 더 검사
+        const now = await refetchDup();
+        const lower = String(now.data ?? "").toLowerCase();
+        const duplicate =
+          lower.includes("fail") ||
+          lower.includes("exist") ||
+          lower.includes("duplicate") ||
+          lower.includes("중복");
+        if (duplicate) {
+          alert("중복되는 닉네임입니다.");
+          return;
+        }
+      }
+    }
+
+    try {
+      // 1) 아바타 변경: 파일을 URL로 업로드해야 함
+      // 업로드 API가 따로 있으면 먼저 업로드해서 imageUrl을 얻으세요.
+      // 예) const imageUrl = await uploadProfileImage(fileObj)
+      if (avatarChanged && fileObj) {
+        console.warn("이미지 업로드 API 연동 필요: 업로드 후 URL을 넘기세요.");
+        // 예시: await mutateAvatar(imageUrl)
+      }
+
+      // 2) 닉네임 변경
+      if (nicknameChanged) {
+        await mutateNickname(nickname.trim());
+      }
+
+      onUpdated?.();
+      onClose();
+    } catch (e: any) {
+      alert(e?.message || "프로필 갱신 실패");
     }
   };
 
-  const handleFileSelect = () => {
-    fileInputRef.current?.click(); // ✅ 숨겨진 input 실행
-  };
+  const submitting = nickSaving || avatarSaving;
 
   return (
     <div className="text-black fixed inset-0 bg-black/30 flex justify-center items-center z-50">
       <div className="bg-white w-[90%] max-w-[460px] rounded-2xl relative py-8 px-6 sm:px-8">
-        {/* 닫기 버튼 */}
+        {/* 닫기 */}
         <button
           className="absolute cursor-pointer top-4 right-4 text-black"
           onClick={onClose}
@@ -51,7 +162,7 @@ export default function ChangeNicknameModal({ onClose }: Props) {
           />
         </button>
 
-        {/* 프로필 이미지 & 수정 */}
+        {/* 프로필 이미지 */}
         <div className="flex flex-col items-center">
           <Image
             src={previewImage}
@@ -67,7 +178,6 @@ export default function ChangeNicknameModal({ onClose }: Props) {
           >
             사진 수정
           </button>
-          {/* 숨겨진 input */}
           <input
             type="file"
             accept="image/*"
@@ -77,18 +187,19 @@ export default function ChangeNicknameModal({ onClose }: Props) {
           />
         </div>
 
-        {/* 좌우 여백 없는 구분선 */}
+        {/* 구분선 */}
         <div className="relative my-7 -mx-6 sm:-mx-8">
           <div className="h-[2px] bg-red-400 w-full" />
         </div>
 
+        {/* 폼 */}
         <div className="flex-col flex flex-1 space-y-3.5 text-sm px-5">
           {/* 계정 */}
           <div className="flex flex-col sm:flex-row sm:items-center mb-4 gap-2 sm:gap-0">
             <label className="w-28 font-bold text-sm shrink-0">계정</label>
             <input
               type="text"
-              value={email}
+              value={initialEmail}
               disabled
               className="flex flex-1 w-full bg-white text-gray-400 border border-gray-300 rounded-lg px-3 py-1.5 text-md"
             />
@@ -101,7 +212,7 @@ export default function ChangeNicknameModal({ onClose }: Props) {
             </label>
             <input
               type="text"
-              value={currentNickname}
+              value={initialNickname}
               disabled
               className="flex flex-1 w-full bg-white text-gray-400 border border-gray-300 rounded-lg px-3 py-1.5 text-md"
             />
@@ -128,9 +239,10 @@ export default function ChangeNicknameModal({ onClose }: Props) {
                 </div>
                 <button
                   onClick={handleDuplicateCheck}
-                  className="cursor-pointer bg-gray-300 px-2 py-1 rounded-lg text-xs shrink-0"
+                  disabled={!nickValid || !nicknameChanged || dupLoading}
+                  className="cursor-pointer bg-gray-300 px-2 py-1 rounded-lg text-xs shrink-0 disabled:opacity-50"
                 >
-                  중복확인
+                  {dupLoading ? "확인중..." : "중복확인"}
                 </button>
               </div>
             </div>
@@ -138,9 +250,14 @@ export default function ChangeNicknameModal({ onClose }: Props) {
             <div className="pl-0 sm:pl-28 text-[10px] text-gray-500">
               닉네임은 최소 2~8자로 작성해주세요.
             </div>
-            {isDuplicate && (
+            {dupOk === false && (
               <div className="pl-0 sm:pl-28 text-xs text-red-500 font-semibold mt-1">
                 중복되는 닉네임입니다.
+              </div>
+            )}
+            {dupOk === true && nicknameChanged && (
+              <div className="pl-0 sm:pl-28 text-xs text-green-600 font-semibold mt-1">
+                사용 가능한 닉네임입니다.
               </div>
             )}
           </div>
@@ -148,8 +265,12 @@ export default function ChangeNicknameModal({ onClose }: Props) {
 
         {/* 확인 버튼 */}
         <div className="mt-10 text-center">
-          <button className="cursor-pointer bg-red-500 text-xs text-white font-medium rounded-full px-6 py-1 hover:bg-red-600">
-            확인
+          <button
+            onClick={handleSubmit}
+            disabled={submitting || (!nicknameChanged && !avatarChanged)}
+            className="cursor-pointer bg-red-500 text-xs text-white font-medium rounded-full px-6 py-1 hover:bg-red-600 disabled:opacity-50"
+          >
+            {submitting ? "저장 중..." : "확인"}
           </button>
         </div>
       </div>
