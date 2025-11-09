@@ -3,42 +3,32 @@
 import Header from "@/components/header";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-  AuthHeader,
-  TextInput,
-  SubmitButton,
-} from "@/components/authFormComponents";
+import { AuthHeader, TextInput, SubmitButton } from "@/components/authFormComponents";
 import MobileMenu from "@/components/mobileMenu";
-import { useFindId } from "@/features/auth/hooks/useFindId"; // ✅ 커스텀 훅 import
+import { useFindId } from "@/features/auth/hooks/useFindId";
 
 const FindIdPage: React.FC = () => {
   const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+  const [emailRaw, setEmailRaw] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
   const [showResult, setShowResult] = useState(false);
 
+  const email = emailRaw.trim().toLowerCase();
   const router = useRouter();
 
-  // ✅ useFindId 훅 사용
-  const {
-    data: foundData,
-    isFetching,
-    isError,
-    refetch,
-  } = useFindId(name, email);
+  const { data: foundData, isFetching, isError, refetch } = useFindId(name, email);
 
   const handleFindId = async () => {
-    if (!name.trim() || !email.trim()) {
+    if (!name.trim() || !email) {
       alert("이름과 이메일을 모두 입력해주세요.");
       return;
     }
-
     setShowResult(false);
-    await refetch(); // ✅ 수동 실행
+    await refetch();
     setShowResult(true);
   };
 
-  const foundId = foundData?.id ?? null;
+  const foundId = typeof foundData?.id === "string" ? foundData!.id : null;
   const notFound = showResult && !foundId && !isFetching && !isError;
 
   return (
@@ -54,34 +44,46 @@ const FindIdPage: React.FC = () => {
 걱정 마세요, 금방 찾아드릴게요.`}
           />
 
-          {/* 입력 필드 */}
-          <div className="w-8/9 md:w-7/9 mb-10 flex flex-col items-center gap-y-4 ">
+          <form
+            className="w-8/9 md:w-7/9 mb-10 flex flex-col items-center gap-y-4"
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleFindId();
+            }}
+          >
             <TextInput
               label="이름"
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e) => {
+                setName(e.target.value);
+                setShowResult(false);
+              }}
               required
             />
             <TextInput
               label="이메일주소"
               type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={emailRaw}
+              onChange={(e) => {
+                setEmailRaw(e.target.value);
+                setShowResult(false);
+              }}
               required
             />
-          </div>
+            <SubmitButton
+              text={isFetching ? "조회 중..." : "내 아이디 찾기"}
+              onClick={handleFindId}
+              fullWidth
+              // @ts-ignore: 내부 구현에 따라 다름
+              type="submit"
+              disabled={isFetching}
+            />
+          </form>
 
-          <SubmitButton
-            text={isFetching ? "조회 중..." : "내 아이디 찾기"}
-            onClick={handleFindId}
-          />
-
-          {/* ✅ 조회 결과 표시 */}
           {showResult && foundId && (
             <div className="relative max-w-[480px] flex-col my-10 text-center w-full">
               <p className="text-lg font-semibold pb-10">
-                내 아이디:{" "}
-                <span className="text-black font-bold text-xl">{foundId}</span>
+                내 아이디: <span className="text-black font-bold text-xl">{foundId}</span>
               </p>
               <div className="w-full flex flex-row gap-4">
                 <SubmitButton
@@ -104,9 +106,7 @@ const FindIdPage: React.FC = () => {
 
           {notFound && (
             <div className="max-w-[480px] mt-10 text-center w-full">
-              <p className="text-base text-black font-medium">
-                일치하는 회원 정보가 없습니다.
-              </p>
+              <p className="text-base text-black font-medium">일치하는 회원 정보가 없습니다.</p>
               <div className="mt-10">
                 <SubmitButton
                   text="회원가입"
@@ -121,9 +121,7 @@ const FindIdPage: React.FC = () => {
           )}
 
           {isError && (
-            <p className="text-sm text-red-500 mt-5">
-              아이디 찾기 중 오류가 발생했습니다.
-            </p>
+            <p className="text-sm text-red-500 mt-5">아이디 찾기 중 오류가 발생했습니다.</p>
           )}
         </div>
       </div>
