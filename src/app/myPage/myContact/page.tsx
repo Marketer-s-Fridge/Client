@@ -27,12 +27,12 @@ export default function MyContact() {
       try {
         setLoading(true);
         // page는 0부터 시작해야 하니까 currentPage - 1
-        const res = await fetchMyEnquiries(
-          currentPage - 1,
-          10,
-          "createdAt",
-          sortOrder
-        );
+        const res = await fetchMyEnquiries({
+          page: currentPage - 1, // 0-base
+          size: 10,
+          sortBy: "createdAt",
+          sortOrder: sortOrder === "ASC" ? "ASC" : "DESC", // 타입 안전
+        });
         setInquiries(res.content);
         setTotalPages(res.totalPages);
       } catch (error) {
