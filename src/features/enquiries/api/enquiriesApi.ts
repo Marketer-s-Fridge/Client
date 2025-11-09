@@ -1,12 +1,31 @@
 import api from "@/lib/apiClient";
 import { EnquiryRequestDto, EnquiryResponseDto } from "../types";
-export type SortOrder = 'ASC' | 'DESC';
+// 타입 통일
+export type SortOrder = 'asc' | 'desc';
+
 export type MyEnquiryParams = {
-  page?: number;     // 0-base
-  size?: number;     // 기본 10
-  sortBy?: 'createdAt' | 'updatedAt' | 'title'; // 백엔드 허용 필드에 맞춰 조정
-  sortOrder?: SortOrder; // 'ASC' | 'DESC'
+  page?: number;
+  size?: number;
+  sortBy?: 'createdAt' | 'updatedAt' | 'title';
+  sortOrder?: SortOrder; // 소문자
 };
+
+export const fetchMyEnquiries = async (
+  params: MyEnquiryParams = {}
+): Promise<PaginatedResponse<EnquiryResponseDto>> => {
+  const orderUpper = ((params.sortOrder ?? 'desc').toUpperCase()) as 'ASC' | 'DESC';
+
+  const res = await api.get<PaginatedResponse<EnquiryResponseDto>>('/api/enquiries/my', {
+    params: {
+      page: params.page ?? 0,
+      size: params.size ?? 10,
+      sortBy: params.sortBy ?? 'createdAt',
+      sortOrder: orderUpper, // 서버엔 대문자 보내기
+    },
+  });
+  return res.data;
+};
+
 
 /** ✅ 전체 문의 조회 (스펙: 파라미터 없음, List 반환) */
 export const fetchEnquiries = async (): Promise<EnquiryResponseDto[]> => {
@@ -21,30 +40,6 @@ export const fetchEnquiries = async (): Promise<EnquiryResponseDto[]> => {
   }
 };
 
-// ✅ 내 문의 조회: 페이지네이션 + 정렬 지원
-export const fetchMyEnquiries = async (
-  params: MyEnquiryParams = {}
-): Promise<PaginatedResponse<EnquiryResponseDto>> => {
-  console.log('🙋‍♀️ [내 문의 목록 조회 요청]', params);
-  try {
-    const res = await api.get<PaginatedResponse<EnquiryResponseDto>>(
-      '/api/enquiries/my',
-      {
-        params: {
-          page: params.page ?? 0,
-          size: params.size ?? 10,
-          sortBy: params.sortBy ?? 'createdAt',
-          sortOrder: params.sortOrder ?? 'DESC',
-        },
-      }
-    );
-    console.log('✅ [내 문의 목록 조회 성공]', res.data);
-    return res.data;
-  } catch (error: any) {
-    console.error('❌ [내 문의 목록 조회 실패]:', error);
-    throw error;
-  }
-};
 
 /** ✅ 특정 문의 상세 조회 (스펙: 200 단건) */
 export const fetchEnquiry = async (id: number): Promise<EnquiryResponseDto> => {
