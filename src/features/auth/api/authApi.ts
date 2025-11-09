@@ -6,23 +6,28 @@ import {
   UserResponseDto,
 } from "../types";
 
-/** ✅ Axios 인스턴스 */
+/** ✅ Axios 인스턴스
+ * - env가 있으면 그걸 사용, 없으면 /api 프록시로 보냄
+ *   (Nginx에서 /api → mf-api:8080 프록시하는 구성이어야 함)
+ * - Bearer 토큰 사용이면 withCredentials=false 권장
+ */
 const api = axios.create({
-  baseURL: "/",
-  withCredentials: true,
+  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL ?? "/api",
+  withCredentials: false,
   headers: { "Content-Type": "application/json" },
 });
 
-/** ✅ 토큰 헤더 헬퍼 */
-const authHeader = () =>
-  ({ Authorization: `Bearer ${localStorage.getItem("accessToken")}` } as const);
-
-
-/** ✅ 인터셉터 */
+/** ✅ 요청 인터셉터: 토큰 자동 주입 */
 api.interceptors.request.use((config) => {
-  console.log(`📡 [요청] ${config.method?.toUpperCase()} ${config.url}`, config.data || "");
+  const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+  if (token) {
+    config.headers = { ...(config.headers ?? {}), Authorization: `Bearer ${token}` };
+  }
+  console.log(`📡 [요청] ${config.method?.toUpperCase()} ${config.baseURL}${config.url}`, config.params ?? config.data ?? "");
   return config;
 });
+
+/** ✅ 응답 인터셉터: 로깅 */
 api.interceptors.response.use(
   (res) => {
     console.log(`✅ [응답 성공] ${res.config.url} (${res.status})`, res.data);
@@ -43,26 +48,21 @@ export const signup = async (dto: SignupRequestDto): Promise<string> => {
   return res.data;
 };
 
-/** ✅ 이메일 중복 체크 */
+/** ✅ 이메일 중복 체크
+ * 서버 응답: "Successful" | "Failed"
+ * 반환: true = 중복, false = 사용 가능
+ */
 export const checkEmailDuplication = async (email: string): Promise<boolean> => {
-  const res = await api.get<string>("/auth/signup/duplication_check", {
-    params: { email },
-  });
-
-  const text = res.data.trim();
-
-  // "Successful" → 사용 가능(중복 아님)
-  // "Failed" → 이미 존재(중복)
-  return text === "Failed";
+  const res = await api.get<string>("/auth/signup/duplication_check", { params: { email } });
+  return res.data.trim() === "Failed";
 };
 
-/** ✅ 로그인 */
+/** ✅ 로그인
+ * 서버 응답이 문자열/객체 혼재 가능성 대비
+ */
 export const signin = async (dto: SigninRequestDto): Promise<string> => {
   const res = await api.post("/auth/signin", dto);
-
-  // 타입을 any로 강제해서 구조 해제 가능하게 함
-  const body = res.data as any;
-
+  const body: any = res.data;
   const token =
     body?.data?.token ??
     body?.token ??
@@ -72,7 +72,6 @@ export const signin = async (dto: SigninRequestDto): Promise<string> => {
     console.error("🚨 로그인 응답 구조 이상:", body);
     throw new Error("토큰 응답 없음");
   }
-
   localStorage.setItem("accessToken", token);
   return token;
 };
@@ -94,14 +93,12 @@ export const deleteAccount = async (currentPassword: string): Promise<string> =>
   const res = await api.request({
     url: "/auth/delete",
     method: "DELETE",
-    // 구형 axios 타입에서 data를 string으로 보는 문제 회피
-    data: ({ currentPassword } as unknown) as any,
-    headers: { ...authHeader() },
+    data: { currentPassword },
   });
   return String(res.data);
 };
 
-/** ✅ 닉네임 중복 체크 */
+/** ✅ 닉네임 중복 체크 (서버 포맷 그대로 반환) */
 export const checkNickname = async (nickname: string): Promise<string> => {
   const res = await api.get<string>("/auth/nickname/check", { params: { nickname } });
   return res.data;
@@ -109,19 +106,19 @@ export const checkNickname = async (nickname: string): Promise<string> => {
 
 /** ✅ 닉네임 변경 */
 export const updateNickname = async (nickname: string): Promise<string> => {
-  const res = await api.patch<string>("/auth/nickname", { nickname }, { headers: { ...authHeader() } });
+  const res = await api.patch<string>("/auth/nickname", { nickname });
   return res.data;
 };
 
 /** ✅ 프로필 이미지 변경 */
 export const updateProfileImage = async (profileImageUrl: string): Promise<string> => {
-  const res = await api.patch<string>("/auth/profile/image", { profileImageUrl }, { headers: { ...authHeader() } });
+  const res = await api.patch<string>("/auth/profile/image", { profileImageUrl });
   return res.data;
 };
 
 /** ✅ 회원 정보 수정 */
 export const updateUserInfo = async (name: string, nickname: string, phone: string): Promise<string> => {
-  const res = await api.patch<string>("/auth/update", { name, nickname, phone }, { headers: { ...authHeader() } });
+  const res = await api.patch<string>("/auth/update", { name, nickname, phone });
   return res.data;
 };
 
@@ -131,11 +128,7 @@ export const updatePassword = async (
   newPassword: string,
   confirmNewPassword: string
 ): Promise<string> => {
-  const res = await api.patch<string>(
-    "/auth/password",
-    { currentPassword, newPassword, confirmNewPassword },
-    { headers: { ...authHeader() } }
-  );
+  const res = await api.patch<string>("/auth/password", { currentPassword, newPassword, confirmNewPassword });
   return res.data;
 };
 
@@ -145,8 +138,8 @@ export const fetchUserCount = async (): Promise<number> => {
   return res.data;
 };
 
+/** ✅ 내 정보 */
 export const fetchUserInfo = async (): Promise<UserResponseDto> => {
-  const res = await api.get<UserResponseDto>("/auth/me", {
-    headers: { ...authHeader() },
-  }); return res.data;
-}
+  const res = await api.get<UserResponseDto>("/auth/me");
+  return res.data;
+};
