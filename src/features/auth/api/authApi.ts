@@ -45,8 +45,15 @@ export const signup = async (dto: SignupRequestDto): Promise<string> => {
 
 /** ✅ 이메일 중복 체크 */
 export const checkEmailDuplication = async (email: string): Promise<boolean> => {
-  const res = await api.get<string>("/auth/signup/duplication_check", { params: { email } });
-  return res.data.trim() === "Successful";
+  const res = await api.get<string>("/auth/signup/duplication_check", {
+    params: { email },
+  });
+
+  const text = res.data.trim();
+
+  // "Successful" → 사용 가능(중복 아님)
+  // "Failed" → 이미 존재(중복)
+  return text === "Failed";
 };
 
 /** ✅ 로그인 */
