@@ -6,16 +6,26 @@ import {
   UserResponseDto,
 } from "../types";
 
-/** ✅ Axios 인스턴스 */
+/** Axios 인스턴스 */
 const api = axios.create({
-  baseURL: "/",
+  baseURL: "/", // Next.js rewrite 사용
   withCredentials: true,
   headers: { "Content-Type": "application/json" },
 });
 
-/** ✅ 인터셉터 */
+/** 공통: 브라우저에서만 토큰 읽기 */
+const getToken = () =>
+  typeof window !== "undefined" ? localStorage.getItem("accessToken") ?? "" : "";
+
+/** 공통: 인증 헤더 생성 */
+const authHeader = () => {
+  const token = getToken();
+  return token ? { Authorization: `Bearer ${token}` } : {};
+};
+
+/** 인터셉터 */
 api.interceptors.request.use((config) => {
-  console.log(`📡 [요청] ${config.method?.toUpperCase()} ${config.url}`, config.data || "");
+  console.log(`📡 [요청] ${config.method?.toUpperCase()} ${config.url}`, config.data ?? "");
   return config;
 });
 api.interceptors.response.use(
@@ -43,22 +53,21 @@ export const checkEmailDuplication = async (email: string): Promise<boolean> => 
   const res = await api.get<string>("/auth/signup/duplication_check", {
     params: { email },
   });
-  return res.data.trim() === "Successful";
+  return res.data.trim() === "Successful"; // 사용 가능 여부
 };
 
 /** ✅ 로그인 */
 export const signin = async (dto: SigninRequestDto): Promise<string> => {
   const res = await api.post("/auth/signin", dto);
-  const token = typeof res.data === "string" ? res.data : null;
-  if (token) localStorage.setItem("accessToken", token);
-  return token!;
+  const token = typeof res.data === "string" ? res.data : "";
+  if (token && typeof window !== "undefined") {
+    localStorage.setItem("accessToken", token);
+  }
+  return token;
 };
 
 /** ✅ 아이디 찾기 */
-export const findId = async (
-  name: string,
-  email: string
-): Promise<UserResponseDto> => {
+export const findId = async (name: string, email: string): Promise<UserResponseDto> => {
   const res = await api.get<UserResponseDto>("/auth/signin/find_id", {
     params: { name, email },
   });
@@ -73,11 +82,17 @@ export const findPw = async (id: string, email: string): Promise<string> => {
   return res.data;
 };
 
-/** ✅ 회원 탈퇴 */
+/**
+ * ✅ 회원 탈퇴
+ * axios 0.27 계열 호환 위해 request()로 DELETE + body 전송
+ * (axios 1.x 사용 시 delete(url, { data })도 가능)
+ */
 export const deleteAccount = async (currentPassword: string): Promise<string> => {
-  const res = await api.delete<string>("/auth/delete", {
+  const res = await api.request<string>({
+    url: "/auth/delete",
+    method: "DELETE",
     data: { currentPassword },
-    headers: { Authorization: `Bearer ${localStorage.getItem("accessToken")}` },
+    headers: { ...authHeader() },
   });
   return res.data;
 };
@@ -95,9 +110,7 @@ export const updateNickname = async (nickname: string): Promise<string> => {
   const res = await api.patch<string>(
     "/auth/nickname",
     { nickname },
-    {
-      headers: { Authorization: `Bearer ${localStorage.getItem("accessToken")}` },
-    }
+    { headers: { ...authHeader() } }
   );
   return res.data;
 };
@@ -107,9 +120,7 @@ export const updateProfileImage = async (profileImageUrl: string): Promise<strin
   const res = await api.patch<string>(
     "/auth/profile/image",
     { profileImageUrl },
-    {
-      headers: { Authorization: `Bearer ${localStorage.getItem("accessToken")}` },
-    }
+    { headers: { ...authHeader() } }
   );
   return res.data;
 };
@@ -123,9 +134,7 @@ export const updateUserInfo = async (
   const res = await api.patch<string>(
     "/auth/update",
     { name, nickname, phone },
-    {
-      headers: { Authorization: `Bearer ${localStorage.getItem("accessToken")}` },
-    }
+    { headers: { ...authHeader() } }
   );
   return res.data;
 };
@@ -139,9 +148,7 @@ export const updatePassword = async (
   const res = await api.patch<string>(
     "/auth/password",
     { currentPassword, newPassword, confirmNewPassword },
-    {
-      headers: { Authorization: `Bearer ${localStorage.getItem("accessToken")}` },
-    }
+    { headers: { ...authHeader() } }
   );
   return res.data;
 };
