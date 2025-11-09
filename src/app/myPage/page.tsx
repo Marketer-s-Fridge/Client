@@ -35,8 +35,10 @@ export default function MyPage() {
   } = useBookmarks();
 
   // 비로그인 진입 시 모달
+  // 모달은 "인증 검사 완료" 이후에만 판정
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) setIsLoginModalOpen(true);
+    const checked = !isLoading; // 토큰 없으면 곧바로 false → checked = true
+    if (checked && !isAuthenticated) setIsLoginModalOpen(true);
   }, [isLoading, isAuthenticated]);
 
   const recentlyViewedContents = [
@@ -404,7 +406,9 @@ export default function MyPage() {
                                   onClick={() =>
                                     handleToggleBookmark(item.id, isSaved)
                                   }
-                                  disabled={isBookmarkLoading || !isAuthenticated}
+                                  disabled={
+                                    isBookmarkLoading || !isAuthenticated
+                                  }
                                   aria-disabled={!isAuthenticated}
                                 >
                                   <Image
@@ -500,9 +504,7 @@ export default function MyPage() {
             {isFridgeLoading ? (
               <p className="text-gray-400 text-sm">불러오는 중...</p>
             ) : myFridgeContents.length === 0 ? (
-              <p className="text-gray-400 text-sm">
-                담은 콘텐츠가 없습니다
-              </p>
+              <p className="text-gray-400 text-sm">담은 콘텐츠가 없습니다</p>
             ) : (
               myFridgeContents.map((post) => (
                 <div key={post.id} className="w-full">
