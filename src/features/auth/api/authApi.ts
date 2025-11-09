@@ -99,9 +99,13 @@ export const findId = async (name: string, email: string): Promise<UserResponseD
 };
 
 /** ✅ 비밀번호 찾기 */
-export const findPw = async (id: string, email: string): Promise<string> => {
+export const findPw = async (
+  name: string,
+  id: string,
+  email: string
+): Promise<string> => {
   const res = await api.get<string>("/auth/signin/find_pw", {
-    params: { id, email },
+    params: { name, id, email },
   });
   return res.data;
 };

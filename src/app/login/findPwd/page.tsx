@@ -25,7 +25,7 @@ const FindPwdPage: React.FC = () => {
     isFetching,
     isError,
     refetch,
-  } = useFindPwd(userId, email);
+  } = useFindPwd(name, userId, email);
 
   const handleFindAccount = async () => {
     if (!name.trim() || !userId.trim() || !email.trim()) {
