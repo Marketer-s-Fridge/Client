@@ -1,7 +1,7 @@
 "use client";
 
 import Header from "@/components/header";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { TextInput } from "@/components/authFormComponents";
 import AccountSidebar from "@/components/accountSideBar";
 import Banner from "@/components/banner";
@@ -9,13 +9,52 @@ import Image from "next/image";
 import ConfirmModal from "@/components/confirmModal";
 import MobileMenu from "@/components/mobileMenu";
 import ToggleButtons from "../toggleButtons";
+import { useAuthStatus } from "@/features/auth/hooks/useAuthStatus";
 
 export default function AccountPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+
   const [name, setName] = useState("");
   const [nickname, setNickname] = useState("");
-  const [phone, setPhone] = useState("");
+  // const [phone, setPhone] = useState("");
+
+  const { isAuthenticated, user, isLoading, isError, error } = useAuthStatus();
+
+  useEffect(() => {
+    if (!user) return;
+    setName(user.name ?? "");
+    setNickname(user.nickname ?? "");
+    // setPhone(user.phoneNumber ?? user.phone ?? "");
+  }, [user]);
+
+  const email = user?.email ?? "";
+  const providers = ((user as any)?.providers ?? []) as string[];
+  const hasProviders = providers.length > 0;
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center text-sm text-gray-600">
+        로딩 중...
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <div className="flex min-h-screen items-center justify-center text-sm text-gray-700">
+        로그인이 필요합니다.
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="flex min-h-screen items-center justify-center text-sm text-red-600">
+        내 정보 불러오기 실패: {(error as any)?.message ?? "알 수 없는 오류"}
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-1 flex-col bg-white min-h-screen pt-11 md:pt-0">
@@ -25,62 +64,67 @@ export default function AccountPage() {
 
       <main className="w-full max-w-[1024px] grid grid-cols-1 md:grid-cols-[280px_1fr] justify-self-center self-center">
         <AccountSidebar />
-        <ToggleButtons></ToggleButtons>
+        <ToggleButtons />
 
-        <section className="place-items-center md:place-items-start  flex flex-1 flex-col w-full px-6 md:px-15 pt-6 md:pt-17.5 pb-25">
+        <section className="place-items-center md:place-items-start flex flex-1 flex-col w-full px-6 md:px-15 pt-6 md:pt-17.5 pb-25">
           <h3 className="hidden md:block text-[20px] sm:text-[22px] font-bold mb-10">
             회원정보 수정
           </h3>
 
           <div className="w-full flex flex-1 flex-col gap-5 max-w-[400px]">
-            <div className="flex flex-col gap-2 text-sm ">
-              {/* 계정 (readonly) */}
+            <div className="flex flex-col gap-2 text-sm">
+              {/* 계정(읽기전용) */}
               <TextInput
                 label="계정"
                 type="email"
-                value="a123456789@gmail.com"
+                value={email}
                 onChange={() => {}}
                 rounded="rounded-lg"
                 borderColor="border-gray-300"
                 textColor="text-gray-500"
               />
 
-              {/* 간편 로그인 */}
-              <div className="flex flex-1   items-center flex-row justify-center sm:justify-start gap-4  mt-1 pl-2 sm:pl-[250px]">
-                {[
-                  {
-                    name: "카카오",
-                    src: "/icons/kakao-round.png",
-                    status: "연결완료",
-                  },
-                  {
-                    name: "네이버",
-                    src: "/icons/naver-gray-round.png",
-                    status: "연결하기",
-                  },
-                  {
-                    name: "구글",
-                    src: "/icons/google-gray-round.png",
-                    status: "연결하기",
-                  },
-                ].map((sns) => (
-                  <div
-                    key={sns.name}
-                    className="flex flex-col items-center gap-1"
-                  >
-                    <Image
-                      src={sns.src}
-                      alt={sns.name}
-                      className="w-12 h-12 md:w-8 md:h-8 cursor-pointer"
-                      width={50}
-                      height={50}
-                    />
-                    <span className="text-[10px] text-gray-700">
-                      {sns.status}
-                    </span>
-                  </div>
-                ))}
-              </div>
+              {/* 간편 로그인: provider 미구현 시 숨김 */}
+              {hasProviders && (
+                <div className="flex flex-1 items-center flex-row justify-center sm:justify-start gap-4 mt-1 pl-2 sm:pl-[250px]">
+                  {[
+                    {
+                      name: "카카오",
+                      src: "/icons/kakao-round.png",
+                      key: "KAKAO",
+                    },
+                    {
+                      name: "네이버",
+                      src: "/icons/naver-gray-round.png",
+                      key: "NAVER",
+                    },
+                    {
+                      name: "구글",
+                      src: "/icons/google-gray-round.png",
+                      key: "GOOGLE",
+                    },
+                  ].map((sns) => {
+                    const connected = providers.includes(sns.key);
+                    return (
+                      <div
+                        key={sns.name}
+                        className="flex flex-col items-center gap-1"
+                      >
+                        <Image
+                          src={sns.src}
+                          alt={sns.name}
+                          className="w-12 h-12 md:w-8 md:h-8"
+                          width={50}
+                          height={50}
+                        />
+                        <span className="text-[10px] text-gray-700">
+                          {connected ? "연결완료" : "연결하기"}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
 
             <TextInput
@@ -101,18 +145,19 @@ export default function AccountPage() {
               borderColor="border-gray-300"
             />
 
-            <TextInput
+            {/* <TextInput
               label="휴대폰"
               type="text"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               rounded="rounded-lg"
               borderColor="border-gray-300"
-            />
+            /> */}
           </div>
+
           <div className="flex flex-1 items-end self-end mt-25 md:mt-8 w-full sm:w-auto">
             <button
-              onClick={() => setModalOpen(true)}
+              onClick={() => setModalOpen(true)} // TODO: 저장 API 연결
               className="cursor-pointer w-full sm:w-auto bg-red-500 text-white rounded-lg sm:rounded-full px-4 py-3 sm:py-1.5 text-[15px] sm:text-[11px] font-semibold hover:bg-red-600"
             >
               변경 완료

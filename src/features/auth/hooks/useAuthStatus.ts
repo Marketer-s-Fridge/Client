@@ -35,5 +35,5 @@ export function useAuthStatus() {
   // hasToken이 true이고 /auth/me가 401만 아니면 인증 상태로 본다
   const isAuthenticated = hasToken && !(isError && user == null);
 
-  return { isAuthenticated, user, isLoading, isError, refetch };
+  return { isAuthenticated, user, isLoading, isError, error, refetch };
 }
