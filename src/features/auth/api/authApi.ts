@@ -131,3 +131,8 @@ export const fetchUserCount = async (): Promise<number> => {
   const res = await api.get<number>("/auth/count");
   return res.data;
 };
+export const fetchUserInfo = async (): Promise<UserResponseDto> => {
+  const res = await api.get<UserResponseDto>("/auth/me", {
+    headers: { ...authHeader() },
+  }); return res.data;
+}

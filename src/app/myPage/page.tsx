@@ -12,9 +12,12 @@ import BaseModal from "@/components/baseModal";
 import LoginRequiredModal from "@/components/loginRequiredModal";
 import { useRecentBookmarkedPosts } from "@/features/bookmarks/hooks/useRecentBookmarksPost";
 import { useBookmarks } from "@/features/bookmarks/hooks/useBookmarks";
+import { useAuthStatus } from "@/features/auth/hooks/useAuthStatus";
 
 export default function MyPage() {
   const router = useRouter();
+  const { isAuthenticated, user, isLoading } = useAuthStatus();
+
   const [isNicknameModalOpen, setIsNicknameModalOpen] = useState(false);
   const [slideIndex, setSlideIndex] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -22,6 +25,7 @@ export default function MyPage() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
 
+  // 데이터 훅 (기존 시그니처 유지)
   const { data: myFridgeContents = [], isLoading: isFridgeLoading } =
     useRecentBookmarkedPosts(3);
   const {
@@ -30,8 +34,10 @@ export default function MyPage() {
     isLoading: isBookmarkLoading,
   } = useBookmarks();
 
-  const isLoggedIn =
-    typeof window !== "undefined" && !!localStorage.getItem("accessToken");
+  // 비로그인 진입 시 모달
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) setIsLoginModalOpen(true);
+  }, [isLoading, isAuthenticated]);
 
   const recentlyViewedContents = [
     { id: 101, title: "KOREADB 2025 뉴 컬렉션" },
@@ -53,11 +59,10 @@ export default function MyPage() {
     Math.ceil(recentlyViewedContents.length / cardsPerPage) - 1;
 
   const handleToggleBookmark = (postId: number, isSaved: boolean) => {
-    if (!isLoggedIn) {
+    if (!isAuthenticated) {
       setIsLoginModalOpen(true);
       return;
     }
-
     toggleBookmarkMutate(postId, {
       onSuccess: () => {
         if (!isSaved) {
@@ -68,10 +73,25 @@ export default function MyPage() {
     });
   };
 
+  // 로딩 스켈레톤(간단)
+  if (isLoading) {
+    return (
+      <div className="bg-white pt-11 md:pt-0">
+        <Header menuOpen={false} setMenuOpen={() => {}} />
+        <section className="py-10 px-[5%] lg:px-[17%]">
+          <div className="h-6 w-40 bg-gray-100 animate-pulse rounded mb-2" />
+          <div className="h-4 w-60 bg-gray-100 animate-pulse rounded" />
+        </section>
+        <Footer />
+      </div>
+    );
+  }
+
   return (
     <div className="bg-white pt-11 md:pt-0">
       <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+
       {/* 🔒 로그인 유도 모달 */}
       <LoginRequiredModal
         isOpen={isLoginModalOpen}
@@ -80,6 +100,7 @@ export default function MyPage() {
         buttonText="로그인"
         redirectPath="/login"
       />
+
       {/* ✅ 저장 완료 모달 */}
       <BaseModal
         isOpen={isSuccessModalOpen}
@@ -93,6 +114,7 @@ export default function MyPage() {
           </p>
         </div>
       </BaseModal>
+
       {/* 👤 프로필 영역 */}
       <section className="flex py-5 md:py-10 px-[5%] lg:px-[17%] main-red text-white w-full">
         <div className="w-full flex flex-col md:flex-row justify-between items-center">
@@ -105,14 +127,18 @@ export default function MyPage() {
               height={230}
             />
             <div className="w-full flex flex-col items-center md:items-start">
-              <h2 className="text-medium sm:text-3xl font-bold">마케터</h2>
-              <p className="text-xs sm:text-sm">a123456789@gmail.com</p>
-              <button
-                onClick={() => setIsNicknameModalOpen(true)}
-                className="cursor-pointer w-9/13 mt-2 border border-white rounded-full text-xs px-4 py-1 sm:text-sm"
-              >
-                프로필 편집
-              </button>
+              <h2 className="text-medium sm:text-3xl font-bold">
+                {user?.nickname || user?.name || "회원"}
+              </h2>
+              <p className="text-xs sm:text-sm">{user?.email || "-"}</p>
+              {isAuthenticated && (
+                <button
+                  onClick={() => setIsNicknameModalOpen(true)}
+                  className="cursor-pointer w-9/13 mt-2 border border-white rounded-full text-xs px-4 py-1 sm:text-sm"
+                >
+                  프로필 편집
+                </button>
+              )}
             </div>
           </div>
 
@@ -140,6 +166,7 @@ export default function MyPage() {
           </div>
         </div>
       </section>
+
       {/* ===================== */}
       {/* 모바일 전용 뷰 */}
       {/* ===================== */}
@@ -172,7 +199,8 @@ export default function MyPage() {
                         </span>
                         <button
                           onClick={() => handleToggleBookmark(item.id, isSaved)}
-                          disabled={isBookmarkLoading}
+                          disabled={isBookmarkLoading || !isAuthenticated}
+                          aria-disabled={!isAuthenticated}
                         >
                           <Image
                             src={
@@ -321,6 +349,7 @@ export default function MyPage() {
           </>
         )}
       </section>
+
       {/* ===================== */}
       {/* 데스크탑/태블릿 뷰 */}
       {/* ===================== */}
@@ -375,7 +404,8 @@ export default function MyPage() {
                                   onClick={() =>
                                     handleToggleBookmark(item.id, isSaved)
                                   }
-                                  disabled={isBookmarkLoading}
+                                  disabled={isBookmarkLoading || !isAuthenticated}
+                                  aria-disabled={!isAuthenticated}
                                 >
                                   <Image
                                     src={
@@ -500,6 +530,7 @@ export default function MyPage() {
             )}
           </div>
         </div>
+
         {/* 4️⃣ 추천 콘텐츠 */}
         <div>
           <h3 className="text-2xl font-bold mb-4">

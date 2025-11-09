@@ -5,6 +5,7 @@ import localFont from "next/font/local";
 import "react-calendar/dist/Calendar.css";
 import Providers from "./providers";
 
+
 const pretendard = localFont({
   src: "../fonts/Pretendard-Regular.ttf", // 파일 경로 확인!
   display: "swap",

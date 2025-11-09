@@ -12,8 +12,11 @@ import "swiper/css";
 import "swiper/css/autoplay";
 import { Autoplay } from "swiper/modules";
 import SaveToFridgeButton from "@/components/saveToFridgeButton";
+import { useAuthStatus } from "@/features/auth/hooks/useAuthStatus";
 
 export default function HomePage() {
+  const { isAuthenticated, user, isLoading } = useAuthStatus();
+
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
 
