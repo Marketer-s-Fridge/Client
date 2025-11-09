@@ -14,10 +14,9 @@ const api = axios.create({
 });
 
 /** ✅ 토큰 헤더 헬퍼 */
-const authHeader = () => {
-  const t = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
-  return t ? { Authorization: `Bearer ${t}` } : {};
-};
+const authHeader = () =>
+  ({ Authorization: `Bearer ${localStorage.getItem("accessToken")}` } as const);
+
 
 /** ✅ 인터셉터 */
 api.interceptors.request.use((config) => {
@@ -72,13 +71,14 @@ export const findPw = async (id: string, email: string): Promise<string> => {
 
 /** ✅ 회원 탈퇴 (DELETE with body) */
 export const deleteAccount = async (currentPassword: string): Promise<string> => {
-  const res = await api.request<string>({
+  const res = await api.request({
     url: "/auth/delete",
     method: "DELETE",
-    data: { currentPassword },       // 바디 OK
-    headers: { ...authHeader() },    // 토큰 헤더
+    // 구형 axios 타입에서 data를 string으로 보는 문제 회피
+    data: ({ currentPassword } as unknown) as any,
+    headers: { ...authHeader() },
   });
-  return res.data;                   // 캐스팅 불필요
+  return String(res.data);
 };
 
 /** ✅ 닉네임 중복 체크 */
