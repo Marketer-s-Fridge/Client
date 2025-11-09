@@ -1,5 +1,12 @@
 import api from "@/lib/apiClient";
 import { EnquiryRequestDto, EnquiryResponseDto } from "../types";
+export type SortOrder = 'ASC' | 'DESC';
+export type MyEnquiryParams = {
+  page?: number;     // 0-base
+  size?: number;     // 기본 10
+  sortBy?: 'createdAt' | 'updatedAt' | 'title'; // 백엔드 허용 필드에 맞춰 조정
+  sortOrder?: SortOrder; // 'ASC' | 'DESC'
+};
 
 /** ✅ 전체 문의 조회 (스펙: 파라미터 없음, List 반환) */
 export const fetchEnquiries = async (): Promise<EnquiryResponseDto[]> => {
@@ -14,15 +21,27 @@ export const fetchEnquiries = async (): Promise<EnquiryResponseDto[]> => {
   }
 };
 
-/** ✅ 내 문의 조회 (스펙: 헤더 필요, List 반환) */
-export const fetchMyEnquiries = async (): Promise<EnquiryResponseDto[]> => {
-  console.log("🙋‍♀️ [내 문의 목록 조회 요청]");
+// ✅ 내 문의 조회: 페이지네이션 + 정렬 지원
+export const fetchMyEnquiries = async (
+  params: MyEnquiryParams = {}
+): Promise<PaginatedResponse<EnquiryResponseDto>> => {
+  console.log('🙋‍♀️ [내 문의 목록 조회 요청]', params);
   try {
-    const res = await api.get<EnquiryResponseDto[]>("/api/enquiries/my"); // 토큰은 apiClient에서 첨부
-    console.log("✅ [내 문의 목록 조회 성공]", res.data);
+    const res = await api.get<PaginatedResponse<EnquiryResponseDto>>(
+      '/api/enquiries/my',
+      {
+        params: {
+          page: params.page ?? 0,
+          size: params.size ?? 10,
+          sortBy: params.sortBy ?? 'createdAt',
+          sortOrder: params.sortOrder ?? 'DESC',
+        },
+      }
+    );
+    console.log('✅ [내 문의 목록 조회 성공]', res.data);
     return res.data;
   } catch (error: any) {
-    console.error("❌ [내 문의 목록 조회 실패]:", error);
+    console.error('❌ [내 문의 목록 조회 실패]:', error);
     throw error;
   }
 };
