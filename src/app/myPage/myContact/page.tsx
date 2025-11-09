@@ -125,7 +125,11 @@ export default function MyContact() {
                 return (
                   <button
                     key={item.id}
-                    onClick={() => router.push(`/myContact/detail/${item.id}`)}
+                    onClick={() => router.push(
+                      item.status === "ANSWERED"
+                        ? `/myContact/detail/processed/${item.id}`
+                        : `/myContact/detail/unprocessed/${item.id}`
+                    )}
                     className="w-full text-left rounded-lg border border-gray-200 px-3 py-3 active:bg-gray-50"
                   >
                     <div className="flex items-start justify-between gap-3">
