@@ -72,13 +72,13 @@ export const findPw = async (id: string, email: string): Promise<string> => {
 
 /** ✅ 회원 탈퇴 (DELETE with body) */
 export const deleteAccount = async (currentPassword: string): Promise<string> => {
-  const res = await api.request({
+  const res = await api.request<string, any, { currentPassword: string }>({
     url: "/auth/delete",
     method: "DELETE",
     data: { currentPassword },
-    headers: { ...authHeader() },
+    headers: { ...authHeader() }, // 이미 객체면 스프레드 불필요. 상황에 맞게.
   });
-  return res.data as string;
+  return res.data; // ← 캐스팅 제거
 };
 
 /** ✅ 닉네임 중복 체크 */
