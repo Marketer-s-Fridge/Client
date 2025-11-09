@@ -92,7 +92,11 @@ export default function MyContact() {
                     <tr
                       key={item.id}
                       onClick={() =>
-                        router.push(`/myContact/detail/${item.id}`)
+                        router.push(
+                          item.status === "ANSWERED"
+                            ? `/myPage/myContact/detail/processed/${item.id}`
+                            : `/myPage/myContact/detail/unprocessed/${item.id}`
+                        )
                       }
                       className="h-10 hover:bg-gray-100 cursor-pointer"
                     >
