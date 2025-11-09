@@ -127,8 +127,8 @@ export default function MyContact() {
                     key={item.id}
                     onClick={() => router.push(
                       item.status === "ANSWERED"
-                        ? `/myContact/detail/processed/${item.id}`
-                        : `/myContact/detail/unprocessed/${item.id}`
+                        ? `/myPage/myContact/detail/processed/${item.id}`
+                        : `/myPage/myContact/detail/unprocessed/${item.id}`
                     )}
                     className="w-full text-left rounded-lg border border-gray-200 px-3 py-3 active:bg-gray-50"
                   >
