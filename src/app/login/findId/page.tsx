@@ -9,17 +9,23 @@ import {
   SubmitButton,
 } from "@/components/authFormComponents";
 import MobileMenu from "@/components/mobileMenu";
-import { findId } from "@/features/auth/api/authApi"; // ✅ 아이디 찾기 API import
+import { useFindId } from "@/features/auth/hooks/useFindId"; // ✅ 커스텀 훅 import
 
 const FindIdPage: React.FC = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [foundId, setFoundId] = useState<string | null>(null);
-  const [notFound, setNotFound] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [showResult, setShowResult] = useState(false);
 
   const router = useRouter();
+
+  // ✅ useFindId 훅 사용
+  const {
+    data: foundData,
+    isFetching,
+    isError,
+    refetch,
+  } = useFindId(name, email);
 
   const handleFindId = async () => {
     if (!name.trim() || !email.trim()) {
@@ -27,35 +33,21 @@ const FindIdPage: React.FC = () => {
       return;
     }
 
-    try {
-      setLoading(true);
-      setNotFound(false);
-      setFoundId(null);
-
-      // ✅ 실제 API 호출
-      const res = await findId(name, email);
-
-      if (res?.id) {
-        setFoundId(res.id);
-        setNotFound(false);
-      } else {
-        setNotFound(true);
-      }
-    } catch (error: any) {
-      console.error("아이디 찾기 실패:", error);
-      setNotFound(true);
-    } finally {
-      setLoading(false);
-    }
+    setShowResult(false);
+    await refetch(); // ✅ 수동 실행
+    setShowResult(true);
   };
+
+  const foundId = foundData?.id ?? null;
+  const notFound = showResult && !foundId && !isFetching && !isError;
 
   return (
     <div className="bg-white pt-11 md:pt-0">
       <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+
       <div className="flex justify-center bg-white py-[16vh] px-4">
         <div className="w-full max-w-[480px] flex flex-col items-center">
-          {/* 타이틀 + 설명 */}
           <AuthHeader
             title="아이디 찾기"
             description={`아이디가 기억나지 않으세요?
@@ -80,13 +72,13 @@ const FindIdPage: React.FC = () => {
           </div>
 
           <SubmitButton
-            text={loading ? "조회 중..." : "내 아이디 찾기"}
+            text={isFetching ? "조회 중..." : "내 아이디 찾기"}
             onClick={handleFindId}
           />
 
-          {/* 아이디 찾기 성공 */}
-          {foundId && (
-            <div className="relative max-w-[480px] flex-col my-10 text-center w-full ">
+          {/* ✅ 조회 결과 표시 */}
+          {showResult && foundId && (
+            <div className="relative max-w-[480px] flex-col my-10 text-center w-full">
               <p className="text-lg font-semibold pb-10">
                 내 아이디:{" "}
                 <span className="text-black font-bold text-xl">{foundId}</span>
@@ -110,7 +102,6 @@ const FindIdPage: React.FC = () => {
             </div>
           )}
 
-          {/* 아이디 못 찾음 */}
           {notFound && (
             <div className="max-w-[480px] mt-10 text-center w-full">
               <p className="text-base text-black font-medium">
@@ -127,6 +118,12 @@ const FindIdPage: React.FC = () => {
                 />
               </div>
             </div>
+          )}
+
+          {isError && (
+            <p className="text-sm text-red-500 mt-5">
+              아이디 찾기 중 오류가 발생했습니다.
+            </p>
           )}
         </div>
       </div>
