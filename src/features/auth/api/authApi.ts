@@ -1,5 +1,5 @@
 // src/features/user/api/authApi.ts
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import {
   SignupRequestDto,
   SigninRequestDto,
@@ -88,7 +88,11 @@ export const findPw = async (id: string, email: string): Promise<string> => {
  * (axios 1.x 사용 시 delete(url, { data })도 가능)
  */
 export const deleteAccount = async (currentPassword: string): Promise<string> => {
-  const res = await api.request<string>({
+  const res = await api.request<
+    string,                         // R: response data
+    AxiosResponse<string>,          // T: AxiosResponse<R>
+    { currentPassword: string }     // D: request body
+  >({
     url: "/auth/delete",
     method: "DELETE",
     data: { currentPassword },
