@@ -6,14 +6,9 @@ import { UserResponseDto } from "../types";
 export function useFindId(name: string, email: string) {
   return useQuery<UserResponseDto | null>({
     queryKey: ["findId", name, email],
-    enabled: !!name && !!email,
-    queryFn: async () => {
-      try {
-        return await findId(name, email);
-      } catch (e: any) {
-        if (e?.response?.status === 404) return null; // ← 미존재를 null로
-        throw e;
-      }
-    },
+    queryFn: () => findId(name, email),
+    enabled: false,                // ✅ 입력 중 자동 호출 방지
+    retry: false,                  // 선택: 자동 재시도 방지
+    refetchOnWindowFocus: false,   // 선택: 포커스 시 재조회 방지
   });
 }

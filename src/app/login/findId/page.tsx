@@ -13,9 +13,10 @@ const FindIdPage: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showResult, setShowResult] = useState(false);
 
-  const email = emailRaw.trim().toLowerCase();
+  const email = emailRaw.trim().toLowerCase(); // 훅에만 넘길 값
   const router = useRouter();
 
+  // useFindId는 enabled:false 권장
   const { data: foundData, isFetching, isError, refetch } = useFindId(name, email);
 
   const handleFindId = async () => {
@@ -28,7 +29,7 @@ const FindIdPage: React.FC = () => {
     setShowResult(true);
   };
 
-  const foundId = typeof foundData?.id === "string" ? foundData!.id : null;
+  const foundId = foundData?.id ?? null;
   const notFound = showResult && !foundId && !isFetching && !isError;
 
   return (
@@ -44,13 +45,7 @@ const FindIdPage: React.FC = () => {
 걱정 마세요, 금방 찾아드릴게요.`}
           />
 
-          <form
-            className="w-8/9 md:w-7/9 mb-10 flex flex-col items-center gap-y-4"
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleFindId();
-            }}
-          >
+          <div className="w-8/9 md:w-7/9 mb-10 flex flex-col items-center gap-y-4">
             <TextInput
               label="이름"
               value={name}
@@ -63,22 +58,20 @@ const FindIdPage: React.FC = () => {
             <TextInput
               label="이메일주소"
               type="email"
-              value={emailRaw}
+              value={emailRaw}                  
               onChange={(e) => {
-                setEmailRaw(e.target.value);
-                setShowResult(false);
+                setEmailRaw(e.target.value);     {/* ← 수정 */}
+                setShowResult(false);            {/* ← 결과 리셋 */}
               }}
               required
             />
-            <SubmitButton
-              text={isFetching ? "조회 중..." : "내 아이디 찾기"}
-              onClick={handleFindId}
-              fullWidth
-              // @ts-ignore: 내부 구현에 따라 다름
-              type="submit"
-              disabled={isFetching}
-            />
-          </form>
+          </div>
+
+          <SubmitButton
+            text={isFetching ? "조회 중..." : "내 아이디 찾기"}
+            onClick={handleFindId}
+            disabled={isFetching}               
+          />
 
           {showResult && foundId && (
             <div className="relative max-w-[480px] flex-col my-10 text-center w-full">
@@ -86,18 +79,12 @@ const FindIdPage: React.FC = () => {
                 내 아이디: <span className="text-black font-bold text-xl">{foundId}</span>
               </p>
               <div className="w-full flex flex-row gap-4">
-                <SubmitButton
-                  text="로그인 하기"
-                  onClick={() => router.push("/login")}
-                  fullWidth={false}
-                  className="flex-1"
-                />
+                <SubmitButton text="로그인 하기" onClick={() => router.push("/login")} className="flex-1" />
                 <SubmitButton
                   text="비밀번호 찾기"
                   onClick={() => router.push("/login/findPwd")}
                   variant="outline"
                   color="#FF4545"
-                  fullWidth={false}
                   className="flex-1"
                 />
               </div>
@@ -111,7 +98,6 @@ const FindIdPage: React.FC = () => {
                 <SubmitButton
                   text="회원가입"
                   onClick={() => router.push("/signUp")}
-                  fullWidth
                   variant="outline"
                   color="#FF4545"
                   className="text-red-500"
@@ -120,9 +106,7 @@ const FindIdPage: React.FC = () => {
             </div>
           )}
 
-          {isError && (
-            <p className="text-sm text-red-500 mt-5">아이디 찾기 중 오류가 발생했습니다.</p>
-          )}
+          {isError && <p className="text-sm text-red-500 mt-5">아이디 찾기 중 오류가 발생했습니다.</p>}
         </div>
       </div>
     </div>
