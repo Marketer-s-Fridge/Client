@@ -1,21 +1,23 @@
+// src/features/user/api/authApi.ts
 import axios from "axios";
-import { SignupRequestDto, SigninRequestDto, UserResponseDto } from "../types";
+import {
+  SignupRequestDto,
+  SigninRequestDto,
+  UserResponseDto,
+} from "../types";
 
-/** ✅ Axios 인스턴스 설정 */
+/** ✅ Axios 인스턴스 */
 const api = axios.create({
-  baseURL: "/", // 👈 Next.js rewrite를 통해 백엔드로 전달됨
+  baseURL: "/",
   withCredentials: true,
-  headers: {
-    "Content-Type": "application/json",
-  },
+  headers: { "Content-Type": "application/json" },
 });
 
-/** ✅ 요청 & 응답 인터셉터 */
+/** ✅ 인터셉터 */
 api.interceptors.request.use((config) => {
-  console.log(`📡 [요청 전송] ${config.method?.toUpperCase()} ${config.url}`, config.data || "");
+  console.log(`📡 [요청] ${config.method?.toUpperCase()} ${config.url}`, config.data || "");
   return config;
 });
-
 api.interceptors.response.use(
   (res) => {
     console.log(`✅ [응답 성공] ${res.config.url} (${res.status})`, res.data);
@@ -32,85 +34,120 @@ api.interceptors.response.use(
 
 /** ✅ 회원가입 */
 export const signup = async (dto: SignupRequestDto): Promise<string> => {
-  console.log("📝 [회원가입 요청 시작]", dto);
-  try {
-    const res = await api.post<string>("/auth/signup", dto);
-    console.log("🎉 [회원가입 성공]", res.data);
-    return res.data;
-  } catch (error) {
-    console.error("🚨 [회원가입 실패]", error);
-    throw error;
-  }
+  const res = await api.post<string>("/auth/signup", dto);
+  return res.data;
 };
 
 /** ✅ 이메일 중복 체크 */
 export const checkEmailDuplication = async (email: string): Promise<boolean> => {
-  console.log("🔍 [이메일 중복체크 요청]", email);
-  try {
-    const res = await api.get<string>("/auth/signup/duplication_check", {
-      params: { email },
-    });
-
-    const result = res.data.trim(); // 공백 제거
-    console.log("✅ [이메일 중복체크 완료]", result);
-
-    // ✅ 문자열 결과를 boolean으로 변환
-    const isAvailable = result === "Successful"; // 사용 가능
-    return isAvailable;
-  } catch (error: any) {
-    console.error("🚨 [이메일 중복체크 실패 - 네트워크]", error?.message || error);
-    throw error; // 진짜 네트워크 실패일 때만 throw
-  }
+  const res = await api.get<string>("/auth/signup/duplication_check", {
+    params: { email },
+  });
+  return res.data.trim() === "Successful";
 };
 
 /** ✅ 로그인 */
 export const signin = async (dto: SigninRequestDto): Promise<string> => {
-  console.log("🔐 [로그인 요청]", dto);
-  try {
-    const res = await api.post("/auth/signin", dto);
-    const token = typeof res.data === "string" ? res.data : null;
-    console.log("🎉 [로그인 성공] 토큰:", token);
-
-    // ✅ 토큰을 localStorage 등에 저장
-    localStorage.setItem("accessToken", token!);
-
-    return token!;
-  } catch (error) {
-    console.error("🚨 [로그인 실패]", error);
-    throw error;
-  }
+  const res = await api.post("/auth/signin", dto);
+  const token = typeof res.data === "string" ? res.data : null;
+  if (token) localStorage.setItem("accessToken", token);
+  return token!;
 };
-
 
 /** ✅ 아이디 찾기 */
 export const findId = async (
   name: string,
   email: string
 ): Promise<UserResponseDto> => {
-  console.log("🔎 [아이디 찾기 요청]", { name, email });
-  try {
-    const res = await api.get<UserResponseDto>("/auth/signin/find_id", {
-      params: { name, email },
-    });
-    console.log("✅ [아이디 찾기 성공]", res.data);
-    return res.data;
-  } catch (error) {
-    console.error("🚨 [아이디 찾기 실패]", error);
-    throw error;
-  }
+  const res = await api.get<UserResponseDto>("/auth/signin/find_id", {
+    params: { name, email },
+  });
+  return res.data;
 };
 
 /** ✅ 비밀번호 찾기 */
 export const findPw = async (id: string, email: string): Promise<string> => {
-  console.log("🔑 [비밀번호 찾기 요청]", { id, email });
-  try {
-    const res = await api.get<string>("/auth/signin/find_pw", {
-      params: { id, email },
-    });
-    console.log("✅ [비밀번호 찾기 성공]", res.data);
-    return res.data;
-  } catch (error) {
-    console.error("🚨 [비밀번호 찾기 실패]", error);
-    throw error;
-  }
+  const res = await api.get<string>("/auth/signin/find_pw", {
+    params: { id, email },
+  });
+  return res.data;
+};
+
+/** ✅ 회원 탈퇴 */
+export const deleteAccount = async (currentPassword: string): Promise<string> => {
+  const res = await api.delete<string>("/auth/delete", {
+    data: { currentPassword },
+    headers: { Authorization: `Bearer ${localStorage.getItem("accessToken")}` },
+  });
+  return res.data;
+};
+
+/** ✅ 닉네임 중복 체크 */
+export const checkNickname = async (nickname: string): Promise<string> => {
+  const res = await api.get<string>("/auth/nickname/check", {
+    params: { nickname },
+  });
+  return res.data;
+};
+
+/** ✅ 닉네임 변경 */
+export const updateNickname = async (nickname: string): Promise<string> => {
+  const res = await api.patch<string>(
+    "/auth/nickname",
+    { nickname },
+    {
+      headers: { Authorization: `Bearer ${localStorage.getItem("accessToken")}` },
+    }
+  );
+  return res.data;
+};
+
+/** ✅ 프로필 이미지 변경 */
+export const updateProfileImage = async (profileImageUrl: string): Promise<string> => {
+  const res = await api.patch<string>(
+    "/auth/profile/image",
+    { profileImageUrl },
+    {
+      headers: { Authorization: `Bearer ${localStorage.getItem("accessToken")}` },
+    }
+  );
+  return res.data;
+};
+
+/** ✅ 회원 정보 수정 (이름/닉네임/휴대폰 등) */
+export const updateUserInfo = async (
+  name: string,
+  nickname: string,
+  phone: string
+): Promise<string> => {
+  const res = await api.patch<string>(
+    "/auth/update",
+    { name, nickname, phone },
+    {
+      headers: { Authorization: `Bearer ${localStorage.getItem("accessToken")}` },
+    }
+  );
+  return res.data;
+};
+
+/** ✅ 비밀번호 변경 */
+export const updatePassword = async (
+  currentPassword: string,
+  newPassword: string,
+  confirmNewPassword: string
+): Promise<string> => {
+  const res = await api.patch<string>(
+    "/auth/password",
+    { currentPassword, newPassword, confirmNewPassword },
+    {
+      headers: { Authorization: `Bearer ${localStorage.getItem("accessToken")}` },
+    }
+  );
+  return res.data;
+};
+
+/** ✅ 전체 사용자 수 조회 */
+export const fetchUserCount = async (): Promise<number> => {
+  const res = await api.get<number>("/auth/count");
+  return res.data;
 };
