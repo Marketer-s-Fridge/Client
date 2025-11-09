@@ -133,7 +133,12 @@ export default function EmailJoinPage() {
     if (agreements.all !== allChecked) {
       setAgreements((prev) => ({ ...prev, all: allChecked }));
     }
-  }, [agreements.age, agreements.provide, agreements.collect, agreements.marketing]);
+  }, [
+    agreements.age,
+    agreements.provide,
+    agreements.collect,
+    agreements.marketing,
+  ]);
 
   const handleAllAgree = (checked: boolean) => {
     setAgreements({
@@ -167,9 +172,7 @@ export default function EmailJoinPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               error={
-                errors.email
-                  ? "이메일을 입력하고 중복확인을 완료해주세요."
-                  : ""
+                errors.email ? "이메일을 입력하고 중복확인을 완료해주세요." : ""
               }
               rightButtonText={
                 isCheckingEmail
@@ -325,8 +328,9 @@ export default function EmailJoinPage() {
 
             <div className="w-full text-center mt-10">
               <SubmitButton
-                onClick={handleSubmit}
+                type="submit"
                 text={isPending ? "가입 중..." : "나의 냉장고 열어보기"}
+                disabled={isPending}
               />
             </div>
           </form>

@@ -144,11 +144,12 @@ export const ConsentCheckbox: React.FC<ConsentCheckboxProps> = ({
 interface SubmitButtonProps {
   type?: "submit" | "button" | "reset"; // ✅ 이렇게 고쳐야 함!
   text: string;
-  onClick: () => void;
+  onClick?: () => void;
   fullWidth?: boolean;
   variant?: "solid" | "outline";
   color?: string;
   className?: string; // ⬅️ 추가!
+  disabled?: boolean; // ✅ 추가
 }
 
 export const SubmitButton: React.FC<SubmitButtonProps> = ({
@@ -159,6 +160,7 @@ export const SubmitButton: React.FC<SubmitButtonProps> = ({
   variant = "solid",
   color = "#FF4545",
   className = "",
+  disabled = false, // ✅ 기본값
 }) => {
   const baseStyle =
     "cursor-pointer text-[17px] font-bold py-3 rounded-lg place-self-center w-10/11 md:w-9/11";
@@ -171,6 +173,8 @@ export const SubmitButton: React.FC<SubmitButtonProps> = ({
     <button
       type={type} // ✅ props 전달
       onClick={onClick}
+      disabled={disabled} // ✅ 적용
+      aria-disabled={disabled}
       className={`${baseStyle} ${widthStyle} ${variantStyle} ${className}`}
     >
       {text}
