@@ -72,13 +72,13 @@ export const findPw = async (id: string, email: string): Promise<string> => {
 
 /** ✅ 회원 탈퇴 (DELETE with body) */
 export const deleteAccount = async (currentPassword: string): Promise<string> => {
-  const res = await api.request<string>({
+  const res = await api.request({
     url: "/auth/delete",
     method: "DELETE",
     data: { currentPassword },
     headers: { ...authHeader() },
   });
-  return res.data;
+  return res.data as string;
 };
 
 /** ✅ 닉네임 중복 체크 */
