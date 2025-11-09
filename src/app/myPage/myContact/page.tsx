@@ -27,12 +27,7 @@ export default function MyContact() {
       try {
         setLoading(true);
         // page는 0부터 시작해야 하니까 currentPage - 1
-        const res = await fetchMyEnquiries({
-          page: currentPage - 1,
-          size: 10,
-          sortBy: 'createdAt',
-          sortOrder, // 'asc' | 'desc' 그대로
-        });
+        const res = await fetchMyEnquiries();
         setInquiries(res.content);
         setTotalPages(res.totalPages);
       } catch (error) {
