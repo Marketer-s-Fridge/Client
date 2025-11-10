@@ -1,39 +1,33 @@
+// src/app/page.tsx
 "use client";
 
 import Header from "@/components/header";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import SearchInput from "@/components/searchInput";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Footer from "@/components/footer";
 import MobileMenu from "@/components/mobileMenu";
-import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
-import "swiper/css/autoplay";
-import { Autoplay } from "swiper/modules";
-import SaveToFridgeButton from "@/components/saveToFridgeButton";
 import { useAuthStatus } from "@/features/auth/hooks/useAuthStatus";
 import { useHotPosts } from "@/features/posts/hooks/useHotPosts";
 import { useEditorPicks } from "@/features/posts/hooks/useEditorPicks";
-import type { PostResponseDto } from "@/features/posts/types";
+import PostFeature from "@/components/postFeature";
+import MobilePostCarousel from "@/components/mobilePostCarousel";
 
 export default function HomePage() {
-  const { isAuthenticated, user, isLoading } = useAuthStatus();
+  // 사용 안 하면 제거 가능
+  useAuthStatus();
 
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // ✅ API or 목데이터
-  const { data: hot = [], isLoading: hotLoading } = useHotPosts(6);
-  const { data: picks = [], isLoading: picksLoading } = useEditorPicks(6);
+  // 훅 데이터
+  const { data: hot = [] } = useHotPosts(8);
+  const { data: picks = [] } = useEditorPicks(8);
 
-  const hotHero = hot[0];
-  const pickHero = picks[0];
-
-  const fmt = (d?: string) =>
-    d ? new Date(d).toISOString().slice(0, 10).replaceAll("-", ".") : "";
-
-  const goPost = (p: PostResponseDto) => router.push(`/posts/${p.id}`);
+  const hotHero = useMemo(() => hot[0], [hot]);
+  const pickHero = useMemo(() => picks[0], [picks]);
 
   return (
     <main className="min-h-screen bg-white pt-11 md:pt-0">
@@ -41,25 +35,21 @@ export default function HomePage() {
       <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
 
       {/* 검색 입력창 */}
-      <section className="hidden md:block bg-white flex-col items-center  pb-6 pt-14 sm:pb-12 relative">
+      <section className="hidden md:block bg-white flex-col items-center pb-6 pt-14 sm:pb-12 relative">
         <SearchInput showInstagramButton />
       </section>
 
-      {/* 오늘의 카드뉴스 */}
+      {/* 오늘의 카드뉴스: 정적 섹션 유지 */}
       <section className="w-full">
-        {/* PC/Tablet 이상: 기존 그리드 유지 */}
         <div className="hidden md:block main-red py-8 px-5 sm:px-10 lg:px-[17%]">
-          <h2 className="text-white text-xl sm:text-3xl font-bold mb-6">
-            New Contents
-          </h2>
+          <h2 className="text-white text-xl sm:text-3xl font-bold mb-6">New Contents</h2>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
             {[1, 2, 3, 4].map((i) => (
               <Image
                 key={i}
                 alt=""
                 src={`/images/cardNews/${i}/001.png`}
-                className="aspect-[3/4] bg-white rounded-lg shadow cursor-pointer 
-                     transition duration-300 ease-in-out hover:scale-105 w-full"
+                className="aspect-[3/4] bg-white rounded-lg shadow cursor-pointer transition duration-300 ease-in-out hover:scale-105 w-full"
                 onClick={() => router.push("/cardNews")}
                 width={250}
                 height={300}
@@ -68,20 +58,12 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* 모바일: 슬라이드 드래그형 카드뉴스 */}
+        {/* 모바일: 정적 카드뉴스 유지 */}
         <div className="block md:hidden relative mt-4 px-5 w-full py-8">
           <h3 className="text-xl md:text-2xl font-bold mb-4">New Contents</h3>
-          <Swiper
-            slidesPerView={"auto"}
-            spaceBetween={10}
-            modules={[Autoplay]}
-            className="w-full"
-          >
+          <div className="flex gap-3 overflow-x-auto no-scrollbar">
             {[1, 2, 3, 4].map((i) => (
-              <SwiperSlide
-                key={i}
-                className="!w-[40%] max-w-xs shrink-0"
-              >
+              <div key={i} className="!w-[40%] max-w-xs shrink-0">
                 <Image
                   alt={`카드뉴스 ${i}`}
                   src={`/images/cardNews/${i}/001.png`}
@@ -90,124 +72,24 @@ export default function HomePage() {
                   width={300}
                   height={400}
                 />
-              </SwiperSlide>
+              </div>
             ))}
-          </Swiper>
+          </div>
         </div>
       </section>
 
-     {/* 인기 콘텐츠 + 에디터 픽 (데스크톱: 썸네일만) */}
-<section className="hidden md:block bg-white py-12 px-5 sm:px-10 lg:px-[25%]">
-  <div className="max-w-[1024px] mx-auto space-y-16">
-    {/* Hot Contents */}
-    <div>
-      <h3 className="text-xl md:text-2xl font-bold mb-6">Hot Contents</h3>
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
-        {(hot.length ? hot.slice(0, 8) : Array.from<PostResponseDto | null>({ length: 8 })).map((p, idx) => (
-          <div
-            key={p?.id ?? `hot-skel-${idx}`}
-            className="relative aspect-[3/4] rounded-lg overflow-hidden shadow cursor-pointer"
-            onClick={() => p && goPost(p)}
-          >
-            {p ? (
-              <Image
-                src={p.images?.[0] || "/images/cardNews/hot/001.png"}
-                alt={p.title || "Hot"}
-                fill
-                className="object-cover"
-                sizes="(min-width: 1024px) 240px, 33vw"
-                priority={idx < 4}
-              />
-            ) : (
-              <div className="w-full h-full bg-gray-100 animate-pulse" />
-            )}
-          </div>
-        ))}
-      </div>
-    </div>
-
-    {/* Editor Pick */}
-    <div>
-      <h3 className="text-xl md:text-2xl font-bold mb-6">Editor Pick</h3>
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
-        {(picks.length ? picks.slice(0, 8) : Array.from<PostResponseDto | null>({ length: 8 })).map((p, idx) => (
-          <div
-            key={p?.id ?? `pick-skel-${idx}`}
-            className="relative aspect-[3/4] rounded-lg overflow-hidden shadow cursor-pointer"
-            onClick={() => p && goPost(p)}
-          >
-            {p ? (
-              <Image
-                src={p.images?.[0] || "/images/cardNews/editor/001.png"}
-                alt={p.title || "Editor Pick"}
-                fill
-                className="object-cover"
-                sizes="(min-width: 1024px) 240px, 33vw"
-                priority={idx < 4}
-              />
-            ) : (
-              <div className="w-full h-full bg-gray-100 animate-pulse" />
-            )}
-          </div>
-        ))}
-      </div>
-    </div>
-  </div>
-</section>
-
-      {/* Hot Contents (모바일) */}
-      <div className="md:hidden flex flex-col px-5">
-        <div className="flex items-start gap-2 mb-4">
-          <h3 className="text-xl md:text-2xl font-bold">Hot Contents</h3>
+      {/* 데스크톱: 섹션당 1장 + 설명 */}
+      <section className="hidden md:block bg-white py-12 px-5 sm:px-10 lg:px-[25%]">
+        <div className="max-w-[1024px] mx-auto space-y-16">
+          <PostFeature title="Hot Contents" item={hotHero} fallback="/images/cardNews/hot/001.png" />
+          <PostFeature title="Editor Pick" item={pickHero} fallback="/images/cardNews/editor/001.png" />
         </div>
-        <Swiper slidesPerView={1} spaceBetween={20} className=" w-full">
-          {hot.length === 0
-            ? [1, 2, 3].map((i) => (
-                <SwiperSlide key={i} className="!w-full">
-                  <div className="w-full aspect-[3/4] rounded-lg bg-gray-100 animate-pulse" />
-                </SwiperSlide>
-              ))
-            : hot.map((p) => (
-                <SwiperSlide key={p.id} className="!w-full">
-                  <Image
-                    alt={p.title || "Hot"}
-                    src={p.images?.[0] || "/images/cardNews/2/001.png"}
-                    className="w-full aspect-[3/4] object-cover rounded-lg shadow cursor-pointer"
-                    width={600}
-                    height={800}
-                    onClick={() => goPost(p)}
-                  />
-                </SwiperSlide>
-              ))}
-        </Swiper>
-      </div>
+      </section>
 
-      {/* Editor Pick (모바일) */}
-      <div className="md:hidden flex flex-col mt-14 px-5">
-        <div className="flex items-start gap-2 mb-4">
-          <h3 className="text-xl md:text-2xl font-bold">Editor Pick</h3>
-        </div>
-        <Swiper slidesPerView={1} spaceBetween={20} className="w-full">
-          {picks.length === 0
-            ? [1, 2, 3].map((i) => (
-                <SwiperSlide key={i} className="!w-full">
-                  <div className="w-full aspect-[3/4] rounded-lg bg-gray-100 animate-pulse" />
-                </SwiperSlide>
-              ))
-            : picks.map((p) => (
-                <SwiperSlide key={p.id} className="!w-full">
-                  <Image
-                    alt={p.title || "Editor Pick"}
-                    src={p.images?.[0] || "/images/cardNews/3/001.png"}
-                    className="w-full aspect-[3/4] object-cover rounded-lg shadow cursor-pointer"
-                    width={600}
-                    height={800}
-                    onClick={() => goPost(p)}
-                  />
-                </SwiperSlide>
-              ))}
-        </Swiper>
-      </div>
+      {/* 모바일: 훅 데이터로 슬라이드 적용 */}
+      <MobilePostCarousel title="Hot Contents" items={hot} fallback="/images/cardNews/hot/001.png" />
+      <div className="h-10 md:hidden" />
+      <MobilePostCarousel title="Editor Pick" items={picks} fallback="/images/cardNews/editor/001.png" />
 
       <Footer />
     </main>
