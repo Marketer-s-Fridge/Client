@@ -130,9 +130,9 @@ export default function MyPage() {
             />
             <div className="w-full flex flex-col items-center md:items-start">
               <h2 className="text-medium sm:text-3xl font-bold">
-                {user?.nickname || user?.name || "회원"}
+                {user?.nickname || user?.name || "비회원"}
               </h2>
-              <p className="text-xs sm:text-sm">{user?.email || "-"}</p>
+              <p className="text-xs sm:text-sm">{user?.email || "로그인이 필요합니다"}</p>
               {isAuthenticated && (
                 <button
                   onClick={() => setIsNicknameModalOpen(true)}
