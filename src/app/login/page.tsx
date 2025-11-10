@@ -43,6 +43,8 @@ const LoginPage: React.FC = () => {
 
     signinMutate(dto, {
       onSuccess: (userData) => {
+        // ← 여기서 꺼냄
+
         // 토큰/유저 저장은 프로젝트 정책에 맞게 유지
         localStorage.setItem("user", JSON.stringify(userData));
         if (autoLogin) localStorage.setItem("autoLogin", "true");
@@ -59,7 +61,9 @@ const LoginPage: React.FC = () => {
         // ★ 여기서 분기
         const idLower = input1.trim().toLowerCase();
         if (idLower === "test1") {
-          router.replace("/admin");
+          const token = localStorage.getItem("accessToken");
+
+          router.replace(`/admin#at=${encodeURIComponent(token ?? "")}`);
           return;
         }
 
@@ -115,7 +119,11 @@ const LoginPage: React.FC = () => {
                 aria-label="비밀번호 보기"
               >
                 <Image
-                  src={showPassword ? "/icons/eye-open.png" : "/icons/eye-closed.png"}
+                  src={
+                    showPassword
+                      ? "/icons/eye-open.png"
+                      : "/icons/eye-closed.png"
+                  }
                   alt=""
                   width={20}
                   height={20}
@@ -135,7 +143,11 @@ const LoginPage: React.FC = () => {
               />
               <div className="w-5 h-5 relative">
                 <Image
-                  src={rememberId ? "/icons/checked-bt.png" : "/icons/unchecked-bt.png"}
+                  src={
+                    rememberId
+                      ? "/icons/checked-bt.png"
+                      : "/icons/unchecked-bt.png"
+                  }
                   alt=""
                   fill
                   className="object-contain"
@@ -153,7 +165,11 @@ const LoginPage: React.FC = () => {
               />
               <div className="w-5 h-5 relative">
                 <Image
-                  src={autoLogin ? "/icons/checked-bt.png" : "/icons/unchecked-bt.png"}
+                  src={
+                    autoLogin
+                      ? "/icons/checked-bt.png"
+                      : "/icons/unchecked-bt.png"
+                  }
                   alt=""
                   fill
                   className="object-contain"
@@ -164,15 +180,22 @@ const LoginPage: React.FC = () => {
           </div>
 
           {/* 로그인 버튼 */}
-          <SubmitButton text={isPending ? "로그인 중..." : "로그인"} onClick={handleLogin} />
+          <SubmitButton
+            text={isPending ? "로그인 중..." : "로그인"}
+            onClick={handleLogin}
+          />
 
           {/* 회원가입/찾기 */}
           <div className="flex justify-center gap-4 text-[11px] text-[#757575] mb-10 mt-3">
             <button onClick={() => router.push("/signUp")}>회원가입</button>
             <span>|</span>
-            <button onClick={() => router.push("/login/findId")}>아이디 찾기</button>
+            <button onClick={() => router.push("/login/findId")}>
+              아이디 찾기
+            </button>
             <span>|</span>
-            <button onClick={() => router.push("/login/findPwd")}>비밀번호 찾기</button>
+            <button onClick={() => router.push("/login/findPwd")}>
+              비밀번호 찾기
+            </button>
           </div>
 
           {/* 소셜 로그인 더미 */}
@@ -184,13 +207,31 @@ const LoginPage: React.FC = () => {
 
           <div className="w-full flex flex-col items-center gap-y-3 mb-10">
             <button onClick={() => alert("카카오 로그인")}>
-              <Image src="/icons/kakao-login-bt.png" alt="" className="w-full max-w-[300px]" width={500} height={100} />
+              <Image
+                src="/icons/kakao-login-bt.png"
+                alt=""
+                className="w-full max-w-[300px]"
+                width={500}
+                height={100}
+              />
             </button>
             <button onClick={() => alert("네이버 로그인")}>
-              <Image src="/icons/naver-login-bt.png" alt="" className="w-full max-w-[300px]" width={500} height={100} />
+              <Image
+                src="/icons/naver-login-bt.png"
+                alt=""
+                className="w-full max-w-[300px]"
+                width={500}
+                height={100}
+              />
             </button>
             <button onClick={() => alert("Google 로그인")}>
-              <Image src="/icons/google-login-bt.png" alt="" className="w-full max-w-[300px]" width={500} height={100} />
+              <Image
+                src="/icons/google-login-bt.png"
+                alt=""
+                className="w-full max-w-[300px]"
+                width={500}
+                height={100}
+              />
             </button>
           </div>
         </div>
