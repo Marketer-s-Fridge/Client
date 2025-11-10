@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchHotPosts } from "../api/postsApi";
 import type { PostResponseDto } from "../types";
 
-const USE_MOCK = false;
+const USE_MOCK = true;
 
 const hotMock = (limit: number): PostResponseDto[] =>
     Array.from({ length: limit }).map((_, idx) => {
