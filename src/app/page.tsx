@@ -96,140 +96,64 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 인기 콘텐츠 + 에디터 픽 */}
-      <section className="hidden md:block bg-white py-12 px-5 sm:px-10 lg:px-[25%]">
-        <div className="max-w-[1024px] mx-auto grid grid-cols-1 gap-16">
-          {/* 인기 콘텐츠 */}
-          <div className="flex flex-col">
-            <div className="flex items-start gap-2 mb-4">
-              <h3 className="text-xl md:text-2xl font-bold">Hot Contents</h3>
-            </div>
-            <div className="flex flex-col lg:flex-row gap-10">
-              {/* Hero */}
-              <div
-                className="transition duration-300 ease-in-out hover:scale-103 cursor-pointer w-full lg:w-[40%] aspect-[3/4] relative rounded-lg overflow-hidden shadow"
-                onClick={() => hotHero && goPost(hotHero)}
-              >
-                {hotHero ? (
-                  <Image
-                    src={hotHero.images?.[0] || "/images/cardNews/hot/001.png"}
-                    alt={hotHero.title || ""}
-                    fill
-                    className="object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full bg-gray-100 animate-pulse" />
-                )}
-              </div>
-
-              <div className="lg:w-[60%] flex flex-col justify-between lg:h-full py-2">
-                <div>
-                  <p className="text-lg sm:text-xl font-bold mt-1">
-                    {hotHero?.title ?? "로딩 중"}
-                  </p>
-                  <div className="flex flex-wrap text-gray-400 gap-x-4 text-xs mt-2">
-                    <p>{fmt(hotHero?.createdAt)}</p>
-                  </div>
-                  <p className="text-sm text-gray-600 mt-5 leading-relaxed">
-                    {hotHero?.content ?? "인기 콘텐츠 요약을 불러오는 중입니다."}
-                  </p>
-                </div>
-                <div className="mt-6">
-                  <SaveToFridgeButton />
-                </div>
-              </div>
-            </div>
-
-            {/* 나머지 아이템 */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 mt-8">
-              {hot.slice(1, 5).map((p) => (
-                <div
-                  key={p.id}
-                  className="cursor-pointer"
-                  onClick={() => goPost(p)}
-                >
-                  <div className="relative aspect-[3/4] rounded-lg overflow-hidden shadow">
-                    <Image
-                      src={p.images?.[0] || "/images/cardNews/hot/001.png"}
-                      alt={p.title || ""}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                  <p className="mt-2 text-sm font-medium line-clamp-2">
-                    {p.title}
-                  </p>
-                </div>
-              ))}
-            </div>
+     {/* 인기 콘텐츠 + 에디터 픽 (데스크톱: 썸네일만) */}
+<section className="hidden md:block bg-white py-12 px-5 sm:px-10 lg:px-[25%]">
+  <div className="max-w-[1024px] mx-auto space-y-16">
+    {/* Hot Contents */}
+    <div>
+      <h3 className="text-xl md:text-2xl font-bold mb-6">Hot Contents</h3>
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
+        {(hot.length ? hot.slice(0, 8) : Array.from<PostResponseDto | null>({ length: 8 })).map((p, idx) => (
+          <div
+            key={p?.id ?? `hot-skel-${idx}`}
+            className="relative aspect-[3/4] rounded-lg overflow-hidden shadow cursor-pointer"
+            onClick={() => p && goPost(p)}
+          >
+            {p ? (
+              <Image
+                src={p.images?.[0] || "/images/cardNews/hot/001.png"}
+                alt={p.title || "Hot"}
+                fill
+                className="object-cover"
+                sizes="(min-width: 1024px) 240px, 33vw"
+                priority={idx < 4}
+              />
+            ) : (
+              <div className="w-full h-full bg-gray-100 animate-pulse" />
+            )}
           </div>
+        ))}
+      </div>
+    </div>
 
-          {/* 에디터 픽 */}
-          <div className="flex flex-col">
-            <div className="flex items-start gap-2 mb-4">
-              <h3 className="text-2xl font-bold">Editor Pick</h3>
-            </div>
-            <div className="flex flex-col lg:flex-row gap-10">
-              {/* Hero */}
-              <div
-                className="transition duration-300 ease-in-out hover:scale-103 cursor-pointer w-full lg:w-[40%] aspect-[3/4] relative rounded-lg overflow-hidden shadow"
-                onClick={() => pickHero && goPost(pickHero)}
-              >
-                {pickHero ? (
-                  <Image
-                    src={pickHero.images?.[0] || "/images/cardNews/editor/001.png"}
-                    alt={pickHero.title || ""}
-                    fill
-                    className="object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full bg-gray-100 animate-pulse" />
-                )}
-              </div>
-
-              <div className="lg:w-[60%] flex flex-col justify-between lg:h-full py-2">
-                <div>
-                  <p className="text-lg sm:text-xl font-semibold mt-1">
-                    {pickHero?.title ?? "로딩 중"}
-                  </p>
-                  <div className="flex flex-wrap text-gray-400 gap-x-4 text-xs mt-2">
-                    <p>{fmt(pickHero?.createdAt)}</p>
-                  </div>
-                  <p className="text-sm text-gray-600 mt-5 leading-relaxed">
-                    {pickHero?.content ?? "에디터 추천 요약을 불러오는 중입니다."}
-                  </p>
-                </div>
-                <div className="mt-6">
-                  <SaveToFridgeButton />
-                </div>
-              </div>
-            </div>
-
-            {/* 나머지 아이템 */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 mt-8">
-              {picks.slice(1, 5).map((p) => (
-                <div
-                  key={p.id}
-                  className="cursor-pointer"
-                  onClick={() => goPost(p)}
-                >
-                  <div className="relative aspect-[3/4] rounded-lg overflow-hidden shadow">
-                    <Image
-                      src={p.images?.[0] || "/images/cardNews/editor/001.png"}
-                      alt={p.title || ""}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                  <p className="mt-2 text-sm font-medium line-clamp-2">
-                    {p.title}
-                  </p>
-                </div>
-              ))}
-            </div>
+    {/* Editor Pick */}
+    <div>
+      <h3 className="text-xl md:text-2xl font-bold mb-6">Editor Pick</h3>
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
+        {(picks.length ? picks.slice(0, 8) : Array.from<PostResponseDto | null>({ length: 8 })).map((p, idx) => (
+          <div
+            key={p?.id ?? `pick-skel-${idx}`}
+            className="relative aspect-[3/4] rounded-lg overflow-hidden shadow cursor-pointer"
+            onClick={() => p && goPost(p)}
+          >
+            {p ? (
+              <Image
+                src={p.images?.[0] || "/images/cardNews/editor/001.png"}
+                alt={p.title || "Editor Pick"}
+                fill
+                className="object-cover"
+                sizes="(min-width: 1024px) 240px, 33vw"
+                priority={idx < 4}
+              />
+            ) : (
+              <div className="w-full h-full bg-gray-100 animate-pulse" />
+            )}
           </div>
-        </div>
-      </section>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
 
       {/* Hot Contents (모바일) */}
       <div className="md:hidden flex flex-col px-5">
