@@ -1,6 +1,7 @@
 // pages/login/page.tsx (또는 해당 파일 경로)
 "use client";
 
+import clsx from "clsx";
 import Header from "@/components/header";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -115,7 +116,11 @@ const LoginPage: React.FC = () => {
                 aria-label="비밀번호 보기"
               >
                 <Image
-                  src={showPassword ? "/icons/eye-open.png" : "/icons/eye-closed.png"}
+                  src={
+                    showPassword
+                      ? "/icons/eye-open.png"
+                      : "/icons/eye-closed.png"
+                  }
                   alt=""
                   width={20}
                   height={20}
@@ -125,6 +130,7 @@ const LoginPage: React.FC = () => {
           </div>
 
           {/* 체크박스 */}
+          {/* 체크박스 */}
           <div className="w-9/11 flex justify-baseline text-xs text-[#666] mb-6 px-1 gap-5">
             <label className="flex items-center gap-2 cursor-pointer">
               <input
@@ -133,9 +139,18 @@ const LoginPage: React.FC = () => {
                 onChange={(e) => setRememberId(e.target.checked)}
                 className="hidden"
               />
-              <div className="w-5 h-5 relative">
+              <div
+                className={clsx(
+                  "w-5 h-5 relative ",
+                  rememberId ? "scale-110" : "scale-90"
+                )}
+              >
                 <Image
-                  src={rememberId ? "/icons/checked-bt.png" : "/icons/unchecked-bt.png"}
+                  src={
+                    rememberId
+                      ? "/icons/checked-bt.png"
+                      : "/icons/unchecked-bt.png"
+                  }
                   alt=""
                   fill
                   className="object-contain"
@@ -151,9 +166,18 @@ const LoginPage: React.FC = () => {
                 onChange={(e) => setAutoLogin(e.target.checked)}
                 className="hidden"
               />
-              <div className="w-5 h-5 relative">
+              <div
+                className={clsx(
+                  "w-5 h-5 relative ",
+                  autoLogin ? "scale-110" : "scale-90"
+                )}
+              >
                 <Image
-                  src={autoLogin ? "/icons/checked-bt.png" : "/icons/unchecked-bt.png"}
+                  src={
+                    autoLogin
+                      ? "/icons/checked-bt.png"
+                      : "/icons/unchecked-bt.png"
+                  }
                   alt=""
                   fill
                   className="object-contain"
@@ -164,15 +188,22 @@ const LoginPage: React.FC = () => {
           </div>
 
           {/* 로그인 버튼 */}
-          <SubmitButton text={isPending ? "로그인 중..." : "로그인"} onClick={handleLogin} />
+          <SubmitButton
+            text={isPending ? "로그인 중..." : "로그인"}
+            onClick={handleLogin}
+          />
 
           {/* 회원가입/찾기 */}
           <div className="flex justify-center gap-4 text-[11px] text-[#757575] mb-10 mt-3">
             <button onClick={() => router.push("/signUp")}>회원가입</button>
             <span>|</span>
-            <button onClick={() => router.push("/login/findId")}>아이디 찾기</button>
+            <button onClick={() => router.push("/login/findId")}>
+              아이디 찾기
+            </button>
             <span>|</span>
-            <button onClick={() => router.push("/login/findPwd")}>비밀번호 찾기</button>
+            <button onClick={() => router.push("/login/findPwd")}>
+              비밀번호 찾기
+            </button>
           </div>
 
           {/* 소셜 로그인 더미 */}
@@ -184,13 +215,31 @@ const LoginPage: React.FC = () => {
 
           <div className="w-full flex flex-col items-center gap-y-3 mb-10">
             <button onClick={() => alert("카카오 로그인")}>
-              <Image src="/icons/kakao-login-bt.png" alt="" className="w-full max-w-[300px]" width={500} height={100} />
+              <Image
+                src="/icons/kakao-login-bt.png"
+                alt=""
+                className="w-full max-w-[300px]"
+                width={500}
+                height={100}
+              />
             </button>
             <button onClick={() => alert("네이버 로그인")}>
-              <Image src="/icons/naver-login-bt.png" alt="" className="w-full max-w-[300px]" width={500} height={100} />
+              <Image
+                src="/icons/naver-login-bt.png"
+                alt=""
+                className="w-full max-w-[300px]"
+                width={500}
+                height={100}
+              />
             </button>
             <button onClick={() => alert("Google 로그인")}>
-              <Image src="/icons/google-login-bt.png" alt="" className="w-full max-w-[300px]" width={500} height={100} />
+              <Image
+                src="/icons/google-login-bt.png"
+                alt=""
+                className="w-full max-w-[300px]"
+                width={500}
+                height={100}
+              />
             </button>
           </div>
         </div>
