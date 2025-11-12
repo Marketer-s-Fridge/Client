@@ -8,7 +8,6 @@ import { useRouter } from "next/navigation";
 import { SubmitButton } from "@/components/authFormComponents";
 import MobileMenu from "@/components/mobileMenu";
 import { motion } from "framer-motion";
-
 import InfiniteSwipeCarousel from "./infiniteSwipeCarousel";
 import MobileSectionPager from "./mobileSectionPager";
 import CharacterSlideOverlay, { type Slide } from "./characterSlideOverlay";
