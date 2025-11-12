@@ -1,3 +1,4 @@
+"use client"
 import React, { useState } from "react";
 import BaseModal from "@/components/baseModal";
 import { TextInput } from "@/components/authFormComponents";
