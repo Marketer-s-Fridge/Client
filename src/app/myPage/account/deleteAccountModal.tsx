@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import BaseModal from "@/components/baseModal";
-import {  TextInput } from "@/components/authFormComponents";
+import { TextInput } from "@/components/authFormComponents";
+import { useDeleteAccount } from "@/features/auth/hooks/useDeleteAccount";
+// import { useDeleteAccount } from "@/features/user/hooks/useDeleteAccount";
 
 interface DeleteAccountModalProps {
   isOpen: boolean;
   onClose: () => void;
   email: string;
-  onConfirm: () => void;
+  onConfirm: () => void; // 성공 시 추가 처리 필요하면 사용
 }
 
 const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
@@ -16,26 +18,49 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
   onConfirm,
 }) => {
   const [password, setPassword] = useState("");
-  const [, setError] = useState(false);
   const [success, setSuccess] = useState(false);
-
-  const handleConfirm = () => {
-    if (password === "1234") {
-      // 예시: 실제로는 API로 비밀번호 검증
-      setSuccess(true);
-      setError(false);
-      onConfirm();
-    } else {
-      setError(true);
-      setSuccess(false);
-    }
-  };
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const resetAndClose = () => {
     setPassword("");
-    setError(false);
+    setErrorMsg(null);
     setSuccess(false);
     onClose();
+  };
+
+  const { deleteAccountAsync, isLoading } = useDeleteAccount({
+    // 훅 내부에서 토큰 정리 + 캐시 초기화 + redirect 수행
+    onSuccess: () => {
+      setSuccess(true);
+      setErrorMsg(null);
+      onConfirm?.();
+      // UI 피드백 잠깐 보여주고 닫기. 라우터가 이동하면 자동으로 사라짐.
+      setTimeout(() => {
+        resetAndClose();
+      }, 700);
+    },
+    onError: (err) => {
+      // 서버 메시지 우선 사용
+      const msg =
+        // @ts-expect-error: axios-like error shape
+        err?.response?.data?.message ||
+        (err instanceof Error ? err.message : "탈퇴에 실패했습니다.");
+      setErrorMsg(msg);
+    },
+    redirectTo: "/auth/signin",
+  });
+
+  const handleConfirm = async () => {
+    setErrorMsg(null);
+    if (!password) {
+      setErrorMsg("비밀번호를 입력하세요.");
+      return;
+    }
+    try {
+      await deleteAccountAsync(password);
+    } catch {
+      // onError에서 처리함
+    }
   };
 
   return (
@@ -53,7 +78,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
               계속 진행하시려면 비밀번호를 입력해주세요.
             </p>
 
-            <div className="flex flex-col gap-4 mb-8">
+            <div className="flex flex-col gap-4 mb-2">
               <div className="flex flex-1 flex-row">
                 <TextInput
                   type="email"
@@ -71,7 +96,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="비밀번호 입력"
-                  error="비밀번호를 다시 확인해주세요."
+                  error={errorMsg || undefined}
                   className="border border-gray-300 rounded-lg px-3 py-2 text-sm"
                 />
               </div>
@@ -80,15 +105,17 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
             <div className="flex flex-1 justify-center gap-10 mt-6">
               <button
                 onClick={resetAndClose}
-                className="cursor-pointer px-9 py-1 rounded-2xl bg-gray-300 text-white text-xs hover:bg-gray-400"
+                disabled={isLoading}
+                className="cursor-pointer px-9 py-1 rounded-2xl bg-gray-300 text-white text-xs hover:bg-gray-400 disabled:opacity-60"
               >
                 취소
               </button>
               <button
                 onClick={handleConfirm}
-                className="cursor-pointer px-9 py-1 rounded-2xl bg-[#FF4545] text-white text-xs  hover:bg-red-600"
+                disabled={isLoading || password.length === 0}
+                className="cursor-pointer px-9 py-1 rounded-2xl bg-[#FF4545] text-white text-xs hover:bg-red-600 disabled:opacity-60"
               >
-                확인
+                {isLoading ? "처리 중..." : "확인"}
               </button>
             </div>
           </>
@@ -101,7 +128,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
               계정이 탈퇴되었습니다.
             </h2>
             <p className="text-sm text-gray-600 mb-6">
-              그동안 이용해주셔서 감사합니다.
+              이용해주셔서 감사합니다.
             </p>
             <button
               onClick={resetAndClose}
