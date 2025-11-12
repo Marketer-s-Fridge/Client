@@ -1,15 +1,16 @@
-"use client"
+"use client";
 import React, { useState } from "react";
 import BaseModal from "@/components/baseModal";
 import { TextInput } from "@/components/authFormComponents";
 import { useDeleteAccount } from "@/features/auth/hooks/useDeleteAccount";
-// import { useDeleteAccount } from "@/features/user/hooks/useDeleteAccount";
+// import { useDeleteAccount } from "@/features/user/hooks/useDeleteAccount"; // ✅ 경로 수정
+
 
 interface DeleteAccountModalProps {
   isOpen: boolean;
   onClose: () => void;
   email: string;
-  onConfirm: () => void; // 성공 시 추가 처리 필요하면 사용
+  onConfirm: () => void;
 }
 
 const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
@@ -30,26 +31,26 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
   };
 
   const { deleteAccountAsync, isLoading } = useDeleteAccount({
-    // 훅 내부에서 토큰 정리 + 캐시 초기화 + redirect 수행
     onSuccess: () => {
       setSuccess(true);
       setErrorMsg(null);
       onConfirm?.();
-      // UI 피드백 잠깐 보여주고 닫기. 라우터가 이동하면 자동으로 사라짐.
-      setTimeout(() => {
-        resetAndClose();
-      }, 700);
+      setTimeout(() => resetAndClose(), 700);
     },
     onError: (err) => {
-      // 서버 메시지 우선 사용
       const msg =
-        // @ts-expect-error: axios-like error shape
+        // @ts-expect-error axios-like
         err?.response?.data?.message ||
         (err instanceof Error ? err.message : "탈퇴에 실패했습니다.");
       setErrorMsg(msg);
     },
     redirectTo: "/auth/signin",
   });
+
+  const handlePasswordChange = (v: any) => {
+    if (typeof v === "string") setPassword(v);
+    else if (v?.target?.value) setPassword(v.target.value);
+  };
 
   const handleConfirm = async () => {
     setErrorMsg(null);
@@ -60,7 +61,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
     try {
       await deleteAccountAsync(password);
     } catch {
-      // onError에서 처리함
+      /* onError에서 처리됨 */
     }
   };
 
@@ -80,22 +81,28 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
             </p>
 
             <div className="flex flex-col gap-4 mb-2">
+              {/* 이메일 입력란 → 읽기전용 input으로 교체 */}
               <div className="flex flex-1 flex-row">
-                <TextInput
-                  type="email"
-                  value={email}
-                  label="계정"
-                  onChange={() => {}}
-                  className="border border-gray-300 rounded-lg px-3 py-2 text-sm bg-gray-100 text-gray-500"
-                />
+                <div className="w-full">
+                  <label className="block text-xs font-medium text-gray-600 mb-1">
+                    계정
+                  </label>
+                  <input
+                    type="email"
+                    value={email}
+                    readOnly
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm bg-gray-100 text-gray-500 cursor-not-allowed"
+                  />
+                </div>
               </div>
 
+              {/* 비밀번호 입력 */}
               <div className="flex flex-1 flex-row">
                 <TextInput
                   label="비밀번호"
                   type="password"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={handlePasswordChange}
                   placeholder="비밀번호 입력"
                   error={errorMsg || undefined}
                   className="border border-gray-300 rounded-lg px-3 py-2 text-sm"
@@ -103,7 +110,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
               </div>
             </div>
 
-            <div className="flex flex-1 justify-center gap-10 mt-6">
+            <div className="flex justify-center gap-10 mt-6">
               <button
                 onClick={resetAndClose}
                 disabled={isLoading}
