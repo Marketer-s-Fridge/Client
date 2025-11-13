@@ -45,7 +45,7 @@ export default function ProcessedDetailPage() {
   if (isLoading) return <div className="p-6">불러오는 중...</div>;
   if (error) return <div className="p-6">오류가 발생했습니다.</div>;
   if (!data) return notFound();
-  if (data.status !== "ANSWERED") return notFound();
+  if (data.status !== "PUBLISHED") return notFound();
 
   const {
     category,
