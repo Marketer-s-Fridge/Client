@@ -1,6 +1,9 @@
 // src/features/auth/api/emailVerificationApi.ts
 // import api from "@/lib/api";
+
 /** ✅ Axios 인스턴스 */
+import axios from "axios";
+
 const api = axios.create({
     baseURL: "/",
     withCredentials: true,
