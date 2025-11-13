@@ -14,6 +14,14 @@ import { useRecentBookmarkedPosts } from "@/features/bookmarks/hooks/useRecentBo
 import { useBookmarks } from "@/features/bookmarks/hooks/useBookmarks";
 import { useAuthStatus } from "@/features/auth/hooks/useAuthStatus";
 
+function EmptySectionBox({ message }: { message: string }) {
+  return (
+    <div className="h-[260px] flex items-center justify-center rounded-lg bg-gray-50">
+      <p className="text-gray-400 text-sm text-center">{message}</p>
+    </div>
+  );
+}
+
 export default function MyPage() {
   const router = useRouter();
   const { isAuthenticated, user, isLoading } = useAuthStatus();
@@ -174,7 +182,7 @@ export default function MyPage() {
             <div>
               <h3 className="text-2xl font-bold mb-4">최근 본 콘텐츠</h3>
               {!hasRecentViewed ? (
-                <p className="text-gray-400 text-sm">담은 콘텐츠가 없습니다</p>
+                <EmptySectionBox message="담은 콘텐츠가 없습니다" />
               ) : (
                 <div className="flex overflow-x-auto gap-4 no-scrollbar snap-x snap-mandatory">
                   {recentlyViewedContents.map((item) => {
@@ -246,15 +254,13 @@ export default function MyPage() {
                   />
                 </button>
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                {isFridgeLoading ? (
-                  <p className="text-gray-400 text-sm">불러오는 중...</p>
-                ) : myFridgeContents.length === 0 ? (
-                  <p className="text-gray-400 text-sm">
-                    담은 콘텐츠가 없습니다
-                  </p>
-                ) : (
-                  myFridgeContents.map((post) => (
+              {isFridgeLoading ? (
+                <EmptySectionBox message="불러오는 중..." />
+              ) : myFridgeContents.length === 0 ? (
+                <EmptySectionBox message="담은 콘텐츠가 없습니다" />
+              ) : (
+                <div className="grid grid-cols-2 gap-4">
+                  {myFridgeContents.map((post) => (
                     <div key={post.id} className="w-full md:w-[140px]">
                       <div className="relative aspect-[3/4] rounded-lg bg-gray-100 overflow-hidden">
                         <Image
@@ -276,9 +282,9 @@ export default function MyPage() {
                         {post.title}
                       </div>
                     </div>
-                  ))
-                )}
-              </div>
+                  ))}
+                </div>
+              )}
             </div>
           </>
         ) : (
@@ -287,7 +293,7 @@ export default function MyPage() {
             <div>
               <h3 className="text-2xl font-bold mb-4">콘텐츠 소비 리포트</h3>
               {!hasConsumptionReport ? (
-                <p className="text-gray-400 text-sm">담은 콘텐츠가 없습니다</p>
+                <EmptySectionBox message="담은 콘텐츠가 없습니다" />
               ) : (
                 <div className="flex flex-col sm:flex-row sm:items-center">
                   <DoughnutChart />
@@ -328,7 +334,7 @@ export default function MyPage() {
                 마케터님에게 딱 맞는 추천 콘텐츠
               </h3>
               {!hasRecommended ? (
-                <p className="text-gray-400 text-sm">담은 콘텐츠가 없습니다</p>
+                <EmptySectionBox message="담은 콘텐츠가 없습니다" />
               ) : (
                 <div className="grid grid-cols-2 gap-4">
                   {tempcontents.map((title, i) => (
@@ -369,7 +375,7 @@ export default function MyPage() {
         <div className="w-full">
           <h3 className="text-2xl font-bold mb-4">최근 본 콘텐츠</h3>
           {!hasRecentViewed ? (
-            <p className="text-gray-400 text-sm">담은 콘텐츠가 없습니다</p>
+            <EmptySectionBox message="담은 콘텐츠가 없습니다" />
           ) : (
             <div className="relative w-full">
               <button
@@ -476,7 +482,7 @@ export default function MyPage() {
         <div>
           <h3 className="text-2xl font-bold mb-4">콘텐츠 소비 리포트</h3>
           {!hasConsumptionReport ? (
-            <p className="text-gray-400 text-sm">담은 콘텐츠가 없습니다</p>
+            <EmptySectionBox message="담은 콘텐츠가 없습니다" />
           ) : (
             <div className="flex flex-col sm:flex-row sm:items-center ">
               <DoughnutChart />
@@ -529,13 +535,13 @@ export default function MyPage() {
               />
             </button>
           </div>
-          <div className="grid grid-cols-3 gap-6">
-            {isFridgeLoading ? (
-              <p className="text-gray-400 text-sm">불러오는 중...</p>
-            ) : myFridgeContents.length === 0 ? (
-              <p className="text-gray-400 text-sm">담은 콘텐츠가 없습니다</p>
-            ) : (
-              myFridgeContents.map((post) => (
+          {isFridgeLoading ? (
+            <EmptySectionBox message="불러오는 중..." />
+          ) : myFridgeContents.length === 0 ? (
+            <EmptySectionBox message="담은 콘텐츠가 없습니다" />
+          ) : (
+            <div className="grid grid-cols-3 gap-6">
+              {myFridgeContents.map((post) => (
                 <div key={post.id} className="w-full">
                   <div className="relative aspect-[3/4] rounded-lg bg-gray-100 overflow-hidden">
                     <Image
@@ -557,9 +563,9 @@ export default function MyPage() {
                     {post.title}
                   </div>
                 </div>
-              ))
-            )}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* 4️⃣ 추천 콘텐츠 */}
@@ -568,7 +574,7 @@ export default function MyPage() {
             마케터님에게 딱 맞는 추천 콘텐츠
           </h3>
           {!hasRecommended ? (
-            <p className="text-gray-400 text-sm">담은 콘텐츠가 없습니다</p>
+            <EmptySectionBox message="담은 콘텐츠가 없습니다" />
           ) : (
             <div className="grid grid-cols-2 gap-4 md:flex md:gap-4 md:justify-center">
               {tempcontents.map((title, i) => (
