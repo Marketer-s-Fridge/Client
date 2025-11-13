@@ -26,10 +26,9 @@ export default function MyContact() {
     const loadMyEnquiries = async () => {
       try {
         setLoading(true);
-        // page는 0부터 시작해야 하니까 currentPage - 1
         const res = await fetchMyEnquiries();
         setInquiries(res);
-        setTotalPages(Math.max(1, Math.ceil(res.length / 10))); // 클라에서 페이지 수 계산
+        setTotalPages(Math.max(1, Math.ceil(res.length / 10)));
       } catch (error) {
         console.error("내 문의 내역 조회 실패:", error);
       } finally {
@@ -50,7 +49,7 @@ export default function MyContact() {
         {/* 상단 요약 */}
         <div className="flex justify-between items-center mb-4">
           <p>
-            총 문의: {}
+            총 문의:{" "}
             <span className="text-red-500 font-semibold">
               {inquiries.length}건
             </span>
@@ -88,36 +87,41 @@ export default function MyContact() {
                   </tr>
                 </thead>
                 <tbody>
-                  {inquiries.map((item, idx) => (
-                    <tr
-                      key={item.id}
-                      onClick={() =>
-                        router.push(
-                          item.status === "ANSWERED"
-                            ? `/myPage/myContact/detail/processed/${item.id}`
-                            : `/myPage/myContact/detail/unprocessed/${item.id}`
-                        )
-                      }
-                      className="h-10 hover:bg-gray-100 cursor-pointer"
-                    >
-                      <td>{idx + 1 + (currentPage - 1) * 10}</td>
-                      <td className="text-left px-4">{item.title}</td>
-                      <td>
-                        {new Date(item.createdAt).toLocaleDateString("ko-KR")}
-                      </td>
-                      <td>
-                        {item.status === "ANSWERED" ? (
-                          <span className="text-green-600 font-semibold">
-                            답변완료
-                          </span>
-                        ) : (
-                          <span className="text-yellow-600 font-semibold">
-                            미답변
-                          </span>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
+                  {inquiries.map((item, idx) => {
+                    const isDone = item.status === "REPORTED"; // ✅ REPORTED면 답변 완료
+                    return (
+                      <tr
+                        key={item.id}
+                        onClick={() =>
+                          router.push(
+                            isDone
+                              ? `/myPage/myContact/detail/processed/${item.id}`
+                              : `/myPage/myContact/detail/unprocessed/${item.id}`
+                          )
+                        }
+                        className="h-10 hover:bg-gray-100 cursor-pointer"
+                      >
+                        <td>{idx + 1 + (currentPage - 1) * 10}</td>
+                        <td className="text-left px-4">{item.title}</td>
+                        <td>
+                          {new Date(
+                            item.createdAt
+                          ).toLocaleDateString("ko-KR")}
+                        </td>
+                        <td>
+                          {isDone ? (
+                            <span className="text-green-600 font-semibold">
+                              답변완료
+                            </span>
+                          ) : (
+                            <span className="text-yellow-600 font-semibold">
+                              미답변
+                            </span>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
@@ -125,15 +129,17 @@ export default function MyContact() {
             {/* 리스트 (모바일 전용) */}
             <div className="sm:hidden space-y-3">
               {inquiries.map((item, idx) => {
-                const isDone = item.status === "ANSWERED";
+                const isDone = item.status === "REPORTED"; // ✅ 여기서도 동일 기준
                 return (
                   <button
                     key={item.id}
-                    onClick={() => router.push(
-                      item.status === "ANSWERED"
-                        ? `/myPage/myContact/detail/processed/${item.id}`
-                        : `/myPage/myContact/detail/unprocessed/${item.id}`
-                    )}
+                    onClick={() =>
+                      router.push(
+                        isDone
+                          ? `/myPage/myContact/detail/processed/${item.id}`
+                          : `/myPage/myContact/detail/unprocessed/${item.id}`
+                      )
+                    }
                     className="w-full text-left rounded-lg border border-gray-200 px-3 py-3 active:bg-gray-50"
                   >
                     <div className="flex items-start justify-between gap-3">
@@ -158,7 +164,9 @@ export default function MyContact() {
                     </div>
 
                     <div className="mt-1 text-[11px] text-gray-500">
-                      {new Date(item.createdAt).toLocaleDateString("ko-KR")}
+                      {new Date(
+                        item.createdAt
+                      ).toLocaleDateString("ko-KR")}
                     </div>
                   </button>
                 );
