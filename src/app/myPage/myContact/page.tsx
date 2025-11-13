@@ -88,7 +88,7 @@ export default function MyContact() {
                 </thead>
                 <tbody>
                   {inquiries.map((item, idx) => {
-                    const isDone = item.status === "REPORTED"; // ✅ REPORTED면 답변 완료
+                    const isDone = item.status === "PUBLISHED"; // ✅ REPORTED면 답변 완료
                     return (
                       <tr
                         key={item.id}
