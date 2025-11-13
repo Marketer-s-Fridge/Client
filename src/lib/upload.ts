@@ -1,5 +1,7 @@
 // src/lib/upload.ts
-import axios from "axios";
+// import api from "@/lib/api"; // ✅ 토큰/withCredentials 붙는 axios 인스턴스
+import axios from "axios";  // ✅ S3 PUT 용(절대 URL이라 상관 없음)
+import api from "./apiClient";
 
 type PresignRes = {
   uploadUrl: string;
@@ -7,13 +9,18 @@ type PresignRes = {
 };
 
 /** 단건 presign → S3 PUT → 공개 URL 반환 */
-export async function uploadSingleImage(file: File, scope: "post" | "avatar" | "misc" = "post") {
-  const { data } = await axios.post<PresignRes>("/api/uploads/presign", {
+export async function uploadSingleImage(
+  file: File,
+  scope: "post" | "avatar" | "misc" = "post"
+) {
+  // ✅ 여기서 api 사용 → Authorization 자동 첨부
+  const { data } = await api.post<PresignRes>("/api/uploads/presign", {
     contentType: file.type,
     size: file.size,
-    scope, // 백엔드에서 scope=null이면 기본 post라, 안 써도 되긴 함
+    scope,
   });
 
+  // pre-signed URL은 절대 URL이라 그냥 axios 써도 OK
   await axios.put(data.uploadUrl, file, {
     headers: { "Content-Type": file.type },
   });
@@ -31,7 +38,7 @@ export async function uploadBatchImages(
 
   const results = await Promise.all(
     files.map(async (file) => {
-      const { data } = await axios.post<PresignRes>("/api/uploads/presign", {
+      const { data } = await api.post<PresignRes>("/api/uploads/presign", {
         contentType: file.type,
         size: file.size,
         scope,
@@ -45,6 +52,5 @@ export async function uploadBatchImages(
     })
   );
 
-  // string[] (각 이미지의 S3 URL)
-  return results;
+  return results; // string[]
 }
