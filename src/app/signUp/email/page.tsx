@@ -12,19 +12,23 @@ import React, { useState, useEffect } from "react";
 import CustomDropdown from "@/components/customDropdown";
 import MobileMenu from "@/components/mobileMenu";
 import { useSignup } from "@/features/auth/hooks/useSignup";
-import { useCheckEmailDuplication } from "@/features/auth/hooks/useCheckEmailDuplication";
-import { useCheckNickname } from "@/features/auth/hooks/useCheckNickname"; // ✅ 추가
+import { useCheckNickname } from "@/features/auth/hooks/useCheckNickname";
 import { SignupRequestDto } from "@/features/auth/types";
 import { useRouter } from "next/navigation";
+
+// ✅ 새 훅들
+import {
+  useCheckIdDuplication,
+  useSendVerificationCode,
+  useVerifyEmailCode,
+} from "@/features/auth/hooks/useEmailVerification";
 
 export default function EmailJoinPage() {
   const router = useRouter();
 
   const [email, setEmail] = useState("");
-  const [isEmailChecked, setIsEmailChecked] = useState(false);
   const [id, setId] = useState("");
   const [nickname, setNickname] = useState("");
-  const [isNicknameChecked, setIsNicknameChecked] = useState(false); // ✅ 닉네임 중복체크 여부
   const [name, setName] = useState("");
   const [code, setCode] = useState("");
   const [password, setPassword] = useState("");
@@ -33,6 +37,12 @@ export default function EmailJoinPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [gender, setGender] = useState("");
+
+  // ✅ 상태 플래그
+  const [isEmailVerified, setIsEmailVerified] = useState(false); // 이메일 인증 완료 여부
+  const [isCodeSent, setIsCodeSent] = useState(false); // 인증번호 발송 여부
+  const [isIdChecked, setIsIdChecked] = useState(false); // 아이디 중복확인 완료 여부
+  const [isNicknameChecked, setIsNicknameChecked] = useState(false);
 
   const [errors, setErrors] = useState({
     email: false,
@@ -56,42 +66,109 @@ export default function EmailJoinPage() {
 
   const { mutate: signupMutate, isPending } = useSignup();
 
-  // ✅ 이메일 중복 체크 훅
-  const {
-    data: isDuplicated,
-    isFetching: isCheckingEmail,
-    refetch: refetchEmailCheck,
-  } = useCheckEmailDuplication(email);
-
-  // ✅ 닉네임 중복 체크 훅
+  // ✅ 닉네임 중복 체크 훅 (기존 그대로)
   const {
     data: nicknameCheckResult,
     isFetching: isCheckingNickname,
     refetch: refetchNicknameCheck,
   } = useCheckNickname(nickname);
 
-  // ✅ 이메일 중복 확인 버튼
-  const handleEmailCheck = async () => {
+  // ✅ 아이디 중복 체크 훅
+  const {
+    mutate: checkIdDuplication,
+    isPending: isCheckingId,
+  } = useCheckIdDuplication();
+
+  // ✅ 인증코드 발송 훅
+  const {
+    mutate: sendVerificationCode,
+    isPending: isSendingCode,
+  } = useSendVerificationCode();
+
+  // ✅ 이메일 + 코드 검증 훅
+  const {
+    mutate: verifyEmailCode,
+    isPending: isVerifyingCode,
+  } = useVerifyEmailCode();
+
+  // ✅ 아이디 중복 확인 버튼
+  const handleIdCheck = () => {
+    const normalizedId = id.trim();
+    if (!normalizedId) {
+      alert("아이디를 입력해주세요.");
+      return;
+    }
+
+    checkIdDuplication(normalizedId, {
+      onSuccess: () => {
+        // 200이면 사용 가능, 400이면 onError로 빠진다고 가정
+        alert("사용 가능한 아이디입니다 ✅");
+        setIsIdChecked(true);
+        setErrors((prev) => ({ ...prev, id: false }));
+      },
+      onError: (error: any) => {
+        if (error?.response?.status === 400) {
+          alert("이미 사용 중인 아이디입니다 ❌");
+        } else {
+          alert("아이디 중복 확인 중 오류가 발생했습니다.");
+        }
+        setIsIdChecked(false);
+        setErrors((prev) => ({ ...prev, id: true }));
+      },
+    });
+  };
+
+  // ✅ 인증번호 발송 버튼
+  const handleSendCode = () => {
     if (!email.includes("@")) {
       alert("올바른 이메일 주소를 입력해주세요.");
       return;
     }
-    try {
-      const { data } = await refetchEmailCheck();
-      if (data) {
-        alert("이미 사용 중인 이메일입니다 ❌");
-        setIsEmailChecked(false);
-      } else {
-        alert("사용 가능한 이메일입니다 ✅");
-        setIsEmailChecked(true);
-      }
-    } catch {
-      alert("이메일 중복 확인 중 오류가 발생했습니다.");
-      setIsEmailChecked(false);
-    }
+
+    sendVerificationCode(email, {
+      onSuccess: () => {
+        alert("인증번호가 발송되었습니다 ✅");
+        setIsCodeSent(true);
+        setIsEmailVerified(false);
+        setErrors((prev) => ({ ...prev, email: false, code: false }));
+      },
+      onError: () => {
+        alert("인증번호 발송 중 오류가 발생했습니다.");
+        setIsCodeSent(false);
+      },
+    });
   };
 
-  // ✅ 닉네임 중복 확인 버튼
+  // ✅ 이메일 인증(코드 검증) 버튼
+  const handleVerifyCode = () => {
+    const trimmedCode = code.trim();
+    if (!email.includes("@")) {
+      alert("이메일 주소를 먼저 입력해주세요.");
+      return;
+    }
+    if (!trimmedCode) {
+      alert("인증번호를 입력해주세요.");
+      return;
+    }
+
+    verifyEmailCode(
+      { email, code: trimmedCode },
+      {
+        onSuccess: () => {
+          alert("이메일 인증이 완료되었습니다 ✅");
+          setIsEmailVerified(true);
+          setErrors((prev) => ({ ...prev, email: false, code: false }));
+        },
+        onError: () => {
+          alert("인증번호가 올바르지 않습니다 ❌");
+          setIsEmailVerified(false);
+          setErrors((prev) => ({ ...prev, code: true }));
+        },
+      }
+    );
+  };
+
+  // ✅ 닉네임 중복 확인 버튼 (기존 로직 유지)
   const handleNicknameCheck = async () => {
     const normalized = (nickname ?? "").trim();
     if (!normalized) {
@@ -100,7 +177,6 @@ export default function EmailJoinPage() {
     }
     try {
       const { data } = await refetchNicknameCheck();
-      // 서버가 "Successful"/"Failed" 형태라고 가정. Failed=중복
       const result = (data ?? "").toString().trim();
       if (result === "Failed") {
         alert("이미 사용 중인 닉네임입니다 ❌");
@@ -115,26 +191,34 @@ export default function EmailJoinPage() {
     }
   };
 
-  // 닉네임 입력 바뀌면 확인 상태 초기화
+  // 입력 변경 시 플래그 초기화
   useEffect(() => {
     setIsNicknameChecked(false);
   }, [nickname]);
 
-  // 이메일 입력 바뀌면 확인 상태 초기화
   useEffect(() => {
-    setIsEmailChecked(false);
+    setIsIdChecked(false);
+  }, [id]);
+
+  useEffect(() => {
+    setIsEmailVerified(false);
+    setIsCodeSent(false);
   }, [email]);
+
+  useEffect(() => {
+    setIsEmailVerified(false);
+  }, [code]);
 
   const isPasswordValid = (pwd: string) =>
     /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[^\w\s]).{8,20}$/.test(pwd);
 
   const handleSubmit = () => {
     const newErrors = {
-      email: !email.includes("@") || !isEmailChecked,
-      id: !id.trim(),
-      nickname: !nickname.trim() || !isNicknameChecked, // ✅ 닉네임 체크 필수
+      email: !email.includes("@") || !isEmailVerified, // 이메일 + 인증 완료 필수
+      id: !id.trim() || !isIdChecked, // 아이디 입력 + 중복 확인 필수
+      nickname: !nickname.trim() || !isNicknameChecked,
       gender: !gender,
-      code: code !== "123456",
+      code: !isEmailVerified, // 코드 자체보다는 '인증 완료' 여부를 체크
       password: !isPasswordValid(password),
       passwordCheck: password !== passwordCheck,
       agreements: !agreements.age || !agreements.provide || !agreements.collect,
@@ -157,7 +241,8 @@ export default function EmailJoinPage() {
 
     signupMutate(signupData, {
       onSuccess: () => setModalOpen(true),
-      onError: () => alert("회원가입 중 오류가 발생했습니다. 다시 시도해주세요."),
+      onError: () =>
+        alert("회원가입 중 오류가 발생했습니다. 다시 시도해주세요."),
     });
   };
 
@@ -202,21 +287,32 @@ export default function EmailJoinPage() {
               handleSubmit();
             }}
           >
-            {/* 이메일 */}
+            {/* 이메일 + 인증번호 발송 */}
             <TextInput
               required
               label="이메일주소"
               type="text"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              error={errors.email ? "이메일을 입력하고 중복확인을 완료해주세요." : ""}
-              rightButtonText={
-                isCheckingEmail ? "확인 중..." : isEmailChecked ? "확인 완료" : "중복 확인"
+              error={
+                errors.email
+                  ? !email.includes("@")
+                    ? "올바른 이메일 주소를 입력해주세요."
+                    : "이메일 인증을 완료해주세요."
+                  : ""
               }
-              onRightButtonClick={handleEmailCheck}
+              rightButtonText={
+                isSendingCode
+                  ? "전송 중..."
+                  : isCodeSent
+                  ? "재전송"
+                  : "인증번호 전송"
+              }
+              onRightButtonClick={handleSendCode}
               className="rounded-lg"
             />
 
+            {/* 인증번호 + 이메일 검증 */}
             <TextInput
               required
               label="인증번호"
@@ -224,25 +320,43 @@ export default function EmailJoinPage() {
               value={code}
               onChange={(e) => setCode(e.target.value)}
               error={errors.code ? "인증번호를 다시 확인해주세요." : ""}
-              rightButtonText="인증 완료"
-              onRightButtonClick={() => alert("인증 완료!")}
+              rightButtonText={
+                isVerifyingCode
+                  ? "확인 중..."
+                  : isEmailVerified
+                  ? "인증 완료"
+                  : "인증하기"
+              }
+              onRightButtonClick={handleVerifyCode}
               className="rounded-lg"
             />
 
-            {/* 아이디 */}
+            {/* 아이디 + 중복 확인 */}
             <TextInput
               required
               label="아이디"
               type="text"
               value={id}
               onChange={(e) => setId(e.target.value)}
-              rightButtonText="중복 확인"
-              onRightButtonClick={() => alert("중복 확인 메세지 전송!")}
-              error={errors.id ? "이미 사용중이거나 올바르지 않은 아이디입니다." : ""}
+              rightButtonText={
+                isCheckingId
+                  ? "확인 중..."
+                  : isIdChecked
+                  ? "확인 완료"
+                  : "중복 확인"
+              }
+              onRightButtonClick={handleIdCheck}
+              error={
+                errors.id
+                  ? !id.trim()
+                    ? "아이디를 입력해주세요."
+                    : "아이디 중복확인을 완료해주세요."
+                  : ""
+              }
               className="rounded-lg"
             />
 
-            {/* 닉네임 + 중복확인 적용 */}
+            {/* 닉네임 + 중복확인 (기존 로직) */}
             <TextInput
               required
               label="닉네임"
@@ -250,7 +364,11 @@ export default function EmailJoinPage() {
               value={nickname}
               onChange={(e) => setNickname(e.target.value)}
               rightButtonText={
-                isCheckingNickname ? "확인 중..." : isNicknameChecked ? "확인 완료" : "중복 확인"
+                isCheckingNickname
+                  ? "확인 중..."
+                  : isNicknameChecked
+                  ? "확인 완료"
+                  : "중복 확인"
               }
               onRightButtonClick={handleNicknameCheck}
               error={
@@ -284,20 +402,35 @@ export default function EmailJoinPage() {
             <InputRow label="생년월일" required>
               <CustomDropdown
                 label="년도"
-                options={Array.from({ length: 50 }, (_, i) => String(1980 + i))}
-                onSelect={(val) => setBirth((prev) => ({ ...prev, year: val }))}
+                options={Array.from(
+                  { length: 50 },
+                  (_, i) => String(1980 + i)
+                )}
+                onSelect={(val) =>
+                  setBirth((prev) => ({ ...prev, year: val }))
+                }
                 buttonClassName="rounded-lg border-[#C2C2C2]"
               />
               <CustomDropdown
                 label="월"
-                options={Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, "0"))}
-                onSelect={(val) => setBirth((prev) => ({ ...prev, month: val }))}
+                options={Array.from(
+                  { length: 12 },
+                  (_, i) => String(i + 1).padStart(2, "0")
+                )}
+                onSelect={(val) =>
+                  setBirth((prev) => ({ ...prev, month: val }))
+                }
                 buttonClassName="rounded-lg border-[#C2C2C2]"
               />
               <CustomDropdown
                 label="일"
-                options={Array.from({ length: 31 }, (_, i) => String(i + 1).padStart(2, "0"))}
-                onSelect={(val) => setBirth((prev) => ({ ...prev, day: val }))}
+                options={Array.from(
+                  { length: 31 },
+                  (_, i) => String(i + 1).padStart(2, "0")
+                )}
+                onSelect={(val) =>
+                  setBirth((prev) => ({ ...prev, day: val }))
+                }
                 buttonClassName="rounded-lg border-[#C2C2C2]"
               />
             </InputRow>
@@ -331,8 +464,14 @@ export default function EmailJoinPage() {
                 { key: "all", text: "모두 동의하기", bold: true },
                 { key: "age", text: "[필수] 만 14세 이상입니다." },
                 { key: "provide", text: "[필수] 개인정보 제공에 동의합니다." },
-                { key: "collect", text: "[필수] 개인정보 수집 및 이용에 동의합니다." },
-                { key: "marketing", text: "[선택] 마케팅 활용 및 광고 수신에 동의합니다." },
+                {
+                  key: "collect",
+                  text: "[필수] 개인정보 수집 및 이용에 동의합니다.",
+                },
+                {
+                  key: "marketing",
+                  text: "[선택] 마케팅 활용 및 광고 수신에 동의합니다.",
+                },
               ].map(({ key, text, bold }) => (
                 <label key={key} className="flex items-center gap-2">
                   <input
@@ -352,7 +491,9 @@ export default function EmailJoinPage() {
                 </label>
               ))}
               {errors.agreements && (
-                <p className="text-[11px] text-red-500 mt-1">필수 동의를 눌러주세요.</p>
+                <p className="text-[11px] text-red-500 mt-1">
+                  필수 동의를 눌러주세요.
+                </p>
               )}
             </div>
 
@@ -374,7 +515,9 @@ export default function EmailJoinPage() {
           router.push("/login");
         }}
       >
-        <p className="text-lg font-semibold text-gray-800 mb-3">회원가입이 완료되었습니다 🎉</p>
+        <p className="text-lg font-semibold text-gray-800 mb-3">
+          회원가입이 완료되었습니다 🎉
+        </p>
         <p className="text-sm text-gray-500">이제 로그인해주세요!</p>
       </ConfirmModal>
     </div>

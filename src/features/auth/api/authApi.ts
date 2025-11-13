@@ -185,3 +185,25 @@ export const fetchUserInfo = async (): Promise<UserResponseDto> => {
   const res = await api.get<UserResponseDto>("/auth/me");
   return res.data;
 };
+
+
+/** 아이디 중복 체크 */
+export const checkIdDuplicationApi = (id: string) => {
+  return api.get("/auth/id_duplication_check", {
+    params: { id },
+  });
+};
+
+/** 인증코드 발송 */
+export const sendVerificationCodeApi = (email: string) => {
+  return api.post("/auth/send_verification_code", {
+    email,
+  });
+};
+
+/** 이메일 인증 (코드 검증) */
+export const verifyEmailCodeApi = (params: { email: string; code: string }) => {
+  return api.get("/auth/verify_code", {
+    params,
+  });
+};
