@@ -89,25 +89,15 @@ export default function CustomDropdown({
             "absolute top-full left-0 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-72 overflow-y-auto animate-fade-slide"
           )}
         >
-          {/* 현재 선택 표시 + 닫기 */}
+          {/* 현재 선택 표시 (화살표 제거, 선 제거) */}
           <li
             role="option"
             aria-selected
-            className="flex justify-between items-center px-3 py-2 md:px-4 md:py-2 cursor-pointer"
+            className="px-3 py-2 md:px-4 md:py-2 cursor-pointer text-gray-500 text-[11px] md:text-xs"
             onClick={() => setIsOpen(false)}
           >
-            <span>{selected}</span>
-            <Image
-              alt="close"
-              src="/icons/down.png"
-              width={20}
-              height={20}
-              className="w-3.5 h-3.5 md:w-5 md:h-5 rotate-180"
-              unoptimized
-            />
+            현재 선택: {selected}
           </li>
-
-          <hr className="border-t border-gray-200 my-1 mx-2" />
 
           {options
             .filter((opt) => opt !== selected)
