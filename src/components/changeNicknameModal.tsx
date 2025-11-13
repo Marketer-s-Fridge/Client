@@ -7,6 +7,8 @@ import { useCheckNickname } from "@/features/auth/hooks/useCheckNickname";
 import { useUpdateNickname } from "@/features/auth/hooks/useUpdateNickname";
 import { useUpdateProfileImage } from "@/features/auth/hooks/useUpdateProfileImage";
 import { useQueryClient } from "@tanstack/react-query";
+import { useImageUpload } from "@/features/posts/hooks/useImageUpload";
+// import { useImageUpload } from "@/hooks/useImageUpload"; // ✅ S3 업로드 훅
 
 type Props = { onClose: () => void; onUpdated?: () => void };
 
@@ -36,9 +38,9 @@ export default function ChangeNicknameModal({ onClose, onUpdated }: Props) {
     [previewImage, initialAvatar]
   );
 
-  // 중복 체크 훅(버튼으로 수동 실행)
   const queryClient = useQueryClient();
 
+  // 닉네임 중복 체크 훅
   const {
     data: dupRaw,
     refetch: refetchDup,
@@ -69,6 +71,9 @@ export default function ChangeNicknameModal({ onClose, onUpdated }: Props) {
   // 프로필 이미지 변경 훅(이미지 URL 필요)
   const { mutateAsync: mutateAvatar, isPending: avatarSaving } =
     useUpdateProfileImage();
+
+  // S3 업로드 훅
+  const { uploadSingle, loading: uploadingAvatar } = useImageUpload();
 
   const handleDuplicateCheck = async () => {
     if (!nickValid) {
@@ -105,9 +110,6 @@ export default function ChangeNicknameModal({ onClose, onUpdated }: Props) {
         return;
       }
       if (dupOk !== true) {
-        await refetchDup();
-        // refetch 이후 dupOk는 메모값이라 한 틱 늦을 수 있음 → 다시 판정
-        // 안전하게 한 번 더 검사
         const now = await refetchDup();
         const lower = String(now.data ?? "").toLowerCase();
         const duplicate =
@@ -123,12 +125,10 @@ export default function ChangeNicknameModal({ onClose, onUpdated }: Props) {
     }
 
     try {
-      // 1) 아바타 변경: 파일을 URL로 업로드해야 함
-      // 업로드 API가 따로 있으면 먼저 업로드해서 imageUrl을 얻으세요.
-      // 예) const imageUrl = await uploadProfileImage(fileObj)
+      // 1) 아바타 변경: S3 업로드 후 URL을 mutateAvatar에 전달
       if (avatarChanged && fileObj) {
-        console.warn("이미지 업로드 API 연동 필요: 업로드 후 URL을 넘기세요.");
-        // 예시: await mutateAvatar(imageUrl)
+        const imageUrl = await uploadSingle(fileObj, "avatar");
+        await mutateAvatar(imageUrl);
       }
 
       // 2) 닉네임 변경
@@ -143,7 +143,7 @@ export default function ChangeNicknameModal({ onClose, onUpdated }: Props) {
     }
   };
 
-  const submitting = nickSaving || avatarSaving;
+  const submitting = nickSaving || avatarSaving || uploadingAvatar;
 
   return (
     <div className="text-black fixed inset-0 bg-black/30 flex justify-center items-center z-50">
