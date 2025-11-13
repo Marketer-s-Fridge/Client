@@ -129,7 +129,7 @@ export default function MyContact() {
             {/* 리스트 (모바일 전용) */}
             <div className="sm:hidden space-y-3">
               {inquiries.map((item, idx) => {
-                const isDone = item.status === "REPORTED"; // ✅ 여기서도 동일 기준
+                const isDone = item.status === "PUBLISHED"; // ✅ 여기서도 동일 기준
                 return (
                   <button
                     key={item.id}
