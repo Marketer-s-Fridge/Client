@@ -6,6 +6,17 @@ import {
   UserResponseDto,
 } from "../types";
 
+/** ✅ 토큰이 필요한 경로들만 정리 */
+const AUTH_REQUIRED_PATHS = [
+  "/auth/me",
+  "/auth/delete",
+  "/auth/nickname/check",
+  "/auth/nickname",
+  "/auth/profile-image",
+  "/auth/update",
+  "/auth/password",
+];
+
 /** ✅ Axios 인스턴스 */
 const api = axios.create({
   baseURL: "/",
@@ -13,14 +24,22 @@ const api = axios.create({
   headers: { "Content-Type": "application/json" },
 });
 
-/** ✅ 인터셉터: 모든 요청에 JWT 자동 첨부 */
+/** ✅ 인터셉터: 특정 요청에만 JWT 자동 첨부 + 로깅 */
 api.interceptors.request.use((config) => {
   const token =
     typeof window !== "undefined"
       ? localStorage.getItem("accessToken")
       : null;
 
-  if (token) {
+  const url = config.url || "";
+  const needsAuth = AUTH_REQUIRED_PATHS.some((path) =>
+    url.startsWith(path)
+  );
+
+  if (!config.headers) config.headers = {};
+
+  // ✅ 지정된 경로에만 Authorization 헤더 추가
+  if (needsAuth && token) {
     config.headers = {
       ...(config.headers || {}),
       Authorization: `Bearer ${token}`,
@@ -29,7 +48,8 @@ api.interceptors.request.use((config) => {
 
   console.log(
     `📡 [요청] ${config.method?.toUpperCase()} ${config.url}`,
-    config.data || ""
+    config.data || "",
+    config.params || ""
   );
   return config;
 });
@@ -51,13 +71,17 @@ api.interceptors.response.use(
   }
 );
 
+/* ----------------------------------------------------------------
+ *  회원가입 / 로그인
+ * ---------------------------------------------------------------- */
+
 /** ✅ 회원가입 */
 export const signup = async (dto: SignupRequestDto): Promise<string> => {
   const res = await api.post<string>("/auth/signup", dto);
   return res.data;
 };
 
-/** ✅ 이메일 중복 체크 */
+/** ✅ 이메일 중복 체크 (true = 중복됨) */
 export const checkEmailDuplication = async (
   email: string
 ): Promise<boolean> => {
@@ -87,10 +111,19 @@ export const signin = async (dto: SigninRequestDto): Promise<string> => {
   return token;
 };
 
+/* ----------------------------------------------------------------
+ *  아이디/비밀번호 찾기 (토큰 필요 없음)
+ * ---------------------------------------------------------------- */
+
 /** ✅ 아이디 찾기 */
-export const findId = async (name: string, email: string): Promise<UserResponseDto | null> => {
+export const findId = async (
+  name: string,
+  email: string
+): Promise<UserResponseDto | null> => {
   try {
-    const res = await api.get<UserResponseDto>("/auth/signin/find_id", { params: { name, email } });
+    const res = await api.get<UserResponseDto>("/auth/signin/find_id", {
+      params: { name, email },
+    });
     return res.data;
   } catch (e: any) {
     if (e?.response?.status === 404) return null;
@@ -110,6 +143,10 @@ export const findPw = async (
   return res.data;
 };
 
+/* ----------------------------------------------------------------
+ *  계정 관련 (JWT 필요)
+ * ---------------------------------------------------------------- */
+
 /** ✅ 회원 탈퇴 */
 export const deleteAccount = async (
   currentPassword: string
@@ -122,12 +159,12 @@ export const deleteAccount = async (
   return String(res.data);
 };
 
-/** ✅ 닉네임 중복 체크 */
+/** ✅ 닉네임 중복 체크 (로그인 필요) */
 export const checkNickname = async (nickname: string): Promise<string> => {
   const res = await api.get<string>("/auth/nickname/check", {
     params: { nickname },
   });
-  return res.data;
+  return res.data; // "Duplicated" | "Available"
 };
 
 /** ✅ 닉네임 변경 */
@@ -171,13 +208,7 @@ export const updatePassword = async (
     newPassword,
     confirmNewPassword,
   });
-  return res.data;
-};
-
-/** ✅ 전체 사용자 수 조회 */
-export const fetchUserCount = async (): Promise<number> => {
-  const res = await api.get<number>("/auth/count");
-  return res.data;
+  return res.data; // "Successful" 등
 };
 
 /** ✅ 내 정보 */
@@ -186,24 +217,57 @@ export const fetchUserInfo = async (): Promise<UserResponseDto> => {
   return res.data;
 };
 
+/* ----------------------------------------------------------------
+ *  그 외 공용 API (토큰 필요 없음)
+ * ---------------------------------------------------------------- */
 
-/** 아이디 중복 체크 */
-export const checkIdDuplicationApi = (id: string) => {
-  return api.get("/auth/id_duplication_check", {
-    params: { id },
-  });
+/** ✅ 전체 사용자 수 조회 */
+export const fetchUserCount = async (): Promise<number> => {
+  // 백엔드: @GetMapping("/count")
+  const res = await api.get<number>("/count");
+  return res.data;
 };
 
-/** 인증코드 발송 */
-export const sendVerificationCodeApi = (email: string) => {
-  return api.post("/auth/send_verification_code", {
-    email,
-  });
+/** ✅ 아이디 중복 체크 (true = 사용 가능) */
+export const checkIdDuplicationApi = async (id: string): Promise<boolean> => {
+  try {
+    const res = await api.get<string>("/auth/id_duplication_check", {
+      params: { id },
+    });
+    const text = res.data.trim();
+    return text === "Available";
+  } catch (e: any) {
+    if (e?.response?.status === 400) {
+      // Duplicated
+      return false;
+    }
+    throw e;
+  }
 };
 
-/** 이메일 인증 (코드 검증) */
-export const verifyEmailCodeApi = (params: { email: string; code: string }) => {
-  return api.get("/auth/verify_code", {
-    params,
+/** ✅ 인증코드 발송 (토큰 X)
+ *  백엔드: @RequestParam("email") 로 받으므로 query param으로 전송
+ */
+export const sendVerificationCodeApi = async (
+  email: string
+): Promise<string> => {
+  const res = await api.post<string>(
+    "/auth/send_verification_code",
+    null,
+    {
+      params: { email },
+    }
+  );
+  return res.data;
+};
+
+/** ✅ 이메일 인증 (코드 검증, 토큰 X) */
+export const verifyEmailCodeApi = async (
+  email: string,
+  code: string
+): Promise<string> => {
+  const res = await api.get<string>("/auth/verify_code", {
+    params: { email, code },
   });
+  return res.data;
 };
