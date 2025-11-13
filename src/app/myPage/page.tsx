@@ -35,26 +35,14 @@ export default function MyPage() {
   } = useBookmarks();
 
   // 비로그인 진입 시 모달
-  // 모달은 "인증 검사 완료" 이후에만 판정
   useEffect(() => {
-    const checked = !isLoading; // 토큰 없으면 곧바로 false → checked = true
+    const checked = !isLoading;
     if (checked && !isAuthenticated) setIsLoginModalOpen(true);
   }, [isLoading, isAuthenticated]);
 
-  const recentlyViewedContents = [
-    { id: 101, title: "KOREADB 2025 뉴 컬렉션" },
-    { id: 102, title: "기능성과 스타일의 완벽 조화" },
-    { id: 103, title: "환경을 생각한 지속 가능한 브랜드" },
-    { id: 104, title: "셀럽들의 공항 패션 스타일" },
-    { id: 105, title: "에센셜 드레스 스타일링" },
-    { id: 106, title: "재테크 가이드" },
-  ];
-
-  const tempcontents = [
-    "KOREADB 2025 뉴 컬렉션",
-    "기능성과 스타일의 완벽 조화",
-    "환경을 생각한 지속 가능한 브랜드",
-  ];
+  // TODO: 실제 API 연동 후 최근 본 콘텐츠 / 추천 콘텐츠 데이터 연결
+  const recentlyViewedContents: { id: number; title: string }[] = [];
+  const tempcontents: string[] = [];
 
   const cardsPerPage = 3;
   const maxSlideIndex =
@@ -62,8 +50,8 @@ export default function MyPage() {
 
   const hasRecentViewed = recentlyViewedContents.length > 0;
   const hasRecommended = tempcontents.length > 0;
-  // 실제 리포트 데이터 연동 시 이 값 기준으로 토글
-  const hasConsumptionReport = true;
+  // TODO: 실제 리포트 데이터 연동 시 토글
+  const hasConsumptionReport = false;
 
   const handleToggleBookmark = (postId: number, isSaved: boolean) => {
     if (!isAuthenticated) {
@@ -80,7 +68,7 @@ export default function MyPage() {
     });
   };
 
-  // 로딩 스켈레톤(간단)
+  // 로딩 스켈레톤
   if (isLoading) {
     return (
       <div className="bg-white pt-11 md:pt-0">
