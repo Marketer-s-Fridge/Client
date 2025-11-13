@@ -59,11 +59,11 @@ export const checkIdDuplicationApi = async (id: string) => {
 
 /** 인증코드 발송 */
 export const sendVerificationCodeApi = async (email: string) => {
-  const res = await api.post("/auth/send_verification_code", {
-    email,
-  });
-  return res.data;
-};
+    const res = await api.post("/auth/send_verification_code", null, {
+      params: { email },   // ✅ 쿼리 파라미터로 전송
+    });
+    return res.data;
+  };
 
 /** 이메일 + 코드 검증 */
 export const verifyEmailCodeApi = async (params: {
