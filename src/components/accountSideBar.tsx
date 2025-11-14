@@ -101,15 +101,6 @@ export default function AccountSidebar() {
             내 문의 내역
           </button>
         </div>
-
-        {/* 오른쪽 콘텐츠 소비 리포트 버튼 */}
-        <button
-          onClick={() => {
-            // router.push("/myPage/contentReport");
-          }}
-        >
-          콘텐츠 소비 리포트
-        </button>
       </section>
 
       {/* ✅ 탈퇴 확인 모달 */}
