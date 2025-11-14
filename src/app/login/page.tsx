@@ -80,7 +80,7 @@ const LoginPage: React.FC = () => {
 
         // 어드민 분기
         const idLower = input1.trim().toLowerCase();
-        if (idLower === "test1") {
+        if (idLower === "mf-admin") {
           router.replace("/admin");
           return;
         }
