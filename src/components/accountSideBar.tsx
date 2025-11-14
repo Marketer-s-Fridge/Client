@@ -81,8 +81,7 @@ export default function AccountSidebar() {
       </p>
 
       {/* ✅ 모바일 하단 메뉴 */}
-      <section className="flex md:hidden w-full justify-between items-center px-4">
-        {/* 왼쪽 버튼 그룹 */}
+      {/* <section className="flex md:hidden w-full justify-between items-center px-4">
         <div className="flex gap-5">
           <button
             onClick={() => router.push("/myPage/account/myInfo")}
@@ -101,7 +100,7 @@ export default function AccountSidebar() {
             내 문의 내역
           </button>
         </div>
-      </section>
+      </section> */}
 
       {/* ✅ 탈퇴 확인 모달 */}
       <DeleteAccountModal
