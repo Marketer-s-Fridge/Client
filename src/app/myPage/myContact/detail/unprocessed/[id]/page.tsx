@@ -25,8 +25,8 @@ export default function UnprocessedDetailPage() {
 
   const {
     category,
-    authorName,
-    authorEmail,
+    writer,
+    writerEmail,
     createdAt,
     title,
     content,
@@ -43,9 +43,9 @@ export default function UnprocessedDetailPage() {
 
           <div className="flex items-center gap-3 mb-1 border-y border-gray-300 py-2">
             <div className="w-8 h-8 rounded-full bg-gray-300" />
-            <span className="text-sm font-medium">{authorName ?? "익명"}</span>
-            {authorEmail && (
-              <span className="text-sm text-[#8E8E8E]">{authorEmail}</span>
+            <span className="text-sm font-medium">{writer.username ?? "익명"}</span>
+            {writerEmail && (
+              <span className="text-sm text-[#8E8E8E]">{writerEmail}</span>
             )}
             <span className="ml-auto text-sm">
               {new Date(createdAt).toLocaleDateString("ko-KR")}
