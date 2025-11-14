@@ -1,4 +1,3 @@
-// app/(whatever)/processed/[id]/page.tsx 등
 "use client";
 
 import React, { useMemo } from "react";
@@ -36,7 +35,7 @@ export default function ProcessedDetailPage() {
     error: cError,
   } = useComments(enquiryId);
 
-  // ✅ 피드백 조회 (해당 문의에 대해 이미 남긴 피드백이 있는지)
+  // ✅ 피드백 조회
   const {
     data: feedback,
     isLoading: fLoading,
@@ -50,7 +49,6 @@ export default function ProcessedDetailPage() {
   // ✅ 이미 피드백이 있다면 UI 상태에 반영
   React.useEffect(() => {
     if (!feedback) return;
-    // FeedbackResponseDto 안에 helpful(boolean) 있다고 가정
     const isHelpful = (feedback as any).helpful as boolean | undefined;
     if (typeof isHelpful === "boolean") {
       setHelpful(isHelpful ? "yes" : "no");
@@ -90,10 +88,8 @@ export default function ProcessedDetailPage() {
     e.preventDefault();
     if (!helpful || submitted || isSubmitting) return;
 
-    // ✅ 피드백 생성 API 호출
     createFeedback(
       {
-        // FeedbackRequestDto 형태에 맞게 수정 필요
         enquiryId,
         helpful: helpful === "yes",
       } as any,
@@ -110,6 +106,7 @@ export default function ProcessedDetailPage() {
       <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
 
+      {/* 본문 영역 */}
       <main className="w-full flex justify-center px-4">
         <div className="w-full px-[5%] lg:px-[22.5%] mt-20">
           {/* 카테고리 */}
@@ -182,72 +179,74 @@ export default function ProcessedDetailPage() {
               </p>
             </div>
           </div>
-
-          {/* ✅ 답변 만족도 설문 영역 */}
-          <section className="w-full mt-8 mb-12 bg-[#F7F7F7] py-8 px-4 rounded-md border border-gray-200">
-            <form
-              onSubmit={handleSurveySubmit}
-              className="max-w-xl mx-auto text-center space-y-4"
-            >
-              <h3 className="text-base md:text-lg font-semibold mb-2">
-                답변이 도움이 되셨나요?
-              </h3>
-
-              <div className="flex flex-wrap justify-center items-center gap-6">
-                <label className="flex items-center gap-2 text-sm md:text-base cursor-pointer">
-                  <input
-                    type="radio"
-                    name="helpful"
-                    value="yes"
-                    checked={helpful === "yes"}
-                    onChange={() => setHelpful("yes")}
-                    className="cursor-pointer"
-                    disabled={isSubmitting}
-                  />
-                  <span>도움이 되었어요.</span>
-                </label>
-
-                <label className="flex items-center gap-2 text-sm md:text-base cursor-pointer">
-                  <input
-                    type="radio"
-                    name="helpful"
-                    value="no"
-                    checked={helpful === "no"}
-                    onChange={() => setHelpful("no")}
-                    className="cursor-pointer"
-                    disabled={isSubmitting}
-                  />
-                  <span>도움이 되지 않았어요.</span>
-                </label>
-              </div>
-
-              {/* 피드백 로딩/에러 간단 표시 (선택) */}
-              {fLoading && (
-                <p className="text-xs text-gray-500 mt-1">
-                  이전 피드백을 불러오는 중입니다...
-                </p>
-              )}
-              {fError && (
-                <p className="text-xs text-red-500 mt-1">
-                  이전 피드백 정보를 불러오지 못했습니다.
-                </p>
-              )}
-
-              <button
-                type="submit"
-                disabled={!helpful || submitted || isSubmitting}
-                className={`mt-3 px-8 py-2 rounded border text-sm md:text-base ${
-                  !helpful || submitted || isSubmitting
-                    ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                    : "bg-white text-gray-800 border-gray-300 hover:bg-gray-50"
-                }`}
-              >
-                {submitted ? "감사합니다" : "확인"}
-              </button>
-            </form>
-          </section>
         </div>
       </main>
+
+      {/* ✅ 전체 가로 폭을 덮는 회색 피드백 영역 */}
+      <section className="w-full bg-[#F7F7F7] border-t border-b border-gray-200 mt-0 mb-12">
+        {/* 안쪽 컨텐츠는 위 본문과 같은 가로 폭으로 정렬 */}
+        <div className="w-full px-[5%] lg:px-[22.5%] py-8">
+          <form
+            onSubmit={handleSurveySubmit}
+            className="max-w-xl mx-auto text-center space-y-4"
+          >
+            <h3 className="text-base md:text-lg font-semibold mb-2">
+              답변이 도움이 되셨나요?
+            </h3>
+
+            <div className="flex flex-wrap justify-center items-center gap-6">
+              <label className="flex items-center gap-2 text-sm md:text-base cursor-pointer">
+                <input
+                  type="radio"
+                  name="helpful"
+                  value="yes"
+                  checked={helpful === "yes"}
+                  onChange={() => setHelpful("yes")}
+                  className="cursor-pointer"
+                  disabled={isSubmitting}
+                />
+                <span>도움이 되었어요.</span>
+              </label>
+
+              <label className="flex items-center gap-2 text-sm md:text-base cursor-pointer">
+                <input
+                  type="radio"
+                  name="helpful"
+                  value="no"
+                  checked={helpful === "no"}
+                  onChange={() => setHelpful("no")}
+                  className="cursor-pointer"
+                  disabled={isSubmitting}
+                />
+                <span>도움이 되지 않았어요.</span>
+              </label>
+            </div>
+
+            {fLoading && (
+              <p className="text-xs text-gray-500 mt-1">
+                이전 피드백을 불러오는 중입니다...
+              </p>
+            )}
+            {fError && (
+              <p className="text-xs text-red-500 mt-1">
+                이전 피드백 정보를 불러오지 못했습니다.
+              </p>
+            )}
+
+            <button
+              type="submit"
+              disabled={!helpful || submitted || isSubmitting}
+              className={`mt-3 px-8 py-2 rounded border text-sm md:text-base ${
+                !helpful || submitted || isSubmitting
+                  ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                  : "bg-white text-gray-800 border-gray-300 hover:bg-gray-50"
+              }`}
+            >
+              {submitted ? "감사합니다" : "확인"}
+            </button>
+          </form>
+        </div>
+      </section>
 
       {/* 하단 버튼 */}
       <div className="flex justify-end w-full px-[5%] lg:px-[22.5%] pt-[3%] pb-[8%]">
