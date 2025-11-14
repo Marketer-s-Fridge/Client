@@ -3,6 +3,8 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Image from "next/image";
+// ✅ 경로는 실제 프로젝트 구조에 맞게 수정하기
+import { useSaveSearchKeyword } from "@/features/search/hooks/useSearchHistory";
 
 type SearchInputProps = {
   showInstagramButton?: boolean;
@@ -24,7 +26,10 @@ export default function SearchInput({
   const [query, setQuery] = useState("");
   const router = useRouter();
 
-  const handleSearch = (e: React.FormEvent | React.KeyboardEvent) => {
+  // ✅ 검색어 저장 훅
+  const { mutate: saveSearchKeyword } = useSaveSearchKeyword();
+
+  const handleSearch = (e: React.SyntheticEvent) => {
     e.preventDefault();
 
     const trimmed = query.trim();
@@ -32,6 +37,13 @@ export default function SearchInput({
       alert("검색어를 입력해주세요");
       return;
     }
+
+    // ✅ 검색어 저장 (결과 여부와 상관없이 기록)
+    // SearchHistoryRequestDto 타입에 맞게 필드 추가해서 사용하면 됨
+    saveSearchKeyword({
+      keyword: trimmed,
+      // ex) userId, type 등 필요하면 여기서 같이 넘기기
+    } as any);
 
     // ✅ 검색 결과 존재 여부 확인
     const hasResult = mockContents.some((title) => title.includes(trimmed));
