@@ -13,6 +13,13 @@ import LoginRequiredModal from "@/components/loginRequiredModal";
 import { useRecentBookmarkedPosts } from "@/features/bookmarks/hooks/useRecentBookmarksPost";
 import { useBookmarks } from "@/features/bookmarks/hooks/useBookmarks";
 import { useAuthStatus } from "@/features/auth/hooks/useAuthStatus";
+import { useRecentViews,useCategoryStats } from "@/features/views/hooks/useMostViewedCategory";
+// import {
+//   useRecentViews,
+//   useCategoryStats,
+// } from "@/features/mostViewedCategory/hooks/useMostViewedCategory";
+
+
 
 function EmptySectionBox({ message }: { message: string }) {
   return (
@@ -33,14 +40,27 @@ export default function MyPage() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
 
-  // 데이터 훅 (기존 시그니처 유지)
+  // ✅ MY 냉장고 데이터
   const { data: myFridgeContents = [], isLoading: isFridgeLoading } =
     useRecentBookmarkedPosts(3);
+
   const {
     bookmarkIds,
     toggleBookmarkMutate,
     isLoading: isBookmarkLoading,
   } = useBookmarks();
+
+  // ✅ 최근 조회한 게시물
+  const {
+    data: recentViews = [],
+    isLoading: isRecentViewsLoading,
+  } = useRecentViews();
+
+  // ✅ 카테고리별 조회수 통계
+  const {
+    data: categoryStats = {},
+    isLoading: isCategoryStatsLoading,
+  } = useCategoryStats();
 
   // 비로그인 진입 시 모달
   useEffect(() => {
@@ -48,18 +68,50 @@ export default function MyPage() {
     if (checked && !isAuthenticated) setIsLoginModalOpen(true);
   }, [isLoading, isAuthenticated]);
 
-  // TODO: 실제 API 연동 후 최근 본 콘텐츠 / 추천 콘텐츠 데이터 연결
-  const recentlyViewedContents: { id: number; title: string }[] = [];
+  // 추천 콘텐츠는 아직 더미
   const tempcontents: string[] = [];
 
   const cardsPerPage = 3;
-  const maxSlideIndex =
-    Math.ceil(recentlyViewedContents.length / cardsPerPage) - 1;
+  const maxSlideIndex = Math.ceil(recentViews.length / cardsPerPage) - 1;
 
-  const hasRecentViewed = recentlyViewedContents.length > 0;
+  const hasRecentViewed = recentViews.length > 0;
   const hasRecommended = tempcontents.length > 0;
-  // TODO: 실제 리포트 데이터 연동 시 토글
-  const hasConsumptionReport = false;
+
+  // ✅ 도넛차트용 데이터 변환
+  const chartData = Object.entries(categoryStats).map(([label, value]) => ({
+    label,
+    value,
+  }));
+
+  const totalCategoryCount = chartData.reduce(
+    (sum, item) => sum + item.value,
+    0
+  );
+
+  const chartDataWithPercent = chartData.map((item) => ({
+    ...item,
+    percent: totalCategoryCount
+      ? Math.round((item.value / totalCategoryCount) * 100)
+      : 0,
+  }));
+
+  const hasConsumptionReport = chartDataWithPercent.length > 0;
+
+  // 도넛 & 범례 색상 (Tailwind 클래스)
+  const chartColors = [
+    "bg-red-600",
+    "bg-red-400",
+    "bg-red-300",
+    "bg-red-200",
+    "bg-red-100",
+  ];
+
+  // 슬라이드 인덱스가 max 넘어가면 0으로 리셋 (데이터 길이 변할 때 대비)
+  useEffect(() => {
+    if (maxSlideIndex >= 0 && slideIndex > maxSlideIndex) {
+      setSlideIndex(0);
+    }
+  }, [maxSlideIndex, slideIndex]);
 
   const handleToggleBookmark = (postId: number, isSaved: boolean) => {
     if (!isAuthenticated) {
@@ -76,7 +128,7 @@ export default function MyPage() {
     });
   };
 
-  // 로딩 스켈레톤
+  // 로딩 스켈레톤 (전체 auth 상태 로딩)
   if (isLoading) {
     return (
       <div className="bg-white pt-11 md:pt-0">
@@ -181,11 +233,13 @@ export default function MyPage() {
             {/* 모바일: 최근 본 콘텐츠 */}
             <div>
               <h3 className="text-2xl font-bold mb-4">최근 본 콘텐츠</h3>
-              {!hasRecentViewed ? (
+              {isRecentViewsLoading ? (
+                <EmptySectionBox message="불러오는 중..." />
+              ) : !hasRecentViewed ? (
                 <EmptySectionBox message="담은 콘텐츠가 없습니다" />
               ) : (
                 <div className="flex overflow-x-auto gap-4 no-scrollbar snap-x snap-mandatory">
-                  {recentlyViewedContents.map((item) => {
+                  {recentViews.map((item) => {
                     const isSaved = bookmarkIds.includes(item.id);
                     return (
                       <div
@@ -292,37 +346,25 @@ export default function MyPage() {
             {/* 모바일: 콘텐츠 소비 리포트 */}
             <div>
               <h3 className="text-2xl font-bold mb-4">콘텐츠 소비 리포트</h3>
-              {!hasConsumptionReport ? (
+              {isCategoryStatsLoading ? (
+                <EmptySectionBox message="불러오는 중..." />
+              ) : !hasConsumptionReport ? (
                 <EmptySectionBox message="담은 콘텐츠가 없습니다" />
               ) : (
                 <div className="flex flex-col sm:flex-row sm:items-center">
-                  <DoughnutChart />
+                  <DoughnutChart data={chartDataWithPercent} />
                   <ul className="md:pl-6 text-sm space-y-2 font-semibold mt-4">
-                    <li className="flex items-center gap-2">
-                      <div className="w-3 h-3 bg-red-600 rounded-sm" />
-                      <span className="flex-1">Food</span>
-                      <span>40%</span>
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <div className="w-3 h-3 bg-red-400 rounded-sm" />
-                      <span className="flex-1">Lifestyle</span>
-                      <span>35%</span>
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <div className="w-3 h-3 bg-red-300 rounded-sm" />
-                      <span className="flex-1">Beauty</span>
-                      <span>15%</span>
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <div className="w-3 h-3 bg-red-200 rounded-sm" />
-                      <span className="flex-1">Tech</span>
-                      <span>7%</span>
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <div className="w-3 h-3 bg-red-100 rounded-sm" />
-                      <span className="flex-1">Fashion</span>
-                      <span>3%</span>
-                    </li>
+                    {chartDataWithPercent.map((item, idx) => (
+                      <li key={item.label} className="flex items-center gap-2">
+                        <div
+                          className={`w-3 h-3 rounded-sm ${
+                            chartColors[idx % chartColors.length]
+                          }`}
+                        />
+                        <span className="flex-1">{item.label}</span>
+                        <span>{item.percent}%</span>
+                      </li>
+                    ))}
                   </ul>
                 </div>
               )}
@@ -374,7 +416,9 @@ export default function MyPage() {
         {/* 1️⃣ 최근 본 콘텐츠 (데스크탑 슬라이드) */}
         <div className="w-full">
           <h3 className="text-2xl font-bold mb-4">최근 본 콘텐츠</h3>
-          {!hasRecentViewed ? (
+          {isRecentViewsLoading ? (
+            <EmptySectionBox message="불러오는 중..." />
+          ) : !hasRecentViewed ? (
             <EmptySectionBox message="담은 콘텐츠가 없습니다" />
           ) : (
             <div className="relative w-full">
@@ -405,7 +449,7 @@ export default function MyPage() {
                         key={pageIndex}
                         className="flex gap-4 w-[480px] flex-shrink-0 justify-start"
                       >
-                        {recentlyViewedContents
+                        {recentViews
                           .slice(
                             pageIndex * cardsPerPage,
                             pageIndex * cardsPerPage + cardsPerPage
@@ -481,37 +525,25 @@ export default function MyPage() {
         {/* 2️⃣ 콘텐츠 소비 리포트 */}
         <div>
           <h3 className="text-2xl font-bold mb-4">콘텐츠 소비 리포트</h3>
-          {!hasConsumptionReport ? (
+          {isCategoryStatsLoading ? (
+            <EmptySectionBox message="불러오는 중..." />
+          ) : !hasConsumptionReport ? (
             <EmptySectionBox message="담은 콘텐츠가 없습니다" />
           ) : (
             <div className="flex flex-col sm:flex-row sm:items-center ">
-              <DoughnutChart />
+              <DoughnutChart data={chartDataWithPercent} />
               <ul className="md:pl-6 text-sm space-y-2 font-semibold">
-                <li className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-red-600 rounded-sm" />
-                  <span className="flex-1">Food</span>
-                  <span>40%</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-red-400 rounded-sm" />
-                  <span className="flex-1">Lifestyle</span>
-                  <span>35%</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-red-300 rounded-sm" />
-                  <span className="flex-1">Beauty</span>
-                  <span>15%</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-red-200 rounded-sm" />
-                  <span className="flex-1">Tech</span>
-                  <span>7%</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-red-100 rounded-sm" />
-                  <span className="flex-1">Fashion</span>
-                  <span>3%</span>
-                </li>
+                {chartDataWithPercent.map((item, idx) => (
+                  <li key={item.label} className="flex items-center gap-2">
+                    <div
+                      className={`w-3 h-3 rounded-sm ${
+                        chartColors[idx % chartColors.length]
+                      }`}
+                    />
+                    <span className="flex-1">{item.label}</span>
+                    <span>{item.percent}%</span>
+                  </li>
+                ))}
               </ul>
             </div>
           )}

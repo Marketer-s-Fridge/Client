@@ -44,7 +44,7 @@ const options = {
   },
 } as const;
 
-export default function DoughnutChart() {
+export default function DoughnutChart(data:any) {
   return (
     <div className="w-[280px] sm:w-[300px] md:w-[210px] mx-auto">
       <Doughnut data={data} options={options} />

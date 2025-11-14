@@ -40,8 +40,14 @@ export const postViewRecord = async (
 export const fetchRecentViews = async (): Promise<
   MostViewedCategoryResponseDto[]
 > => {
-  const res = await api.get<MostViewedCategoryResponseDto[]>(
-    "/api/most-viewed-category/recentViews"
-  );
-  return res.data;
+  try {
+    const res = await api.get<MostViewedCategoryResponseDto[]>(
+      "/api/most-viewed-category/recentViews"
+    );
+    return res.data;
+  } catch (err: any) {
+    // 서버가 204 No Content를 줄 경우 대비
+    if (err.response?.status === 204) return [];
+    throw err;
+  }
 };
