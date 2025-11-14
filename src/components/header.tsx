@@ -1,3 +1,5 @@
+// components/header.tsx (예시)
+
 "use client";
 
 import Link from "next/link";
@@ -5,6 +7,7 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, Dispatch, SetStateAction } from "react";
 import { Menu, Search, X } from "lucide-react";
+import { usePopularSearchKeywords } from "@/features/search/hooks/useSearchHistory";
 
 interface HeaderProps {
   menuOpen: boolean;
@@ -26,6 +29,13 @@ export default function Header({ menuOpen, setMenuOpen }: HeaderProps) {
   const [query, setQuery] = useState("");
   const router = useRouter();
 
+  // ✅ 인기 검색어 훅
+  const {
+    data: popularKeywords,
+    isLoading: popularLoading,
+    isError: popularError,
+  } = usePopularSearchKeywords();
+
   const navItems = [
     { name: "Home", href: "/" },
     { name: "About Us", href: "/service" },
@@ -44,9 +54,24 @@ export default function Header({ menuOpen, setMenuOpen }: HeaderProps) {
       return;
     }
 
-    const hasResult = mockContents.some((title) =>
-      title.includes(trimmed)
-    );
+    const hasResult = mockContents.some((title) => title.includes(trimmed));
+
+    if (hasResult) {
+      router.push(`/search?q=${encodeURIComponent(trimmed)}`);
+    } else {
+      router.push(`/search/noResult?q=${encodeURIComponent(trimmed)}`);
+    }
+    setShowMobileSearch(false);
+  };
+
+  // ✅ 인기 검색어 클릭 시 검색 실행
+  const handlePopularClick = (keyword: string) => {
+    const trimmed = keyword.trim();
+    if (!trimmed) return;
+
+    setQuery(trimmed);
+
+    const hasResult = mockContents.some((title) => title.includes(trimmed));
 
     if (hasResult) {
       router.push(`/search?q=${encodeURIComponent(trimmed)}`);
@@ -115,7 +140,45 @@ export default function Header({ menuOpen, setMenuOpen }: HeaderProps) {
                 <X size={20} className="text-white self-center" />
               </button>
             </div>
-            <div className="absolute left-0 top-20 bg-white z-100 w-[100%] h-[100vh]" />
+
+            {/* 🔽 여기 흰 부분에 인기 검색어 노출 */}
+            <div className="absolute left-0 top-20 bg-white w-full h-[100vh] px-6 pt-4">
+              <p className="text-xs font-semibold text-gray-500 mb-3">
+                인기 검색어
+              </p>
+
+              {popularLoading && (
+                <p className="text-xs text-gray-400">불러오는 중...</p>
+              )}
+
+              {popularError && !popularLoading && (
+                <p className="text-xs text-gray-400">
+                  인기 검색어를 불러오지 못했어요.
+                </p>
+              )}
+
+              {!popularLoading && !popularError && (
+                <>
+                  {popularKeywords && (popularKeywords as string[]).length > 0 ? (
+                    <div className="flex flex-wrap gap-2">
+                      {(popularKeywords as string[]).map((keyword) => (
+                        <button
+                          key={keyword}
+                          className="text-xs px-3 py-1 rounded-full border border-gray-200 bg-gray-50 hover:bg-gray-100"
+                          onClick={() => handlePopularClick(keyword)}
+                        >
+                          {keyword}
+                        </button>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-xs text-gray-400">
+                      아직 인기 검색어가 없어요.
+                    </p>
+                  )}
+                </>
+              )}
+            </div>
           </div>
         )}
 
