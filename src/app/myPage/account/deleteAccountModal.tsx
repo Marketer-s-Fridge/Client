@@ -79,28 +79,19 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
             </p>
 
             <div className="flex flex-col gap-4 mb-2">
-              {/* ✅ 계정(이메일) - 비밀번호 TextInput과 스타일 통일 (읽기 전용) */}
+              {/* ✅ 계정(이메일) - 비밀번호 TextInput과 동일 스타일, readOnly */}
               <div className="flex flex-1 flex-row">
-                <div className="w-full">
-                  <label className="block text-xs font-medium text-gray-600 mb-1">
-                    계정
-                  </label>
-                  <div
-                    className="
-                      w-full 
-                      border border-gray-300 
-                      rounded-lg 
-                      px-3 
-                      py-2 
-                      text-sm 
-                      bg-gray-100 
-                      text-gray-500 
-                      cursor-not-allowed
-                    "
-                  >
-                    {email}
-                  </div>
-                </div>
+                <TextInput
+                  label="계정"
+                  type="email"
+                  value={email}
+                  onChange={() => {}} // 수정 불가이므로 noop
+                  placeholder=""
+                  readOnly
+                  bgColor="bg-gray-100"
+                  textColor="text-gray-500"
+                  className="border border-gray-300 rounded-lg px-3 py-2 text-sm cursor-not-allowed"
+                />
               </div>
 
               {/* 비밀번호 입력 */}

@@ -38,6 +38,8 @@ export interface TextInputProps {
   borderColor?: string;
   textColor?: string;
   bgColor?: string;
+  readOnly?: boolean; // ✅ 추가
+
 }
 
 export const TextInput: React.FC<TextInputProps> = ({
@@ -55,6 +57,8 @@ export const TextInput: React.FC<TextInputProps> = ({
   borderColor = "border-[#C2C2C2]",
   textColor = "text-gray-900",
   bgColor = "bg-white",
+  readOnly = false, // ✅ 추가
+
 }) => {
   return (
     <div className="w-full max-w-[500px] flex flex-col gap-1">
@@ -69,6 +73,8 @@ export const TextInput: React.FC<TextInputProps> = ({
             value={value}
             onChange={onChange}
             placeholder={placeholder}
+            readOnly={readOnly} // ✅ 여기서 적용
+
             className={`w-full text-[13px] border ${textColor} ${bgColor} ${
               error ? "border-red-500" : borderColor
             } ${rounded} px-3 py-2 ${className}`}
