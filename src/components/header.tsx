@@ -1,4 +1,4 @@
-// components/header.tsx (예시)
+// components/header.tsx
 
 "use client";
 
@@ -7,7 +7,10 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, Dispatch, SetStateAction } from "react";
 import { Menu, Search, X } from "lucide-react";
-import { usePopularSearchKeywords } from "@/features/search/hooks/useSearchHistory";
+import {
+  usePopularSearchKeywords,
+  useSaveSearchKeyword, // ✅ 추가
+} from "@/features/search/hooks/useSearchHistory";
 
 interface HeaderProps {
   menuOpen: boolean;
@@ -36,6 +39,9 @@ export default function Header({ menuOpen, setMenuOpen }: HeaderProps) {
     isError: popularError,
   } = usePopularSearchKeywords();
 
+  // ✅ 검색어 저장 훅
+  const { mutate: saveSearchKeyword } = useSaveSearchKeyword();
+
   const navItems = [
     { name: "Home", href: "/" },
     { name: "About Us", href: "/service" },
@@ -45,14 +51,18 @@ export default function Header({ menuOpen, setMenuOpen }: HeaderProps) {
     { name: "Log In | Sign Up", href: "/login" },
   ];
 
-  const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key !== "Enter") return;
-
-    const trimmed = query.trim();
+  const runSearch = (keyword: string) => {
+    const trimmed = keyword.trim();
     if (!trimmed) {
       alert("검색어를 입력해주세요");
       return;
     }
+
+    // ✅ 검색어 저장
+    // SearchHistoryRequestDto 필드에 맞게 필요하면 userId, type 등 추가
+    saveSearchKeyword({
+      keyword: trimmed,
+    } as any);
 
     const hasResult = mockContents.some((title) => title.includes(trimmed));
 
@@ -64,21 +74,15 @@ export default function Header({ menuOpen, setMenuOpen }: HeaderProps) {
     setShowMobileSearch(false);
   };
 
-  // ✅ 인기 검색어 클릭 시 검색 실행
+  const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key !== "Enter") return;
+    runSearch(query);
+  };
+
+  // ✅ 인기 검색어 클릭 시도 저장 + 검색 실행
   const handlePopularClick = (keyword: string) => {
-    const trimmed = keyword.trim();
-    if (!trimmed) return;
-
-    setQuery(trimmed);
-
-    const hasResult = mockContents.some((title) => title.includes(trimmed));
-
-    if (hasResult) {
-      router.push(`/search?q=${encodeURIComponent(trimmed)}`);
-    } else {
-      router.push(`/search/noResult?q=${encodeURIComponent(trimmed)}`);
-    }
-    setShowMobileSearch(false);
+    setQuery(keyword);
+    runSearch(keyword);
   };
 
   return (
