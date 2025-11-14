@@ -183,7 +183,7 @@ export default function ProcessedDetailPage() {
       </main>
 
       {/* ✅ 전체 가로 폭을 덮는 회색 피드백 영역 */}
-      <section className="w-full bg-[#F7F7F7] border-t border-b border-gray-200 mt-0 mb-12">
+      <section className="w-full bg-[#F7F7F7]  mt-0 mb-12">
         {/* 안쪽 컨텐츠는 위 본문과 같은 가로 폭으로 정렬 */}
         <div className="w-full px-[5%] lg:px-[22.5%] py-8">
           <form
@@ -236,7 +236,7 @@ export default function ProcessedDetailPage() {
             <button
               type="submit"
               disabled={!helpful || submitted || isSubmitting}
-              className={`mt-3 px-8 py-2 rounded border text-sm md:text-base ${
+              className={`mt-2 px-7 py-1.5 rounded border text-sm md:text-base ${
                 !helpful || submitted || isSubmitting
                   ? "bg-gray-200 text-gray-400 cursor-not-allowed"
                   : "bg-white text-gray-800 border-gray-300 hover:bg-gray-50"
