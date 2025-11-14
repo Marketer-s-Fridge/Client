@@ -13,23 +13,20 @@ export function useRecentBookmarkedPosts(limit: number = 3) {
     error,
   } = useQuery<PostResponseDto[]>({
     queryKey: ["posts", "recent-bookmarked"],
-    queryFn: async () => await fetchPostsByStatus("PUBLISHED"),
-    staleTime: 1000 * 60,
+    queryFn: () => fetchPostsByStatus("PUBLISHED"),
+    staleTime: 60 * 1000,
+    gcTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
   });
 
-  // 북마크된 게시글만 추출
   const bookmarkedPosts = allPosts.filter((post) =>
     bookmarkIds.includes(post.id)
   );
 
-  // 최신순으로 정렬 (id가 높을수록 최근 게시물이라고 가정)
   const sorted = [...bookmarkedPosts].sort((a, b) => b.id - a.id);
 
-  // 상위 N개만 반환
-  const recent = sorted.slice(0, limit);
-
   return {
-    data: recent,
+    data: sorted.slice(0, limit),
     isLoading: isBookmarkLoading || isPostLoading,
     error,
   };
