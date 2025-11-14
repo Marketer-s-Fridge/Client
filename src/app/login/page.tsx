@@ -21,12 +21,19 @@ const LoginPage: React.FC = () => {
   const [autoLogin, setAutoLogin] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(true); // ✅ 로그인 상태
+
+  // 🔧 초기값을 localStorage 기준으로 계산
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    const hasToken = !!localStorage.getItem("accessToken");
+    const hasUser = !!localStorage.getItem("user");
+    return hasToken || hasUser;
+  });
 
   const router = useRouter();
   const { mutate: signinMutate, isPending } = useSignin();
 
-  // 초기 로드: 아이디 저장 + 로그인 상태
+  // 초기 로드: 아이디 저장 + storage 이벤트 리스너
   useEffect(() => {
     const savedId = localStorage.getItem("rememberIdValue");
     const remember = localStorage.getItem("rememberId") === "true";
@@ -34,10 +41,6 @@ const LoginPage: React.FC = () => {
       onChangeInput1(savedId);
       setRememberId(true);
     }
-
-    const hasToken = !!localStorage.getItem("accessToken");
-    const hasUser = !!localStorage.getItem("user");
-    setIsLoggedIn(hasToken || hasUser);
 
     // 다른 탭에서 로그인/로그아웃 반영
     const onStorage = () => {
@@ -189,7 +192,7 @@ const LoginPage: React.FC = () => {
                     onChange={(e) => setRememberId(e.target.checked)}
                     className="hidden"
                   />
-                <div
+                  <div
                     className={clsx(
                       "w-5 h-5 relative ",
                       rememberId ? "scale-110" : "scale-90"

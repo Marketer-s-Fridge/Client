@@ -3,8 +3,6 @@ import React, { useState } from "react";
 import BaseModal from "@/components/baseModal";
 import { TextInput } from "@/components/authFormComponents";
 import { useDeleteAccount } from "@/features/auth/hooks/useDeleteAccount";
-// import { useDeleteAccount } from "@/features/user/hooks/useDeleteAccount"; // ✅ 경로 수정
-
 
 interface DeleteAccountModalProps {
   isOpen: boolean;
@@ -81,18 +79,27 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
             </p>
 
             <div className="flex flex-col gap-4 mb-2">
-              {/* 이메일 입력란 → 읽기전용 input으로 교체 */}
+              {/* ✅ 계정(이메일) - 비밀번호 TextInput과 스타일 통일 (읽기 전용) */}
               <div className="flex flex-1 flex-row">
                 <div className="w-full">
                   <label className="block text-xs font-medium text-gray-600 mb-1">
                     계정
                   </label>
-                  <input
-                    type="email"
-                    value={email}
-                    readOnly
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm bg-gray-100 text-gray-500 cursor-not-allowed"
-                  />
+                  <div
+                    className="
+                      w-full 
+                      border border-gray-300 
+                      rounded-lg 
+                      px-3 
+                      py-2 
+                      text-sm 
+                      bg-gray-100 
+                      text-gray-500 
+                      cursor-not-allowed
+                    "
+                  >
+                    {email}
+                  </div>
                 </div>
               </div>
 
