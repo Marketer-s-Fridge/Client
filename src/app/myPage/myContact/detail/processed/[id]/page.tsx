@@ -1,3 +1,4 @@
+// app/(whatever)/processed/[id]/page.tsx 등
 "use client";
 
 import React, { useMemo } from "react";
@@ -7,6 +8,10 @@ import MobileMenu from "@/components/mobileMenu";
 import { FiPaperclip } from "react-icons/fi";
 import { useEnquiry } from "@/features/enquiries/hooks/useEnquiry";
 import { useComments } from "@/features/comments/hooks/useComments";
+import {
+  useFeedbackByEnquiryId,
+  useCreateFeedback,
+} from "@/features/feedback/hooks/useFeedback";
 
 export default function ProcessedDetailPage() {
   const router = useRouter();
@@ -14,6 +19,10 @@ export default function ProcessedDetailPage() {
   const enquiryId = Number(id);
 
   const [menuOpen, setMenuOpen] = React.useState(false);
+
+  // ✅ 만족도 선택 상태
+  const [helpful, setHelpful] = React.useState<"yes" | "no" | null>(null);
+  const [submitted, setSubmitted] = React.useState(false);
 
   if (!Number.isFinite(enquiryId)) return notFound();
 
@@ -27,13 +36,33 @@ export default function ProcessedDetailPage() {
     error: cError,
   } = useComments(enquiryId);
 
+  // ✅ 피드백 조회 (해당 문의에 대해 이미 남긴 피드백이 있는지)
+  const {
+    data: feedback,
+    isLoading: fLoading,
+    error: fError,
+  } = useFeedbackByEnquiryId(enquiryId);
+
+  // ✅ 피드백 등록 mutation
+  const { mutate: createFeedback, isPending: isSubmitting } =
+    useCreateFeedback();
+
+  // ✅ 이미 피드백이 있다면 UI 상태에 반영
+  React.useEffect(() => {
+    if (!feedback) return;
+    // FeedbackResponseDto 안에 helpful(boolean) 있다고 가정
+    const isHelpful = (feedback as any).helpful as boolean | undefined;
+    if (typeof isHelpful === "boolean") {
+      setHelpful(isHelpful ? "yes" : "no");
+      setSubmitted(true);
+    }
+  }, [feedback]);
+
   // 최신 "답변" 하나만 보여주기 (PUBLISHED 우선)
   const latestAnswer = useMemo(() => {
     if (!comments || comments.length === 0) return undefined;
 
-    // 상태 필드명이 status가 아니라면 여기서 맞춰줘야 함 (예: c.enquiryStatus === "PUBLISHED")
     const published = comments.filter((c) => c.status === "PUBLISHED");
-
     const targetList = published.length > 0 ? published : comments;
 
     return [...targetList].sort(
@@ -56,6 +85,25 @@ export default function ProcessedDetailPage() {
     content,
     attachments,
   } = data as any;
+
+  const handleSurveySubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!helpful || submitted || isSubmitting) return;
+
+    // ✅ 피드백 생성 API 호출
+    createFeedback(
+      {
+        // FeedbackRequestDto 형태에 맞게 수정 필요
+        enquiryId,
+        helpful: helpful === "yes",
+      } as any,
+      {
+        onSuccess: () => {
+          setSubmitted(true);
+        },
+      }
+    );
+  };
 
   return (
     <div className="flex flex-col bg-white text-[#1D1D1D] pt-11 md:pt-0">
@@ -111,8 +159,8 @@ export default function ProcessedDetailPage() {
 
           <div className="w-full h-[1px] bg-[#4a5565] mb-3" />
 
-          {/* ✅ 답변 표시 (최신 댓글 기반, 읽기 전용) */}
-          <div className="flex flex-1 flex-row mt-7 mb-15 gap-2">
+          {/* 답변 영역 */}
+          <div className="flex flex-1 flex-row mt-7 mb-10 gap-2">
             <p className="w-1/10 py-3 text-base font-bold flex-nowrap text-left">
               답변
             </p>
@@ -134,6 +182,70 @@ export default function ProcessedDetailPage() {
               </p>
             </div>
           </div>
+
+          {/* ✅ 답변 만족도 설문 영역 */}
+          <section className="w-full mt-8 mb-12 bg-[#F7F7F7] py-8 px-4 rounded-md border border-gray-200">
+            <form
+              onSubmit={handleSurveySubmit}
+              className="max-w-xl mx-auto text-center space-y-4"
+            >
+              <h3 className="text-base md:text-lg font-semibold mb-2">
+                답변이 도움이 되셨나요?
+              </h3>
+
+              <div className="flex flex-wrap justify-center items-center gap-6">
+                <label className="flex items-center gap-2 text-sm md:text-base cursor-pointer">
+                  <input
+                    type="radio"
+                    name="helpful"
+                    value="yes"
+                    checked={helpful === "yes"}
+                    onChange={() => setHelpful("yes")}
+                    className="cursor-pointer"
+                    disabled={isSubmitting}
+                  />
+                  <span>도움이 되었어요.</span>
+                </label>
+
+                <label className="flex items-center gap-2 text-sm md:text-base cursor-pointer">
+                  <input
+                    type="radio"
+                    name="helpful"
+                    value="no"
+                    checked={helpful === "no"}
+                    onChange={() => setHelpful("no")}
+                    className="cursor-pointer"
+                    disabled={isSubmitting}
+                  />
+                  <span>도움이 되지 않았어요.</span>
+                </label>
+              </div>
+
+              {/* 피드백 로딩/에러 간단 표시 (선택) */}
+              {fLoading && (
+                <p className="text-xs text-gray-500 mt-1">
+                  이전 피드백을 불러오는 중입니다...
+                </p>
+              )}
+              {fError && (
+                <p className="text-xs text-red-500 mt-1">
+                  이전 피드백 정보를 불러오지 못했습니다.
+                </p>
+              )}
+
+              <button
+                type="submit"
+                disabled={!helpful || submitted || isSubmitting}
+                className={`mt-3 px-8 py-2 rounded border text-sm md:text-base ${
+                  !helpful || submitted || isSubmitting
+                    ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                    : "bg-white text-gray-800 border-gray-300 hover:bg-gray-50"
+                }`}
+              >
+                {submitted ? "감사합니다" : "확인"}
+              </button>
+            </form>
+          </section>
         </div>
       </main>
 
