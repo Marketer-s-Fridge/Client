@@ -2,7 +2,7 @@
 "use client";
 
 import Header from "@/components/header";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import SearchInput from "@/components/searchInput";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -15,12 +15,22 @@ import { useEditorPicks } from "@/features/posts/hooks/useEditorPicks";
 import PostFeature from "@/components/postFeature";
 import MobilePostCarousel from "@/components/mobilePostCarousel";
 
+// ✅ 방문자 추적 훅
+import { useTrackVisitor } from "@/features/visitorStatus/hooks/useVisitorStatus";
+
 export default function HomePage() {
   // 사용 안 하면 제거 가능
   useAuthStatus();
 
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
+
+  // ✅ 첫 진입 시 1회 방문자 추적
+  const { mutate: trackVisitor } = useTrackVisitor();
+  useEffect(() => {
+    // 서버에서 세션/쿠키 기준으로 중복 처리한다고 가정하고 단순 호출
+    trackVisitor(undefined);
+  }, [trackVisitor]);
 
   // 훅 데이터
   const { data: hot = [] } = useHotPosts(8);
@@ -42,7 +52,9 @@ export default function HomePage() {
       {/* 오늘의 카드뉴스: 정적 섹션 유지 */}
       <section className="w-full">
         <div className="hidden md:block main-red py-8 px-5 sm:px-10 lg:px-[17%]">
-          <h2 className="text-white text-xl sm:text-3xl font-bold mb-6">New Contents</h2>
+          <h2 className="text-white text-xl sm:text-3xl font-bold mb-6">
+            New Contents
+          </h2>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
             {[1, 2, 3, 4].map((i) => (
               <Image
@@ -81,15 +93,31 @@ export default function HomePage() {
       {/* 데스크톱: 섹션당 1장 + 설명 */}
       <section className="hidden md:block bg-white py-12 px-5 sm:px-10 lg:px-[25%]">
         <div className="max-w-[1024px] mx-auto space-y-16">
-          <PostFeature title="Hot Contents" item={hotHero} fallback="/images/cardNews/hot/001.png" />
-          <PostFeature title="Editor Pick" item={pickHero} fallback="/images/cardNews/editor/001.png" />
+          <PostFeature
+            title="Hot Contents"
+            item={hotHero}
+            fallback="/images/cardNews/hot/001.png"
+          />
+          <PostFeature
+            title="Editor Pick"
+            item={pickHero}
+            fallback="/images/cardNews/editor/001.png"
+          />
         </div>
       </section>
 
       {/* 모바일: 훅 데이터로 슬라이드 적용 */}
-      <MobilePostCarousel title="Hot Contents" items={hot} fallback="/images/cardNews/hot/001.png" />
+      <MobilePostCarousel
+        title="Hot Contents"
+        items={hot}
+        fallback="/images/cardNews/hot/001.png"
+      />
       <div className="h-10 md:hidden" />
-      <MobilePostCarousel title="Editor Pick" items={picks} fallback="/images/cardNews/editor/001.png" />
+      <MobilePostCarousel
+        title="Editor Pick"
+        items={picks}
+        fallback="/images/cardNews/editor/001.png"
+      />
 
       <Footer />
     </main>
