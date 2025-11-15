@@ -11,14 +11,14 @@ export interface Content {
   images: string[];
 }
 
-// ✅ 반환 타입: 항상 Content[] 로 통일
+// 반환 타입
 type UsePostsResult = {
   data: Content[];
   isLoading: boolean;
   error: Error | null;
 };
 
-// ✅ Mock 데이터
+// Mock 데이터
 const mockContents: Content[] = [
   { id: 1, title: "셀럽들의 공항 패션 스타일", images: ["/images/content1.png"] },
   { id: 2, title: "재테크를 위한 중요한 원칙과 전략", images: ["/images/content2.png"] },
@@ -38,66 +38,37 @@ const mockContents: Content[] = [
   { id: 16, title: "2025 패션 트렌드: 소재와 지속가능성", images: ["/images/content16.png"] },
 ];
 
-// 🔧 여기만 true/false로 바꾸면 mock / 서버 전환 가능
 const USE_MOCK = false;
 
-// ✅ 아이콘 이름 → 서버 카테고리 값 매핑
-const CATEGORY_MAP: Record<string, string> = {
-  Food: "FOOD",
-  Lifestyle: "LIFESTYLE",
-  Beauty: "BEAUTY",
-  Tech: "TECH",
-  Fashion: "FASHION",
-};
-
-export function usePosts(
-  selectedCategory: string | null,
-  isMock: boolean = USE_MOCK
-): UsePostsResult {
+export function usePosts(isMock: boolean = USE_MOCK): UsePostsResult {
+  // ---------------------
   // 1) Mock 모드
+  // ---------------------
   if (isMock) {
-    const filtered = selectedCategory
-      ? mockContents // 필요하면 여기에도 카테고리 정보 추가해서 필터
-      : mockContents;
-
     return {
-      data: filtered,
+      data: mockContents,
       isLoading: false,
       error: null,
     };
   }
 
-  // ✅ 서버 카테고리 값으로 변환 (없으면 null)
-  const serverCategory = selectedCategory
-    ? CATEGORY_MAP[selectedCategory] ?? selectedCategory
-    : null;
-
-  // 2) 서버 모드
-  const {
-    data,
-    isLoading,
-    error,
-  } = useQuery<PostResponseDto[], Error>({
-    queryKey: ["posts", "list", serverCategory],
-    // 지금은 상태로만 가져오고 있음
-    queryFn: () => fetchPostsByStatus("PUBLISHED"),
+  // ---------------------
+  // 2) 서버 모드 (전체 게시물)
+  // ---------------------
+  const { data, isLoading, error } = useQuery<PostResponseDto[], Error>({
+    queryKey: ["posts", "list"],
+    queryFn: () => fetchPostsByStatus("PUBLISHED"), // 전체 게시물
     staleTime: 60_000,
     gcTime: 5 * 60_000,
     refetchOnWindowFocus: false,
     retry: 1,
   });
 
-  // ✅ 카테고리 필터: 제목 말고 서버 category 필드 기준
-  const filtered = serverCategory
-    ? data?.filter((item) => {
-        const p = item as any;
-        return p.category === serverCategory;
-      })
-    : data;
-
-  // ✅ 서버 DTO → Content[]로 매핑
+  // ---------------------
+  // DTO → Content[] 변환
+  // ---------------------
   const mapped: Content[] =
-    filtered?.map((post) => {
+    data?.map((post) => {
       const p = post as any;
       const images: string[] =
         p.images ??

@@ -12,6 +12,7 @@ import CardGrid from "@/components/cardGrid";
 import MobileMenu from "@/components/mobileMenu";
 import NoContentView from "@/components/noContentView";
 import { usePosts } from "@/features/posts/hooks/usePosts";
+import { usePostsByCategory } from "@/features/posts/hooks/usePostsByCategory";
 
 interface Category {
   name: string;
@@ -19,11 +20,11 @@ interface Category {
 }
 
 const categories: Category[] = [
-  { name: "Food", icon: "/icons/icon-food1.png" },
-  { name: "Lifestyle", icon: "/icons/icon-lifestyle1.png" },
-  { name: "Beauty", icon: "/icons/icon-beauty1.png" },
-  { name: "Tech", icon: "/icons/icon-tech1.png" },
-  { name: "Fashion", icon: "/icons/icon-fashion1.png" },
+  { name: "Food",        icon: "/icons/icon-food1.png" },
+  { name: "Lifestyle",   icon: "/icons/icon-lifestyle1.png" },
+  { name: "Beauty",      icon: "/icons/icon-beauty1.png" },
+  { name: "Tech",        icon: "/icons/icon-tech1.png" },
+  { name: "Fashion",     icon: "/icons/icon-fashion1.png" },
 ];
 
 export default function Page() {
@@ -32,8 +33,24 @@ export default function Page() {
   const [currentPage, setCurrentPage] = useState(1);
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // ✅ 훅 사용 (현재는 mock / 나중에 서버 모드는 두 번째 인자 false로)
-  const { data: posts, isLoading, error } = usePosts(selectedCategory /*, false */);
+  // ✅ 전체 게시물 훅
+  const {
+    data: allPosts = [],
+    isLoading: isAllLoading,
+    error: allError,
+  } = usePosts(); // (mock 여부 인자 있으면 그대로 넣어줘)
+
+  // ✅ 카테고리별 게시물 훅 (카테고리 없으면 enabled=false라 요청 안 감)
+  const {
+    data: categoryPosts = [],
+    isLoading: isCatLoading,
+    error: catError,
+  } = usePostsByCategory(selectedCategory);
+
+  // ✅ 현재 선택 상태에 따라 실제로 화면에 뿌릴 데이터 선택
+  const isLoading = isAllLoading || isCatLoading;
+  const error = allError || catError || null;
+  const posts = selectedCategory ? categoryPosts : allPosts;
 
   const toggleLike = (id: number) => {
     setLikedItems((prev) =>
@@ -55,8 +72,7 @@ export default function Page() {
         {/* 카테고리 아이콘 */}
         <div className="flex justify-center mt-6 mb-4 sm:mt-10 sm:mb-6 gap-2 sm:gap-6 lg:gap-10">
           {categories.map((cat) => {
-            const isSelected =
-              selectedCategory === null || selectedCategory === cat.name;
+            const isSelected = selectedCategory === cat.name;
 
             return (
               <button
@@ -96,12 +112,12 @@ export default function Page() {
               items={posts.map((post) => ({
                 id: post.id,
                 title: post.title,
-                image: post.images, // ✅ 훅에서 Content[]로 맞춰놨으니까 그대로 사용
+                image: post.images, // usePosts / usePostsByCategory 둘 다 Content.images 기준
               }))}
               columns={4}
             />
 
-            {/* TODO: 서버에서 totalPages 내려주면 거기에 맞게 교체 */}
+            {/* TODO: 서버 totalPages 내려주면 교체 */}
             <Pagination
               currentPage={currentPage}
               totalPages={5}
