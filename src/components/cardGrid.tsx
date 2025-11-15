@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useBookmarks } from "@/features/bookmarks/hooks/useBookmarks";
 import BaseModal from "@/components/baseModal";
 import LoginRequiredModal from "@/components/loginRequiredModal";
@@ -18,6 +19,7 @@ interface CardGridProps {
 }
 
 export default function CardGrid({ items, columns = 4 }: CardGridProps) {
+  const router = useRouter();
   const [isMobile, setIsMobile] = useState(false);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
@@ -66,6 +68,11 @@ export default function CardGrid({ items, columns = 4 }: CardGridProps) {
     );
   }
 
+  // ✅ 상세 페이지 이동
+  const goToPost = (id: number) => {
+    router.push(`/contents/${id}`);
+  };
+
   // ✅ 하트 클릭 핸들러
   const handleToggleBookmark = (postId: number, isSaved: boolean) => {
     if (!isLoggedIn) {
@@ -93,7 +100,10 @@ export default function CardGrid({ items, columns = 4 }: CardGridProps) {
           const isSaved = bookmarkIds.includes(item.id);
           return (
             <div key={item.id} className="w-full">
-              <div className="aspect-[3/4] w-full rounded-lg overflow-hidden bg-gray-100">
+              <div
+                className="aspect-[3/4] w-full rounded-lg overflow-hidden bg-gray-100"
+                onClick={() => goToPost(item.id)}
+              >
                 <Image
                   src={item.imageUrl || "/icons/rectangle-gray.png"}
                   alt={item.title}
@@ -103,7 +113,10 @@ export default function CardGrid({ items, columns = 4 }: CardGridProps) {
                 />
               </div>
               <div className="pt-2 px-1 text-[15px] text-sm font-semibold flex items-center justify-between">
-                <span className="truncate whitespace-nowrap overflow-hidden pr-2 flex-1">
+                <span
+                  className="truncate whitespace-nowrap overflow-hidden pr-2 flex-1 cursor-pointer"
+                  onClick={() => goToPost(item.id)}
+                >
                   {item.title}
                 </span>
                 <button
