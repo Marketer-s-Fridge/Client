@@ -14,6 +14,7 @@ import { useHotPosts } from "@/features/posts/hooks/useHotPosts";
 import { useEditorPicks } from "@/features/posts/hooks/useEditorPicks";
 import PostFeature from "@/components/postFeature";
 import MobilePostCarousel from "@/components/mobilePostCarousel";
+import { usePosts } from "@/features/posts/hooks/usePosts"; // ✅ 최신 게시글용 훅
 
 // ✅ 방문자 추적 훅
 import { useTrackVisitor } from "@/features/visitorStatus/hooks/useVisitorStatus";
@@ -36,6 +37,10 @@ export default function HomePage() {
   const { data: hot = [] } = useHotPosts(8);
   const { data: picks = [] } = useEditorPicks(8);
 
+  // ✅ 전체 게시물 중 최신 4개
+  const { data: allPosts = [] } = usePosts();
+  const latestPosts = allPosts.slice(0, 4);
+
   const hotHero = useMemo(() => hot[0], [hot]);
   const pickHero = useMemo(() => picks[0], [picks]);
 
@@ -49,43 +54,64 @@ export default function HomePage() {
         <SearchInput showInstagramButton />
       </section>
 
-      {/* 오늘의 카드뉴스: 정적 섹션 유지 */}
+      {/* New Contents: 최신 게시글 4개 */}
       <section className="w-full">
+        {/* 데스크톱 */}
         <div className="hidden md:block main-red py-8 px-5 sm:px-10 lg:px-[17%]">
           <h2 className="text-white text-xl sm:text-3xl font-bold mb-6">
             New Contents
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
-            {[1, 2, 3, 4].map((i) => (
-              <Image
-                key={i}
-                alt=""
-                src={`/images/cardNews/${i}/001.png`}
-                className="aspect-[3/4] bg-white rounded-lg shadow cursor-pointer transition duration-300 ease-in-out hover:scale-105 w-full"
-                onClick={() => router.push("/cardNews")}
-                width={250}
-                height={300}
-              />
-            ))}
+            {latestPosts.map((post) => {
+              const thumb =
+                post.images?.[0] ?? "/images/cardNews/default/001.png";
+
+              return (
+                <Image
+                  key={post.id}
+                  alt={post.title}
+                  src={thumb}
+                  className="aspect-[3/4] bg-white rounded-lg shadow cursor-pointer transition duration-300 ease-in-out hover:scale-105 w-full object-cover"
+                  onClick={() => {
+                    // TODO: 실제 상세 페이지 경로에 맞게 수정
+                    router.push(`/contents/${post.id}`);
+                  }}
+                  width={250}
+                  height={300}
+                />
+              );
+            })}
           </div>
         </div>
 
-        {/* 모바일: 정적 카드뉴스 유지 */}
+        {/* 모바일 */}
         <div className="block md:hidden relative mt-4 px-5 w-full py-8">
           <h3 className="text-xl md:text-2xl font-bold mb-4">New Contents</h3>
           <div className="flex gap-3 overflow-x-auto no-scrollbar">
-            {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="!w-[40%] max-w-xs shrink-0">
-                <Image
-                  alt={`카드뉴스 ${i}`}
-                  src={`/images/cardNews/${i}/001.png`}
-                  className="aspect-[3/4] object-cover shadow cursor-pointer rounded-lg"
-                  onClick={() => router.push("/cardNews")}
-                  width={300}
-                  height={400}
-                />
-              </div>
-            ))}
+            {latestPosts.map((post) => {
+              const thumb =
+                post.images?.[0] ?? "/images/cardNews/default/001.png";
+
+              return (
+                <div
+                  key={post.id}
+                  className="!w-[60%] max-w-xs shrink-0"
+                  onClick={() => {
+                    // TODO: 실제 상세 페이지 경로에 맞게 수정
+                    router.push(`/contents/${post.id}`);
+                  }}
+                >
+                  <Image
+                    alt={post.title}
+                    src={thumb}
+                    className="aspect-[3/4] object-cover shadow cursor-pointer rounded-lg"
+                    width={300}
+                    height={400}
+                  />
+                  <p className="mt-2 text-sm line-clamp-2">{post.title}</p>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>

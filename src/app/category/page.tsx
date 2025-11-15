@@ -113,7 +113,7 @@ export default function Page() {
               items={posts.map((post) => ({
                 id: post.id,
                 title: post.title,
-                imageUrl: post.images[0], // usePosts / usePostsByCategory 둘 다 Content.images 기준
+                imageUrl: post.images?.[0], // usePosts / usePostsByCategory 둘 다 Content.images 기준
               }))}
               columns={4}
             />
