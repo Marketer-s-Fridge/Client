@@ -7,17 +7,28 @@ import Providers from "./providers";
 
 
 const pretendard = localFont({
-  src: "../fonts/Pretendard-Regular.ttf", // 파일 경로 확인!
+  src: [
+    {
+      path: "../fonts/Pretendard-Regular.ttf",
+      weight: "400",
+      style: "normal",
+    },
+  ],
   display: "swap",
   variable: "--font-pretendard",
 });
 
 const playFair = localFont({
-  src: "../fonts/PlayfairDisplay-Regular.ttf",
+  src: [
+    {
+      path: "../fonts/PlayfairDisplay-Regular.ttf",
+      weight: "400",
+      style: "normal",
+    },
+  ],
   display: "swap",
-  variable: "--font-playfair", // 👉 variable로 등록
+  variable: "--font-playfair",
 });
-
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],

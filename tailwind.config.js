@@ -14,7 +14,7 @@ module.exports = {
         },
         fontFamily: {
           playfair: ["var(--font-playfair)"],
-          pretendard: ["Pretendard", "sans-serif"],
+          pretendard: ["var(--font-pretendard)"], // 이 형태여야 함
         },
       },
     },
