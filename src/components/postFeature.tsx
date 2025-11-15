@@ -24,7 +24,7 @@ export default function PostFeature({
       <div className="flex flex-col lg:flex-row gap-10">
         <div
           className="transition duration-300 ease-in-out hover:scale-103 cursor-pointer w-full lg:w-[40%] aspect-[3/4] relative rounded-lg overflow-hidden shadow"
-          onClick={() => item && router.push(`/posts/${item.id}`)}
+          onClick={() => item && router.push(`/contents/${item.id}`)}
           aria-label={item?.title ?? title}
         >
           {item ? (

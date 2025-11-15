@@ -33,7 +33,8 @@ export default function MobilePostCarousel({
                 className="w-full aspect-[3/4] object-cover rounded-lg shadow cursor-pointer"
                 width={600}
                 height={800}
-                onClick={() => router.push(`/posts/${p.id}`)}
+                onClick={() => router.push(`/contents/${p.id}`)
+              }
               />
             ) : (
               <div className="w-full aspect-[3/4] rounded-lg bg-gray-100 animate-pulse" />

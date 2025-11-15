@@ -13,13 +13,10 @@ import LoginRequiredModal from "@/components/loginRequiredModal";
 import { useRecentBookmarkedPosts } from "@/features/bookmarks/hooks/useRecentBookmarksPost";
 import { useBookmarks } from "@/features/bookmarks/hooks/useBookmarks";
 import { useAuthStatus } from "@/features/auth/hooks/useAuthStatus";
-import { useRecentViews,useCategoryStats } from "@/features/views/hooks/useMostViewedCategory";
-// import {
-//   useRecentViews,
-//   useCategoryStats,
-// } from "@/features/mostViewedCategory/hooks/useMostViewedCategory";
-
-
+import {
+  useRecentViews,
+  useCategoryStats,
+} from "@/features/views/hooks/useMostViewedCategory";
 
 function EmptySectionBox({ message }: { message: string }) {
   return (
@@ -40,6 +37,11 @@ export default function MyPage() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
 
+  // ✅ 공통 이동 함수
+  const goToPost = (id: number) => {
+    router.push(`/contents/${id}`);
+  };
+
   // ✅ MY 냉장고 데이터
   const { data: myFridgeContents = [], isLoading: isFridgeLoading } =
     useRecentBookmarkedPosts(3);
@@ -51,16 +53,12 @@ export default function MyPage() {
   } = useBookmarks();
 
   // ✅ 최근 조회한 게시물
-  const {
-    data: recentViews = [],
-    isLoading: isRecentViewsLoading,
-  } = useRecentViews();
+  const { data: recentViews = [], isLoading: isRecentViewsLoading } =
+    useRecentViews();
 
   // ✅ 카테고리별 조회수 통계
-  const {
-    data: categoryStats = {},
-    isLoading: isCategoryStatsLoading,
-  } = useCategoryStats();
+  const { data: categoryStats = {}, isLoading: isCategoryStatsLoading } =
+    useCategoryStats();
 
   // 비로그인 진입 시 모달
   useEffect(() => {
@@ -246,7 +244,10 @@ export default function MyPage() {
                         key={item.id}
                         className="flex-shrink-0 w-[35vw] snap-start"
                       >
-                        <div className="aspect-[3/4] bg-gray-100 rounded-lg overflow-hidden">
+                        <div
+                          className="aspect-[3/4] bg-gray-100 rounded-lg overflow-hidden"
+                          onClick={() => goToPost(item.id)}
+                        >
                           <Image
                             src="/icons/rectangle-gray.png"
                             alt={item.category}
@@ -317,13 +318,17 @@ export default function MyPage() {
                   {myFridgeContents.map((post) => (
                     <div key={post.id} className="w-full md:w-[140px]">
                       <div className="relative aspect-[3/4] rounded-lg bg-gray-100 overflow-hidden">
-                        <Image
-                          src={post.images?.[0] || "/icons/rectangle-gray.png"}
-                          alt={post.title}
-                          width={200}
-                          height={250}
-                          className="w-full h-full object-cover"
-                        />
+                        <div onClick={() => goToPost(post.id)}>
+                          <Image
+                            src={
+                              post.images?.[0] || "/icons/rectangle-gray.png"
+                            }
+                            alt={post.title}
+                            width={200}
+                            height={250}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
                         <Image
                           src="/icons/redheart.png"
                           alt="찜"
@@ -370,7 +375,7 @@ export default function MyPage() {
               )}
             </div>
 
-            {/* 모바일: 추천 콘텐츠 */}
+            {/* 모바일: 추천 콘텐츠 (임시) */}
             <div>
               <h3 className="text-2xl font-bold mb-4">
                 마케터님에게 딱 맞는 추천 콘텐츠
@@ -382,13 +387,15 @@ export default function MyPage() {
                   {tempcontents.map((title, i) => (
                     <div key={i} className="w-full">
                       <div className="relative aspect-[3/4] rounded-lg bg-gray-100 overflow-hidden">
-                        <Image
-                          src="/icons/rectangle-gray.png"
-                          alt={title}
-                          width={200}
-                          height={250}
-                          className="w-full h-full object-cover"
-                        />
+                        <div onClick={() => goToPost(i)}>
+                          <Image
+                            src="/icons/rectangle-gray.png"
+                            alt={title}
+                            width={200}
+                            height={250}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
                         <Image
                           src="/icons/redheart.png"
                           alt="찜"
@@ -423,9 +430,7 @@ export default function MyPage() {
           ) : (
             <div className="relative w-full">
               <button
-                onClick={() =>
-                  slideIndex > 0 && setSlideIndex(slideIndex - 1)
-                }
+                onClick={() => slideIndex > 0 && setSlideIndex(slideIndex - 1)}
                 className="cursor-pointer absolute left-[-33px] top-1/2 -translate-y-1/2 z-10"
               >
                 <Image
@@ -459,13 +464,15 @@ export default function MyPage() {
                             return (
                               <div key={item.id} className="w-[140px]">
                                 <div className="aspect-[3/4] bg-gray-100 rounded-lg overflow-hidden">
-                                  <Image
-                                    src="/icons/rectangle-gray.png"
-                                    alt={item.category}
-                                    width={300}
-                                    height={350}
-                                    className="w-full h-full object-cover cursor-pointer"
-                                  />
+                                  <div onClick={() => goToPost(item.id)}>
+                                    <Image
+                                      src="/icons/rectangle-gray.png"
+                                      alt={item.category}
+                                      width={300}
+                                      height={350}
+                                      className="w-full h-full object-cover cursor-pointer"
+                                    />
+                                  </div>
                                 </div>
                                 <div className="pt-2 px-1 text-sm font-semibold flex items-center justify-between">
                                   <span className="truncate pr-2 flex-1">
@@ -576,13 +583,15 @@ export default function MyPage() {
               {myFridgeContents.map((post) => (
                 <div key={post.id} className="w-full">
                   <div className="relative aspect-[3/4] rounded-lg bg-gray-100 overflow-hidden">
-                    <Image
-                      src={post.images?.[0] || "/icons/rectangle-gray.png"}
-                      alt={post.title}
-                      width={200}
-                      height={250}
-                      className="w-full h-full object-cover"
-                    />
+                    <div onClick={() => goToPost(post.id)}>
+                      <Image
+                        src={post.images?.[0] || "/icons/rectangle-gray.png"}
+                        alt={post.title}
+                        width={200}
+                        height={250}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
                     <Image
                       src="/icons/redheart.png"
                       alt="찜"

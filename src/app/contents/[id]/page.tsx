@@ -1,31 +1,42 @@
+// src/app/contents/[id]/page.tsx
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
+import { useParams, useRouter, notFound } from "next/navigation";
 import Header from "@/components/header";
 import Image from "next/image";
 import Footer from "@/components/footer";
 import Breadcrumb from "@/components/breadCrumb";
 import MobileMenu from "@/components/mobileMenu";
 import SaveToFridgeButton from "@/components/saveToFridgeButton";
-
-const categories = ["Beauty", "Food", "Lifestyle", "Tech", "Fashion"];
-
-const slideImages = [
-  "/images/cardNews/hot/001.png",
-  "/images/cardNews/hot/002.png",
-  "/images/cardNews/hot/003.png",
-  "/images/cardNews/hot/004.png",
-  "/images/cardNews/hot/005.png",
-  "/images/cardNews/hot/006.png",
-];
+import { usePost } from "@/features/posts/hooks/usePost";
 
 export default function CardNewsDetailPage() {
-  const [activeCategory, setActiveCategory] = useState("Beauty");
-  const [activeSlide, setActiveSlide] = useState(0);
-  const slideCount = slideImages.length;
+  const router = useRouter();
+  const { id } = useParams<{ id: string }>();
+  const postId = Number(id);
+
+  if (!Number.isFinite(postId)) return notFound();
+
+  const { data: post, isLoading, error } = usePost(postId);
+
   const [menuOpen, setMenuOpen] = useState(false);
+  const [activeSlide, setActiveSlide] = useState(0);
   const slideBoxRef = useRef<HTMLDivElement>(null);
   const [slideHeight, setSlideHeight] = useState<number>(0);
+
+  // ✅ 게시글 이미지 목록 (없으면 기본 이미지 하나)
+  const slideImages = useMemo(() => {
+    if (post?.images && post.images.length > 0) {
+      return post.images;
+    }
+    return ["/images/cardNews/hot/001.png"];
+  }, [post]);
+
+  const slideCount = slideImages.length;
+
+  // ✅ 카테고리 (Breadcrumb에서 사용)
+  const category = post?.category || "카테고리";
 
   useEffect(() => {
     const node = slideBoxRef.current;
@@ -47,33 +58,40 @@ export default function CardNewsDetailPage() {
     };
   }, []);
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        로딩 중...
+      </div>
+    );
+  }
+
+  if (error || !post) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        게시글을 불러올 수 없습니다.
+      </div>
+    );
+  }
+
   return (
     <div className="bg-white pt-17 md:pt-0">
       <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
 
-      {/* 상단 카테고리 탭 */}
+      {/* 상단 카테고리/경로 */}
       <nav className="flex border-b border-gray-200 text-sm font-medium mt-1 overflow-x-auto no-scrollbar gap-5 px-[5%] lg:px-[17%] ">
-        {categories.map((cat) => (
-          <span
-            key={cat}
-            className={`whitespace-nowrap px-2 py-2 cursor-pointer ${
-              cat === activeCategory
-                ? "text-red-500 font-bold border-b-2 border-red-500"
-                : "text-gray-700 font-bold"
-            }`}
-            onClick={() => setActiveCategory(cat)}
-          >
-            {cat}
-          </span>
-        ))}
+        {/* 필요하면 실제 카테고리 리스트로 교체 */}
+        <span className="whitespace-nowrap px-2 py-2 text-red-500 font-bold border-b-2 border-red-500">
+          {category}
+        </span>
       </nav>
 
-      <Breadcrumb category={activeCategory} />
+      <Breadcrumb category={category} />
 
       {/* 본문 */}
-      <main className="flex justify-center px-4 sm:px-[8%] lg:px-[17%] mt-10 mb-10 min-h-[70vh] pb-[-0]">
-        <div className=" w-full max-w-screen-lg flex flex-col sm:flex-row gap-10">
+      <main className="flex justify-center px-4 sm:px-[8%] lg:px-[17%] mt-10 mb-10 min-h-[70vh]">
+        <div className="w-full max-w-screen-lg flex flex-col sm:flex-row gap-10">
           {/* 카드 슬라이드 */}
           <div className="self-center relative w-full sm:w-[45%] flex flex-col items-center">
             <div
@@ -83,7 +101,7 @@ export default function CardNewsDetailPage() {
             >
               {/* 인디케이터 */}
               <div className="z-10 absolute bottom-[2%] left-1/2 -translate-x-1/2 flex gap-1">
-                {[...Array(slideCount)].map((_, idx) => (
+                {slideImages.map((_, idx) => (
                   <div
                     key={idx}
                     className={`w-1.5 h-1.5 rounded-full ${
@@ -128,7 +146,9 @@ export default function CardNewsDetailPage() {
               {/* 좌우 클릭 영역 */}
               <div
                 className="absolute top-0 left-0 h-full w-1/2 z-10 cursor-pointer"
-                onClick={() => setActiveSlide((prev) => Math.max(prev - 1, 0))}
+                onClick={() =>
+                  setActiveSlide((prev) => Math.max(prev - 1, 0))
+                }
               />
               <div
                 className="absolute top-0 right-0 h-full w-1/2 z-10 cursor-pointer"
@@ -166,42 +186,29 @@ export default function CardNewsDetailPage() {
           >
             <div
               className={`
-      pr-2 py-2
-      ${slideHeight ? "sm:flex-1 sm:overflow-y-auto sm:no-scrollbar" : ""}
-    `}
+                pr-2 py-2
+                ${slideHeight ? "sm:flex-1 sm:overflow-y-auto sm:no-scrollbar" : ""}
+              `}
             >
               <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-2">
-                콜라보의 새로운 기준 제니 X 스탠리
+                {post.title}
               </h1>
               <div className="text-xs text-gray-500 mb-6">
-                2025.05.07 · 12,324 views · 냉장고에 담은 사람 1,231
+                {/* post에 맞게 값 매핑 */}
+                {post.publishedAt
+                  ? new Date(post.publishedAt).toLocaleDateString("ko-KR")
+                  : ""}
+                {post.viewCount !== undefined && ` · ${post.viewCount} views`}
+                {post.clickCount !== undefined &&
+                  ` · 냉장고에 담은 사람 ${post.clickCount}`}
               </div>
-              <p className="text-sm sm:text-base text-gray-700 leading-relaxed">
-                <strong className="text-lg sm:text-xl block mb-4 text-black">
-                  제니효과 ✨ 들어보셨나요?
-                </strong>
-                제니(@jennierubyjane)의 취향은 곧 모두의 취향이 된다는 ’제니
-                효과‘의 비밀은 단순한 유명세가 아니었어요. 제니는 단순한 모델
-                역할을 넘어, 직접 디자인에 참여하는 크리에이터로서 한국 전통
-                나전칠기의 우아한 감성을 담아냈죠.
-                <br />
-                <br /> 패키지부터 텀블러에 달린 귀여운 참까지, 그녀의 섬세한
-                터치는 팬들의 소장 욕구를 완벽하게 자극했어요. 여기에
-                스탠리(@stanley_korea)는 팝업 스토어에 팬들을 위한 백스테이지
-                무드를 구현하고, 한정판 출시로 색다른 경험을 선물했습니다.
-                <br />
-                <br />
-                이처럼 팬심을 이해하고 소통하는 마케팅은 역대급 반응을 일으키며,
-                스탠리가 110년 전통을 넘어 라이프스타일의 완성으로 자리 잡게
-                했어요. 이 콜라보가 성공할 수밖에 없었던 이유! 오늘도 제니
-                스탠리와 함께 힙한 하루를 즐겨보세요! <br />
-                <br />
-                에디터 │ 지은
+              <p className="text-sm sm:text-base text-gray-700 leading-relaxed whitespace-pre-line">
+                {post.content}
               </p>
             </div>
 
             <div className="bg-white flex justify-end gap-4 mt-4 ">
-              <SaveToFridgeButton></SaveToFridgeButton>
+              <SaveToFridgeButton postId={post.id} />
               <button className="border border-gray-300 rounded-full px-2 py-1 text-sm cursor-pointer">
                 <Image
                   src="/icons/share.png"
