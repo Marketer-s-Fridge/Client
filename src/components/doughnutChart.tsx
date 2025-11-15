@@ -5,7 +5,8 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const data = {
+// ✅ 기본 데이터 (props 없을 때 fallback)
+const defaultData = {
   labels: ["Food", "Lifestyle", "Beauty", "Tech", "Fashion"],
   datasets: [
     {
@@ -44,10 +45,43 @@ const options = {
   },
 } as const;
 
-export default function DoughnutChart(data:any) {
+// MyPage에서 넘기는 데이터 타입 기준
+type DoughnutItem = {
+  label: string;
+  value: number;
+  percent?: number;
+};
+
+interface DoughnutChartProps {
+  data?: DoughnutItem[]; // 옵셔널로
+}
+
+export default function DoughnutChart({ data }: DoughnutChartProps) {
+  const hasDynamicData = Array.isArray(data) && data.length > 0;
+
+  // ✅ MyPage에서 넘겨준 데이터를 Chart.js 형식으로 변환
+  const chartData = hasDynamicData
+    ? {
+        labels: data!.map((d) => d.label),
+        datasets: [
+          {
+            data: data!.map((d) => d.value),
+            backgroundColor: [
+              "#ff4d4d",
+              "#f08080",
+              "#ffa0a0",
+              "#ffcccc",
+              "#eeeeee",
+            ],
+            borderWidth: 0,
+          },
+        ],
+      }
+    : defaultData; // 아무것도 안 넘어오면 기본값 사용
+
   return (
     <div className="w-[280px] sm:w-[300px] md:w-[210px] mx-auto">
-      <Doughnut data={data} options={options} />
+      <Doughnut data={chartData} options={options} />
     </div>
   );
 }
