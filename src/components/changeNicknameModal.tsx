@@ -10,6 +10,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useImageUpload } from "@/features/posts/hooks/useImageUpload";
 // import { useImageUpload } from "@/hooks/useImageUpload"; // ✅ S3 업로드 훅
 
+
 type Props = { onClose: () => void; onUpdated?: () => void };
 
 export default function ChangeNicknameModal({ onClose, onUpdated }: Props) {
@@ -73,7 +74,9 @@ export default function ChangeNicknameModal({ onClose, onUpdated }: Props) {
     useUpdateProfileImage();
 
   // S3 업로드 훅
-  const { uploadSingle, loading: uploadingAvatar } = useImageUpload();
+  // const { uploadSingle, loading: uploadingAvatar } = useImageUpload();
+  const { mutateAsync: uploadAvatar, isPending: uploadingAvatar } =
+  useImageUpload();
 
   const handleDuplicateCheck = async () => {
     if (!nickValid) {
@@ -126,8 +129,12 @@ export default function ChangeNicknameModal({ onClose, onUpdated }: Props) {
 
     try {
       // 1) 아바타 변경: S3 업로드 후 URL을 mutateAvatar에 전달
+      // if (avatarChanged && fileObj) {
+      //   const imageUrl = await uploadSingle(fileObj);
+      //   await mutateAvatar(imageUrl);
+      // }
       if (avatarChanged && fileObj) {
-        const imageUrl = await uploadSingle(fileObj);
+        const imageUrl = await uploadAvatar(fileObj); // File -> string(URL)
         await mutateAvatar(imageUrl);
       }
 
