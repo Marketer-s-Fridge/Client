@@ -39,7 +39,7 @@ const mockContents: Content[] = [
 ];
 
 // 🔧 여기만 true/false로 바꾸면 mock / 서버 전환 가능
-const USE_MOCK = true;
+const USE_MOCK = false;
 
 // ✅ selectedCategory / isMock 에 따라 Content[] 세팅
 export function usePosts(
