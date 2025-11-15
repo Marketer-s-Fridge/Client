@@ -249,7 +249,7 @@ export default function MyPage() {
                         <div className="aspect-[3/4] bg-gray-100 rounded-lg overflow-hidden">
                           <Image
                             src="/icons/rectangle-gray.png"
-                            alt={item.field}
+                            alt={item.category}
                             width={300}
                             height={350}
                             className="w-full h-full object-cover"
@@ -257,7 +257,7 @@ export default function MyPage() {
                         </div>
                         <div className="pt-2 px-1 text-sm font-semibold flex items-center justify-between">
                           <span className="truncate pr-2 flex-1">
-                            {item.field}
+                            {item.category}
                           </span>
                           <button
                             onClick={() =>
@@ -461,7 +461,7 @@ export default function MyPage() {
                                 <div className="aspect-[3/4] bg-gray-100 rounded-lg overflow-hidden">
                                   <Image
                                     src="/icons/rectangle-gray.png"
-                                    alt={item.field}
+                                    alt={item.category}
                                     width={300}
                                     height={350}
                                     className="w-full h-full object-cover cursor-pointer"
@@ -469,7 +469,7 @@ export default function MyPage() {
                                 </div>
                                 <div className="pt-2 px-1 text-sm font-semibold flex items-center justify-between">
                                   <span className="truncate pr-2 flex-1">
-                                    {item.field}
+                                    {item.category}
                                   </span>
                                   <button
                                     onClick={() =>

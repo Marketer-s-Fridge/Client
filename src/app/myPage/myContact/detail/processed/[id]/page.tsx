@@ -60,7 +60,7 @@ export default function ProcessedDetailPage() {
   const latestAnswer = useMemo(() => {
     if (!comments || comments.length === 0) return undefined;
 
-    const published = comments.filter((c) => c.status === "PUBLISHED");
+    const published = comments.filter((c) => c.enquiryStatus === "PUBLISHED");
     const targetList = published.length > 0 ? published : comments;
 
     return [...targetList].sort(

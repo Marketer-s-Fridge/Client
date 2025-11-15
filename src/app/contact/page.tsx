@@ -70,7 +70,7 @@ export default function ContactPage() {
         writerEmail: email, // ✅ 여기 수정됨!
         content,
         agreement: agreed,
-        imageURL: file?.name ?? undefined,
+        imageUrl: file?.name ?? undefined,
       };
 
       const res = await createEnquiry(dto);

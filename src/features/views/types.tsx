@@ -1,18 +1,25 @@
 // types/mostViewedCategory.ts
 
-/** 🔹 조회 기록 요청 DTO */
+/** 🔹 조회 기록 요청 DTO (POST /api/most-viewed-category) */
 export interface MostViewedCategoryRequestDto {
-    /** 조회로 집계할 카테고리명 */
-    field: string;
-    /** 조회한 콘텐츠 ID */
-    category: number;
-  }
-  
-  /** 🔹 조회 기록 응답 DTO */
-  export interface MostViewedCategoryResponseDto {
-    id: number;
-    field: string;
-    category: number;
-    viewedAt: string;
-  }
-  
+  /** 조회로 집계할 카테고리명 (@NotBlank) */
+  category: string;
+
+  /** 조회한 콘텐츠 ID (notNull) */
+  postId: number;
+}
+
+/** 🔹 조회 기록 응답 DTO */
+export interface MostViewedCategoryResponseDto {
+  /** 조회 기록 ID */
+  id: number;
+
+  /** 조회한 유저 식별자 */
+  userId: string;
+
+  /** 조회된 콘텐츠의 카테고리 */
+  category: string;
+
+  /** 해당 카테고리를 가진 콘텐츠를 본 시각 (ISO LocalDateTime 문자열) */
+  viewedAt: string;
+}
