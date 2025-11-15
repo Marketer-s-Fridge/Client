@@ -476,7 +476,7 @@ export default function MyPage() {
                                   <div onClick={() => goToPost(item.id)}>
                                     <Image
                                       src={
-                                        (item as any).thumbnailUrl ||
+                                        (item as any).images?.[0] ||
                                         "/icons/rectangle-gray.png"
                                       }
                                       alt={item.category}
