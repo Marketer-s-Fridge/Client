@@ -10,11 +10,15 @@ import Breadcrumb from "@/components/breadCrumb";
 import MobileMenu from "@/components/mobileMenu";
 import SaveToFridgeButton from "@/components/saveToFridgeButton";
 import { usePost } from "@/features/posts/hooks/usePost";
+// import { usePostViewRecord } from "@/features/mostViewed/hooks/useMostViewedCategory";
+import { usePostViewRecord } from "@/features/views/hooks/useMostViewedCategory";
+
 
 export default function CardNewsDetailPage() {
   const router = useRouter();
   const { id } = useParams<{ id: string }>();
   const postId = Number(id);
+  
 
   if (!Number.isFinite(postId)) return notFound();
 
@@ -24,6 +28,12 @@ export default function CardNewsDetailPage() {
   const [activeSlide, setActiveSlide] = useState(0);
   const slideBoxRef = useRef<HTMLDivElement>(null);
   const [slideHeight, setSlideHeight] = useState<number>(0);
+
+   // ✅ 조회 기록 중복 전송 방지용 플래그
+   const hasRecordedRef = useRef(false);
+
+   // ✅ 조회 기록 mutation
+   const { mutate: recordView } = usePostViewRecord();
 
   // ✅ 게시글 이미지 목록 (없으면 기본 이미지 하나)
   const slideImages = useMemo(() => {
@@ -57,6 +67,23 @@ export default function CardNewsDetailPage() {
       resizeObserver.disconnect();
     };
   }, []);
+
+    // ✅ 게시글/카테고리 로딩 완료되면 조회 기록 한 번만 전송
+    useEffect(() => {
+      if (!post) return;
+      if (hasRecordedRef.current) return; // 중복 방지
+  
+      // MostViewedCategoryRequestDto 구조에 맞게 payload 채워줘야 함
+      // 예: { postId, category, title, type } 이런 식
+      recordView({
+        postId: post.id,
+        category: post.category,
+        // title: post.title,
+        // type: post.type,
+      } as any);
+  
+      hasRecordedRef.current = true;
+    }, [post, recordView]);
 
   if (isLoading) {
     return (

@@ -29,7 +29,6 @@ function EmptySectionBox({ message }: { message: string }) {
 export default function MyPage() {
   const router = useRouter();
   const { isAuthenticated, user, isLoading } = useAuthStatus();
-
   const [isNicknameModalOpen, setIsNicknameModalOpen] = useState(false);
   const [slideIndex, setSlideIndex] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -234,7 +233,7 @@ export default function MyPage() {
               {isRecentViewsLoading ? (
                 <EmptySectionBox message="불러오는 중..." />
               ) : !hasRecentViewed ? (
-                <EmptySectionBox message="담은 콘텐츠가 없습니다" />
+                <EmptySectionBox message="최근 본 콘텐츠가 없습니다" />
               ) : (
                 <div className="flex overflow-x-auto gap-4 no-scrollbar snap-x snap-mandatory">
                   {recentViews.map((item) => {
@@ -249,14 +248,22 @@ export default function MyPage() {
                           onClick={() => goToPost(item.id)}
                         >
                           <Image
-                            src="/icons/rectangle-gray.png"
+                            src={
+                              // DTO에 맞는 필드명으로 수정 (예: thumbnailUrl)
+                              // 없으면 서버 응답 필드명에 맞게 교체
+                              (item as any).thumbnailUrl ||
+                              "/icons/rectangle-gray.png"
+                            }
                             alt={item.category}
                             width={300}
                             height={350}
                             className="w-full h-full object-cover"
                           />
                         </div>
-                        <div className="pt-2 px-1 text-sm font-semibold flex items-center justify-between">
+                        <div className="pt-2 px-1 text-[11px] text-gray-500 truncate">
+                          {item.category}
+                        </div>
+                        <div className="pt-1 px-1 text-sm font-semibold flex items-center justify-between">
                           <span className="truncate pr-2 flex-1">
                             {item.category}
                           </span>
@@ -426,11 +433,13 @@ export default function MyPage() {
           {isRecentViewsLoading ? (
             <EmptySectionBox message="불러오는 중..." />
           ) : !hasRecentViewed ? (
-            <EmptySectionBox message="담은 콘텐츠가 없습니다" />
+            <EmptySectionBox message="최근 본 콘텐츠가 없습니다" />
           ) : (
             <div className="relative w-full">
               <button
-                onClick={() => slideIndex > 0 && setSlideIndex(slideIndex - 1)}
+                onClick={() =>
+                  slideIndex > 0 && setSlideIndex(slideIndex - 1)
+                }
                 className="cursor-pointer absolute left-[-33px] top-1/2 -translate-y-1/2 z-10"
               >
                 <Image
@@ -466,7 +475,10 @@ export default function MyPage() {
                                 <div className="aspect-[3/4] bg-gray-100 rounded-lg overflow-hidden">
                                   <div onClick={() => goToPost(item.id)}>
                                     <Image
-                                      src="/icons/rectangle-gray.png"
+                                      src={
+                                        (item as any).thumbnailUrl ||
+                                        "/icons/rectangle-gray.png"
+                                      }
                                       alt={item.category}
                                       width={300}
                                       height={350}
@@ -474,7 +486,10 @@ export default function MyPage() {
                                     />
                                   </div>
                                 </div>
-                                <div className="pt-2 px-1 text-sm font-semibold flex items-center justify-between">
+                                <div className="pt-1 px-1 text-[11px] text-gray-500 truncate">
+                                  {item.category}
+                                </div>
+                                <div className="pt-1 px-1 text-sm font-semibold flex items-center justify-between">
                                   <span className="truncate pr-2 flex-1">
                                     {item.category}
                                   </span>
