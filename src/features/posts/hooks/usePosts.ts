@@ -11,13 +11,12 @@ export interface Content {
   images: string[];
 }
 
-type UsePostsResult =
-  | { data: Content[]; isLoading: false; error: null } // mock 사용
-  | {
-      data: PostResponseDto[] | undefined;
-      isLoading: boolean;
-      error: Error | null;
-    }; // 서버 사용
+// ✅ 반환 타입: 항상 Content[] 로 통일
+type UsePostsResult = {
+  data: Content[];
+  isLoading: boolean;
+  error: Error | null;
+};
 
 // ✅ Mock 데이터
 const mockContents: Content[] = [
@@ -39,17 +38,19 @@ const mockContents: Content[] = [
   { id: 16, title: "2025 패션 트렌드: 소재와 지속가능성", images: ["/images/content16.png"] },
 ];
 
-// ✅ 훅 (isMock 플래그로 전환 가능)
-// isMock === true  → mock 사용
-// isMock === false → 서버 데이터 사용
+// 🔧 여기만 true/false로 바꾸면 mock / 서버 전환 가능
+const USE_MOCK = true;
+
+// ✅ selectedCategory / isMock 에 따라 Content[] 세팅
 export function usePosts(
   selectedCategory: string | null,
-  isMock = true
+  isMock: boolean = USE_MOCK
 ): UsePostsResult {
-  // 🔹 1) Mock 모드
+  // 1) Mock 모드
   if (isMock) {
     const filtered = selectedCategory
       ? mockContents.filter((item) =>
+          // 카테고리 이름이 타이틀에 들어가는 식으로 간단 필터
           item.title.toLowerCase().includes(selectedCategory.toLowerCase())
         )
       : mockContents;
@@ -61,7 +62,7 @@ export function usePosts(
     };
   }
 
-  // 🔹 2) 서버 모드
+  // 2) 서버 모드
   const {
     data,
     isLoading,
@@ -75,14 +76,31 @@ export function usePosts(
     retry: 1,
   });
 
+  // 카테고리 필터 (필요에 맞게 수정)
   const filtered = selectedCategory
     ? data?.filter((item) =>
         item.title.toLowerCase().includes(selectedCategory.toLowerCase())
       )
     : data;
 
+  // ✅ 서버 DTO → Content[]로 매핑
+  const mapped: Content[] =
+    filtered?.map((post) => {
+      const p = post as any; // 서버 DTO 필드명이 다를 수 있으니 any로 안전하게 처리
+      const images: string[] =
+        p.images ??
+        p.imageUrls ??
+        (p.thumbnailUrl ? [p.thumbnailUrl] : []);
+
+      return {
+        id: p.id,
+        title: p.title,
+        images: images ?? [],
+      };
+    }) ?? [];
+
   return {
-    data: filtered,
+    data: mapped,
     isLoading,
     error: error ?? null,
   };

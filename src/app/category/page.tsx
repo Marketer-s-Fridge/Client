@@ -1,3 +1,4 @@
+// app/(whatever)/page.tsx
 "use client";
 
 import React, { useState } from "react";
@@ -9,8 +10,9 @@ import Footer from "@/components/footer";
 import Pagination from "@/components/pagination";
 import CardGrid from "@/components/cardGrid";
 import MobileMenu from "@/components/mobileMenu";
-import { usePosts } from "@/features/posts/hooks/usePosts";
 import NoContentView from "@/components/noContentView";
+import { usePosts } from "@/features/posts/hooks/usePosts";
+
 interface Category {
   name: string;
   icon: string;
@@ -30,8 +32,8 @@ export default function Page() {
   const [currentPage, setCurrentPage] = useState(1);
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // ✅ 훅 사용 (지금은 mock 데이터 반환)
-  const { data, isLoading, error } = usePosts(selectedCategory);
+  // ✅ 훅 사용 (현재는 mock / 나중에 서버 모드는 두 번째 인자 false로)
+  const { data: posts, isLoading, error } = usePosts(selectedCategory /*, false */);
 
   const toggleLike = (id: number) => {
     setLikedItems((prev) =>
@@ -88,19 +90,18 @@ export default function Page() {
         {isLoading && <p className="text-center">로딩중...</p>}
         {error && <p className="text-center text-red-500">에러 발생!</p>}
 
-        {/* ✅ 결과 있음 */}
-        {data && data.length > 0 ? (
+        {posts && posts.length > 0 ? (
           <>
             <CardGrid
-              items={data.map((post) => ({
+              items={posts.map((post) => ({
                 id: post.id,
                 title: post.title,
-                image: post.images,
+                image: post.images, // ✅ 훅에서 Content[]로 맞춰놨으니까 그대로 사용
               }))}
               columns={4}
             />
 
-            {/* ✅ 결과가 있을 때만 페이지네이션 표시 */}
+            {/* TODO: 서버에서 totalPages 내려주면 거기에 맞게 교체 */}
             <Pagination
               currentPage={currentPage}
               totalPages={5}
@@ -108,8 +109,7 @@ export default function Page() {
             />
           </>
         ) : (
-          // ✅ 결과 없음 뷰
-          <NoContentView></NoContentView>
+          <NoContentView />
         )}
 
         <ScrollToTopButton />
