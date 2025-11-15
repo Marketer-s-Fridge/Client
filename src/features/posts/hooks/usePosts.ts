@@ -41,7 +41,15 @@ const mockContents: Content[] = [
 // 🔧 여기만 true/false로 바꾸면 mock / 서버 전환 가능
 const USE_MOCK = false;
 
-// ✅ selectedCategory / isMock 에 따라 Content[] 세팅
+// ✅ 아이콘 이름 → 서버 카테고리 값 매핑
+const CATEGORY_MAP: Record<string, string> = {
+  Food: "FOOD",
+  Lifestyle: "LIFESTYLE",
+  Beauty: "BEAUTY",
+  Tech: "TECH",
+  Fashion: "FASHION",
+};
+
 export function usePosts(
   selectedCategory: string | null,
   isMock: boolean = USE_MOCK
@@ -49,10 +57,7 @@ export function usePosts(
   // 1) Mock 모드
   if (isMock) {
     const filtered = selectedCategory
-      ? mockContents.filter((item) =>
-          // 카테고리 이름이 타이틀에 들어가는 식으로 간단 필터
-          item.title.toLowerCase().includes(selectedCategory.toLowerCase())
-        )
+      ? mockContents // 필요하면 여기에도 카테고리 정보 추가해서 필터
       : mockContents;
 
     return {
@@ -62,13 +67,19 @@ export function usePosts(
     };
   }
 
+  // ✅ 서버 카테고리 값으로 변환 (없으면 null)
+  const serverCategory = selectedCategory
+    ? CATEGORY_MAP[selectedCategory] ?? selectedCategory
+    : null;
+
   // 2) 서버 모드
   const {
     data,
     isLoading,
     error,
   } = useQuery<PostResponseDto[], Error>({
-    queryKey: ["posts", "list", selectedCategory],
+    queryKey: ["posts", "list", serverCategory],
+    // 지금은 상태로만 가져오고 있음
     queryFn: () => fetchPostsByStatus("PUBLISHED"),
     staleTime: 60_000,
     gcTime: 5 * 60_000,
@@ -76,17 +87,18 @@ export function usePosts(
     retry: 1,
   });
 
-  // 카테고리 필터 (필요에 맞게 수정)
-  const filtered = selectedCategory
-    ? data?.filter((item) =>
-        item.title.toLowerCase().includes(selectedCategory.toLowerCase())
-      )
+  // ✅ 카테고리 필터: 제목 말고 서버 category 필드 기준
+  const filtered = serverCategory
+    ? data?.filter((item) => {
+        const p = item as any;
+        return p.category === serverCategory;
+      })
     : data;
 
   // ✅ 서버 DTO → Content[]로 매핑
   const mapped: Content[] =
     filtered?.map((post) => {
-      const p = post as any; // 서버 DTO 필드명이 다를 수 있으니 any로 안전하게 처리
+      const p = post as any;
       const images: string[] =
         p.images ??
         p.imageUrls ??
