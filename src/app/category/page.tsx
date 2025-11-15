@@ -11,6 +11,7 @@ import Pagination from "@/components/pagination";
 import CardGrid from "@/components/cardGrid";
 import MobileMenu from "@/components/mobileMenu";
 import NoContentView from "@/components/noContentView";
+// import { usePosts } from "@/features/posts/hooks/usePosts";
 import { usePosts } from "@/features/posts/hooks/usePosts";
 import { usePostsByCategory } from "@/features/posts/hooks/usePostsByCategory";
 
@@ -112,7 +113,7 @@ export default function Page() {
               items={posts.map((post) => ({
                 id: post.id,
                 title: post.title,
-                image: post.images, // usePosts / usePostsByCategory 둘 다 Content.images 기준
+                imageUrl: post.images[0], // usePosts / usePostsByCategory 둘 다 Content.images 기준
               }))}
               columns={4}
             />
