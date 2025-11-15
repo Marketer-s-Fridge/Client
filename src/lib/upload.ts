@@ -11,7 +11,7 @@ interface PresignResponse {
 async function presignAndUpload(file: File): Promise<string> {
   // ✅ presign 요청은 api(공용 클라이언트)로 보내서
   //    쿠키, Authorization 헤더 등이 같이 가도록 함
-  const { data } = await api.post<PresignResponse>("/uploads/presign", {
+  const { data } = await api.post<PresignResponse>("/api/uploads/presign", {
     contentType: file.type,
     size: file.size,
   });
