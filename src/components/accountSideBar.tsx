@@ -35,11 +35,15 @@ export default function AccountSidebar() {
     );
   }
 
+  const profileImageSrc =
+  user?.profileImageUrl && user.profileImageUrl.trim() !== ""
+    ? user.profileImageUrl
+    : "/images/profile-character.png";
   return (
     <aside className="bg-gray-100 flex flex-col items-center py-5 md:py-10 px-2 md:px-4 text-center w-full md:w-[280px] h-auto md:h-screen">
       {/* 프로필 이미지 */}
       <Image
-        src="/images/profile-lovely.png"
+        src={profileImageSrc}
         alt="프로필"
         className="w-28 h-28 md:w-40 md:h-40 rounded-full object-cover"
         width={200}

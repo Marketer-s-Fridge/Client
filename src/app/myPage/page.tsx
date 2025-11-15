@@ -147,6 +147,10 @@ export default function MyPage() {
       </div>
     );
   }
+  const profileImageSrc =
+  user?.profileImageUrl && user.profileImageUrl.trim() !== ""
+    ? user.profileImageUrl
+    : "/images/profile-character.png";
 
   return (
     <div className="bg-white pt-11 md:pt-0">
@@ -180,8 +184,9 @@ export default function MyPage() {
       <section className="flex py-5 md:py-10 px-[5%] lg:px-[17%] main-red text-white w-full">
         <div className="w-full flex flex-col md:flex-row justify-between items-center">
           <div className="flex flex-col md:flex-row items-center w-1/2 gap-[5%] sm:gap-[10%]">
+            
             <Image
-              src="/images/profile-character.png"
+              src={profileImageSrc}
               alt="프로필"
               className="w-[35%] sm:w-[40%] h-auto"
               width={230}
