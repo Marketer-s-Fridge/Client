@@ -127,7 +127,7 @@ export default function ChangeNicknameModal({ onClose, onUpdated }: Props) {
     try {
       // 1) 아바타 변경: S3 업로드 후 URL을 mutateAvatar에 전달
       if (avatarChanged && fileObj) {
-        const imageUrl = await uploadSingle(fileObj, "avatar");
+        const imageUrl = await uploadSingle(fileObj);
         await mutateAvatar(imageUrl);
       }
 
