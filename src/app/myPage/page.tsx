@@ -1,3 +1,4 @@
+// src/app/myPage/page.tsx (예시 경로)
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -16,7 +17,9 @@ import { useAuthStatus } from "@/features/auth/hooks/useAuthStatus";
 import {
   useRecentViews,
   useCategoryStats,
+  useMostViewedCategory,
 } from "@/features/views/hooks/useMostViewedCategory";
+import { usePostsByCategory } from "@/features/posts/hooks/usePostsByCategory";
 
 function EmptySectionBox({ message }: { message: string }) {
   return (
@@ -59,20 +62,26 @@ export default function MyPage() {
   const { data: categoryStats = {}, isLoading: isCategoryStatsLoading } =
     useCategoryStats();
 
+  // ✅ 내가 가장 많이 본 카테고리
+  const { data: mostViewedCategory } = useMostViewedCategory();
+
+  // ✅ 해당 카테고리의 게시물 3개 (추천용)
+  const {
+    data: recommendedPosts,
+    isLoading: isRecommendedLoading,
+  } = usePostsByCategory(mostViewedCategory ?? null, 3);
+
   // 비로그인 진입 시 모달
   useEffect(() => {
     const checked = !isLoading;
     if (checked && !isAuthenticated) setIsLoginModalOpen(true);
   }, [isLoading, isAuthenticated]);
 
-  // 추천 콘텐츠는 아직 더미
-  const tempcontents: string[] = [];
-
   const cardsPerPage = 3;
   const maxSlideIndex = Math.ceil(recentViews.length / cardsPerPage) - 1;
 
   const hasRecentViewed = recentViews.length > 0;
-  const hasRecommended = tempcontents.length > 0;
+  const hasRecommended = recommendedPosts.length > 0;
 
   // ✅ 도넛차트용 데이터 변환
   const chartData = Object.entries(categoryStats).map(([label, value]) => ({
@@ -249,9 +258,7 @@ export default function MyPage() {
                         >
                           <Image
                             src={
-                              // DTO에 맞는 필드명으로 수정 (예: thumbnailUrl)
-                              // 없으면 서버 응답 필드명에 맞게 교체
-                              (item as any).thumbnailUrl ||
+                              (item as any).images?.[0] ||
                               "/icons/rectangle-gray.png"
                             }
                             alt={item.category}
@@ -382,25 +389,29 @@ export default function MyPage() {
               )}
             </div>
 
-            {/* 모바일: 추천 콘텐츠 (임시) */}
+            {/* 모바일: 추천 콘텐츠 */}
             <div>
               <h3 className="text-2xl font-bold mb-4">
                 마케터님에게 딱 맞는 추천 콘텐츠
               </h3>
-              {!hasRecommended ? (
-                <EmptySectionBox message="담은 콘텐츠가 없습니다" />
+              {isRecommendedLoading ? (
+                <EmptySectionBox message="불러오는 중..." />
+              ) : !hasRecommended ? (
+                <EmptySectionBox message="추천할 콘텐츠가 아직 없습니다" />
               ) : (
                 <div className="grid grid-cols-2 gap-4">
-                  {tempcontents.map((title, i) => (
-                    <div key={i} className="w-full">
+                  {recommendedPosts.map((post) => (
+                    <div key={post.id} className="w-full">
                       <div className="relative aspect-[3/4] rounded-lg bg-gray-100 overflow-hidden">
-                        <div onClick={() => goToPost(i)}>
+                        <div onClick={() => goToPost(post.id)}>
                           <Image
-                            src="/icons/rectangle-gray.png"
-                            alt={title}
+                            src={
+                              post.images?.[0] || "/icons/rectangle-gray.png"
+                            }
+                            alt={post.title}
                             width={200}
                             height={250}
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-cover cursor-pointer"
                           />
                         </div>
                         <Image
@@ -412,7 +423,7 @@ export default function MyPage() {
                         />
                       </div>
                       <div className="pt-2 text-sm font-semibold truncate">
-                        {title}
+                        {post.title}
                       </div>
                     </div>
                   ))}
@@ -600,7 +611,9 @@ export default function MyPage() {
                   <div className="relative aspect-[3/4] rounded-lg bg-gray-100 overflow-hidden">
                     <div onClick={() => goToPost(post.id)}>
                       <Image
-                        src={post.images?.[0] || "/icons/rectangle-gray.png"}
+                        src={
+                          post.images?.[0] || "/icons/rectangle-gray.png"
+                        }
                         alt={post.title}
                         width={200}
                         height={250}
@@ -629,20 +642,26 @@ export default function MyPage() {
           <h3 className="text-2xl font-bold mb-4">
             마케터님에게 딱 맞는 추천 콘텐츠
           </h3>
-          {!hasRecommended ? (
-            <EmptySectionBox message="담은 콘텐츠가 없습니다" />
+          {isRecommendedLoading ? (
+            <EmptySectionBox message="불러오는 중..." />
+          ) : !hasRecommended ? (
+            <EmptySectionBox message="추천할 콘텐츠가 아직 없습니다" />
           ) : (
             <div className="grid grid-cols-2 gap-4 md:flex md:gap-4 md:justify-center">
-              {tempcontents.map((title, i) => (
-                <div key={i} className="w-full md:w-[140px]">
+              {recommendedPosts.map((post) => (
+                <div key={post.id} className="w-full md:w-[140px]">
                   <div className="relative aspect-[3/4] rounded-lg bg-gray-100 overflow-hidden">
-                    <Image
-                      src="/icons/rectangle-gray.png"
-                      alt={title}
-                      width={200}
-                      height={250}
-                      className="w-full h-full object-cover"
-                    />
+                    <div onClick={() => goToPost(post.id)}>
+                      <Image
+                        src={
+                          post.images?.[0] || "/icons/rectangle-gray.png"
+                        }
+                        alt={post.title}
+                        width={200}
+                        height={250}
+                        className="w-full h-full object-cover cursor-pointer"
+                      />
+                    </div>
                     <Image
                       src="/icons/redheart.png"
                       alt="찜"
@@ -652,7 +671,7 @@ export default function MyPage() {
                     />
                   </div>
                   <div className="pt-2 text-sm font-semibold truncate">
-                    {title}
+                    {post.title}
                   </div>
                 </div>
               ))}
