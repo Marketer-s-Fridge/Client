@@ -1,56 +1,33 @@
 // src/lib/upload.ts
-// import api from "@/lib/api"; // ✅ 토큰/withCredentials 붙는 axios 인스턴스
-import axios from "axios";  // ✅ S3 PUT 용(절대 URL이라 상관 없음)
-import api from "./apiClient";
+import axios from "axios";
 
-type PresignRes = {
+interface PresignResponse {
   uploadUrl: string;
-  key: string;
-};
+  headers?: Record<string, string>;
+}
 
-/** 단건 presign → S3 PUT → 공개 URL 반환 */
-export async function uploadSingleImage(
-  file: File,
-  scope: "post" | "avatar" | "misc" = "post"
-) {
-  // ✅ 여기서 api 사용 → Authorization 자동 첨부
-  const { data } = await api.post<PresignRes>("/api/uploads/presign", {
+/** presign + S3 PUT + 공개 URL 반환 (단건 공통 로직) */
+async function presignAndUpload(file: File): Promise<string> {
+  // ⭐ 제네릭 타입 명시 → data 타입 unknown 문제 해결
+  const { data } = await axios.post<PresignResponse>("/api/uploads/presign", {
     contentType: file.type,
     size: file.size,
-    scope,
   });
 
-  // pre-signed URL은 절대 URL이라 그냥 axios 써도 OK
   await axios.put(data.uploadUrl, file, {
-    headers: { "Content-Type": file.type },
+    headers: data.headers ?? { "Content-Type": file.type },
   });
 
-  // 쿼리스트링 제거한 S3 공개 URL만 반환
   return data.uploadUrl.split("?")[0];
 }
 
-/** 여러 장 → presign 여러 번 호출 → 병렬 PUT → 공개 URL 배열 반환 */
-export async function uploadBatchImages(
-  files: File[],
-  scope: "post" | "avatar" | "misc" = "post"
-) {
+/** 🔹 단건 이미지 업로드 */
+export async function uploadSingleImage(file: File) {
+  return presignAndUpload(file);
+}
+
+/** 🔹 여러 장 이미지 업로드 */
+export async function uploadBatchImages(files: File[]) {
   if (!files.length) return [];
-
-  const results = await Promise.all(
-    files.map(async (file) => {
-      const { data } = await api.post<PresignRes>("/api/uploads/presign", {
-        contentType: file.type,
-        size: file.size,
-        scope,
-      });
-
-      await axios.put(data.uploadUrl, file, {
-        headers: { "Content-Type": file.type },
-      });
-
-      return data.uploadUrl.split("?")[0];
-    })
-  );
-
-  return results; // string[]
+  return Promise.all(files.map((file) => presignAndUpload(file)));
 }

@@ -174,9 +174,7 @@ export const updateNickname = async (nickname: string): Promise<string> => {
 };
 
 /** ✅ 프로필 이미지 변경 */
-export const updateProfileImage = async (
-  profileImageUrl: string
-): Promise<string> => {
+export const updateProfileImage = async (profileImageUrl: string): Promise<string> => {
   const res = await api.patch<string>("/auth/profile-image", {
     profileImageUrl,
   });
