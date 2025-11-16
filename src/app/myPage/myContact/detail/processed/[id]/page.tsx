@@ -11,6 +11,7 @@ import {
   useFeedbackByEnquiryId,
   useCreateFeedback,
 } from "@/features/feedback/hooks/useFeedback";
+import Image from "next/image";
 
 export default function ProcessedDetailPage() {
   const router = useRouter();
@@ -114,8 +115,17 @@ export default function ProcessedDetailPage() {
 
           {/* 유저 정보 */}
           <div className="flex items-center gap-3 mb-1 border-y border-gray-300 py-2">
-            <div className="w-8 h-8 rounded-full bg-gray-300" />
-            <span className="text-sm font-medium">{writer.username ?? "익명"}</span>
+            {/* 작성자 사진 */}
+            {/* <Image
+              src={user}
+              alt="profile"
+              width={32}
+              height={32}
+              className="w-8 h-8 rounded-full object-cover"
+            /> */}
+            <span className="text-sm font-medium">
+              {writer.username ?? "익명"}
+            </span>
             {writerEmail && (
               <span className="text-sm text-[#8E8E8E]">{writerEmail}</span>
             )}

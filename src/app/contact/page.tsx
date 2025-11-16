@@ -1,3 +1,4 @@
+// src/app/contact/page.tsx (예시 경로)
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -9,6 +10,7 @@ import MobileMenu from "@/components/mobileMenu";
 import { createEnquiry } from "@/features/enquiries/api/enquiriesApi";
 import { EnquiryRequestDto } from "@/features/enquiries/types";
 import LoginRequiredModal from "@/components/loginRequiredModal";
+import { useImageUpload } from "@/features/posts/hooks/useImageUpload"; // ✅ 이미지 업로드 훅
 
 export default function ContactPage() {
   const [category, setCategory] = useState("");
@@ -17,10 +19,17 @@ export default function ContactPage() {
   const [content, setContent] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [fileName, setFileName] = useState("");
+  const [imageUrl, setImageUrl] = useState<string | null>(null); // ✅ 업로드 된 URL
   const [agreed, setAgreed] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false); // ✅ 추가
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+
+  // ✅ 단일 이미지 업로드 mutation
+  const {
+    mutateAsync: uploadImage,
+    isPending: isUploading,
+  } = useImageUpload();
 
   // ✅ 로그인 여부 체크
   const isLoggedIn =
@@ -32,7 +41,7 @@ export default function ContactPage() {
     }
   }, [isLoggedIn]);
 
-  const isFormValid = category && title && email && content && agreed;
+  const isFormValid = !!(category && title && email && content && agreed);
 
   const categoryOptions = [
     "시스템 오류",
@@ -56,10 +65,44 @@ export default function ContactPage() {
     기타: "어떤 문의든 괜찮아요! 궁금한 점이나 불편한 점을 자유롭게 적어주세요 :)",
   };
 
+  // ✅ 파일 선택 + 즉시 업로드
+  const handleFileChange = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const selected = e.target.files?.[0] || null;
+    setFile(selected);
+    setImageUrl(null); // 새로 선택 시 이전 URL 초기화
+
+    if (!selected) {
+      setFileName("");
+      return;
+    }
+
+    setFileName(selected.name);
+
+    try {
+      const url = await uploadImage(selected); // File -> string(URL)
+      setImageUrl(url);
+      console.log("문의 이미지 업로드 성공: ", url);
+    } catch (err) {
+      console.error("문의 이미지 업로드 실패: ", err);
+      alert("이미지 업로드 중 오류가 발생했습니다. 다시 시도해주세요.");
+      setFile(null);
+      setFileName("");
+      setImageUrl(null);
+    }
+  };
+
   // ✅ 문의 등록 API 연결
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!isFormValid) return;
+
+    // 파일을 선택했는데 아직 업로드 중이거나 URL이 없는 경우 막기
+    if (file && (isUploading || !imageUrl)) {
+      alert("이미지 업로드가 완료된 후에 제출해주세요.");
+      return;
+    }
 
     try {
       setLoading(true);
@@ -67,10 +110,10 @@ export default function ContactPage() {
       const dto: EnquiryRequestDto = {
         category,
         title,
-        writerEmail: email, // ✅ 여기 수정됨!
+        writerEmail: email,
         content,
         agreement: agreed,
-        imageUrl: file?.name ?? undefined,
+        imageUrl: imageUrl ?? undefined, // ✅ 업로드된 URL 사용
       };
 
       const res = await createEnquiry(dto);
@@ -84,6 +127,7 @@ export default function ContactPage() {
       setContent("");
       setFile(null);
       setFileName("");
+      setImageUrl(null);
       setAgreed(false);
     } catch (error: any) {
       console.error("문의 등록 실패:", error);
@@ -162,17 +206,13 @@ export default function ContactPage() {
                 id="file-upload"
                 type="file"
                 className="hidden"
-                onChange={(e) => {
-                  const file = e.target.files?.[0] || null;
-                  setFile(file);
-                  setFileName(file?.name || "");
-                }}
+                onChange={handleFileChange}
               />
               <label
                 htmlFor="file-upload"
                 className="cursor-pointer text-white bg-[#555555] hover:bg-[#959595] rounded px-3 py-2 text-sm"
               >
-                파일 선택
+                {isUploading ? "업로드 중..." : "파일 선택"}
               </label>
               <span className="text-sm text-gray-600">
                 {fileName || "PNG, JPG, PDF 가능 (최대 10MB)"}
@@ -249,14 +289,18 @@ export default function ContactPage() {
           <div className="text-end mt-10">
             <button
               type="submit"
-              disabled={!isFormValid || loading}
+              disabled={!isFormValid || loading || isUploading}
               className={`rounded-full px-6 py-1.5 text-sm font-medium transition-colors ${
-                isFormValid
+                isFormValid && !loading && !isUploading
                   ? "bg-red-500 text-white hover:bg-red-600"
                   : "bg-gray-100 text-gray-400 cursor-not-allowed"
               }`}
             >
-              {loading ? "제출 중..." : "제출하기"}
+              {loading
+                ? "제출 중..."
+                : isUploading
+                ? "이미지 업로드 중..."
+                : "제출하기"}
             </button>
           </div>
         </form>
