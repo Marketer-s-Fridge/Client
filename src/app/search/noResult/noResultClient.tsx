@@ -77,9 +77,15 @@ export default function NoResultClient() {
               추천 콘텐츠를 불러오는 중 오류가 발생했습니다.
             </p>
           )}
-
           {!isLoading && !error && recommendedContents.length > 0 && (
-            <CardGrid items={recommendedContents} columns={3} />
+            <CardGrid
+              items={recommendedContents.map((post) => ({
+                id: post.id,
+                title: post.title,
+                imageUrl: post.images?.[0], // ✅ 첫 번째 이미지 사용
+              }))}
+              columns={3}
+            />
           )}
 
           {!isLoading && !error && recommendedContents.length === 0 && (
