@@ -215,7 +215,7 @@ export default function CardNewsDetailPage() {
               <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-2">
                 {post.title}
               </h1>
-              <div className="text-xs text-gray-500 mb-6">
+              <div className="text-xs text-gray-500 mb-4">
                 {/* post에 맞게 값 매핑 */}
                 {post.publishedAt
                   ? new Date(post.publishedAt).toLocaleDateString("ko-KR")
@@ -224,6 +224,9 @@ export default function CardNewsDetailPage() {
                 {post.clickCount !== undefined &&
                   ` · 냉장고에 담은 사람 ${post.clickCount}`}
               </div>
+              <h3 className="text-lg sm:text-xl lg:text-2xl font-bold mb-2">
+                {post.subTitle}
+              </h3>
               <p className="text-sm sm:text-base text-gray-700 leading-relaxed whitespace-pre-line">
                 {post.content}
               </p>
