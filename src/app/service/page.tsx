@@ -563,7 +563,7 @@ export default function Page() {
             />
 
             {/* 안내 텍스트 + 아래 화살표 */}
-            <div
+            {/* <div
               className="text-black flex flex-1 w-full absolute place-self-center bottom-[10%]  flex-col items-center"
               aria-hidden="true"
             >
@@ -610,12 +610,12 @@ export default function Page() {
                 >
                   <path d="M6 9l6 6 6-6" />
                 </motion.svg>
-              </div>
-            </div>
+              </div> 
+            </div>*/}
           </div>
 
           {/* 7) 캐릭터 소개 초반 1 (모바일) */}
-          <div className=" text-black w-full h-full !max-w-none bg-gray-100 pt-[10%] px-[2%]">
+          {/* <div className=" text-black w-full h-full !max-w-none bg-gray-100 pt-[10%] px-[2%]">
             <p className="text-red-500 text-[26vw] text-left font-bold mb-7">
               Hello
             </p>
@@ -628,14 +628,8 @@ export default function Page() {
             <p className="text-red-500 text-[26vw] text-right font-bold ">
               Family
             </p>
-            {/* <Image
-              alt="밑줄"
-              width={280}
-              height={10}
-              src="/images/line.png"
-              className="contain-size object-contain absolute right-0"
-            ></Image> */}
-          </div>
+         
+          </div> */}
           {/* 7) 캐릭터 소개 초반 2 (모바일) */}
           {/* <div className="text-black page-inner !max-w-none bg-gray-100">
             <Image
@@ -647,9 +641,9 @@ export default function Page() {
           </div> */}
 
           {/* 8) 캐릭터 소개 리스트 (모바일) */}
-          <div className="text-black page-inner bg-gray-100 mt-[-3%] !max-w-none ">
+          {/* <div className="text-black page-inner bg-gray-100 mt-[-3%] !max-w-none ">
             <CharacterSlider></CharacterSlider>
-          </div>
+          </div> */}
         </MobileSectionPager>
         <Footer />
       </main>
