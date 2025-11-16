@@ -1,28 +1,33 @@
+// pages/signUp/page.tsx
 "use client";
 
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import Header from "@/components/header";
-import { useRouter } from "next/navigation"; // ✅ Next.js 클라이언트 라우팅
+import { useRouter } from "next/navigation";
 import { AuthHeader } from "@/components/authFormComponents";
 import Image from "next/image";
 import MobileMenu from "@/components/mobileMenu";
+import ConfirmModal from "@/components/confirmModal";
 
 const SignUpPage: React.FC = () => {
-  const router = useRouter(); // ✅ 라우터 객체 사용
+  const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
+
+  // ✅ SNS 회원가입 준비중 모달
+  const [showSocialModal, setShowSocialModal] = useState(false);
 
   return (
     <div className="bg-white pt-18 md:pt-0">
       <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+
       <main className="flex justify-center px-4 py-16">
         <div className="w-full max-w-[550px]">
           <AuthHeader />
 
           <div className="flex flex-col px-8 md:px-0 w-full mb-6 md:mb-14 justify-self-center justify-center items-center self-center">
-            {/* ✅ 이미지 버튼: 카카오 */}
-            <button onClick={() => router.push("signUp/sns")}>
+            {/* ✅ 카카오로 시작하기 */}
+            <button onClick={() => setShowSocialModal(true)}>
               <Image
                 src="/icons/kakao-join-bt.png"
                 alt="카카오로 시작하기"
@@ -32,8 +37,8 @@ const SignUpPage: React.FC = () => {
               />
             </button>
 
-            {/* ✅ 이미지 버튼: 네이버 */}
-            <button onClick={() => router.push("signUp/sns")}>
+            {/* ✅ 네이버로 시작하기 */}
+            <button onClick={() => setShowSocialModal(true)}>
               <Image
                 src="/icons/naver-join-bt.png"
                 alt="네이버로 시작하기"
@@ -43,8 +48,8 @@ const SignUpPage: React.FC = () => {
               />
             </button>
 
-            {/* ✅ 이미지 버튼: 구글 */}
-            <button onClick={() => router.push("signUp/sns")}>
+            {/* ✅ Google로 시작하기 */}
+            <button onClick={() => setShowSocialModal(true)}>
               <Image
                 src="/icons/google-join-bt.png"
                 alt="Google로 시작하기"
@@ -54,7 +59,7 @@ const SignUpPage: React.FC = () => {
               />
             </button>
 
-            {/* ✅ 이미지 버튼: 이메일 */}
+            {/* ✅ 이메일로 시작하기 (실제 라우팅) */}
             <button onClick={() => router.push("/signUp/email")}>
               <Image
                 src="/icons/email-join-bt.png"
@@ -79,6 +84,14 @@ const SignUpPage: React.FC = () => {
           </div>
         </div>
       </main>
+
+      {/* ✅ SNS 회원가입 준비중 모달 */}
+      <ConfirmModal
+        isOpen={showSocialModal}
+        onClose={() => setShowSocialModal(false)}
+      >
+        <p>SNS 회원가입 기능은 준비중입니다.</p>
+      </ConfirmModal>
     </div>
   );
 };
