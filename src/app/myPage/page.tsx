@@ -1,4 +1,4 @@
-// src/app/myPage/page.tsx (예시 경로)
+// src/app/myPage/page.tsx
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -54,7 +54,7 @@ export default function MyPage() {
     isLoading: isBookmarkLoading,
   } = useBookmarks();
 
-  // ✅ 최근 조회한 게시물
+  // ✅ 최근 조회한 게시물 (RecentViewedResponseDto[])
   const { data: recentViews = [], isLoading: isRecentViewsLoading } =
     useRecentViews();
 
@@ -66,7 +66,7 @@ export default function MyPage() {
   const { data: mostViewedCategory } = useMostViewedCategory();
 
   // ✅ 해당 카테고리의 게시물 3개 (추천용)
-  const { data: recommendedPosts, isLoading: isRecommendedLoading } =
+  const { data: recommendedPosts = [], isLoading: isRecommendedLoading } =
     usePostsByCategory(mostViewedCategory ?? null, 3);
 
   // 비로그인 진입 시 모달
@@ -145,6 +145,7 @@ export default function MyPage() {
       </div>
     );
   }
+
   const profileImageSrc =
     user?.profileImageUrl && user.profileImageUrl.trim() !== ""
       ? user.profileImageUrl
@@ -250,37 +251,38 @@ export default function MyPage() {
               ) : (
                 <div className="flex overflow-x-auto gap-4 no-scrollbar snap-x snap-mandatory">
                   {recentViews.map((item) => {
-                    const isSaved = bookmarkIds.includes(item.id);
+                    const postId = item.postId;
+                    const isSaved = bookmarkIds.includes(postId);
                     return (
                       <div
-                        key={item.id}
+                        key={postId}
                         className="flex-shrink-0 w-[35vw] snap-start"
                       >
                         <div
                           className="aspect-[3/4] bg-gray-100 rounded-lg overflow-hidden"
-                          onClick={() => goToPost(item.id)}
+                          onClick={() => goToPost(postId)}
                         >
                           <Image
                             src={
-                              (item as any).images?.[0] ||
+                              item.thumbnailUrl ||
                               "/icons/rectangle-gray.png"
                             }
-                            alt={item.category}
+                            alt={item.title}
                             width={300}
                             height={350}
                             className="w-full h-full object-cover"
                           />
                         </div>
                         <div className="pt-2 px-1 text-[11px] text-gray-500 truncate">
-                          {item.category}
+                          {item.viewedAt.slice(0, 10)}
                         </div>
                         <div className="pt-1 px-1 text-sm font-semibold flex items-center justify-between">
                           <span className="truncate pr-2 flex-1">
-                            {item.category}
+                            {item.title}
                           </span>
                           <button
                             onClick={() =>
-                              handleToggleBookmark(item.id, isSaved)
+                              handleToggleBookmark(postId, isSaved)
                             }
                             disabled={isBookmarkLoading || !isAuthenticated}
                             aria-disabled={!isAuthenticated}
@@ -482,17 +484,18 @@ export default function MyPage() {
                             pageIndex * cardsPerPage + cardsPerPage
                           )
                           .map((item) => {
-                            const isSaved = bookmarkIds.includes(item.id);
+                            const postId = item.postId;
+                            const isSaved = bookmarkIds.includes(postId);
                             return (
-                              <div key={item.id} className="w-[140px]">
+                              <div key={postId} className="w-[140px]">
                                 <div className="aspect-[3/4] bg-gray-100 rounded-lg overflow-hidden">
-                                  <div onClick={() => goToPost(item.id)}>
+                                  <div onClick={() => goToPost(postId)}>
                                     <Image
                                       src={
-                                        (item as any).images?.[0] ||
+                                        item.thumbnailUrl ||
                                         "/icons/rectangle-gray.png"
                                       }
-                                      alt={item.category}
+                                      alt={item.title}
                                       width={300}
                                       height={350}
                                       className="w-full h-full object-cover cursor-pointer"
@@ -500,15 +503,15 @@ export default function MyPage() {
                                   </div>
                                 </div>
                                 <div className="pt-1 px-1 text-[11px] text-gray-500 truncate">
-                                  {item.category}
+                                  {item.viewedAt.slice(0, 10)}
                                 </div>
                                 <div className="pt-1 px-1 text-sm font-semibold flex items-center justify-between">
                                   <span className="truncate pr-2 flex-1">
-                                    {item.category}
+                                    {item.title}
                                   </span>
                                   <button
                                     onClick={() =>
-                                      handleToggleBookmark(item.id, isSaved)
+                                      handleToggleBookmark(postId, isSaved)
                                     }
                                     disabled={
                                       isBookmarkLoading || !isAuthenticated
