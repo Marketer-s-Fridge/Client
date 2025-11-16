@@ -11,6 +11,8 @@ import MobileMenu from "@/components/mobileMenu";
 import SaveToFridgeButton from "@/components/saveToFridgeButton";
 import { usePost } from "@/features/posts/hooks/usePost";
 import { usePostViewRecord } from "@/features/views/hooks/useMostViewedCategory";
+import ConfirmModal from "@/components/confirmModal";
+
 export default function CardNewsDetailPage() {
   const router = useRouter();
   const { id } = useParams<{ id: string }>();
@@ -24,6 +26,9 @@ export default function CardNewsDetailPage() {
   const [activeSlide, setActiveSlide] = useState(0);
   const slideBoxRef = useRef<HTMLDivElement>(null);
   const [slideHeight, setSlideHeight] = useState<number>(0);
+
+  // ✅ 공유 준비중 모달
+  const [showShareModal, setShowShareModal] = useState(false);
 
   // ✅ 조회 기록 중복 전송 방지용 플래그
   const hasRecordedRef = useRef(false);
@@ -101,7 +106,6 @@ export default function CardNewsDetailPage() {
 
       {/* 상단 카테고리/경로 */}
       <nav className="flex border-b border-gray-200 text-sm font-medium mt-1 overflow-x-auto no-scrollbar gap-5 px-[5%] lg:px-[17%] ">
-        {/* 필요하면 실제 카테고리 리스트로 교체 */}
         <span className="whitespace-nowrap px-2 py-2 text-red-500 font-bold border-b-2 border-red-500">
           {category}
         </span>
@@ -212,11 +216,10 @@ export default function CardNewsDetailPage() {
                 }
               `}
             >
-              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-2">
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2">
                 {post.title}
               </h1>
               <div className="text-xs text-gray-500 mb-4">
-                {/* post에 맞게 값 매핑 */}
                 {post.publishedAt
                   ? new Date(post.publishedAt).toLocaleDateString("ko-KR")
                   : ""}
@@ -234,7 +237,10 @@ export default function CardNewsDetailPage() {
 
             <div className="bg-white flex justify-end gap-4 mt-4 ">
               <SaveToFridgeButton postId={post.id} />
-              <button className="border border-gray-300 rounded-full px-2 py-1 text-sm cursor-pointer">
+              <button
+                className="border border-gray-300 rounded-full px-1.5 py-1 text-sm cursor-pointer"
+                onClick={() => setShowShareModal(true)}
+              >
                 <Image
                   src="/icons/share.png"
                   alt="공유"
@@ -248,6 +254,14 @@ export default function CardNewsDetailPage() {
       </main>
 
       <Footer />
+
+      {/* 공유 기능 준비중 모달 */}
+      <ConfirmModal
+        isOpen={showShareModal}
+        onClose={() => setShowShareModal(false)}
+      >
+        <p>준비중입니다.</p>
+      </ConfirmModal>
     </div>
   );
 }
