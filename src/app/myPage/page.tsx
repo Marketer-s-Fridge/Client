@@ -183,7 +183,7 @@ export default function MyPage() {
       <section className="flex py-5 md:py-10 px-[5%] lg:px-[17%] main-red text-white w-full">
         <div className="w-full flex flex-col md:flex-row justify-between items-center">
           <div className="flex flex-col md:flex-row items-center w-1/2 gap-[5%] sm:gap-[10%]">
-            <div className="w-[30%] sm:w-[40%] aspect-square">
+            <div className="w-[35%] sm:w-[45%] aspect-square">
               <Image
                 src={profileImageSrc}
                 alt="프로필"
