@@ -87,7 +87,14 @@ export default function SearchClient() {
           <>
             {filteredContents.length > 0 ? (
               <>
-                <CardGrid items={pagedContents} columns={3} />
+                <CardGrid
+                  items={pagedContents.map((post) => ({
+                    id: post.id,
+                    title: post.title,
+                    imageUrl: post.images?.[0], // ✅ 첫 번째 이미지 사용
+                  }))}
+                  columns={3}
+                />{" "}
                 <Pagination
                   currentPage={currentPage}
                   totalPages={totalPages}
