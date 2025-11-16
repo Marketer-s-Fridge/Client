@@ -1,24 +1,17 @@
+// src/components/searchInput.tsx (예시 경로)
 "use client";
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Image from "next/image";
-// ✅ 경로는 실제 프로젝트 구조에 맞게 수정하기
+
 import { useSaveSearchKeyword } from "@/features/search/hooks/useSearchHistory";
+// ✅ 전체 게시물 훅 import
+import { usePosts } from "@/features/posts/hooks/usePosts";
 
 type SearchInputProps = {
   showInstagramButton?: boolean;
 };
-
-// 🔍 임시 mock 데이터 (실제론 API로 대체 가능)
-const mockContents = [
-  "신규 브랜드 탐방: 떠오르는 핫 브랜드",
-  "패션 아이콘들이 선택한 신상템",
-  "셀럽들의 공항 패션 스타일",
-  "KOREADB 2025 뉴 브랜드",
-  "시간을 초월한 클래식 아이템",
-  "포인트 컬러로 완성하는 룩",
-];
 
 export default function SearchInput({
   showInstagramButton = true,
@@ -29,6 +22,9 @@ export default function SearchInput({
   // ✅ 검색어 저장 훅
   const { mutate: saveSearchKeyword } = useSaveSearchKeyword();
 
+  // ✅ 전체 게시물 조회 (PUBLISHED)
+  const { data: posts, isLoading } = usePosts(); // 기본값으로 서버 모드 사용
+
   const handleSearch = (e: React.SyntheticEvent) => {
     e.preventDefault();
 
@@ -38,15 +34,21 @@ export default function SearchInput({
       return;
     }
 
+    // 아직 게시물 로딩 중이면 검색 막기 (원하면 이 부분은 빼도 됨)
+    if (isLoading) {
+      alert("콘텐츠를 불러오는 중입니다. 잠시 후 다시 시도해주세요.");
+      return;
+    }
+
     // ✅ 검색어 저장 (결과 여부와 상관없이 기록)
-    // SearchHistoryRequestDto 타입에 맞게 필드 추가해서 사용하면 됨
     saveSearchKeyword({
       keyword: trimmed,
       // ex) userId, type 등 필요하면 여기서 같이 넘기기
     } as any);
 
-    // ✅ 검색 결과 존재 여부 확인
-    const hasResult = mockContents.some((title) => title.includes(trimmed));
+    // ✅ 전체 게시물 기반으로 검색 결과 존재 여부 확인
+    const hasResult =
+      posts?.some((post) => post.title.includes(trimmed)) ?? false;
 
     if (hasResult) {
       router.push(`/search?q=${encodeURIComponent(trimmed)}`);
