@@ -3,7 +3,7 @@
 // ======================
 
 // 게시물 상태 (요청에는 DELETED 안 쓰더라도 응답에서 올 수 있으니 포함)
-export type PostStatus = "DRAFT" | "SCHEDULED" | "PUBLISHED" | "DELETED";
+export type PostStatus = "DRAFT" | "SCHEDULED" | "PUBLISHED" ;
 
 // Hit 타입
 export type HitType = "VIEW" | "CLICK" | "SCROLL" | string;
