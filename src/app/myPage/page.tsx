@@ -188,7 +188,7 @@ export default function MyPage() {
             <Image
               src={profileImageSrc}
               alt="프로필"
-              className="w-[90px] h-[90px] sm:w-[120px] sm:h-[120px] rounded-full object-cover"
+              className="w-[35%] sm:w-[40%] h-auto rounded-full object-cover "
               width={230}
               height={230}
             />
@@ -645,7 +645,7 @@ export default function MyPage() {
         {/* 4️⃣ 추천 콘텐츠 */}
         <div>
           <h3 className="text-2xl font-bold mb-4">
-            마케터님에게 딱 맞는 추천 콘텐츠
+            {user?.nickname}님에게 딱 맞는 추천 콘텐츠
           </h3>
           {isRecommendedLoading ? (
             <EmptySectionBox message="불러오는 중..." />
