@@ -20,7 +20,8 @@ const LoginPage: React.FC = () => {
   const [rememberId, setRememberId] = useState(false);
   const [autoLogin, setAutoLogin] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false); // 로그인 성공 모달
+  const [showSocialModal, setShowSocialModal] = useState(false); // SNS 준비중 모달
 
   // ✅ 초기에는 false로 두고, 클라이언트에서 localStorage 기준으로 계산
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -123,22 +124,6 @@ const LoginPage: React.FC = () => {
       },
     });
   };
-
-  // ✅ 로그아웃
-  // const handleLogout = async () => {
-  //   try {
-  //     // 서버에 세션/리프레시 무효화가 있으면 호출
-  //     await api.post("/auth/signout");
-  //   } catch {
-  //     // 미구현이면 무시
-  //   } finally {
-  //     localStorage.removeItem("accessToken");
-  //     localStorage.removeItem("user");
-  //     localStorage.removeItem("autoLogin");
-  //     setIsLoggedIn(false);
-  //     router.replace("/"); // 필요 시 원하는 경로로
-  //   }
-  // };
 
   const handleLogout = async () => {
     try {
@@ -308,7 +293,7 @@ const LoginPage: React.FC = () => {
               </div>
 
               <div className="w-full flex flex-col items-center gap-y-3 mb-10">
-                <button onClick={() => alert("카카오 로그인")}>
+                <button onClick={() => setShowSocialModal(true)}>
                   <Image
                     src="/icons/kakao-login-bt.png"
                     alt=""
@@ -317,7 +302,7 @@ const LoginPage: React.FC = () => {
                     height={100}
                   />
                 </button>
-                <button onClick={() => alert("네이버 로그인")}>
+                <button onClick={() => setShowSocialModal(true)}>
                   <Image
                     src="/icons/naver-login-bt.png"
                     alt=""
@@ -326,7 +311,7 @@ const LoginPage: React.FC = () => {
                     height={100}
                   />
                 </button>
-                <button onClick={() => alert("Google 로그인")}>
+                <button onClick={() => setShowSocialModal(true)}>
                   <Image
                     src="/icons/google-login-bt.png"
                     alt=""
@@ -341,9 +326,17 @@ const LoginPage: React.FC = () => {
         </div>
       </div>
 
-      {/* 기본 성공 모달 */}
+      {/* 로그인 성공 모달 */}
       <ConfirmModal isOpen={showConfirm} onClose={handleCloseModal}>
         <p>마케터의 냉장고에 오신 걸 환영합니다!</p>
+      </ConfirmModal>
+
+      {/* SNS 로그인 준비중 모달 */}
+      <ConfirmModal
+        isOpen={showSocialModal}
+        onClose={() => setShowSocialModal(false)}
+      >
+        <p>SNS 로그인 기능은 준비중입니다.</p>
       </ConfirmModal>
     </div>
   );
