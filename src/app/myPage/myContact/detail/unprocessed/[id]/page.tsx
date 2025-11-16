@@ -30,7 +30,7 @@ export default function UnprocessedDetailPage() {
     createdAt,
     title,
     content,
-    attachments,
+    imageUrl,
   } = data as any;
 
   return (
@@ -60,24 +60,21 @@ export default function UnprocessedDetailPage() {
               {content}
             </p>
 
-            {Array.isArray(attachments) && attachments.length > 0 && (
-              <div className="flex items-center gap-2 text-sm text-[#000000] mt-10 flex-wrap">
-                <span>첨부파일 {attachments.length}개</span>
+              {/* 첨부 파일 */}
+              {imageUrl ? (
+              <div className="flex items-center gap-1 text-sm text-[#000000] mt-10">
+                <span>첨부파일 1개</span>
                 <FiPaperclip className="text-gray-500" />
-                {attachments.map((f: any, i: number) => (
-                  <a
-                    key={i}
-                    href={f.url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-[#8E8E8E] underline underline-offset-2"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    {f.fileName ?? `attachment-${i + 1}`}
-                  </a>
-                ))}
+                <a
+                  href={imageUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-[#8E8E8E] underline underline-offset-2 cursor-pointer"
+                >
+                  {imageUrl.split("/").pop()}
+                </a>
               </div>
-            )}
+            ) : null}
           </div>
 
           <div className="w-full h-[1px] bg-[#4a5565] mb-3" />
