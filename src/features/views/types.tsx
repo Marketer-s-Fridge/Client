@@ -23,3 +23,17 @@ export interface MostViewedCategoryResponseDto {
   /** 해당 카테고리를 가진 콘텐츠를 본 시각 (ISO LocalDateTime 문자열) */
   viewedAt: string;
 }
+export interface RecentViewedResponseDto {
+  /** 최근 본 게시글 ID */
+  postId: number;          // Long
+
+  /** 게시글 제목 */
+  title: string;           // String
+
+  /** 썸네일 이미지 URL */
+  thumbnailUrl: string;    // String
+
+  /** 조회한 시각 (ISO LocalDateTime 문자열) */
+  viewedAt: string;        // LocalDateTime
+}
+

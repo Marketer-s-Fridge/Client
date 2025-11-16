@@ -10,15 +10,11 @@ import Breadcrumb from "@/components/breadCrumb";
 import MobileMenu from "@/components/mobileMenu";
 import SaveToFridgeButton from "@/components/saveToFridgeButton";
 import { usePost } from "@/features/posts/hooks/usePost";
-// import { usePostViewRecord } from "@/features/mostViewed/hooks/useMostViewedCategory";
 import { usePostViewRecord } from "@/features/views/hooks/useMostViewedCategory";
-
-
 export default function CardNewsDetailPage() {
   const router = useRouter();
   const { id } = useParams<{ id: string }>();
   const postId = Number(id);
-  
 
   if (!Number.isFinite(postId)) return notFound();
 
@@ -29,11 +25,11 @@ export default function CardNewsDetailPage() {
   const slideBoxRef = useRef<HTMLDivElement>(null);
   const [slideHeight, setSlideHeight] = useState<number>(0);
 
-   // ✅ 조회 기록 중복 전송 방지용 플래그
-   const hasRecordedRef = useRef(false);
+  // ✅ 조회 기록 중복 전송 방지용 플래그
+  const hasRecordedRef = useRef(false);
 
-   // ✅ 조회 기록 mutation
-   const { mutate: recordView } = usePostViewRecord();
+  // ✅ 조회 기록 mutation
+  const { mutate: recordView } = usePostViewRecord();
 
   // ✅ 게시글 이미지 목록 (없으면 기본 이미지 하나)
   const slideImages = useMemo(() => {
@@ -68,22 +64,19 @@ export default function CardNewsDetailPage() {
     };
   }, []);
 
-    // ✅ 게시글/카테고리 로딩 완료되면 조회 기록 한 번만 전송
-    useEffect(() => {
-      if (!post) return;
-      if (hasRecordedRef.current) return; // 중복 방지
-  
-      // MostViewedCategoryRequestDto 구조에 맞게 payload 채워줘야 함
-      // 예: { postId, category, title, type } 이런 식
-      recordView({
-        postId: post.id,
-        category: post.category,
-        // title: post.title,
-        // type: post.type,
-      } as any);
-  
-      hasRecordedRef.current = true;
-    }, [post, recordView]);
+  // ✅ 게시글/카테고리 로딩 완료되면 조회 기록 한 번만 전송
+  useEffect(() => {
+    if (!post) return;
+    if (hasRecordedRef.current) return; // 중복 방지
+
+    // MostViewedCategoryRequestDto: { category: string; postId: number }
+    recordView({
+      postId: post.id,
+      category: post.category, // post.category가 항상 string이라고 가정
+    });
+
+    hasRecordedRef.current = true;
+  }, [post, recordView]);
 
   if (isLoading) {
     return (
@@ -173,9 +166,7 @@ export default function CardNewsDetailPage() {
               {/* 좌우 클릭 영역 */}
               <div
                 className="absolute top-0 left-0 h-full w-1/2 z-10 cursor-pointer"
-                onClick={() =>
-                  setActiveSlide((prev) => Math.max(prev - 1, 0))
-                }
+                onClick={() => setActiveSlide((prev) => Math.max(prev - 1, 0))}
               />
               <div
                 className="absolute top-0 right-0 h-full w-1/2 z-10 cursor-pointer"
@@ -214,7 +205,11 @@ export default function CardNewsDetailPage() {
             <div
               className={`
                 pr-2 py-2
-                ${slideHeight ? "sm:flex-1 sm:overflow-y-auto sm:no-scrollbar" : ""}
+                ${
+                  slideHeight
+                    ? "sm:flex-1 sm:overflow-y-auto sm:no-scrollbar"
+                    : ""
+                }
               `}
             >
               <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-2">

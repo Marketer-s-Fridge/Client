@@ -93,7 +93,7 @@ export default function SaveToFridgeButton({ postId }: SaveToFridgeButtonProps) 
           <p className="text-medium font-medium text-gray-700 text-center">
             <strong className="text-lg font-semibold">저장 완료!</strong>
             <br />
-            MY 냉장고에서 확인해보세요 🧊
+            MY 냉장고에서 확인해보세요
           </p>
         </div>
       </BaseModal>
