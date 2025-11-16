@@ -66,10 +66,8 @@ export default function MyPage() {
   const { data: mostViewedCategory } = useMostViewedCategory();
 
   // ✅ 해당 카테고리의 게시물 3개 (추천용)
-  const {
-    data: recommendedPosts,
-    isLoading: isRecommendedLoading,
-  } = usePostsByCategory(mostViewedCategory ?? null, 3);
+  const { data: recommendedPosts, isLoading: isRecommendedLoading } =
+    usePostsByCategory(mostViewedCategory ?? null, 3);
 
   // 비로그인 진입 시 모달
   useEffect(() => {
@@ -148,9 +146,9 @@ export default function MyPage() {
     );
   }
   const profileImageSrc =
-  user?.profileImageUrl && user.profileImageUrl.trim() !== ""
-    ? user.profileImageUrl
-    : "/images/profile-character.png";
+    user?.profileImageUrl && user.profileImageUrl.trim() !== ""
+      ? user.profileImageUrl
+      : "/images/profile-character.png";
 
   return (
     <div className="bg-white pt-11 md:pt-0">
@@ -184,14 +182,15 @@ export default function MyPage() {
       <section className="flex py-5 md:py-10 px-[5%] lg:px-[17%] main-red text-white w-full">
         <div className="w-full flex flex-col md:flex-row justify-between items-center">
           <div className="flex flex-col md:flex-row items-center w-1/2 gap-[5%] sm:gap-[10%]">
-            
-            <Image
-              src={profileImageSrc}
-              alt="프로필"
-              className="w-[35%] sm:w-[40%] h-auto rounded-full object-cover "
-              width={230}
-              height={230}
-            />
+            <div className="w-[30%] sm:w-[40%] aspect-square">
+              <Image
+                src={profileImageSrc}
+                alt="프로필"
+                className="w-full h-full rounded-full object-cover"
+                width={230}
+                height={230}
+              />
+            </div>
             <div className="w-full flex flex-col items-center md:items-start">
               <h2 className="text-medium sm:text-3xl font-bold">
                 {user?.nickname || user?.name || "비회원"}
@@ -453,9 +452,7 @@ export default function MyPage() {
           ) : (
             <div className="relative w-full">
               <button
-                onClick={() =>
-                  slideIndex > 0 && setSlideIndex(slideIndex - 1)
-                }
+                onClick={() => slideIndex > 0 && setSlideIndex(slideIndex - 1)}
                 className="cursor-pointer absolute left-[-33px] top-1/2 -translate-y-1/2 z-10"
               >
                 <Image
@@ -616,9 +613,7 @@ export default function MyPage() {
                   <div className="relative aspect-[3/4] rounded-lg bg-gray-100 overflow-hidden">
                     <div onClick={() => goToPost(post.id)}>
                       <Image
-                        src={
-                          post.images?.[0] || "/icons/rectangle-gray.png"
-                        }
+                        src={post.images?.[0] || "/icons/rectangle-gray.png"}
                         alt={post.title}
                         width={200}
                         height={250}
@@ -658,9 +653,7 @@ export default function MyPage() {
                   <div className="relative aspect-[3/4] rounded-lg bg-gray-100 overflow-hidden">
                     <div onClick={() => goToPost(post.id)}>
                       <Image
-                        src={
-                          post.images?.[0] || "/icons/rectangle-gray.png"
-                        }
+                        src={post.images?.[0] || "/icons/rectangle-gray.png"}
                         alt={post.title}
                         width={200}
                         height={250}
