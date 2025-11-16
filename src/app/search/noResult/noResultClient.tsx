@@ -2,19 +2,14 @@
 
 import Header from "@/components/header";
 import SearchInput from "@/components/searchInput";
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import CategoryTabBar from "@/components/categoryTabBar";
 import Image from "next/image";
 import Footer from "@/components/footer";
 import MobileMenu from "@/components/mobileMenu";
 import { useSearchParams } from "next/navigation";
 import CardGrid from "@/components/cardGrid";
-
-const mockContents = [
-  { id: 1, title: "신규 브랜드 탐방: 떠오르는 핫 브랜드" },
-  { id: 2, title: "패션 아이콘들이 선택한 신상템" },
-  { id: 3, title: "셀럽들의 공항 패션 스타일" },
-];
+import { usePosts } from "@/features/posts/hooks/usePosts";
 
 export default function NoResultClient() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -22,6 +17,15 @@ export default function NoResultClient() {
   const [selectedSort, setSelectedSort] = useState("최신순");
   const searchParams = useSearchParams();
   const query = searchParams.get("q") || "";
+
+  // ✅ 전체 게시글 가져오기 (PUBLISHED)
+  const { data: posts, isLoading, error } = usePosts();
+
+  // ✅ 추천용 콘텐츠 3개 (걍 순서대로 앞에서 3개)
+  const recommendedContents = useMemo(() => {
+    if (!posts || posts.length === 0) return [];
+    return posts.slice(0, 3);
+  }, [posts]);
 
   return (
     <div className="min-h-screen bg-white mt-16 md:mt-0">
@@ -61,7 +65,28 @@ export default function NoResultClient() {
             이런 콘텐츠는 어떠세요?
           </h3>
 
-          <CardGrid items={mockContents} columns={3} />
+          {/* 로딩/에러 간단 처리 */}
+          {isLoading && (
+            <p className="text-center text-gray-500 py-8">
+              추천 콘텐츠를 불러오는 중입니다...
+            </p>
+          )}
+
+          {error && (
+            <p className="text-center text-red-500 py-8">
+              추천 콘텐츠를 불러오는 중 오류가 발생했습니다.
+            </p>
+          )}
+
+          {!isLoading && !error && recommendedContents.length > 0 && (
+            <CardGrid items={recommendedContents} columns={3} />
+          )}
+
+          {!isLoading && !error && recommendedContents.length === 0 && (
+            <p className="text-center text-gray-500 py-8">
+              아직 추천할 수 있는 콘텐츠가 없습니다.
+            </p>
+          )}
         </section>
       </section>
 

@@ -1,41 +1,57 @@
+// src/app/search/searchClient.tsx (예시 경로)
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import SearchInput from "@/components/searchInput";
 import ScrollToTopButton from "@/components/scrollToTopButton";
 import CategoryTabBar from "@/components/categoryTabBar";
 import Pagination from "@/components/pagination";
 import CardGrid from "@/components/cardGrid";
+import { usePosts } from "@/features/posts/hooks/usePosts";
 
-const mockContents = [
-  { id: 1, title: "신규 브랜드 탐방: 떠오르는 핫 브랜드" },
-  { id: 2, title: "패션 아이콘들이 선택한 신상템" },
-  { id: 3, title: "셀럽들의 공항 패션 스타일" },
-  { id: 4, title: "KOREADB 2025 뉴 브랜드" },
-  { id: 5, title: "시간을 초월한 클래식 아이템" },
-  { id: 6, title: "포인트 컬러로 완성하는 룩" },
-];
+const PAGE_SIZE = 9; // 한 페이지 카드 개수 (3열 * 3행 기준)
 
 export default function SearchClient() {
   const searchParams = useSearchParams();
   const query = searchParams.get("q")?.trim() || "";
+
   const [selectedSort, setSelectedSort] = useState("최신순");
   const [selectedCategory, setSelectedCategory] = useState("전체");
   const [currentPage, setCurrentPage] = useState(1);
 
+  // ✅ 전체 게시물(PUBLISHED) 조회
+  const { data: posts, isLoading, error } = usePosts();
 
-  // ✅ 검색어 필터링
+  // ✅ 검색어 기반 필터링 (지금은 카테고리/정렬은 실제 필터에 아직 안 씀 — 원래 코드도 안 쓰고 있었음)
   const filteredContents = useMemo(() => {
-    if (!query) return mockContents; // 검색어 없으면 전체 보기
-    return mockContents.filter((item) =>
-      item.title.toLowerCase().includes(query.toLowerCase())
-    );
-  }, [query]);
+    if (!posts) return [];
+
+    // 검색어 없으면 전체 보기
+    if (!query) return posts;
+
+    const lower = query.toLowerCase();
+    return posts.filter((item) => item.title.toLowerCase().includes(lower));
+  }, [posts, query]);
+
+  // 검색어/정렬/카테고리 바뀌면 페이지 1로 리셋
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [query, selectedSort, selectedCategory]);
+
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredContents.length / PAGE_SIZE)
+  );
+
+  const pagedContents = useMemo(() => {
+    const start = (currentPage - 1) * PAGE_SIZE;
+    return filteredContents.slice(start, start + PAGE_SIZE);
+  }, [filteredContents, currentPage]);
 
   return (
     <>
-      {/* 검색 영역 */}
+      {/* 검색 영역 (PC) */}
       <section className="hidden md:flex flex-col items-center main-red pb-10 px-4">
         <SearchInput showInstagramButton={false} />
       </section>
@@ -55,23 +71,35 @@ export default function SearchClient() {
           ‘{query || "전체"}’ 검색 결과
         </h2>
 
-        {filteredContents.length > 0 ? (
-          <>
-            <CardGrid
-              items={filteredContents}
-              columns={3}
-         
-            />
-            <Pagination
-              currentPage={currentPage}
-              totalPages={5}
-              onPageChange={(page) => setCurrentPage(page)}
-            />
-          </>
-        ) : (
+        {isLoading && (
           <p className="text-center text-gray-500 py-12">
-            ‘{query}’에 해당하는 결과가 없습니다 😢
+            콘텐츠를 불러오는 중입니다...
           </p>
+        )}
+
+        {error && (
+          <p className="text-center text-red-500 py-12">
+            콘텐츠를 불러오는 중 오류가 발생했습니다.
+          </p>
+        )}
+
+        {!isLoading && !error && (
+          <>
+            {filteredContents.length > 0 ? (
+              <>
+                <CardGrid items={pagedContents} columns={3} />
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={(page) => setCurrentPage(page)}
+                />
+              </>
+            ) : (
+              <p className="text-center text-gray-500 py-12">
+                ‘{query}’에 해당하는 결과가 없습니다 😢
+              </p>
+            )}
+          </>
         )}
 
         <ScrollToTopButton />
