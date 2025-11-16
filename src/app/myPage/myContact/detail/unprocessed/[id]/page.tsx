@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { useParams, useRouter, notFound } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Header from "@/components/header";
 import MobileMenu from "@/components/mobileMenu";
 import { FiPaperclip } from "react-icons/fi";
@@ -14,7 +14,17 @@ export default function UnprocessedDetailPage() {
 
   const [menuOpen, setMenuOpen] = React.useState(false);
 
-  if (!Number.isFinite(enquiryId)) return notFound();
+  if (!Number.isFinite(enquiryId)) return (
+    <div className="p-6">
+      처리 완료된 문의가 아닙니다.
+      <button
+        onClick={() => router.back()}
+        className="ml-4 text-sm underline text-blue-500"
+      >
+        뒤로가기
+      </button>
+    </div>
+  );
 
   const { data, isLoading, error } = useEnquiry(enquiryId);
 
