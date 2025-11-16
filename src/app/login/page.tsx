@@ -125,18 +125,29 @@ const LoginPage: React.FC = () => {
   };
 
   // ✅ 로그아웃
+  // const handleLogout = async () => {
+  //   try {
+  //     // 서버에 세션/리프레시 무효화가 있으면 호출
+  //     await api.post("/auth/signout");
+  //   } catch {
+  //     // 미구현이면 무시
+  //   } finally {
+  //     localStorage.removeItem("accessToken");
+  //     localStorage.removeItem("user");
+  //     localStorage.removeItem("autoLogin");
+  //     setIsLoggedIn(false);
+  //     router.replace("/"); // 필요 시 원하는 경로로
+  //   }
+  // };
+
   const handleLogout = async () => {
     try {
-      // 서버에 세션/리프레시 무효화가 있으면 호출
       await api.post("/auth/signout");
     } catch {
-      // 미구현이면 무시
     } finally {
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("user");
-      localStorage.removeItem("autoLogin");
+      localStorage.clear(); // 싹 다 삭제
       setIsLoggedIn(false);
-      router.replace("/"); // 필요 시 원하는 경로로
+      router.replace("/");
     }
   };
 
