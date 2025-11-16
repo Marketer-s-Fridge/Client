@@ -5,7 +5,8 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchHotPosts } from "../api/postsApi";
 import type { PostResponseDto } from "../types";
 
-const USE_MOCK = true;
+const USE_MOCK = false;
+
 const hotMock = (limit: number): PostResponseDto[] =>
     Array.from({ length: limit }).map((_, idx) => {
       const i = String(idx + 1).padStart(3, "0");
