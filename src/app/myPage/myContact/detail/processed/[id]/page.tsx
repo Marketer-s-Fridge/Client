@@ -21,7 +21,7 @@ export default function ProcessedDetailPage() {
   const [menuOpen, setMenuOpen] = React.useState(false);
 
   // ✅ 만족도 선택 상태
-  const [helpful, setHelpful] = React.useState<"yes" | "no" | null>(null);
+  const [isHelpful, setIsHelpful] = React.useState<"yes" | "no" | null>(null);
   const [submitted, setSubmitted] = React.useState(false);
 
   if (!Number.isFinite(enquiryId)) return notFound();
@@ -52,7 +52,7 @@ export default function ProcessedDetailPage() {
     if (!feedback) return;
     const isHelpful = (feedback as any).helpful as boolean | undefined;
     if (typeof isHelpful === "boolean") {
-      setHelpful(isHelpful ? "yes" : "no");
+      setIsHelpful(isHelpful ? "yes" : "no");
       setSubmitted(true);
     }
   }, [feedback]);
@@ -100,12 +100,12 @@ export default function ProcessedDetailPage() {
 
   const handleSurveySubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!helpful || submitted || isSubmitting) return;
+    if (!isHelpful || submitted || isSubmitting) return;
 
     createFeedback(
       {
         enquiryId,
-        helpful: helpful === "yes",
+        isHelpful: isHelpful === "yes",
       } as any,
       {
         onSuccess: () => {
@@ -219,8 +219,8 @@ export default function ProcessedDetailPage() {
                   type="radio"
                   name="helpful"
                   value="yes"
-                  checked={helpful === "yes"}
-                  onChange={() => setHelpful("yes")}
+                  checked={isHelpful === "yes"}
+                  onChange={() => setIsHelpful("yes")}
                   className="cursor-pointer"
                   disabled={isSubmitting}
                 />
@@ -232,8 +232,8 @@ export default function ProcessedDetailPage() {
                   type="radio"
                   name="helpful"
                   value="no"
-                  checked={helpful === "no"}
-                  onChange={() => setHelpful("no")}
+                  checked={isHelpful === "no"}
+                  onChange={() => setIsHelpful("no")}
                   className="cursor-pointer"
                   disabled={isSubmitting}
                 />
@@ -254,9 +254,9 @@ export default function ProcessedDetailPage() {
 
             <button
               type="submit"
-              disabled={!helpful || submitted || isSubmitting}
+              disabled={!isHelpful || submitted || isSubmitting}
               className={`mt-2 px-7 py-1.5 rounded border text-sm md:text-base ${
-                !helpful || submitted || isSubmitting
+                !isHelpful || submitted || isSubmitting
                   ? "bg-gray-200 text-gray-400 cursor-not-allowed"
                   : "bg-white text-gray-800 border-gray-300 hover:bg-gray-50"
               }`}
