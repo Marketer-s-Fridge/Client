@@ -1,7 +1,7 @@
 // app/(whatever)/page.tsx
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import Header from "@/components/header";
 import SearchInput from "@/components/searchInput";
 import ScrollToTopButton from "@/components/scrollToTopButton";
@@ -11,7 +11,6 @@ import Pagination from "@/components/pagination";
 import CardGrid from "@/components/cardGrid";
 import MobileMenu from "@/components/mobileMenu";
 import NoContentView from "@/components/noContentView";
-// import { usePosts } from "@/features/posts/hooks/usePosts";
 import { usePosts } from "@/features/posts/hooks/usePosts";
 import { usePostsByCategory } from "@/features/posts/hooks/usePostsByCategory";
 
@@ -21,12 +20,14 @@ interface Category {
 }
 
 const categories: Category[] = [
-  { name: "Food",        icon: "/icons/icon-food1.png" },
-  { name: "Lifestyle",   icon: "/icons/icon-lifestyle1.png" },
-  { name: "Beauty",      icon: "/icons/icon-beauty1.png" },
-  { name: "Tech",        icon: "/icons/icon-tech1.png" },
-  { name: "Fashion",     icon: "/icons/icon-fashion1.png" },
+  { name: "Food",      icon: "/icons/icon-food1.png" },
+  { name: "Lifestyle", icon: "/icons/icon-lifestyle1.png" },
+  { name: "Beauty",    icon: "/icons/icon-beauty1.png" },
+  { name: "Tech",      icon: "/icons/icon-tech1.png" },
+  { name: "Fashion",   icon: "/icons/icon-fashion1.png" },
 ];
+
+const PAGE_SIZE = 12; // ✅ 한 페이지에 보여줄 카드 개수
 
 export default function Page() {
   const [_, setLikedItems] = useState<number[]>([]);
@@ -34,24 +35,46 @@ export default function Page() {
   const [currentPage, setCurrentPage] = useState(1);
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // ✅ 전체 게시물 훅
+  // ✅ 전체 게시물
   const {
     data: allPosts = [],
     isLoading: isAllLoading,
     error: allError,
-  } = usePosts(); // (mock 여부 인자 있으면 그대로 넣어줘)
+  } = usePosts();
 
-  // ✅ 카테고리별 게시물 훅 (카테고리 없으면 enabled=false라 요청 안 감)
+  // ✅ 카테고리별 게시물
   const {
     data: categoryPosts = [],
     isLoading: isCatLoading,
     error: catError,
   } = usePostsByCategory(selectedCategory);
 
-  // ✅ 현재 선택 상태에 따라 실제로 화면에 뿌릴 데이터 선택
+  // ✅ 현재 선택된 카테고리에 따라 실제 사용할 posts
   const isLoading = isAllLoading || isCatLoading;
   const error = allError || catError || null;
   const posts = selectedCategory ? categoryPosts : allPosts;
+
+  // ✅ 카테고리 바뀔 때마다 페이지를 1페이지로 리셋
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedCategory]);
+
+  // ✅ 페이지네이션 계산 (게시글 수에 따라 자동)
+  const { pagedPosts, totalPages } = useMemo(() => {
+    if (!posts || posts.length === 0) {
+      return { pagedPosts: [], totalPages: 1 };
+    }
+
+    const totalPagesCalc = Math.max(1, Math.ceil(posts.length / PAGE_SIZE));
+    const safeCurrentPage = Math.min(currentPage, totalPagesCalc);
+    const startIndex = (safeCurrentPage - 1) * PAGE_SIZE;
+    const endIndex = startIndex + PAGE_SIZE;
+
+    return {
+      pagedPosts: posts.slice(startIndex, endIndex),
+      totalPages: totalPagesCalc,
+    };
+  }, [posts, currentPage]);
 
   const toggleLike = (id: number) => {
     setLikedItems((prev) =>
@@ -74,7 +97,6 @@ export default function Page() {
         <div className="flex justify-center mt-6 mb-4 sm:mt-10 sm:mb-6 gap-2 sm:gap-6 lg:gap-10">
           {categories.map((cat) => {
             const isSelected = selectedCategory === cat.name;
-
             return (
               <button
                 key={cat.name}
@@ -107,26 +129,28 @@ export default function Page() {
         {isLoading && <p className="text-center">로딩중...</p>}
         {error && <p className="text-center text-red-500">에러 발생!</p>}
 
-        {posts && posts.length > 0 ? (
+        {(!isLoading && !error && pagedPosts.length === 0) ? (
+          <NoContentView />
+        ) : (
           <>
             <CardGrid
-              items={posts.map((post) => ({
+              items={pagedPosts.map((post) => ({
                 id: post.id,
                 title: post.title,
-                imageUrl: post.images?.[0], // usePosts / usePostsByCategory 둘 다 Content.images 기준
+                imageUrl: post.images?.[0],
               }))}
               columns={4}
             />
 
-            {/* TODO: 서버 totalPages 내려주면 교체 */}
-            <Pagination
-              currentPage={currentPage}
-              totalPages={5}
-              onPageChange={(page) => setCurrentPage(page)}
-            />
+            {/* 페이지가 2개 이상일 때만 표시 */}
+            {totalPages > 1 && (
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={(page) => setCurrentPage(page)}
+              />
+            )}
           </>
-        ) : (
-          <NoContentView />
         )}
 
         <ScrollToTopButton />
