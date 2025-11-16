@@ -108,7 +108,6 @@ export default function HomePage() {
                     width={300}
                     height={400}
                   />
-                  <p className="mt-2 text-sm line-clamp-2">{post.title}</p>
                 </div>
               );
             })}
