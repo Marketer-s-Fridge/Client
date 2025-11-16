@@ -20,8 +20,28 @@ export default function UnprocessedDetailPage() {
 
   if (isLoading) return <div className="p-6">불러오는 중...</div>;
   if (error) return <div className="p-6">오류가 발생했습니다.</div>;
-  if (!data) return notFound();
-  if (data.status === "PUBLISHED") return notFound();
+  if (!data)  return (
+    <div className="p-6">
+      처리 완료된 문의가 아닙니다.
+      <button
+        onClick={() => router.back()}
+        className="ml-4 text-sm underline text-blue-500"
+      >
+        뒤로가기
+      </button>
+    </div>
+  );
+  if (data.status === "PUBLISHED")  return (
+    <div className="p-6">
+      처리 완료된 문의가 아닙니다.
+      <button
+        onClick={() => router.back()}
+        className="ml-4 text-sm underline text-blue-500"
+      >
+        뒤로가기
+      </button>
+    </div>
+  );
 
   const {
     category,
