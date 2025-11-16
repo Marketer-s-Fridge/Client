@@ -264,8 +264,7 @@ export default function MyPage() {
                         >
                           <Image
                             src={
-                              item.thumbnailUrl ||
-                              "/icons/rectangle-gray.png"
+                              item.thumbnailUrl || "/icons/rectangle-gray.png"
                             }
                             alt={item.title}
                             width={300}
@@ -273,9 +272,7 @@ export default function MyPage() {
                             className="w-full h-full object-cover"
                           />
                         </div>
-                        <div className="pt-2 px-1 text-[11px] text-gray-500 truncate">
-                          {item.viewedAt.slice(0, 10)}
-                        </div>
+
                         <div className="pt-1 px-1 text-sm font-semibold flex items-center justify-between">
                           <span className="truncate pr-2 flex-1">
                             {item.title}
@@ -396,6 +393,7 @@ export default function MyPage() {
             </div>
 
             {/* 모바일: 추천 콘텐츠 */}
+            {/* 모바일: 추천 콘텐츠 */}
             <div>
               <h3 className="text-2xl font-bold mb-4">
                 {user?.nickname}님에게 딱 맞는 추천 콘텐츠
@@ -406,33 +404,58 @@ export default function MyPage() {
                 <EmptySectionBox message="추천할 콘텐츠가 아직 없습니다" />
               ) : (
                 <div className="grid grid-cols-2 gap-4">
-                  {recommendedPosts.map((post) => (
-                    <div key={post.id} className="w-full">
-                      <div className="relative aspect-[3/4] rounded-lg bg-gray-100 overflow-hidden">
-                        <div onClick={() => goToPost(post.id)}>
-                          <Image
-                            src={
-                              post.images?.[0] || "/icons/rectangle-gray.png"
-                            }
-                            alt={post.title}
-                            width={200}
-                            height={250}
-                            className="w-full h-full object-cover cursor-pointer"
-                          />
+                  {recommendedPosts.map((post) => {
+                    const postId = post.id;
+                    const isSaved = bookmarkIds.includes(postId);
+
+                    return (
+                      <div key={postId} className="w-full">
+                        <div className="relative aspect-[3/4] rounded-lg bg-gray-100 overflow-hidden">
+                          <div onClick={() => goToPost(postId)}>
+                            <Image
+                              src={
+                                post.images?.[0] || "/icons/rectangle-gray.png"
+                              }
+                              alt={post.title}
+                              width={200}
+                              height={250}
+                              className="w-full h-full object-cover cursor-pointer"
+                            />
+                          </div>
                         </div>
-                        <Image
-                          src="/icons/redheart.png"
-                          alt="찜"
-                          width={30}
-                          height={30}
-                          className="absolute right-2 bottom-2 w-4 h-4"
-                        />
+
+                        {/* ✅ 제목 + 하트 (오른쪽) */}
+                        <div className="pt-2 px-1 text-sm font-semibold flex items-center justify-between">
+                          <span className="truncate pr-2 flex-1">
+                            {post.title}
+                          </span>
+                          <button
+                            onClick={() =>
+                              handleToggleBookmark(postId, isSaved)
+                            }
+                            disabled={isBookmarkLoading || !isAuthenticated}
+                            aria-disabled={!isAuthenticated}
+                          >
+                            <Image
+                              src={
+                                isSaved
+                                  ? "/icons/redheart.png"
+                                  : "/icons/grayheart.png"
+                              }
+                              alt="찜"
+                              width={20}
+                              height={20}
+                              className={`w-4.5 h-5 transition-transform ${
+                                isSaved
+                                  ? "scale-105"
+                                  : "opacity-30 grayscale scale-100"
+                              }`}
+                            />
+                          </button>
+                        </div>
                       </div>
-                      <div className="pt-2 text-sm font-semibold truncate">
-                        {post.title}
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </div>
@@ -502,9 +525,7 @@ export default function MyPage() {
                                     />
                                   </div>
                                 </div>
-                                <div className="pt-1 px-1 text-[11px] text-gray-500 truncate">
-                                  {item.viewedAt.slice(0, 10)}
-                                </div>
+
                                 <div className="pt-1 px-1 text-sm font-semibold flex items-center justify-between">
                                   <span className="truncate pr-2 flex-1">
                                     {item.title}
@@ -641,6 +662,7 @@ export default function MyPage() {
         </div>
 
         {/* 4️⃣ 추천 콘텐츠 */}
+        {/* 4️⃣ 추천 콘텐츠 */}
         <div>
           <h3 className="text-2xl font-bold mb-4">
             {user?.nickname}님에게 딱 맞는 추천 콘텐츠
@@ -651,31 +673,52 @@ export default function MyPage() {
             <EmptySectionBox message="추천할 콘텐츠가 아직 없습니다" />
           ) : (
             <div className="grid grid-cols-2 gap-4 md:flex md:gap-4 md:justify-center">
-              {recommendedPosts.map((post) => (
-                <div key={post.id} className="w-full md:w-[140px]">
-                  <div className="relative aspect-[3/4] rounded-lg bg-gray-100 overflow-hidden">
-                    <div onClick={() => goToPost(post.id)}>
-                      <Image
-                        src={post.images?.[0] || "/icons/rectangle-gray.png"}
-                        alt={post.title}
-                        width={200}
-                        height={250}
-                        className="w-full h-full object-cover cursor-pointer"
-                      />
+              {recommendedPosts.map((post) => {
+                const postId = post.id;
+                const isSaved = bookmarkIds.includes(postId);
+
+                return (
+                  <div key={postId} className="w-full md:w-[140px]">
+                    <div className="relative aspect-[3/4] rounded-lg bg-gray-100 overflow-hidden">
+                      <div onClick={() => goToPost(postId)}>
+                        <Image
+                          src={post.images?.[0] || "/icons/rectangle-gray.png"}
+                          alt={post.title}
+                          width={200}
+                          height={250}
+                          className="w-full h-full object-cover cursor-pointer"
+                        />
+                      </div>
                     </div>
-                    <Image
-                      src="/icons/redheart.png"
-                      alt="찜"
-                      width={30}
-                      height={30}
-                      className="absolute right-2 bottom-2 w-4 h-4"
-                    />
+
+                    {/* ✅ 제목 + 하트 (오른쪽) */}
+                    <div className="pt-2 px-1 text-sm font-semibold flex items-center justify-between">
+                      <span className="truncate pr-2 flex-1">{post.title}</span>
+                      <button
+                        onClick={() => handleToggleBookmark(postId, isSaved)}
+                        disabled={isBookmarkLoading || !isAuthenticated}
+                        aria-disabled={!isAuthenticated}
+                      >
+                        <Image
+                          src={
+                            isSaved
+                              ? "/icons/redheart.png"
+                              : "/icons/grayheart.png"
+                          }
+                          alt="찜"
+                          width={20}
+                          height={20}
+                          className={`w-4.5 h-5 transition-transform ${
+                            isSaved
+                              ? "scale-105"
+                              : "opacity-30 grayscale scale-100"
+                          }`}
+                        />
+                      </button>
+                    </div>
                   </div>
-                  <div className="pt-2 text-sm font-semibold truncate">
-                    {post.title}
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>
