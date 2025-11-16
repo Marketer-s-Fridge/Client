@@ -1,12 +1,12 @@
 import { useRouter } from "next/navigation";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 interface MobileMenuProps {
   menuOpen: boolean;
   setMenuOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-const menuItems = [
+const baseMenuItems = [
   { label: "Home", path: "/" },
   { label: "About Us", path: "/service" },
   { label: "Category", path: "/category" },
@@ -14,21 +14,33 @@ const menuItems = [
   { label: "My Page", path: "/myPage" },
   { label: "Log In | Sign Up", path: "/login" },
 ];
+
 export const MobileMenu = ({ menuOpen, setMenuOpen }: MobileMenuProps) => {
   const router = useRouter();
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  // ✅ 로그인한 유저가 mf-admin인지 체크
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const userId = localStorage.getItem("userId");
+      if (userId === "mf-admin") {
+        setIsAdmin(true);
+      }
+    }
+  }, []);
 
   return (
     <div
       className={`fixed inset-0 z-50 transition-all duration-300 ${
         menuOpen ? "bg-black/40" : "bg-transparent pointer-events-none"
       }`}
-      onClick={() => setMenuOpen(false)} // ✅ 오버레이 클릭 시 닫기
+      onClick={() => setMenuOpen(false)}
     >
       <aside
         className={`fixed top-0 right-0 h-full w-64 bg-white p-6 shadow-md transition-transform duration-300 ease-in-out ${
           menuOpen ? "translate-x-0" : "translate-x-full"
         }`}
-        onClick={(e) => e.stopPropagation()} // ✅ aside 클릭은 전파 막기
+        onClick={(e) => e.stopPropagation()}
       >
         <button
           className="text-right block ml-auto mb-4"
@@ -36,8 +48,9 @@ export const MobileMenu = ({ menuOpen, setMenuOpen }: MobileMenuProps) => {
         >
           ✕
         </button>
+
         <ul className="space-y-10 text-sm font-bold">
-          {menuItems.map((item) => (
+          {baseMenuItems.map((item) => (
             <li
               key={item.label}
               className="flex items-center gap-3 cursor-pointer"
@@ -49,6 +62,19 @@ export const MobileMenu = ({ menuOpen, setMenuOpen }: MobileMenuProps) => {
               {item.label}
             </li>
           ))}
+
+          {/* 🔥 관리자 전용 메뉴 */}
+          {isAdmin && (
+            <li
+              className="flex items-center gap-3 cursor-pointer text-red-500"
+              onClick={() => {
+                router.push("/admin");
+                setMenuOpen(false);
+              }}
+            >
+              Admin
+            </li>
+          )}
         </ul>
       </aside>
     </div>
