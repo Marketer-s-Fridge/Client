@@ -46,7 +46,7 @@ export default function MyFridgePage() {
           items={bookmarkedPosts.map((post) => ({
             id: post.id,
             title: post.title,
-            image: post.images?.[0],
+            imageUrl: post.images?.[0],
             liked: true,
           }))}
           columns={4}
