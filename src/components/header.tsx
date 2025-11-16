@@ -10,6 +10,8 @@ import {
   useSaveSearchKeyword,
 } from "@/features/search/hooks/useSearchHistory";
 
+import { useAuthStatus } from "@/features/auth/hooks/useAuthStatus"; // 🔥 추가
+
 interface HeaderProps {
   menuOpen: boolean;
   setMenuOpen: Dispatch<SetStateAction<boolean>>;
@@ -21,17 +23,11 @@ export default function Header({ menuOpen, setMenuOpen }: HeaderProps) {
   const [query, setQuery] = useState("");
   const router = useRouter();
 
-  // 🔥 추가: 관리자 여부 체크
-  const [isAdmin, setIsAdmin] = useState(false);
+  // 🔥 여기서 로그인 정보 가져옴
+  const { isAuthenticated, user, isLoading } = useAuthStatus();
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const userId = localStorage.getItem("userId");
-      if (userId === "mf-admin") {
-        setIsAdmin(true);
-      }
-    }
-  }, []);
+  // 🔥 관리자 여부는 여기에서 판단 (로컬스토리지 X)
+  const isAdmin = isAuthenticated && user?.id === "mf-admin";
 
   // 기본 네비
   const navItems = [
@@ -43,7 +39,7 @@ export default function Header({ menuOpen, setMenuOpen }: HeaderProps) {
     { name: "Log In | Sign Up", href: "/login" },
   ];
 
-  // 🔥 관리자면 navItems 끝에 Admin 추가
+  // 🔥 관리자면 Admin 메뉴 추가
   const finalNavItems = isAdmin
     ? [...navItems, { name: "Admin", href: "/admin" }]
     : navItems;

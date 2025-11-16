@@ -1,5 +1,6 @@
 import { useRouter } from "next/navigation";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction } from "react";
+import { useAuthStatus } from "@/features/auth/hooks/useAuthStatus"; // 🔥 추가
 
 interface MobileMenuProps {
   menuOpen: boolean;
@@ -17,17 +18,12 @@ const baseMenuItems = [
 
 export const MobileMenu = ({ menuOpen, setMenuOpen }: MobileMenuProps) => {
   const router = useRouter();
-  const [isAdmin, setIsAdmin] = useState(false);
 
-  // ✅ 로그인한 유저가 mf-admin인지 체크
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const userId = localStorage.getItem("userId");
-      if (userId === "mf-admin") {
-        setIsAdmin(true);
-      }
-    }
-  }, []);
+  // 🔥 로그인 + 유저 정보 가져오기
+  const { isAuthenticated, user, isLoading } = useAuthStatus();
+
+  // 🔥 관리자 여부 (mf-admin인지)
+  const isAdmin = isAuthenticated && user?.id === "mf-admin";
 
   return (
     <div
