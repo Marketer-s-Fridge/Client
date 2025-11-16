@@ -22,19 +22,15 @@ const LoginPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
-  // 🔧 초기값을 localStorage 기준으로 계산
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => {
-    if (typeof window === "undefined") return false;
-    const hasToken = !!localStorage.getItem("accessToken");
-    const hasUser = !!localStorage.getItem("user");
-    return hasToken || hasUser;
-  });
+  // ✅ 초기에는 false로 두고, 클라이언트에서 localStorage 기준으로 계산
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const router = useRouter();
   const { mutate: signinMutate, isPending } = useSignin();
 
-  // 초기 로드: 아이디 저장 + storage 이벤트 리스너
+  // ✅ 초기 로드: 아이디 저장 + 로그인 여부 계산 + storage 이벤트 리스너
   useEffect(() => {
+    // 1) 아이디 저장 불러오기
     const savedId = localStorage.getItem("rememberIdValue");
     const remember = localStorage.getItem("rememberId") === "true";
     if (remember && savedId) {
@@ -42,12 +38,46 @@ const LoginPage: React.FC = () => {
       setRememberId(true);
     }
 
-    // 다른 탭에서 로그인/로그아웃 반영
-    const onStorage = () => {
-      const t = !!localStorage.getItem("accessToken");
-      const u = !!localStorage.getItem("user");
-      setIsLoggedIn(t || u);
+    // 2) 로그인 여부 계산 함수
+    const computeLoggedIn = () => {
+      const token = localStorage.getItem("accessToken");
+      const rawUser = localStorage.getItem("user");
+
+      let loggedIn = false;
+
+      // accessToken 값이 유효한 경우
+      if (
+        token &&
+        token !== "null" &&
+        token !== "undefined" &&
+        token !== "false"
+      ) {
+        loggedIn = true;
+      }
+
+      // user 정보가 JSON 객체인 경우
+      if (rawUser) {
+        try {
+          const user = JSON.parse(rawUser);
+          if (user && typeof user === "object") {
+            loggedIn = true;
+          }
+        } catch {
+          // 파싱 실패 시 무시
+        }
+      }
+
+      return loggedIn;
     };
+
+    // 최초 계산
+    setIsLoggedIn(computeLoggedIn());
+
+    // 3) 다른 탭에서 로그인/로그아웃 반영
+    const onStorage = () => {
+      setIsLoggedIn(computeLoggedIn());
+    };
+
     window.addEventListener("storage", onStorage);
     return () => window.removeEventListener("storage", onStorage);
   }, []);
