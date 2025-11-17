@@ -267,8 +267,8 @@ export default function MyPage() {
                               item.thumbnailUrl || "/icons/rectangle-gray.png"
                             }
                             alt={item.title}
-                            width={300}
-                            height={350}
+                            width={250}
+                            height={300}
                             className="w-full h-full object-cover"
                           />
                         </div>
@@ -334,18 +334,19 @@ export default function MyPage() {
                 <div className="grid grid-cols-2 gap-4">
                   {myFridgeContents.map((post) => (
                     <div key={post.id} className="w-full md:w-[140px]">
-                      <div className="relative aspect-[3/4] rounded-lg bg-gray-100 overflow-hidden">
-                        <div onClick={() => goToPost(post.id)}>
-                          <Image
-                            src={
-                              post.images?.[0] || "/icons/rectangle-gray.png"
-                            }
-                            alt={post.title}
-                            width={200}
-                            height={250}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
+                      <div
+                        className="relative aspect-[3/4] rounded-lg bg-gray-100 overflow-hidden"
+                        onClick={() => goToPost(post.id)}
+                      >
+                        {/* <div onClick={() => goToPost(post.id)}> */}
+                        <Image
+                          src={post.images?.[0] || "/icons/rectangle-gray.png"}
+                          alt={post.title}
+                          width={200}
+                          height={250}
+                          className="w-full h-full object-cover"
+                        />
+                        {/* </div> */}
                         <Image
                           src="/icons/redheart.png"
                           alt="찜"
@@ -410,18 +411,21 @@ export default function MyPage() {
 
                     return (
                       <div key={postId} className="w-full">
-                        <div className="relative aspect-[3/4] rounded-lg bg-gray-100 overflow-hidden">
-                          <div onClick={() => goToPost(postId)}>
-                            <Image
-                              src={
-                                post.images?.[0] || "/icons/rectangle-gray.png"
-                              }
-                              alt={post.title}
-                              width={200}
-                              height={250}
-                              className="w-full h-full object-cover cursor-pointer"
-                            />
-                          </div>
+                        <div
+                          className="relative aspect-[3/4] rounded-lg bg-gray-100 overflow-hidden"
+                          onClick={() => goToPost(postId)}
+                        >
+                          {/* <div onClick={() => goToPost(postId)}> */}
+                          <Image
+                            src={
+                              post.images?.[0] || "/icons/rectangle-gray.png"
+                            }
+                            alt={post.title}
+                            width={200}
+                            height={250}
+                            className="w-full h-full object-cover cursor-pointer"
+                          />
+                          {/* </div> */}
                         </div>
 
                         {/* ✅ 제목 + 하트 (오른쪽) */}
