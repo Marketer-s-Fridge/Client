@@ -57,8 +57,20 @@ export default function UnprocessedDetailPage() {
       </div>
     );
 
-  const { category, writer, writerEmail, createdAt, title, content, imageUrl } =
-    data as any;
+  const {
+    category,
+    writer,
+    writerEmail,
+    createdAt,
+    title,
+    content,
+    imageUrl,
+  } = data as any;
+
+  // ✅ writer 방어
+  const writerName: string = writer?.username ?? "익명";
+  const writerProfileImage: string =
+    writer?.profileImageUrl || "/images/default-profile.png";
 
   return (
     <div className="flex flex-col bg-white text-[#1D1D1D] pt-11 md:pt-0">
@@ -71,15 +83,13 @@ export default function UnprocessedDetailPage() {
           <div className="flex items-center gap-3 mb-1 border-y border-gray-300 py-2">
             {/* 작성자 사진 */}
             <Image
-              src={writer.profileImageUrl}
+              src={writerProfileImage}
               alt="profile"
               width={32}
               height={32}
               className="w-8 h-8 rounded-full object-cover"
             />
-            <span className="text-sm font-medium">
-              {writer.username ?? "익명"}
-            </span>
+            <span className="text-sm font-medium">{writerName}</span>
             {writerEmail && (
               <span className="text-sm text-[#8E8E8E]">{writerEmail}</span>
             )}
@@ -107,7 +117,9 @@ export default function UnprocessedDetailPage() {
                   rel="noreferrer"
                   className="text-[#8E8E8E] underline underline-offset-2 cursor-pointer"
                 >
-                  {imageUrl.split("/").pop()}
+                  {typeof imageUrl === "string"
+                    ? imageUrl.split("/").pop()
+                    : "첨부파일"}
                 </a>
               </div>
             ) : null}

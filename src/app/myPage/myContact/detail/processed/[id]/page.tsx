@@ -24,17 +24,18 @@ export default function ProcessedDetailPage() {
   const [isHelpful, setIsHelpful] = React.useState<"yes" | "no" | null>(null);
   const [submitted, setSubmitted] = React.useState(false);
 
-  if (!Number.isFinite(enquiryId)) return (
-    <div className="p-6">
-      처리 완료된 문의가 아닙니다.
-      <button
-        onClick={() => router.back()}
-        className="ml-4 text-sm underline text-blue-500"
-      >
-        뒤로가기
-      </button>
-    </div>
-  );
+  if (!Number.isFinite(enquiryId))
+    return (
+      <div className="p-6">
+        처리 완료된 문의가 아닙니다.
+        <button
+          onClick={() => router.back()}
+          className="ml-4 text-sm underline text-blue-500"
+        >
+          뒤로가기
+        </button>
+      </div>
+    );
 
   // 문의 상세
   const { data, isLoading, error } = useEnquiry(enquiryId);
@@ -82,31 +83,56 @@ export default function ProcessedDetailPage() {
 
   if (isLoading) return <div className="p-6">불러오는 중...</div>;
   if (error) return <div className="p-6">오류가 발생했습니다.</div>;
-  if (!data)  return (
-    <div className="p-6">
-      처리 완료된 문의가 아닙니다.
-      <button
-        onClick={() => router.back()}
-        className="ml-4 text-sm underline text-blue-500"
-      >
-        뒤로가기
-      </button>
-    </div>
-  );
-  if (data.status !== "PUBLISHED")  return (
-    <div className="p-6">
-      처리 완료된 문의가 아닙니다.
-      <button
-        onClick={() => router.back()}
-        className="ml-4 text-sm underline text-blue-500"
-      >
-        뒤로가기
-      </button>
-    </div>
-  );
+  if (!data)
+    return (
+      <div className="p-6">
+        처리 완료된 문의가 아닙니다.
+        <button
+          onClick={() => router.back()}
+          className="ml-4 text-sm underline text-blue-500"
+        >
+          뒤로가기
+        </button>
+      </div>
+    );
+  if (data.status !== "PUBLISHED")
+    return (
+      <div className="p-6">
+        처리 완료된 문의가 아닙니다.
+        <button
+          onClick={() => router.back()}
+          className="ml-4 text-sm underline text-blue-500"
+        >
+          뒤로가기
+        </button>
+      </div>
+    );
 
-  const { category, writer, writerEmail, createdAt, title, content, imageUrl } =
-    data as any;
+  const {
+    category,
+    writer,
+    writerEmail,
+    createdAt,
+    title,
+    content,
+    imageUrl,
+  } = data as any;
+
+  // ✅ writer / 프로필 이미지 방어
+  const writerName: string = writer?.username ?? "익명";
+  const writerProfileImage: string =
+    writer?.profileImageUrl || "/images/default-profile.png";
+
+  // ✅ 답변 날짜 문자열 방어
+  const answerDateSource: string | undefined =
+    latestAnswer?.updatedAt ||
+    latestAnswer?.createdAt ||
+    (createdAt as string | undefined);
+
+  const answerDateText =
+    answerDateSource && !Number.isNaN(new Date(answerDateSource).getTime())
+      ? new Date(answerDateSource).toISOString().slice(0, 10)
+      : "";
 
   const handleSurveySubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -140,15 +166,13 @@ export default function ProcessedDetailPage() {
           <div className="flex items-center gap-3 mb-1 border-y border-gray-300 py-2">
             {/* 작성자 사진 */}
             <Image
-              src={writer.profileImageUrl}
+              src={writerProfileImage}
               alt="profile"
               width={32}
               height={32}
               className="w-8 h-8 rounded-full object-cover"
             />
-            <span className="text-sm font-medium">
-              {writer.username ?? "익명"}
-            </span>
+            <span className="text-sm font-medium">{writerName}</span>
             {writerEmail && (
               <span className="text-sm text-[#8E8E8E]">{writerEmail}</span>
             )}
@@ -177,7 +201,9 @@ export default function ProcessedDetailPage() {
                   rel="noreferrer"
                   className="text-[#8E8E8E] underline underline-offset-2 cursor-pointer"
                 >
-                  {imageUrl.split("/").pop()}
+                  {typeof imageUrl === "string"
+                    ? imageUrl.split("/").pop()
+                    : "첨부파일"}
                 </a>
               </div>
             ) : null}
@@ -199,12 +225,7 @@ export default function ProcessedDetailPage() {
                   : latestAnswer?.content || "등록된 답변이 없습니다."}
               </div>
               <p className="text-right mt-3 text-xs text-gray-600">
-                {latestAnswer
-                  ? (latestAnswer.updatedAt || latestAnswer.createdAt).slice(
-                      0,
-                      10
-                    )
-                  : new Date(createdAt).toISOString().slice(0, 10)}
+                {answerDateText}
               </p>
             </div>
           </div>
