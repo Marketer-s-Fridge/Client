@@ -213,7 +213,7 @@ export default function MyContact() {
         )}
 
         {/* 하단 버튼 + 페이지네이션 */}
-        <div className="flex justify_between items-center mt-6">
+        <div className="flex justify-between items-center mt-6">
           <div></div>
           <button
             onClick={() => router.push("/contact")}

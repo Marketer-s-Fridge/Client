@@ -22,7 +22,7 @@ export default function ProcessedDetailPage() {
 
   // ✅ 만족도 선택 상태
   const [isHelpful, setIsHelpful] = React.useState<"yes" | "no" | null>(null);
-  const [submitted, setSubmitted] = React.useState(false);
+  const [submittedLocally, setSubmittedLocally] = React.useState(false); // 내가 방금 보낸 경우 잠금
 
   if (!Number.isFinite(enquiryId))
     return (
@@ -58,15 +58,16 @@ export default function ProcessedDetailPage() {
   const { mutate: createFeedback, isPending: isSubmitting } =
     useCreateFeedback();
 
-  // ✅ 이미 피드백이 있다면 UI 상태에 반영 + 다시 선택/변경 못 하게
+  // ✅ 서버에 이미 피드백이 있는지 여부
+  const serverHelpful: boolean | undefined = (feedback as any)?.helpful;
+  const hasServerFeedback = typeof serverHelpful === "boolean";
+
+  // ✅ 서버 피드백이 있으면, 라디오 체크 상태만 맞춰주기
   React.useEffect(() => {
-    if (!feedback) return;
-    const helpful = (feedback as any).helpful as boolean | undefined;
-    if (typeof helpful === "boolean") {
-      setIsHelpful(helpful ? "yes" : "no");
-      setSubmitted(true); // 이미 남긴 피드백이므로 재선택 불가
-    }
-  }, [feedback]);
+    if (!hasServerFeedback) return;
+    setIsHelpful(serverHelpful ? "yes" : "no");
+    // submittedLocally는 그대로 둠 (내가 새로 보낸 게 아니라 서버에 원래 있던 값)
+  }, [hasServerFeedback, serverHelpful]);
 
   // 최신 "답변" 하나만 보여주기 (PUBLISHED 우선)
   const latestAnswer = useMemo(() => {
@@ -134,10 +135,13 @@ export default function ProcessedDetailPage() {
       ? new Date(answerDateSource).toISOString().slice(0, 10)
       : "";
 
+  // ✅ “잠금 여부”: 서버에 이미 피드백 있거나, 내가 방금 제출했으면 잠금
+  const isLocked = hasServerFeedback || submittedLocally;
+
   const handleSurveySubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // 이미 제출됐거나, 선택 안 했거나, 전송 중이면 막기
-    if (!isHelpful || submitted || isSubmitting) return;
+    // 이미 잠겨있거나, 선택 안 했거나, 전송 중이면 막기
+    if (!isHelpful || isLocked || isSubmitting) return;
 
     createFeedback(
       {
@@ -146,7 +150,7 @@ export default function ProcessedDetailPage() {
       } as any,
       {
         onSuccess: () => {
-          setSubmitted(true); // 새로 남긴 경우에도 다시 선택/수정 못 하게
+          setSubmittedLocally(true); // 새로 남긴 경우에도 다시 선택/수정 못 하게
         },
       }
     );
@@ -253,7 +257,7 @@ export default function ProcessedDetailPage() {
                   checked={isHelpful === "yes"}
                   onChange={() => setIsHelpful("yes")}
                   className="cursor-pointer"
-                  disabled={isSubmitting || submitted} // ✅ 이미 제출한 경우 선택 불가
+                  disabled={isLocked || isSubmitting} // ✅ 서버 값 있거나 방금 제출한 경우 잠금
                 />
                 <span>도움이 되었어요.</span>
               </label>
@@ -266,7 +270,7 @@ export default function ProcessedDetailPage() {
                   checked={isHelpful === "no"}
                   onChange={() => setIsHelpful("no")}
                   className="cursor-pointer"
-                  disabled={isSubmitting || submitted} // ✅ 이미 제출한 경우 선택 불가
+                  disabled={isLocked || isSubmitting}
                 />
                 <span>도움이 되지 않았어요.</span>
               </label>
@@ -285,14 +289,14 @@ export default function ProcessedDetailPage() {
 
             <button
               type="submit"
-              disabled={!isHelpful || submitted || isSubmitting}
+              disabled={!isHelpful || isLocked || isSubmitting}
               className={`mt-2 px-7 py-1.5 rounded border text-sm md:text-base ${
-                !isHelpful || submitted || isSubmitting
+                !isHelpful || isLocked || isSubmitting
                   ? "bg-gray-200 text-gray-400 cursor-not-allowed"
                   : "bg-white text-gray-800 border-gray-300 hover:bg-gray-50"
               }`}
             >
-              {submitted ? "감사합니다" : "확인"}
+              {hasServerFeedback || submittedLocally ? "감사합니다" : "확인"}
             </button>
           </form>
         </div>
