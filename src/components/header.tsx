@@ -3,14 +3,14 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { useState, Dispatch, SetStateAction, useEffect } from "react";
+import { useState, Dispatch, SetStateAction } from "react";
 import { Menu, Search, X } from "lucide-react";
 import {
   usePopularSearchKeywords,
   useSaveSearchKeyword,
 } from "@/features/search/hooks/useSearchHistory";
 
-import { useAuthStatus } from "@/features/auth/hooks/useAuthStatus"; // 🔥 추가
+import { useAuthStatus } from "@/features/auth/hooks/useAuthStatus";
 
 interface HeaderProps {
   menuOpen: boolean;
@@ -23,13 +23,9 @@ export default function Header({ menuOpen, setMenuOpen }: HeaderProps) {
   const [query, setQuery] = useState("");
   const router = useRouter();
 
-  // 🔥 여기서 로그인 정보 가져옴
-  const { isAuthenticated, user, isLoading } = useAuthStatus();
-
-  // 🔥 관리자 여부는 여기에서 판단 (로컬스토리지 X)
+  const { isAuthenticated, user } = useAuthStatus();
   const isAdmin = isAuthenticated && user?.id === "mf-admin";
 
-  // 기본 네비
   const navItems = [
     { name: "Home", href: "/" },
     { name: "About Us", href: "/service" },
@@ -39,19 +35,16 @@ export default function Header({ menuOpen, setMenuOpen }: HeaderProps) {
     { name: "Log In | Sign Up", href: "/login" },
   ];
 
-  // 🔥 관리자면 Admin 메뉴 추가
   const finalNavItems = isAdmin
     ? [...navItems, { name: "Admin", href: "/admin" }]
     : navItems;
 
-  // 인기 검색어 훅
   const {
     data: popularKeywords,
     isLoading: popularLoading,
     isError: popularError,
   } = usePopularSearchKeywords();
 
-  // 검색어 저장 훅
   const { mutate: saveSearchKeyword } = useSaveSearchKeyword();
 
   const runSearch = (keyword: string) => {
@@ -62,7 +55,6 @@ export default function Header({ menuOpen, setMenuOpen }: HeaderProps) {
     }
 
     saveSearchKeyword({ keyword: trimmed } as any);
-
     router.push(`/search?q=${encodeURIComponent(trimmed)}`);
     setShowMobileSearch(false);
   };
@@ -132,6 +124,46 @@ export default function Header({ menuOpen, setMenuOpen }: HeaderProps) {
           })}
         </nav>
       </header>
+
+      {/* 🔍 모바일 검색창 (Search 아이콘 눌렀을 때만 표시) */}
+      {showMobileSearch && (
+        <div className="md:hidden fixed top-[56px] left-0 w-full z-40 bg-white border-b border-gray-200 px-4 py-3">
+          <div className="flex items-center gap-2">
+            <div className="flex-1 flex items-center gap-2 border border-gray-300 rounded-full px-3 py-1.5">
+              <Search size={18} className="text-gray-500" />
+              <input
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={handleSearch}
+                placeholder="검색어를 입력하세요"
+                className="w-full text-sm outline-none"
+              />
+            </div>
+            <button
+              className="p-1"
+              onClick={() => setShowMobileSearch(false)}
+            >
+              <X size={20} className="text-gray-600" />
+            </button>
+          </div>
+
+          {/* 인기 검색어 (선택) */}
+          <div className="mt-3 flex flex-wrap gap-2 text-[11px]">
+            {!popularLoading && !popularError &&
+              popularKeywords &&
+              popularKeywords.map((k: any) => (
+                <button
+                  key={k.keyword}
+                  onClick={() => handlePopularClick(k.keyword)}
+                  className="px-2.5 py-1 rounded-full bg-gray-100 text-gray-700"
+                >
+                  #{k.keyword}
+                </button>
+              ))}
+          </div>
+        </div>
+      )}
     </main>
   );
 }
