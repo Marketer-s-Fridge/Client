@@ -134,13 +134,13 @@ export default function HomePage() {
       {/* 모바일: 훅 데이터로 슬라이드 적용 */}
       <MobilePostCarousel
         title="Hot Contents"
-        items={hot}
+        item={hotHero}
         fallback="/images/cardNews/hot/001.png"
       />
       <div className="h-10 md:hidden" />
       <MobilePostCarousel
         title="Editor Pick"
-        items={picks}
+        item={pickHero}
         fallback="/images/cardNews/editor/001.png"
       />
 

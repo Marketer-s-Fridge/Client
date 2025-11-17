@@ -9,36 +9,40 @@ import type { PostResponseDto } from "@/features/posts/types";
 
 export default function MobilePostCarousel({
   title,
-  items,
+  item,
   fallback,
 }: {
   title: string;
-  items: PostResponseDto[];
+  item?: PostResponseDto;      // ✅ 단일 게시글 기준
   fallback: string;
 }) {
   const router = useRouter();
 
+  // ✅ 보여줄 이미지 리스트 (없으면 fallback 한 장)
+  const imageList: string[] =
+    item && item.images && item.images.length > 0
+      ? item.images
+      : [fallback];
+
   return (
-    <div className="md:hidden flex flex-col px-5">
+    <div className="md:hidden flex flex-col px-5 mt-8">
       <div className="flex items-start gap-2 mb-4">
-        <h3 className="text-xl md:text-2xl font-bold">{title}</h3>
+        <h3 className="text-xl font-bold">{title}</h3>
       </div>
+
       <Swiper slidesPerView={1} spaceBetween={20} className="w-full">
-        {(items.length ? items : Array.from({ length: 3 })).map((p: any, i: number) => (
-          <SwiperSlide key={p?.id ?? `${title}-skel-${i}`} className="!w-full">
-            {p ? (
-              <Image
-                alt={p.title || title}
-                src={p.images?.[0] || fallback}
-                className="w-full aspect-[3/4] object-cover rounded-lg shadow cursor-pointer"
-                width={600}
-                height={800}
-                onClick={() => router.push(`/contents/${p.id}`)
-              }
-              />
-            ) : (
-              <div className="w-full aspect-[3/4] rounded-lg bg-gray-100 animate-pulse" />
-            )}
+        {imageList.map((src, i) => (
+          <SwiperSlide key={`${title}-${i}`} className="!w-full">
+            <Image
+              alt={item?.title || title}
+              src={src || fallback}
+              className="w-full aspect-[3/4] object-cover rounded-lg shadow cursor-pointer"
+              width={600}
+              height={800}
+              onClick={() => {
+                if (item?.id) router.push(`/contents/${item.id}`);
+              }}
+            />
           </SwiperSlide>
         ))}
       </Swiper>
