@@ -54,7 +54,7 @@ export default function PostFeature({
             </p>
           </div>
           <div className="mt-6">
-            <SaveToFridgeButton postId={1} />
+            <SaveToFridgeButton postId={item?.id} />
           </div>
         </div>
       </div>
