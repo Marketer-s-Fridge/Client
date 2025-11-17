@@ -2,7 +2,7 @@
 
 import Header from "@/components/header";
 import Banner from "@/components/banner";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Footer from "@/components/footer";
 import Pagination from "@/components/pagination";
@@ -10,6 +10,8 @@ import CustomDropdown from "@/components/customDropdown";
 import MobileMenu from "@/components/mobileMenu";
 import { fetchMyEnquiries } from "@/features/enquiries/api/enquiriesApi";
 import { EnquiryResponseDto } from "@/features/enquiries/types";
+
+const PAGE_SIZE = 10;
 
 export default function MyContact() {
   const router = useRouter();
@@ -21,23 +23,53 @@ export default function MyContact() {
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
 
-  // ✅ 내 문의 전체 조회
+  // ✅ 내 문의 전체 조회 (마운트 시 1번만)
   useEffect(() => {
     const loadMyEnquiries = async () => {
       try {
         setLoading(true);
         const res = await fetchMyEnquiries();
-        setInquiries(res);
-        setTotalPages(Math.max(1, Math.ceil(res.length / 10)));
+
+        const list: EnquiryResponseDto[] = Array.isArray(res) ? res : [];
+        setInquiries(list);
+        setTotalPages(Math.max(1, Math.ceil(list.length / PAGE_SIZE)));
       } catch (error) {
         console.error("내 문의 내역 조회 실패:", error);
+        setInquiries([]);
+        setTotalPages(1);
       } finally {
         setLoading(false);
       }
     };
 
     loadMyEnquiries();
-  }, [currentPage, sortOrder]);
+  }, []);
+
+  // ✅ 정렬 적용
+  const sortedInquiries = useMemo(() => {
+    const copy = [...inquiries];
+    return copy.sort((a, b) => {
+      const aTime = new Date(a.createdAt).getTime();
+      const bTime = new Date(b.createdAt).getTime();
+      return sortOrder === "desc" ? bTime - aTime : aTime - bTime;
+    });
+  }, [inquiries, sortOrder]);
+
+  // ✅ 페이지네이션 적용
+  const paginatedInquiries = useMemo(() => {
+    const start = (currentPage - 1) * PAGE_SIZE;
+    const end = start + PAGE_SIZE;
+    return sortedInquiries.slice(start, end);
+  }, [sortedInquiries, currentPage]);
+
+  // 페이지 변경 시 전체 페이지 범위 넘어가면 보정
+  useEffect(() => {
+    const maxPage = Math.max(1, Math.ceil(inquiries.length / PAGE_SIZE));
+    if (currentPage > maxPage) {
+      setCurrentPage(maxPage);
+    }
+    setTotalPages(maxPage);
+  }, [inquiries.length, currentPage]);
 
   return (
     <div className="bg-white min-h-screen pt-11 md:pt-0">
@@ -58,9 +90,10 @@ export default function MyContact() {
             <CustomDropdown
               options={["최신순", "오래된순"]}
               label={sortOrder === "desc" ? "최신순" : "오래된순"}
-              onSelect={(value) =>
-                setSortOrder(value === "최신순" ? "desc" : "asc")
-              }
+              onSelect={(value) => {
+                setSortOrder(value === "최신순" ? "desc" : "asc");
+                setCurrentPage(1); // 정렬 바뀌면 1페이지로
+              }}
               buttonClassName="rounded-lg"
             />
           </div>
@@ -87,8 +120,10 @@ export default function MyContact() {
                   </tr>
                 </thead>
                 <tbody>
-                  {inquiries.map((item, idx) => {
-                    const isDone = item.status === "PUBLISHED"; // ✅ REPORTED면 답변 완료
+                  {paginatedInquiries.map((item, idx) => {
+                    const isDone = item.status === "PUBLISHED";
+                    const no = idx + 1 + (currentPage - 1) * PAGE_SIZE;
+
                     return (
                       <tr
                         key={item.id}
@@ -101,7 +136,7 @@ export default function MyContact() {
                         }
                         className="h-10 hover:bg-gray-100 cursor-pointer"
                       >
-                        <td>{idx + 1 + (currentPage - 1) * 10}</td>
+                        <td>{no}</td>
                         <td className="text-left px-4">{item.title}</td>
                         <td>
                           {new Date(
@@ -128,8 +163,10 @@ export default function MyContact() {
 
             {/* 리스트 (모바일 전용) */}
             <div className="sm:hidden space-y-3">
-              {inquiries.map((item, idx) => {
-                const isDone = item.status === "PUBLISHED"; // ✅ 여기서도 동일 기준
+              {paginatedInquiries.map((item, idx) => {
+                const isDone = item.status === "PUBLISHED";
+                const no = idx + 1 + (currentPage - 1) * PAGE_SIZE;
+
                 return (
                   <button
                     key={item.id}
@@ -147,7 +184,7 @@ export default function MyContact() {
                         {item.title}
                       </div>
                       <div className="shrink-0 text-[11px] text-gray-400">
-                        NO {idx + 1 + (currentPage - 1) * 10}
+                        NO {no}
                       </div>
                     </div>
 
@@ -176,7 +213,7 @@ export default function MyContact() {
         )}
 
         {/* 하단 버튼 + 페이지네이션 */}
-        <div className="flex justify-between items-center mt-6">
+        <div className="flex justify_between items-center mt-6">
           <div></div>
           <button
             onClick={() => router.push("/contact")}
