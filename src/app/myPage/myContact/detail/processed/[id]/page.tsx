@@ -58,13 +58,13 @@ export default function ProcessedDetailPage() {
   const { mutate: createFeedback, isPending: isSubmitting } =
     useCreateFeedback();
 
-  // ✅ 이미 피드백이 있다면 UI 상태에 반영
+  // ✅ 이미 피드백이 있다면 UI 상태에 반영 + 다시 선택/변경 못 하게
   React.useEffect(() => {
     if (!feedback) return;
-    const isHelpful = (feedback as any).helpful as boolean | undefined;
-    if (typeof isHelpful === "boolean") {
-      setIsHelpful(isHelpful ? "yes" : "no");
-      setSubmitted(true);
+    const helpful = (feedback as any).helpful as boolean | undefined;
+    if (typeof helpful === "boolean") {
+      setIsHelpful(helpful ? "yes" : "no");
+      setSubmitted(true); // 이미 남긴 피드백이므로 재선택 불가
     }
   }, [feedback]);
 
@@ -136,6 +136,7 @@ export default function ProcessedDetailPage() {
 
   const handleSurveySubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    // 이미 제출됐거나, 선택 안 했거나, 전송 중이면 막기
     if (!isHelpful || submitted || isSubmitting) return;
 
     createFeedback(
@@ -145,7 +146,7 @@ export default function ProcessedDetailPage() {
       } as any,
       {
         onSuccess: () => {
-          setSubmitted(true);
+          setSubmitted(true); // 새로 남긴 경우에도 다시 선택/수정 못 하게
         },
       }
     );
@@ -233,8 +234,7 @@ export default function ProcessedDetailPage() {
       </main>
 
       {/* ✅ 전체 가로 폭을 덮는 회색 피드백 영역 */}
-      <section className="w-full bg-[#F7F7F7]  mt-0 mb-12">
-        {/* 안쪽 컨텐츠는 위 본문과 같은 가로 폭으로 정렬 */}
+      <section className="w-full bg-[#F7F7F7] mt-0 mb-12">
         <div className="w-full px-[5%] lg:px-[22.5%] py-8">
           <form
             onSubmit={handleSurveySubmit}
@@ -253,7 +253,7 @@ export default function ProcessedDetailPage() {
                   checked={isHelpful === "yes"}
                   onChange={() => setIsHelpful("yes")}
                   className="cursor-pointer"
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || submitted} // ✅ 이미 제출한 경우 선택 불가
                 />
                 <span>도움이 되었어요.</span>
               </label>
@@ -266,7 +266,7 @@ export default function ProcessedDetailPage() {
                   checked={isHelpful === "no"}
                   onChange={() => setIsHelpful("no")}
                   className="cursor-pointer"
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || submitted} // ✅ 이미 제출한 경우 선택 불가
                 />
                 <span>도움이 되지 않았어요.</span>
               </label>
