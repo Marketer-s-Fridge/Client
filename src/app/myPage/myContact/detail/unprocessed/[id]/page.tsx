@@ -6,6 +6,7 @@ import Header from "@/components/header";
 import MobileMenu from "@/components/mobileMenu";
 import { FiPaperclip } from "react-icons/fi";
 import { useEnquiry } from "@/features/enquiries/hooks/useEnquiry";
+import Image from "next/image";
 
 export default function UnprocessedDetailPage() {
   const router = useRouter();
@@ -14,54 +15,50 @@ export default function UnprocessedDetailPage() {
 
   const [menuOpen, setMenuOpen] = React.useState(false);
 
-  if (!Number.isFinite(enquiryId)) return (
-    <div className="p-6">
-      처리 완료된 문의가 아닙니다.
-      <button
-        onClick={() => router.back()}
-        className="ml-4 text-sm underline text-blue-500"
-      >
-        뒤로가기
-      </button>
-    </div>
-  );
+  if (!Number.isFinite(enquiryId))
+    return (
+      <div className="p-6">
+        처리 완료된 문의가 아닙니다.
+        <button
+          onClick={() => router.back()}
+          className="ml-4 text-sm underline text-blue-500"
+        >
+          뒤로가기
+        </button>
+      </div>
+    );
 
   const { data, isLoading, error } = useEnquiry(enquiryId);
 
   if (isLoading) return <div className="p-6">불러오는 중...</div>;
   if (error) return <div className="p-6">오류가 발생했습니다.</div>;
-  if (!data)  return (
-    <div className="p-6">
-      처리 완료된 문의가 아닙니다.
-      <button
-        onClick={() => router.back()}
-        className="ml-4 text-sm underline text-blue-500"
-      >
-        뒤로가기
-      </button>
-    </div>
-  );
-  if (data.status === "PUBLISHED")  return (
-    <div className="p-6">
-      처리 완료된 문의가 아닙니다.
-      <button
-        onClick={() => router.back()}
-        className="ml-4 text-sm underline text-blue-500"
-      >
-        뒤로가기
-      </button>
-    </div>
-  );
+  if (!data)
+    return (
+      <div className="p-6">
+        처리 완료된 문의가 아닙니다.
+        <button
+          onClick={() => router.back()}
+          className="ml-4 text-sm underline text-blue-500"
+        >
+          뒤로가기
+        </button>
+      </div>
+    );
+  if (data.status === "PUBLISHED")
+    return (
+      <div className="p-6">
+        처리 완료된 문의가 아닙니다.
+        <button
+          onClick={() => router.back()}
+          className="ml-4 text-sm underline text-blue-500"
+        >
+          뒤로가기
+        </button>
+      </div>
+    );
 
-  const {
-    category,
-    writer,
-    writerEmail,
-    createdAt,
-    title,
-    content,
-    imageUrl,
-  } = data as any;
+  const { category, writer, writerEmail, createdAt, title, content, imageUrl } =
+    data as any;
 
   return (
     <div className="flex flex-col bg-white text-[#1D1D1D] pt-11 md:pt-0">
@@ -72,8 +69,17 @@ export default function UnprocessedDetailPage() {
           <p className="text-lg font-bold mb-2">[ {category ?? "문의"} ]</p>
 
           <div className="flex items-center gap-3 mb-1 border-y border-gray-300 py-2">
-            <div className="w-8 h-8 rounded-full bg-gray-300" />
-            <span className="text-sm font-medium">{writer.username ?? "익명"}</span>
+            {/* 작성자 사진 */}
+            <Image
+              src={writer.profileImageUrl}
+              alt="profile"
+              width={32}
+              height={32}
+              className="w-8 h-8 rounded-full object-cover"
+            />
+            <span className="text-sm font-medium">
+              {writer.username ?? "익명"}
+            </span>
             {writerEmail && (
               <span className="text-sm text-[#8E8E8E]">{writerEmail}</span>
             )}
@@ -90,8 +96,8 @@ export default function UnprocessedDetailPage() {
               {content}
             </p>
 
-              {/* 첨부 파일 */}
-              {imageUrl ? (
+            {/* 첨부 파일 */}
+            {imageUrl ? (
               <div className="flex items-center gap-1 text-sm text-[#000000] mt-10">
                 <span>첨부파일 1개</span>
                 <FiPaperclip className="text-gray-500" />

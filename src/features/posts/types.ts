@@ -3,7 +3,7 @@
 // ======================
 
 // 게시물 상태 (요청에는 DELETED 안 쓰더라도 응답에서 올 수 있으니 포함)
-export type PostStatus = "DRAFT" | "SCHEDULED" | "PUBLISHED" ;
+export type PostStatus = "DRAFT" | "SCHEDULED" | "PUBLISHED";
 
 // Hit 타입
 export type HitType = "VIEW" | "CLICK" | "SCROLL" | string;
@@ -123,4 +123,7 @@ export interface PostResponseDto {
 
   /** 클릭 수 (Call-to-action 버튼 또는 링크 클릭 등) */
   clickCount: number;
+
+  /** 북마크(마이냉장고) 수 */
+  bookmarkCount?: number;
 }

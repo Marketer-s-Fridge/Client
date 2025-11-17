@@ -225,7 +225,7 @@ export default function CardNewsDetailPage() {
                   : ""}
                 {post.viewCount !== undefined && ` · ${post.viewCount} views`}
                 {post.clickCount !== undefined &&
-                  ` · 냉장고에 담은 사람 ${post.clickCount}`}
+                  ` · 냉장고에 담은 사람 ${post.bookmarkCount}`}
               </div>
               <h3 className="text-lg sm:text-xl lg:text-2xl font-bold mb-2">
                 {post.subTitle}
