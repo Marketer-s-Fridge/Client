@@ -259,7 +259,7 @@ export default function MyPage() {
                         className="flex-shrink-0 w-[35vw] snap-start"
                       >
                         <div
-                          className="aspect-[3/4] bg-gray-100 rounded-lg overflow-hidden"
+                          className="relative aspect-[3/4] bg-gray-100 rounded-lg overflow-hidden cursor-pointer"
                           onClick={() => goToPost(postId)}
                         >
                           <Image
@@ -267,9 +267,9 @@ export default function MyPage() {
                               item.thumbnailUrl || "/icons/rectangle-gray.png"
                             }
                             alt={item.title}
-                            width={300}
-                            height={350}
-                            className="w-full h-full object-cover"
+                            fill
+                            className="object-cover"
+                            sizes="(max-width: 768px) 35vw, 140px"
                           />
                         </div>
 
@@ -332,57 +332,32 @@ export default function MyPage() {
                 <EmptySectionBox message="담은 콘텐츠가 없습니다" />
               ) : (
                 <div className="grid grid-cols-2 gap-4">
-                  {myFridgeContents.map((post) => {
-                    const postId = post.id;
-                    const isSaved = bookmarkIds.includes(postId);
-
-                    return (
-                      <div key={postId} className="w-full md:w-[140px]">
-                        <div className="relative aspect-[3/4] rounded-lg bg-gray-100 overflow-hidden">
-                          <div onClick={() => goToPost(postId)}>
-                            <Image
-                              src={
-                                post.images?.[0] || "/icons/rectangle-gray.png"
-                              }
-                              alt={post.title}
-                              width={200}
-                              height={250}
-                              className="w-full h-full object-cover cursor-pointer"
-                            />
-                          </div>
-                        </div>
-                        {/* ✅ 추천 콘텐츠와 동일: 제목 + 오른쪽 하트 */}
-                        <div className="pt-2 px-1 text-sm font-semibold flex items-center justify-between">
-                          <span className="truncate pr-2 flex-1">
-                            {post.title}
-                          </span>
-                          <button
-                            onClick={() =>
-                              handleToggleBookmark(postId, isSaved)
-                            }
-                            disabled={isBookmarkLoading || !isAuthenticated}
-                            aria-disabled={!isAuthenticated}
-                          >
-                            <Image
-                              src={
-                                isSaved
-                                  ? "/icons/redheart.png"
-                                  : "/icons/grayheart.png"
-                              }
-                              alt="찜"
-                              width={20}
-                              height={20}
-                              className={`w-4.5 h-5 transition-transform ${
-                                isSaved
-                                  ? "scale-105"
-                                  : "opacity-30 grayscale scale-100"
-                              }`}
-                            />
-                          </button>
-                        </div>
+                  {myFridgeContents.map((post) => (
+                    <div key={post.id} className="w-full md:w-[140px]">
+                      <div
+                        className="relative aspect-[3/4] rounded-lg bg-gray-100 overflow-hidden cursor-pointer"
+                        onClick={() => goToPost(post.id)}
+                      >
+                        <Image
+                          src={post.images?.[0] || "/icons/rectangle-gray.png"}
+                          alt={post.title}
+                          fill
+                          className="object-cover"
+                          sizes="(max-width: 768px) 50vw, 140px"
+                        />
+                        <Image
+                          src="/icons/redheart.png"
+                          alt="찜"
+                          width={30}
+                          height={30}
+                          className="absolute right-2 bottom-2 w-4 h-4"
+                        />
                       </div>
-                    );
-                  })}
+                      <div className="pt-2 text-sm font-semibold truncate">
+                        {post.title}
+                      </div>
+                    </div>
+                  ))}
                 </div>
               )}
             </div>
@@ -433,18 +408,19 @@ export default function MyPage() {
 
                     return (
                       <div key={postId} className="w-full">
-                        <div className="relative aspect-[3/4] rounded-lg bg-gray-100 overflow-hidden">
-                          <div onClick={() => goToPost(postId)}>
-                            <Image
-                              src={
-                                post.images?.[0] || "/icons/rectangle-gray.png"
-                              }
-                              alt={post.title}
-                              width={200}
-                              height={250}
-                              className="w-full h-full object-cover cursor-pointer"
-                            />
-                          </div>
+                        <div
+                          className="relative aspect-[3/4] rounded-lg bg-gray-100 overflow-hidden cursor-pointer"
+                          onClick={() => goToPost(postId)}
+                        >
+                          <Image
+                            src={
+                              post.images?.[0] || "/icons/rectangle-gray.png"
+                            }
+                            alt={post.title}
+                            fill
+                            className="object-cover"
+                            sizes="(max-width: 768px) 50vw, 140px"
+                          />
                         </div>
 
                         {/* ✅ 제목 + 하트 (오른쪽) */}
@@ -534,19 +510,20 @@ export default function MyPage() {
                             const isSaved = bookmarkIds.includes(postId);
                             return (
                               <div key={postId} className="w-[140px]">
-                                <div className="aspect-[3/4] bg-gray-100 rounded-lg overflow-hidden">
-                                  <div onClick={() => goToPost(postId)}>
-                                    <Image
-                                      src={
-                                        item.thumbnailUrl ||
-                                        "/icons/rectangle-gray.png"
-                                      }
-                                      alt={item.title}
-                                      width={300}
-                                      height={350}
-                                      className="w-full h-full object-cover cursor-pointer"
-                                    />
-                                  </div>
+                                <div
+                                  className="relative aspect-[3/4] bg-gray-100 rounded-lg overflow-hidden cursor-pointer"
+                                  onClick={() => goToPost(postId)}
+                                >
+                                  <Image
+                                    src={
+                                      item.thumbnailUrl ||
+                                      "/icons/rectangle-gray.png"
+                                    }
+                                    alt={item.title}
+                                    fill
+                                    className="object-cover"
+                                    sizes="140px"
+                                  />
                                 </div>
 
                                 <div className="pt-1 px-1 text-sm font-semibold flex items-center justify-between">
@@ -632,7 +609,7 @@ export default function MyPage() {
         </div>
 
         {/* 3️⃣ MY 냉장고 */}
-        <div className="w-full">
+        <div >
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-2xl font-bold">MY 냉장고</h3>
             <button
@@ -655,55 +632,32 @@ export default function MyPage() {
             <EmptySectionBox message="담은 콘텐츠가 없습니다" />
           ) : (
             <div className="grid grid-cols-3 gap-6">
-              {myFridgeContents.map((post) => {
-                const postId = post.id;
-                const isSaved = bookmarkIds.includes(postId);
-
-                return (
-                  <div key={postId} className="w-full">
-                    <div className="relative aspect-[3/4] rounded-lg bg-gray-100 overflow-hidden">
-                      <div onClick={() => goToPost(post.id)}>
-                        <Image
-                          src={
-                            post.images?.[0] || "/icons/rectangle-gray.png"
-                          }
-                          alt={post.title}
-                          width={200}
-                          height={250}
-                          className="w-full h-full object-cover cursor-pointer"
-                        />
-                      </div>
-                    </div>
-                    {/* ✅ 추천 콘텐츠와 동일: 제목 + 오른쪽 하트 */}
-                    <div className="pt-2 px-1 text-sm font-semibold flex items-center justify-between">
-                      <span className="truncate pr-2 flex-1">
-                        {post.title}
-                      </span>
-                      <button
-                        onClick={() => handleToggleBookmark(postId, isSaved)}
-                        disabled={isBookmarkLoading || !isAuthenticated}
-                        aria-disabled={!isAuthenticated}
-                      >
-                        <Image
-                          src={
-                            isSaved
-                              ? "/icons/redheart.png"
-                              : "/icons/grayheart.png"
-                          }
-                          alt="찜"
-                          width={20}
-                          height={20}
-                          className={`w-4.5 h-5 transition-transform ${
-                            isSaved
-                              ? "scale-105"
-                              : "opacity-30 grayscale scale-100"
-                          }`}
-                        />
-                      </button>
-                    </div>
+              {myFridgeContents.map((post) => (
+                <div key={post.id} className="w-full">
+                  <div
+                    className="relative aspect-[3/4] rounded-lg bg-gray-100 overflow-hidden cursor-pointer"
+                    onClick={() => goToPost(post.id)}
+                  >
+                    <Image
+                      src={post.images?.[0] || "/icons/rectangle-gray.png"}
+                      alt={post.title}
+                      fill
+                      className="object-cover"
+                      sizes="140px"
+                    />
+                    <Image
+                      src="/icons/redheart.png"
+                      alt="찜"
+                      width={30}
+                      height={30}
+                      className="absolute right-2 bottom-2 w-4 h-4"
+                    />
                   </div>
-                );
-              })}
+                  <div className="pt-2 text-sm font-semibold truncate">
+                    {post.title}
+                  </div>
+                </div>
+              ))}
             </div>
           )}
         </div>
@@ -725,16 +679,19 @@ export default function MyPage() {
 
                 return (
                   <div key={postId} className="w-full md:w-[140px]">
-                    <div className="relative aspect-[3/4] rounded-lg bg-gray-100 overflow-hidden">
-                      <div onClick={() => goToPost(postId)}>
-                        <Image
-                          src={post.images?.[0] || "/icons/rectangle-gray.png"}
-                          alt={post.title}
-                          width={200}
-                          height={250}
-                          className="w-full h-full object-cover cursor-pointer"
-                        />
-                      </div>
+                    <div
+                      className="relative aspect-[3/4] rounded-lg bg-gray-100 overflow-hidden cursor-pointer"
+                      onClick={() => goToPost(postId)}
+                    >
+                      <Image
+                        src={
+                          post.images?.[0] || "/icons/rectangle-gray.png"
+                        }
+                        alt={post.title}
+                        fill
+                        className="object-cover"
+                        sizes="140px"
+                      />
                     </div>
 
                     {/* ✅ 제목 + 하트 (오른쪽) */}
