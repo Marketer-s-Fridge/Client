@@ -38,15 +38,20 @@ const LoginPage: React.FC = () => {
       onChangeInput1(savedId);
       setRememberId(true);
     }
-
+  
+    // ⭐ 로그인 상태 유지 값 불러오기
+    const savedAutoLogin = localStorage.getItem("autoLogin") === "true";
+    if (savedAutoLogin) {
+      setAutoLogin(true);
+    }
+  
     // 2) 로그인 여부 계산 함수
     const computeLoggedIn = () => {
       const token = localStorage.getItem("accessToken");
       const rawUser = localStorage.getItem("user");
-
+  
       let loggedIn = false;
-
-      // accessToken 값이 유효한 경우
+  
       if (
         token &&
         token !== "null" &&
@@ -55,8 +60,7 @@ const LoginPage: React.FC = () => {
       ) {
         loggedIn = true;
       }
-
-      // user 정보가 JSON 객체인 경우
+  
       if (rawUser) {
         try {
           const user = JSON.parse(rawUser);
@@ -67,37 +71,50 @@ const LoginPage: React.FC = () => {
           // 파싱 실패 시 무시
         }
       }
-
+  
       return loggedIn;
     };
-
-    // 최초 계산
-    setIsLoggedIn(computeLoggedIn());
-
+  
+    const loggedIn = computeLoggedIn();
+    setIsLoggedIn(loggedIn);
+  
+    // ⭐ autoLogin + 로그인 상태면 로그인 페이지에서 바로 홈으로
+    if (loggedIn && savedAutoLogin) {
+      router.replace("/");
+    }
+  
     // 3) 다른 탭에서 로그인/로그아웃 반영
     const onStorage = () => {
-      setIsLoggedIn(computeLoggedIn());
+      const nextLoggedIn = computeLoggedIn();
+      setIsLoggedIn(nextLoggedIn);
     };
-
+  
     window.addEventListener("storage", onStorage);
     return () => window.removeEventListener("storage", onStorage);
-  }, []);
+  }, [router]);
+  
 
   const handleLogin = () => {
     if (!input1.trim() || !input2.trim()) {
       alert("아이디와 비밀번호를 입력해주세요.");
       return;
     }
-
+  
     const dto: SigninRequestDto = { id: input1.trim(), pw: input2 };
-
+  
     signinMutate(dto, {
       onSuccess: (userData) => {
         // 프로젝트 정책에 맞게 저장
         localStorage.setItem("user", JSON.stringify(userData));
-        if (autoLogin) localStorage.setItem("autoLogin", "true");
-
-        // 아이디 저장 설정
+  
+        // ⭐ 로그인 상태 유지 설정
+        if (autoLogin) {
+          localStorage.setItem("autoLogin", "true");
+        } else {
+          localStorage.removeItem("autoLogin");
+        }
+  
+        // ⭐ 아이디 저장 설정
         if (rememberId) {
           localStorage.setItem("rememberId", "true");
           localStorage.setItem("rememberIdValue", input1.trim());
@@ -105,17 +122,17 @@ const LoginPage: React.FC = () => {
           localStorage.removeItem("rememberId");
           localStorage.removeItem("rememberIdValue");
         }
-
+  
         // 로그인 상태 갱신
         setIsLoggedIn(true);
-
+  
         // 어드민 분기
         const idLower = input1.trim().toLowerCase();
         if (idLower === "mf-admin") {
           router.replace("/admin");
           return;
         }
-
+  
         // 기본 흐름: 모달 → 확인 시 홈으로
         setShowConfirm(true);
       },
@@ -124,17 +141,32 @@ const LoginPage: React.FC = () => {
       },
     });
   };
-
+  
   const handleLogout = async () => {
+    // ⭐ 로그아웃 전에 rememberId 관련 값 백업
+    const remember = localStorage.getItem("rememberId") === "true";
+    const savedId = localStorage.getItem("rememberIdValue") || "";
+  
     try {
       await api.post("/auth/signout");
     } catch {
     } finally {
       localStorage.clear(); // 싹 다 삭제
+  
+      // ⭐ 아이디 저장 옵션은 유지
+      if (remember && savedId) {
+        localStorage.setItem("rememberId", "true");
+        localStorage.setItem("rememberIdValue", savedId);
+      }
+  
+      // autoLogin은 무조건 해제
+      localStorage.removeItem("autoLogin");
+  
       setIsLoggedIn(false);
       router.replace("/");
     }
   };
+  
 
   const handleCloseModal = () => {
     setShowConfirm(false);
