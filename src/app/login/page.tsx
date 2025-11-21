@@ -306,13 +306,13 @@ const LoginPage: React.FC = () => {
 
               {/* 회원가입/찾기 */}
               <div className="flex justify-center gap-4 text-[11px] text-[#757575] mb-10 mt-3">
-                <button onClick={() => router.push("/signUp")}>회원가입</button>
+                <button className="cursor-pointer" onClick={() => router.push("/signUp")}>회원가입</button>
                 <span>|</span>
-                <button onClick={() => router.push("/login/findId")}>
+                <button className="cursor-pointer" onClick={() => router.push("/login/findId")}>
                   아이디 찾기
                 </button>
                 <span>|</span>
-                <button onClick={() => router.push("/login/findPwd")}>
+                <button className="cursor-pointer" onClick={() => router.push("/login/findPwd")}>
                   비밀번호 찾기
                 </button>
               </div>
@@ -325,7 +325,7 @@ const LoginPage: React.FC = () => {
               </div>
 
               <div className="w-full flex flex-col items-center gap-y-3 mb-10">
-                <button onClick={() => setShowSocialModal(true)}>
+                <button className="cursor-pointer" onClick={() => setShowSocialModal(true)}>
                   <Image
                     src="/icons/kakao-login-bt.png"
                     alt=""
@@ -334,7 +334,7 @@ const LoginPage: React.FC = () => {
                     height={100}
                   />
                 </button>
-                <button onClick={() => setShowSocialModal(true)}>
+                <button className="cursor-pointer" onClick={() => setShowSocialModal(true)}>
                   <Image
                     src="/icons/naver-login-bt.png"
                     alt=""
@@ -343,7 +343,7 @@ const LoginPage: React.FC = () => {
                     height={100}
                   />
                 </button>
-                <button onClick={() => setShowSocialModal(true)}>
+                <button className="cursor-pointer" onClick={() => setShowSocialModal(true)}>
                   <Image
                     src="/icons/google-login-bt.png"
                     alt=""

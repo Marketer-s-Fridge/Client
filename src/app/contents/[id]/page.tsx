@@ -36,7 +36,7 @@ export default function CardNewsDetailPage() {
   // ✅ 조회 기록 mutation
   const { mutate: recordView } = usePostViewRecord();
 
-  // ✅ 게시글 이미지 목록 (없으면 기본 이미지 하나)
+  // ✅ 게시글 이미지/영상 목록 (없으면 기본 이미지 하나)
   const slideImages = useMemo(() => {
     if (post?.images && post.images.length > 0) {
       return post.images;
@@ -74,10 +74,9 @@ export default function CardNewsDetailPage() {
     if (!post) return;
     if (hasRecordedRef.current) return; // 중복 방지
 
-    // MostViewedCategoryRequestDto: { category: string; postId: number }
     recordView({
       postId: post.id,
-      category: post.category, // post.category가 항상 string이라고 가정
+      category: post.category,
     });
 
     hasRecordedRef.current = true;
@@ -98,6 +97,12 @@ export default function CardNewsDetailPage() {
       </div>
     );
   }
+
+  // 🔎 확장자로 영상 여부 판별 (쿼리스트링 제거 후 검사)
+  const isVideoSrc = (src: string) => {
+    const clean = src.split("?")[0].toLowerCase();
+    return /\.(mp4|mov|webm|ogg|m4v)$/i.test(clean);
+  };
 
   return (
     <div className="bg-white pt-17 md:pt-0">
@@ -147,24 +152,36 @@ export default function CardNewsDetailPage() {
                   }%)`,
                 }}
               >
-                {slideImages.map((src, idx) => (
-                  <div
-                    key={idx}
-                    className="relative"
-                    style={{
-                      width: `${100 / slideCount}%`,
-                      aspectRatio: "4 / 5",
-                      flexShrink: 0,
-                    }}
-                  >
-                    <Image
-                      src={src}
-                      alt={`slide-${idx + 1}`}
-                      fill
-                      className="object-cover rounded-xl"
-                    />
-                  </div>
-                ))}
+                {slideImages.map((src, idx) => {
+                  const isVideo = isVideoSrc(src);
+                  return (
+                    <div
+                      key={idx}
+                      className="relative"
+                      style={{
+                        width: `${100 / slideCount}%`,
+                        aspectRatio: "4 / 5",
+                        flexShrink: 0,
+                      }}
+                    >
+                      {isVideo ? (
+                        <video
+                          src={src}
+                          className="w-full h-full object-cover rounded-xl"
+                          controls
+                          playsInline
+                        />
+                      ) : (
+                        <Image
+                          src={src}
+                          alt={`slide-${idx + 1}`}
+                          fill
+                          className="object-cover rounded-xl"
+                        />
+                      )}
+                    </div>
+                  );
+                })}
               </div>
 
               {/* 좌우 클릭 영역 */}
