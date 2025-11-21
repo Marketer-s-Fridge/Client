@@ -170,6 +170,8 @@ export default function CardNewsDetailPage() {
                           className="w-full h-full object-cover rounded-xl"
                           controls
                           playsInline
+                          autoPlay
+                          muted
                         />
                       ) : (
                         <Image
