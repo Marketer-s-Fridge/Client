@@ -27,6 +27,9 @@ export default function CardNewsDetailPage() {
   const slideBoxRef = useRef<HTMLDivElement>(null);
   const [slideHeight, setSlideHeight] = useState<number>(0);
 
+  // ✅ 각 슬라이드의 <video> DOM 참조
+  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
+
   // ✅ 공유 준비중 모달
   const [showShareModal, setShowShareModal] = useState(false);
 
@@ -48,6 +51,12 @@ export default function CardNewsDetailPage() {
 
   // ✅ 카테고리 (Breadcrumb에서 사용)
   const category = post?.category || "카테고리";
+
+  // 🔎 확장자로 영상 여부 판별 (쿼리스트링 제거 후 검사)
+  const isVideoSrc = (src: string) => {
+    const clean = src.split("?")[0].toLowerCase();
+    return /\.(mp4|mov|webm|ogg|m4v)$/i.test(clean);
+  };
 
   useEffect(() => {
     const node = slideBoxRef.current;
@@ -82,6 +91,29 @@ export default function CardNewsDetailPage() {
     hasRecordedRef.current = true;
   }, [post, recordView]);
 
+  // ✅ activeSlide 변경될 때, 해당 슬라이드 영상만 재생
+  useEffect(() => {
+    slideImages.forEach((src, idx) => {
+      const videoEl = videoRefs.current[idx];
+      if (!videoEl) return;
+
+      const isVideo = isVideoSrc(src);
+      if (!isVideo) return;
+
+      if (idx === activeSlide) {
+        const playPromise = videoEl.play();
+        if (playPromise !== undefined) {
+          playPromise.catch((err) => {
+            console.warn("Video play blocked:", err);
+          });
+        }
+      } else {
+        videoEl.pause();
+        videoEl.currentTime = 0;
+      }
+    });
+  }, [activeSlide, slideImages]);
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -97,12 +129,6 @@ export default function CardNewsDetailPage() {
       </div>
     );
   }
-
-  // 🔎 확장자로 영상 여부 판별 (쿼리스트링 제거 후 검사)
-  const isVideoSrc = (src: string) => {
-    const clean = src.split("?")[0].toLowerCase();
-    return /\.(mp4|mov|webm|ogg|m4v)$/i.test(clean);
-  };
 
   return (
     <div className="bg-white pt-17 md:pt-0">
@@ -166,11 +192,13 @@ export default function CardNewsDetailPage() {
                     >
                       {isVideo ? (
                         <video
+                          ref={(el) => {
+                            videoRefs.current[idx] = el;
+                          }}
                           src={src}
                           className="w-full h-full object-cover rounded-xl"
                           controls
                           playsInline
-                          autoPlay
                         />
                       ) : (
                         <Image
