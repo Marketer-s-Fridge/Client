@@ -184,36 +184,42 @@ export default function CardNewsDetailPage() {
                 })}
               </div>
 
-              {/* 좌우 클릭 영역 */}
-              <div
-                className="absolute top-0 left-0 h-full w-1/2 z-10 cursor-pointer"
-                onClick={() => setActiveSlide((prev) => Math.max(prev - 1, 0))}
-              />
-              <div
-                className="absolute top-0 right-0 h-full w-1/2 z-10 cursor-pointer"
-                onClick={() =>
-                  setActiveSlide((prev) => Math.min(prev + 1, slideCount - 1))
-                }
-              />
-
-              {/* 화살표 */}
+              {/* 화살표: 아이콘만 클릭 가능하게 */}
               {activeSlide > 0 && (
-                <Image
-                  width={150}
-                  height={150}
-                  className="absolute w-6 h-6 top-[47.5%] left-[1%]"
-                  src="/icons/cardnews-bt-left.png"
-                  alt="←"
-                />
+                <button
+                  type="button"
+                  className="absolute top-1/2 left-[1%] -translate-y-1/2 z-20"
+                  onClick={() =>
+                    setActiveSlide((prev) => Math.max(prev - 1, 0))
+                  }
+                >
+                  <Image
+                    width={150}
+                    height={150}
+                    className="w-6 h-6"
+                    src="/icons/cardnews-bt-left.png"
+                    alt="←"
+                  />
+                </button>
               )}
               {activeSlide < slideCount - 1 && (
-                <Image
-                  width={150}
-                  height={150}
-                  className="absolute w-6 h-6 top-[47.5%] right-[1%]"
-                  src="/icons/cardnews-bt-right.png"
-                  alt="→"
-                />
+                <button
+                  type="button"
+                  className="absolute top-1/2 right-[1%] -translate-y-1/2 z-20"
+                  onClick={() =>
+                    setActiveSlide((prev) =>
+                      Math.min(prev + 1, slideCount - 1)
+                    )
+                  }
+                >
+                  <Image
+                    width={150}
+                    height={150}
+                    className="w-6 h-6"
+                    src="/icons/cardnews-bt-right.png"
+                    alt="→"
+                  />
+                </button>
               )}
             </div>
           </div>
