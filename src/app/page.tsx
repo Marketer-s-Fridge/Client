@@ -37,9 +37,13 @@ export default function HomePage() {
   const { data: hot = [] } = useHotPosts(8);
   const { data: picks = [] } = useEditorPicks(8);
 
-  // ✅ 전체 게시물 중 최신 4개
+  // ✅ 전체 게시물 중 "마지막 4개"를 가져와서, 최신이 앞쪽에 오도록 역순 정렬
   const { data: allPosts = [] } = usePosts();
-  const latestPosts = allPosts.slice(0, 4);
+  const latestPosts = useMemo(() => {
+    if (!allPosts.length) return [];
+    const lastFour = allPosts.slice(-4); // 마지막 4개
+    return [...lastFour].reverse(); // 가장 최신이 배열 앞쪽(왼쪽 카드)에 오도록
+  }, [allPosts]);
 
   const hotHero = useMemo(() => hot[0], [hot]);
   const pickHero = useMemo(() => picks[0], [picks]);
@@ -73,7 +77,6 @@ export default function HomePage() {
                   src={thumb}
                   className="aspect-[3/4] bg-white rounded-lg shadow cursor-pointer transition duration-300 ease-in-out hover:scale-105 w-full object-cover"
                   onClick={() => {
-                    // TODO: 실제 상세 페이지 경로에 맞게 수정
                     router.push(`/contents/${post.id}`);
                   }}
                   width={250}
@@ -97,7 +100,6 @@ export default function HomePage() {
                   key={post.id}
                   className="!w-[60%] max-w-xs shrink-0"
                   onClick={() => {
-                    // TODO: 실제 상세 페이지 경로에 맞게 수정
                     router.push(`/contents/${post.id}`);
                   }}
                 >
