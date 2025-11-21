@@ -171,7 +171,6 @@ export default function CardNewsDetailPage() {
                           controls
                           playsInline
                           autoPlay
-                          muted
                         />
                       ) : (
                         <Image
