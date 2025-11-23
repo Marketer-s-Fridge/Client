@@ -23,13 +23,13 @@ const LoginPage: React.FC = () => {
   const [showConfirm, setShowConfirm] = useState(false); // 로그인 성공 모달
   const [showSocialModal, setShowSocialModal] = useState(false); // SNS 준비중 모달
 
-  // ✅ 초기에는 false로 두고, 클라이언트에서 localStorage 기준으로 계산
+  // ✅ 초기에는 false로 두고, 클라이언트에서 storage 기준으로 계산
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const router = useRouter();
   const { mutate: signinMutate, isPending } = useSignin();
 
-  // ✅ 초기 로드: 아이디 저장 + 로그인 여부 계산 + storage 이벤트 리스너
+  // ✅ 초기 로드: 아이디 저장 + autoLogin + 로그인 여부 계산 + storage 이벤트 리스너
   useEffect(() => {
     // 1) 아이디 저장 불러오기
     const savedId = localStorage.getItem("rememberIdValue");
@@ -38,82 +38,81 @@ const LoginPage: React.FC = () => {
       onChangeInput1(savedId);
       setRememberId(true);
     }
-  
-    // ⭐ 로그인 상태 유지 값 불러오기
+
+    // 2) 로그인 상태 유지 값 불러오기
     const savedAutoLogin = localStorage.getItem("autoLogin") === "true";
     if (savedAutoLogin) {
       setAutoLogin(true);
     }
-  
-    // 2) 로그인 여부 계산 함수
+
+    // 3) 로그인 여부 계산 함수 (accessToken 기준)
     const computeLoggedIn = () => {
-      const token = localStorage.getItem("accessToken");
-      const rawUser = localStorage.getItem("user");
-  
-      let loggedIn = false;
-  
+      const token =
+        localStorage.getItem("accessToken") ??
+        sessionStorage.getItem("accessToken");
+
       if (
-        token &&
-        token !== "null" &&
-        token !== "undefined" &&
-        token !== "false"
+        !token ||
+        token === "null" ||
+        token === "undefined" ||
+        token === "false"
       ) {
-        loggedIn = true;
+        return false;
       }
-  
-      if (rawUser) {
-        try {
-          const user = JSON.parse(rawUser);
-          if (user && typeof user === "object") {
-            loggedIn = true;
-          }
-        } catch {
-          // 파싱 실패 시 무시
-        }
-      }
-  
-      return loggedIn;
+      return true;
     };
-  
+
     const loggedIn = computeLoggedIn();
     setIsLoggedIn(loggedIn);
-  
+
     // ⭐ autoLogin + 로그인 상태면 로그인 페이지에서 바로 홈으로
     if (loggedIn && savedAutoLogin) {
       router.replace("/");
     }
-  
-    // 3) 다른 탭에서 로그인/로그아웃 반영
+
+    // 4) 다른 탭에서 로그인/로그아웃 반영
     const onStorage = () => {
       const nextLoggedIn = computeLoggedIn();
       setIsLoggedIn(nextLoggedIn);
     };
-  
+
     window.addEventListener("storage", onStorage);
     return () => window.removeEventListener("storage", onStorage);
   }, [router]);
-  
 
   const handleLogin = () => {
     if (!input1.trim() || !input2.trim()) {
       alert("아이디와 비밀번호를 입력해주세요.");
       return;
     }
-  
+
     const dto: SigninRequestDto = { id: input1.trim(), pw: input2 };
-  
+
     signinMutate(dto, {
       onSuccess: (userData) => {
-        // 프로젝트 정책에 맞게 저장
+        // 프로젝트 정책에 맞게 유저 정보 저장
         localStorage.setItem("user", JSON.stringify(userData));
-  
+
+        // ⭐ accessToken 위치 정리
+        //   - useSignin 안에서 accessToken을 localStorage에 저장한다고 가정
+        const tokenFromLocal = localStorage.getItem("accessToken");
+        if (tokenFromLocal) {
+          if (autoLogin) {
+            // 로그인 상태 유지 O → localStorage 유지 (추가 작업 X)
+          } else {
+            // 로그인 상태 유지 X → sessionStorage로 옮기고 localStorage에서는 제거
+            sessionStorage.setItem("accessToken", tokenFromLocal);
+            localStorage.removeItem("accessToken");
+          }
+        }
+
         // ⭐ 로그인 상태 유지 설정
         if (autoLogin) {
           localStorage.setItem("autoLogin", "true");
         } else {
           localStorage.removeItem("autoLogin");
         }
-  
+
         // ⭐ 아이디 저장 설정
         if (rememberId) {
           localStorage.setItem("rememberId", "true");
@@ -122,17 +121,17 @@ const LoginPage: React.FC = () => {
           localStorage.removeItem("rememberId");
           localStorage.removeItem("rememberIdValue");
         }
-  
+
         // 로그인 상태 갱신
         setIsLoggedIn(true);
-  
+
         // 어드민 분기
         const idLower = input1.trim().toLowerCase();
         if (idLower === "mf-admin") {
           router.replace("/admin");
           return;
         }
-  
+
         // 기본 흐름: 모달 → 확인 시 홈으로
         setShowConfirm(true);
       },
@@ -141,32 +140,33 @@ const LoginPage: React.FC = () => {
       },
     });
   };
-  
+
   const handleLogout = async () => {
     // ⭐ 로그아웃 전에 rememberId 관련 값 백업
     const remember = localStorage.getItem("rememberId") === "true";
     const savedId = localStorage.getItem("rememberIdValue") || "";
-  
+
     try {
       await api.post("/auth/signout");
     } catch {
     } finally {
-      localStorage.clear(); // 싹 다 삭제
-  
+      // localStorage + sessionStorage 모두 초기화
+      localStorage.clear();
+      sessionStorage.clear();
+
       // ⭐ 아이디 저장 옵션은 유지
       if (remember && savedId) {
         localStorage.setItem("rememberId", "true");
         localStorage.setItem("rememberIdValue", savedId);
       }
-  
+
       // autoLogin은 무조건 해제
       localStorage.removeItem("autoLogin");
-  
+
       setIsLoggedIn(false);
       router.replace("/");
     }
   };
-  
 
   const handleCloseModal = () => {
     setShowConfirm(false);
@@ -306,13 +306,24 @@ const LoginPage: React.FC = () => {
 
               {/* 회원가입/찾기 */}
               <div className="flex justify-center gap-4 text-[11px] text-[#757575] mb-10 mt-3">
-                <button className="cursor-pointer" onClick={() => router.push("/signUp")}>회원가입</button>
+                <button
+                  className="cursor-pointer"
+                  onClick={() => router.push("/signUp")}
+                >
+                  회원가입
+                </button>
                 <span>|</span>
-                <button className="cursor-pointer" onClick={() => router.push("/login/findId")}>
+                <button
+                  className="cursor-pointer"
+                  onClick={() => router.push("/login/findId")}
+                >
                   아이디 찾기
                 </button>
                 <span>|</span>
-                <button className="cursor-pointer" onClick={() => router.push("/login/findPwd")}>
+                <button
+                  className="cursor-pointer"
+                  onClick={() => router.push("/login/findPwd")}
+                >
                   비밀번호 찾기
                 </button>
               </div>
@@ -325,7 +336,10 @@ const LoginPage: React.FC = () => {
               </div>
 
               <div className="w-full flex flex-col items-center gap-y-3 mb-10">
-                <button className="cursor-pointer" onClick={() => setShowSocialModal(true)}>
+                <button
+                  className="cursor-pointer"
+                  onClick={() => setShowSocialModal(true)}
+                >
                   <Image
                     src="/icons/kakao-login-bt.png"
                     alt=""
@@ -334,7 +348,10 @@ const LoginPage: React.FC = () => {
                     height={100}
                   />
                 </button>
-                <button className="cursor-pointer" onClick={() => setShowSocialModal(true)}>
+                <button
+                  className="cursor-pointer"
+                  onClick={() => setShowSocialModal(true)}
+                >
                   <Image
                     src="/icons/naver-login-bt.png"
                     alt=""
@@ -343,7 +360,10 @@ const LoginPage: React.FC = () => {
                     height={100}
                   />
                 </button>
-                <button className="cursor-pointer" onClick={() => setShowSocialModal(true)}>
+                <button
+                  className="cursor-pointer"
+                  onClick={() => setShowSocialModal(true)}
+                >
                   <Image
                     src="/icons/google-login-bt.png"
                     alt=""
