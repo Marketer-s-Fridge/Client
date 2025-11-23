@@ -288,14 +288,12 @@ export default function CardNewsDetailPage() {
 
           {/* 텍스트 + 버튼 */}
           <div
-            className="w-full sm:w-[55%] flex flex-col mb-15 md:mb-0"
+            className="w-full sm:w-[55%] flex flex-col mb-15 md:mb-0 overflow-hidden"
             // ✅ 오른쪽 전체 박스를 카드 높이와 동일하게 고정
             style={slideHeight ? { height: slideHeight } : undefined}
           >
             {/* ✅ 텍스트 영역: 카드 이미지 높이까지만 보이고 내부 스크롤 */}
-            <div
-              className="pr-2 py-2 flex-1 overflow-y-auto no-scrollbar"
-            >
+            <div className="pr-2 py-2 flex-1 min-h-0 overflow-y-auto no-scrollbar">
               <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2">
                 {post.title}
               </h1>
@@ -316,7 +314,7 @@ export default function CardNewsDetailPage() {
             </div>
 
             {/* ✅ 버튼은 항상 텍스트 박스 아래에 고정 */}
-            <div className="bg-white flex justify-end gap-4 mt-4">
+            <div className="bg-white flex justify-end gap-4 pt-4 px-2 shrink-0">
               <SaveToFridgeButton postId={post.id} />
               <button
                 className="border border-gray-300 rounded-full px-1.5 py-1 text-sm cursor-pointer"
