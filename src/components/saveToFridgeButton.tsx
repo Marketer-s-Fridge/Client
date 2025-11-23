@@ -4,7 +4,6 @@ import { useState } from "react";
 import Image from "next/image";
 import BaseModal from "@/components/baseModal";
 import LoginRequiredModal from "@/components/loginRequiredModal";
-import { useRouter } from "next/navigation";
 import { useBookmarks } from "@/features/bookmarks/hooks/useBookmarks";
 
 interface SaveToFridgeButtonProps {
@@ -12,7 +11,6 @@ interface SaveToFridgeButtonProps {
 }
 
 export default function SaveToFridgeButton({ postId }: SaveToFridgeButtonProps) {
-  const router = useRouter();
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
 
