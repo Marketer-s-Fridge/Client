@@ -56,7 +56,7 @@ export default function CardNewsDetailPage() {
     return /\.(mp4|mov|webm|ogg|m4v)$/i.test(clean);
   };
 
-  // ✅ 높이 측정
+  // ✅ 높이 측정 (이미지 박스 높이)
   useEffect(() => {
     const node = slideBoxRef.current;
     if (!node) return;
@@ -178,9 +178,10 @@ export default function CardNewsDetailPage() {
 
       {/* 본문 */}
       <main className="flex justify-center px-4 sm:px-[8%] lg:px-[17%] mt-10 mb-10 min-h-[70vh]">
-        <div className="w-full max-w-screen-lg flex flex-col sm:flex-row gap-10">
+        <div className="w-full max-w-screen-lg flex flex-col sm:flex-row gap-10 items-start">
           {/* 카드 슬라이드 */}
-          <div className="self-center relative w-full sm:w-[45%] flex flex-col items-center">
+          <div className="relative w-full sm:w-[45%] flex flex-col items-center">
+            {/* ✅ 이미지/영상 박스: 여기 높이를 기준으로 우측 텍스트 maxHeight를 맞춤 */}
             <div
               ref={slideBoxRef}
               className="relative w-full overflow-hidden"
@@ -285,14 +286,15 @@ export default function CardNewsDetailPage() {
 
           {/* 텍스트 + 버튼 */}
           <div
-            className="w-full sm:w-[55%] flex flex-col mb-15 md:mb-0" // ✅ self-center 제거
-            style={{ minHeight: slideHeight || "auto" }} // ✅ height → minHeight
+            className="w-full sm:w-[55%] flex flex-col mb-15 md:mb-0"
+            // ✅ 텍스트 전체 영역의 최대 높이를 이미지 높이에 맞춤
+            style={slideHeight ? { maxHeight: slideHeight } : undefined}
           >
+            {/* ✅ 텍스트 영역: 내용이 넘치면 여기서만 세로 스크롤 */}
             <div
-              className={`
-      pr-2 py-2
-      ${slideHeight ? "sm:flex-1 sm:overflow-y-auto sm:no-scrollbar" : ""}
-    `}
+              className={`pr-2 py-2 flex-1 ${
+                slideHeight ? "sm:overflow-y-auto sm:no-scrollbar" : ""
+              }`}
             >
               <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2">
                 {post.title}
@@ -313,7 +315,7 @@ export default function CardNewsDetailPage() {
               </p>
             </div>
 
-            <div className="bg-white flex justify-end gap-4 mt-4 ">
+            <div className="bg-white flex justify-end gap-4 mt-4">
               <SaveToFridgeButton postId={post.id} />
               <button
                 className="border border-gray-300 rounded-full px-1.5 py-1 text-sm cursor-pointer"
