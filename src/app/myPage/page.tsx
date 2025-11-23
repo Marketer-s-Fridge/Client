@@ -29,6 +29,18 @@ function EmptySectionBox({ message }: { message: string }) {
   );
 }
 
+// 최근 본 게시물 타입 (삭제 플래그 포함)
+type RecentViewWithDelete = {
+  postId: number;
+  title: string;
+  thumbnailUrl?: string | null;
+  isDeleted?: boolean;
+  deleted?: boolean;
+};
+
+const MAX_RECENT_CARDS = 6; // 최근 본 콘텐츠 최대 6개
+const CARDS_PER_PAGE = 3; // 데스크탑 슬라이드에서 한 페이지당 카드 개수
+
 export default function MyPage() {
   const router = useRouter();
   const { isAuthenticated, user, isLoading } = useAuthStatus();
@@ -54,7 +66,7 @@ export default function MyPage() {
     isLoading: isBookmarkLoading,
   } = useBookmarks();
 
-  // ✅ 최근 조회한 게시물 (RecentViewedResponseDto[])
+  // ✅ 최근 조회한 게시물
   const { data: recentViews = [], isLoading: isRecentViewsLoading } =
     useRecentViews();
 
@@ -77,27 +89,25 @@ export default function MyPage() {
 
   // =========================
   // ✅ 최근 본 콘텐츠 가공
-  //   - 사라진 게시물 제거
+  //   - 사라진 게시물(삭제 플래그 등) 제거
   //   - 최대 6개까지만 사용 (3개씩 슬라이드 2번)
   // =========================
-  const MAX_RECENT_CARDS = 6;
-  const cardsPerPage = 3;
+  const rawRecentViews = (recentViews || []) as RecentViewWithDelete[];
 
-  type RecentViewWithDelete = (typeof recentViews)[number] & {
-    isDeleted?: boolean;
-    deleted?: boolean;
-  };
-
-  const filteredRecentViews: RecentViewWithDelete[] = recentViews
-    .filter((item) => {
-      const r = item as RecentViewWithDelete;
-      if (r.isDeleted || r.deleted) return false;
+  const filteredRecentViews: RecentViewWithDelete[] = rawRecentViews
+    .filter((item: RecentViewWithDelete) => {
+      // 백엔드에서 isDeleted / deleted 둘 중 하나를 쓸 수 있으니 둘 다 체크
+      if (item.isDeleted || item.deleted) return false;
+      // 혹시 postId 이상하면 걸러도 됨 (안전장치)
+      if (!item.postId) return false;
       return true;
     })
-    .slice(0, MAX_RECENT_CARDS);
+    .slice(0, MAX_RECENT_CARDS); // ✅ 최대 6개까지만 노출
 
   const maxSlideIndex =
-    Math.ceil(filteredRecentViews.length / cardsPerPage) - 1;
+    filteredRecentViews.length > 0
+      ? Math.ceil(filteredRecentViews.length / CARDS_PER_PAGE) - 1
+      : 0;
 
   const hasRecentViewed = filteredRecentViews.length > 0;
   const hasRecommended = recommendedPosts.length > 0;
@@ -105,7 +115,7 @@ export default function MyPage() {
   // ✅ 도넛차트용 데이터 변환
   const chartData = Object.entries(categoryStats).map(([label, value]) => ({
     label,
-    value,
+    value: Number(value),
   }));
 
   const totalCategoryCount = chartData.reduce(
@@ -213,7 +223,7 @@ export default function MyPage() {
                 height={230}
               />
             </div>
-            <div className="w-full flex flex.col items-center md:items-start">
+            <div className="w-full flex flex-col items-center md:items-start">
               <h2 className="text-medium sm:text-3xl font-bold">
                 {user?.nickname || user?.name || "비회원"}
               </h2>
@@ -523,8 +533,8 @@ export default function MyPage() {
                       >
                         {filteredRecentViews
                           .slice(
-                            pageIndex * cardsPerPage,
-                            pageIndex * cardsPerPage + cardsPerPage
+                            pageIndex * CARDS_PER_PAGE,
+                            pageIndex * CARDS_PER_PAGE + CARDS_PER_PAGE
                           )
                           .map((item) => {
                             const postId = item.postId;
@@ -631,7 +641,7 @@ export default function MyPage() {
 
         {/* 3️⃣ MY 냉장고 */}
         <div>
-          <div className="flex justify-between items.center mb-4">
+          <div className="flex justify-between items-center mb-4">
             <h3 className="text-2xl font-bold">MY 냉장고</h3>
             <button
               onClick={() => router.push("/myPage/myFridge")}
@@ -717,9 +727,7 @@ export default function MyPage() {
 
                     {/* ✅ 제목 + 하트 (오른쪽) */}
                     <div className="pt-2 px-1 text-sm font-semibold flex items-center justify-between">
-                      <span className="truncate pr-2 flex-1">
-                        {post.title}
-                      </span>
+                      <span className="truncate pr-2 flex-1">{post.title}</span>
                       <button
                         onClick={() => handleToggleBookmark(postId, isSaved)}
                         disabled={isBookmarkLoading || !isAuthenticated}
