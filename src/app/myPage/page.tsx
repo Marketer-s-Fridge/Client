@@ -75,10 +75,31 @@ export default function MyPage() {
     if (checked && !isAuthenticated) setIsLoginModalOpen(true);
   }, [isLoading, isAuthenticated]);
 
+  // =========================
+  // ✅ 최근 본 콘텐츠 가공
+  //   - 사라진 게시물 제거
+  //   - 최대 6개까지만 사용 (3개씩 슬라이드 2번)
+  // =========================
+  const MAX_RECENT_CARDS = 6;
   const cardsPerPage = 3;
-  const maxSlideIndex = Math.ceil(recentViews.length / cardsPerPage) - 1;
 
-  const hasRecentViewed = recentViews.length > 0;
+  type RecentViewWithDelete = (typeof recentViews)[number] & {
+    isDeleted?: boolean;
+    deleted?: boolean;
+  };
+
+  const filteredRecentViews: RecentViewWithDelete[] = recentViews
+    .filter((item) => {
+      const r = item as RecentViewWithDelete;
+      if (r.isDeleted || r.deleted) return false;
+      return true;
+    })
+    .slice(0, MAX_RECENT_CARDS);
+
+  const maxSlideIndex =
+    Math.ceil(filteredRecentViews.length / cardsPerPage) - 1;
+
+  const hasRecentViewed = filteredRecentViews.length > 0;
   const hasRecommended = recommendedPosts.length > 0;
 
   // ✅ 도넛차트용 데이터 변환
@@ -192,7 +213,7 @@ export default function MyPage() {
                 height={230}
               />
             </div>
-            <div className="w-full flex flex-col items-center md:items-start">
+            <div className="w-full flex flex.col items-center md:items-start">
               <h2 className="text-medium sm:text-3xl font-bold">
                 {user?.nickname || user?.name || "비회원"}
               </h2>
@@ -250,7 +271,7 @@ export default function MyPage() {
                 <EmptySectionBox message="최근 본 콘텐츠가 없습니다" />
               ) : (
                 <div className="flex overflow-x-auto gap-4 no-scrollbar snap-x snap-mandatory">
-                  {recentViews.map((item) => {
+                  {filteredRecentViews.map((item) => {
                     const postId = item.postId;
                     const isSaved = bookmarkIds.includes(postId);
                     return (
@@ -500,7 +521,7 @@ export default function MyPage() {
                         key={pageIndex}
                         className="flex gap-4 w-[480px] flex-shrink-0 justify-start"
                       >
-                        {recentViews
+                        {filteredRecentViews
                           .slice(
                             pageIndex * cardsPerPage,
                             pageIndex * cardsPerPage + cardsPerPage
@@ -609,8 +630,8 @@ export default function MyPage() {
         </div>
 
         {/* 3️⃣ MY 냉장고 */}
-        <div >
-          <div className="flex justify-between items-center mb-4">
+        <div>
+          <div className="flex justify-between items.center mb-4">
             <h3 className="text-2xl font-bold">MY 냉장고</h3>
             <button
               onClick={() => router.push("/myPage/myFridge")}
@@ -696,7 +717,9 @@ export default function MyPage() {
 
                     {/* ✅ 제목 + 하트 (오른쪽) */}
                     <div className="pt-2 px-1 text-sm font-semibold flex items-center justify-between">
-                      <span className="truncate pr-2 flex-1">{post.title}</span>
+                      <span className="truncate pr-2 flex-1">
+                        {post.title}
+                      </span>
                       <button
                         onClick={() => handleToggleBookmark(postId, isSaved)}
                         disabled={isBookmarkLoading || !isAuthenticated}
