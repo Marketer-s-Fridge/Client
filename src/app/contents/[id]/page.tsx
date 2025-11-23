@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect, useMemo } from "react";
-import { useParams, useRouter, notFound } from "next/navigation";
+import { useParams, notFound } from "next/navigation";
 import Header from "@/components/header";
 import Image from "next/image";
 import Footer from "@/components/footer";
@@ -14,12 +14,10 @@ import { usePostViewRecord } from "@/features/views/hooks/useMostViewedCategory"
 import ConfirmModal from "@/components/confirmModal";
 
 export default function CardNewsDetailPage() {
-  const router = useRouter();
   const { id } = useParams<{ id: string }>();
   const postId = Number(id);
 
-  if (!Number.isFinite(postId)) return notFound();
-
+  // ✅ 훅들은 항상 최상단에서 전부 먼저 호출
   const { data: post, isLoading, error } = usePost(postId);
 
   const [menuOpen, setMenuOpen] = useState(false);
@@ -58,6 +56,7 @@ export default function CardNewsDetailPage() {
     return /\.(mp4|mov|webm|ogg|m4v)$/i.test(clean);
   };
 
+  // ✅ 높이 측정
   useEffect(() => {
     const node = slideBoxRef.current;
     if (!node) return;
@@ -113,6 +112,11 @@ export default function CardNewsDetailPage() {
       }
     });
   }, [activeSlide, slideImages]);
+
+  // ✅ 모든 훅 호출 이후에 분기 처리
+  if (!Number.isFinite(postId)) {
+    return notFound();
+  }
 
   if (isLoading) {
     return (
@@ -213,7 +217,7 @@ export default function CardNewsDetailPage() {
                 })}
               </div>
 
-              {/* 화살표: 아이콘만 클릭 가능하게 */}
+              {/* 화살표 */}
               {activeSlide > 0 && (
                 <button
                   type="button"
@@ -236,9 +240,7 @@ export default function CardNewsDetailPage() {
                   type="button"
                   className="absolute top-1/2 right-[1%] -translate-y-1/2 z-20"
                   onClick={() =>
-                    setActiveSlide((prev) =>
-                      Math.min(prev + 1, slideCount - 1)
-                    )
+                    setActiveSlide((prev) => Math.min(prev + 1, slideCount - 1))
                   }
                 >
                   <Image
@@ -276,7 +278,7 @@ export default function CardNewsDetailPage() {
                   ? new Date(post.publishedAt).toLocaleDateString("ko-KR")
                   : ""}
                 {post.viewCount !== undefined && ` · ${post.viewCount} views`}
-                {post.clickCount !== undefined &&
+                {post.bookmarkCount !== undefined &&
                   ` · 냉장고에 담은 사람 ${post.bookmarkCount}`}
               </div>
               <h3 className="text-lg sm:text-xl lg:text-2xl font-bold mb-2">

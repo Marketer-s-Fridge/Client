@@ -1,63 +1,85 @@
-// src/components/PostFeature.tsx
+// src/components/postFeature.tsx
+"use client";
+
+import React from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import SaveToFridgeButton from "@/components/saveToFridgeButton";
 import type { PostResponseDto } from "@/features/posts/types";
 
-export default function PostFeature({
-  title,
-  item,
-  fallback,
-}: {
+interface PostFeatureProps {
   title: string;
   item?: PostResponseDto;
   fallback: string;
-}) {
+}
+
+const PostFeature: React.FC<PostFeatureProps> = ({ title, item, fallback }) => {
   const router = useRouter();
-  const date = item?.createdAt
-    ? new Date(item.createdAt).toISOString().slice(0, 10).replaceAll("-", ".")
-    : "";
+
+  if (!item) return null;
+
+  const thumb = item.images?.[0] ?? fallback;
 
   return (
-    <div>
-      <h3 className="text-xl md:text-2xl font-bold mb-6">{title}</h3>
-      <div className="flex flex-col lg:flex-row gap-10">
+    <section className="w-full">
+      <h2 className="text-xl sm:text-2xl font-bold mb-4">{title}</h2>
+
+      <div className="flex flex-col md:flex-row gap-6 items-stretch">
+        {/* ✅ 비율 고정 카드 영역 */}
         <div
-          className="transition duration-300 ease-in-out hover:scale-103 cursor-pointer w-full lg:w-[40%] aspect-[3/4] relative rounded-lg overflow-hidden shadow"
-          onClick={() => item && router.push(`/contents/${item.id}`)}
-          aria-label={item?.title ?? title}
+          className="
+            relative 
+            w-full 
+            md:w-[45%] 
+            max-w-[420px] 
+            aspect-[3/4]     /* ← 여기서 비율 고정 */
+            flex-shrink-0 
+            cursor-pointer
+          "
+          onClick={() => router.push(`/contents/${item.id}`)}
         >
-          {item ? (
-            <Image
-              src={item.images?.[0] || fallback}
-              alt={item.title || title}
-              fill
-              className="object-cover"
-              sizes="(min-width: 1024px) 360px, 50vw"
-              priority
-            />
-          ) : (
-            <div className="w-full h-full bg-gray-100 animate-pulse" />
-          )}
+          <Image
+            src={thumb}
+            alt={item.title}
+            fill
+            className="rounded-xl object-cover shadow-md hover:scale-[1.02] transition-transform duration-300"
+            sizes="(min-width: 1024px) 420px, (min-width: 768px) 45vw, 100vw"
+          />
         </div>
 
-        <div className="lg:w-[60%] flex flex-col justify-between lg:h-full py-2">
+        {/* 텍스트 설명 영역 */}
+        <div className="flex-1 flex flex-col justify-between">
           <div>
-            <p className="text-lg sm:text-xl font-bold mt-1">
-              {item?.title ?? "로딩 중"}
-            </p>
-            <div className="flex flex-wrap text-gray-400 gap-x-4 text-xs mt-2">
-              <p>{date}</p>
+            <div className="text-xs text-gray-500 mb-2">
+              {item.category}
+              {item.publishedAt &&
+                ` · ${new Date(item.publishedAt).toLocaleDateString("ko-KR")}`}
+              {item.viewCount !== undefined && ` · ${item.viewCount} views`}
             </div>
-            <p className="text-sm text-gray-600 mt-5 leading-relaxed whitespace-pre-line line-clamp-12">
-              {item?.content ?? "요약을 불러오는 중입니다."}
-            </p>
+            <h3 className="text-xl sm:text-2xl font-bold mb-2">
+              {item.title}
+            </h3>
+            {item.subTitle && (
+              <p className="text-sm sm:text-base text-gray-700 mb-2">
+                {item.subTitle}
+              </p>
+            )}
+            {item.content && (
+              <p className="text-sm sm:text-base text-gray-600 line-clamp-4">
+                {item.content}
+              </p>
+            )}
           </div>
-          <div className="mt-6">
-            <SaveToFridgeButton postId={item?.id} />
-          </div>
+
+          <button
+            className="self-end mt-4 inline-flex items-center px-4 py-2 rounded-full border border-gray-300 text-xs sm:text-sm hover:bg-gray-50"
+            onClick={() => router.push(`/contents/${item.id}`)}
+          >
+            자세히 보기
+          </button>
         </div>
       </div>
-    </div>
+    </section>
   );
-}
+};
+
+export default PostFeature;
