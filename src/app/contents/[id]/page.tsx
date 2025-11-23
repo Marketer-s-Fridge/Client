@@ -181,7 +181,7 @@ export default function CardNewsDetailPage() {
         <div className="w-full max-w-screen-lg flex flex-col sm:flex-row gap-10 items-start">
           {/* 카드 슬라이드 */}
           <div className="relative w-full sm:w-[45%] flex flex-col items-center">
-            {/* ✅ 이미지/영상 박스: 여기 높이를 기준으로 우측 텍스트 maxHeight를 맞춤 */}
+            {/* ✅ 이미지/영상 박스: 여기 높이를 기준으로 우측 텍스트 높이를 맞춤 */}
             <div
               ref={slideBoxRef}
               className="relative w-full overflow-hidden"
@@ -269,7 +269,9 @@ export default function CardNewsDetailPage() {
                   type="button"
                   className="absolute top-1/2 right-[1%] -translate-y-1/2 z-20"
                   onClick={() =>
-                    setActiveSlide((prev) => Math.min(prev + 1, slideCount - 1))
+                    setActiveSlide((prev) =>
+                      Math.min(prev + 1, slideCount - 1)
+                    )
                   }
                 >
                   <Image
@@ -287,14 +289,12 @@ export default function CardNewsDetailPage() {
           {/* 텍스트 + 버튼 */}
           <div
             className="w-full sm:w-[55%] flex flex-col mb-15 md:mb-0"
-            // ✅ 텍스트 전체 영역의 최대 높이를 이미지 높이에 맞춤
-            style={slideHeight ? { maxHeight: slideHeight } : undefined}
+            // ✅ 오른쪽 전체 박스를 카드 높이와 동일하게 고정
+            style={slideHeight ? { height: slideHeight } : undefined}
           >
-            {/* ✅ 텍스트 영역: 내용이 넘치면 여기서만 세로 스크롤 */}
+            {/* ✅ 텍스트 영역: 카드 이미지 높이까지만 보이고 내부 스크롤 */}
             <div
-              className={`pr-2 py-2 flex-1 ${
-                slideHeight ? "sm:overflow-y-auto sm:no-scrollbar" : ""
-              }`}
+              className="pr-2 py-2 flex-1 overflow-y-auto no-scrollbar"
             >
               <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2">
                 {post.title}
@@ -315,6 +315,7 @@ export default function CardNewsDetailPage() {
               </p>
             </div>
 
+            {/* ✅ 버튼은 항상 텍스트 박스 아래에 고정 */}
             <div className="bg-white flex justify-end gap-4 mt-4">
               <SaveToFridgeButton postId={post.id} />
               <button
