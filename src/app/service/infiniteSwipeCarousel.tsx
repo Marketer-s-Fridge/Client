@@ -73,9 +73,9 @@ export default function InfiniteSwipeCarousel() {
   // 최상단 카드 드래그 X
   const x = useMotionValue(0);
 
-  // 색 팔레트(앞에서부터)
-  const bg = ["#FF4545", "#FF6C6C", "#FF9999", "#FFDADA"];
-  const fg = ["#FFFFFF", "#FFFFFF", "#FFFFFF", "#000000"];
+  // ✅ 색 팔레트 대신 고정 색만 사용
+  const BASE_BG = "#FF4545";
+  const BASE_FG = "#FFFFFF";
 
   // 레이어(모든 카드 항상 마운트 → 끊김 X)
   const layers = useMemo(() => {
@@ -93,8 +93,9 @@ export default function InfiniteSwipeCarousel() {
     const bottom = OVERLAP * r * 2.5; // rel 0 → 0(맨 아래)
     const scale = 1 - r * 0.04; // rel 커질수록 살짝 작게
     const z = 100 + (VISIBLE - 1 - r);
-    const bgc = bg[r] ?? bg[bg.length - 1];
-    const fgc = fg[r] ?? fg[fg.length - 1];
+    // ✅ 깊이와 관계없이 항상 같은 색
+    const bgc = BASE_BG;
+    const fgc = BASE_FG;
     return { bottom, scale, z, bgc, fgc };
   };
 
@@ -153,7 +154,7 @@ export default function InfiniteSwipeCarousel() {
       fgc: backFg,
     } = relStyle(backRel);
 
-    // 들어오는 고스트 생성: 오른쪽(또는 왼쪽) 바깥에서 시작해서 맨 뒤 자리로 "들어오게"
+    // 들어오는 고스트 생성
     setArriver({
       idx: front /* oldFront */,
       dir,
@@ -172,8 +173,8 @@ export default function InfiniteSwipeCarousel() {
     setAnimating(false);
   };
 
-  const swipeNext = () => launchGhost(1); // 오른쪽: 나갔다가 오른쪽에서 다시 들어와 맨 뒤로
-  const swipePrev = () => launchGhost(-1); // 왼쪽도 동일 논리(원하면 유지)
+  const swipeNext = () => launchGhost(1);
+  const swipePrev = () => launchGhost(-1);
 
   const onDragEnd = (
     _: MouseEvent | TouchEvent | PointerEvent,
@@ -210,7 +211,7 @@ export default function InfiniteSwipeCarousel() {
                 transformOrigin: "center bottom",
                 x: isTop ? x : 0,
                 pointerEvents: isTop ? "auto" : "none",
-                opacity: visible && hiddenIdx !== idx ? 1 : 0, // 숨김 처리
+                opacity: visible && hiddenIdx !== idx ? 1 : 0,
               }}
               animate={{
                 bottom,
@@ -248,7 +249,6 @@ export default function InfiniteSwipeCarousel() {
                     <span className="absolute animate-pulse bottom-[7%] text-[13px] font-medium">
                       {"옆으로 스와이프 > >"}
                     </span>
-                  
                   </button>
                 )}
               </div>
@@ -256,7 +256,7 @@ export default function InfiniteSwipeCarousel() {
           );
         })}
 
-        {/* 떠나는 고스트: 현재 top이 방향대로 화면 밖으로 */}
+        {/* 떠나는 고스트 */}
         {leaver && (
           <motion.div
             className="absolute left-0 text-left w-full px-4 pointer-events-none"
@@ -283,12 +283,12 @@ export default function InfiniteSwipeCarousel() {
           </motion.div>
         )}
 
-        {/* 들어오는 고스트: 오른쪽(또는 왼쪽) 바깥 → 맨 뒤 레이어 자리로 */}
+        {/* 들어오는 고스트 */}
         {arriver && (
           <motion.div
             className="absolute left-0 text-left w-full px-4 pointer-events-none"
             style={{
-              zIndex: 100, // 맨 뒤 레이어 z와 동일/유사
+              zIndex: 100,
               willChange: "transform",
               transformOrigin: "center bottom",
               bottom: arriver.bottom,
