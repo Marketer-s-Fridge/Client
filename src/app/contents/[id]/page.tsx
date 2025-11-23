@@ -28,7 +28,7 @@ export default function CardNewsDetailPage() {
   // ✅ 각 슬라이드의 <video> DOM 참조
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
 
-  // ✅ 공유 준비중 모달
+  // ✅ 공유 안내 모달
   const [showShareModal, setShowShareModal] = useState(false);
 
   // ✅ 조회 기록 중복 전송 방지용 플래그
@@ -112,6 +112,34 @@ export default function CardNewsDetailPage() {
       }
     });
   }, [activeSlide, slideImages]);
+
+  // ✅ 공유 버튼 클릭 시: 현재 URL 클립보드 복사
+  const handleShare = async () => {
+    if (typeof window === "undefined") return;
+
+    const currentUrl = window.location.href;
+
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(currentUrl);
+        setShowShareModal(true);
+      } else {
+        // 아주 구형 브라우저 대비 간단 폴백
+        const textarea = document.createElement("textarea");
+        textarea.value = currentUrl;
+        textarea.style.position = "fixed";
+        textarea.style.left = "-9999px";
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textarea);
+        setShowShareModal(true);
+      }
+    } catch (err) {
+      console.error("링크 복사 실패:", err);
+      alert("링크 복사에 실패했어요. 브라우저에서 주소를 직접 복사해 주세요.");
+    }
+  };
 
   // ✅ 모든 훅 호출 이후에 분기 처리
   if (!Number.isFinite(postId)) {
@@ -240,7 +268,9 @@ export default function CardNewsDetailPage() {
                   type="button"
                   className="absolute top-1/2 right-[1%] -translate-y-1/2 z-20"
                   onClick={() =>
-                    setActiveSlide((prev) => Math.min(prev + 1, slideCount - 1))
+                    setActiveSlide((prev) =>
+                      Math.min(prev + 1, slideCount - 1)
+                    )
                   }
                 >
                   <Image
@@ -293,7 +323,7 @@ export default function CardNewsDetailPage() {
               <SaveToFridgeButton postId={post.id} />
               <button
                 className="border border-gray-300 rounded-full px-1.5 py-1 text-sm cursor-pointer"
-                onClick={() => setShowShareModal(true)}
+                onClick={handleShare}
               >
                 <Image
                   src="/icons/share.png"
@@ -309,12 +339,16 @@ export default function CardNewsDetailPage() {
 
       <Footer />
 
-      {/* 공유 기능 준비중 모달 */}
+      {/* 공유 완료 안내 모달 */}
       <ConfirmModal
         isOpen={showShareModal}
         onClose={() => setShowShareModal(false)}
       >
-        <p>준비중입니다.</p>
+        <p className="text-center text-sm">
+          현재 페이지 링크가 복사되었습니다.
+          <br />
+          원하는 곳에 붙여넣기 해서 공유해 주세요!
+        </p>
       </ConfirmModal>
     </div>
   );
