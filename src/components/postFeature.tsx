@@ -58,12 +58,12 @@ const PostFeature: React.FC<PostFeatureProps> = ({ title, item, fallback }) => {
               {item.viewCount !== undefined && ` · ${item.viewCount} views`}
             </div>
             {item.subTitle && (
-              <p className="text-sm sm:text-base text-gray-700 mb-2">
+              <p className="text-sm sm:text-base text-gray-700 mb-4">
                 {item.subTitle}
               </p>
             )}
             {item.content && (
-              <p className="text-sm sm:text-base text-gray-600 line-clamp-4">
+              <p className="text-sm sm:text-base text-gray-600 ">
                 {item.content}
               </p>
             )}

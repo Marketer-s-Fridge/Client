@@ -17,7 +17,7 @@ export default function CardNewsDetailPage() {
   const { id } = useParams<{ id: string }>();
   const postId = Number(id);
 
-  // ✅ 훅들은 항상 최상단에서 전부 먼저 호출
+  // hooks
   const { data: post, isLoading, error } = usePost(postId);
 
   const [menuOpen, setMenuOpen] = useState(false);
@@ -25,149 +25,89 @@ export default function CardNewsDetailPage() {
   const slideBoxRef = useRef<HTMLDivElement>(null);
   const [slideHeight, setSlideHeight] = useState<number>(0);
 
-  // ✅ 각 슬라이드의 <video> DOM 참조
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
-
-  // ✅ 공유 안내 모달
   const [showShareModal, setShowShareModal] = useState(false);
-
-  // ✅ 조회 기록 중복 전송 방지용 플래그
   const hasRecordedRef = useRef(false);
-
-  // ✅ 조회 기록 mutation
   const { mutate: recordView } = usePostViewRecord();
 
-  // ✅ 게시글 이미지/영상 목록 (없으면 기본 이미지 하나)
   const slideImages = useMemo(() => {
-    if (post?.images && post.images.length > 0) {
-      return post.images;
-    }
+    if (post?.images?.length) return post.images;
     return ["/images/cardNews/hot/001.png"];
   }, [post]);
 
   const slideCount = slideImages.length;
+  const category = post?.category ?? "카테고리";
 
-  // ✅ 카테고리 (Breadcrumb에서 사용)
-  const category = post?.category || "카테고리";
-
-  // 🔎 확장자로 영상 여부 판별 (쿼리스트링 제거 후 검사)
   const isVideoSrc = (src: string) => {
     const clean = src.split("?")[0].toLowerCase();
     return /\.(mp4|mov|webm|ogg|m4v)$/i.test(clean);
   };
 
-  // ✅ 높이 측정 (이미지 박스 높이)
+  // 이미지 박스 높이 측정
   useEffect(() => {
     const node = slideBoxRef.current;
     if (!node) return;
 
-    const updateHeight = () => {
-      setSlideHeight(node.offsetHeight);
-    };
+    const updateHeight = () => setSlideHeight(node.offsetHeight);
+    const observer = new ResizeObserver(updateHeight);
+    observer.observe(node);
+    updateHeight();
 
-    const resizeObserver = new ResizeObserver(() => {
-      updateHeight();
-    });
-
-    resizeObserver.observe(node);
-    updateHeight(); // 초기 설정
-
-    return () => {
-      resizeObserver.disconnect();
-    };
+    return () => observer.disconnect();
   }, []);
 
-  // ✅ 게시글/카테고리 로딩 완료되면 조회 기록 한 번만 전송
+  // 조회수 기록
   useEffect(() => {
-    if (!post) return;
-    if (hasRecordedRef.current) return; // 중복 방지
-
-    recordView({
-      postId: post.id,
-      category: post.category,
-    });
-
+    if (!post || hasRecordedRef.current) return;
+    recordView({ postId: post.id, category: post.category });
     hasRecordedRef.current = true;
   }, [post, recordView]);
 
-  // ✅ activeSlide 변경될 때, 해당 슬라이드 영상만 재생
+  // 슬라이드 영상 재생 제어
   useEffect(() => {
     slideImages.forEach((src, idx) => {
-      const videoEl = videoRefs.current[idx];
-      if (!videoEl) return;
-
-      const isVideo = isVideoSrc(src);
-      if (!isVideo) return;
+      const el = videoRefs.current[idx];
+      if (!el || !isVideoSrc(src)) return;
 
       if (idx === activeSlide) {
-        const playPromise = videoEl.play();
-        if (playPromise !== undefined) {
-          playPromise.catch((err) => {
-            console.warn("Video play blocked:", err);
-          });
-        }
+        el.play().catch(() => {});
       } else {
-        videoEl.pause();
-        videoEl.currentTime = 0;
+        el.pause();
+        el.currentTime = 0;
       }
     });
   }, [activeSlide, slideImages]);
 
-  // ✅ 공유 버튼 클릭 시: 현재 URL 클립보드 복사
   const handleShare = async () => {
-    if (typeof window === "undefined") return;
-
-    const currentUrl = window.location.href;
-
+    const url = window.location.href;
     try {
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        await navigator.clipboard.writeText(currentUrl);
-        setShowShareModal(true);
-      } else {
-        // 아주 구형 브라우저 대비 간단 폴백
-        const textarea = document.createElement("textarea");
-        textarea.value = currentUrl;
-        textarea.style.position = "fixed";
-        textarea.style.left = "-9999px";
-        document.body.appendChild(textarea);
-        textarea.select();
-        document.execCommand("copy");
-        document.body.removeChild(textarea);
-        setShowShareModal(true);
-      }
-    } catch (err) {
-      console.error("링크 복사 실패:", err);
-      alert("링크 복사에 실패했어요. 브라우저에서 주소를 직접 복사해 주세요.");
+      await navigator.clipboard.writeText(url);
+      setShowShareModal(true);
+    } catch {
+      alert("링크 복사 실패. 브라우저에서 직접 복사해주세요.");
     }
   };
 
-  // ✅ 모든 훅 호출 이후에 분기 처리
-  if (!Number.isFinite(postId)) {
-    return notFound();
-  }
-
-  if (isLoading) {
+  if (!Number.isFinite(postId)) return notFound();
+  if (isLoading)
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex justify-center items-center">
         로딩 중...
       </div>
     );
-  }
-
-  if (error || !post) {
+  if (error || !post)
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex justify-center items-center">
         게시글을 불러올 수 없습니다.
       </div>
     );
-  }
 
   return (
     <div className="bg-white pt-17 md:pt-0">
       <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
 
-      {/* 상단 카테고리/경로 */}
+      {/* 카테고리 */}
       <nav className="flex border-b border-gray-200 text-sm font-medium mt-1 overflow-x-auto no-scrollbar gap-5 px-[5%] lg:px-[17%] ">
         <span className="whitespace-nowrap px-2 py-2 text-red-500 font-bold border-b-2 border-red-500">
           {category}
@@ -179,23 +119,20 @@ export default function CardNewsDetailPage() {
       {/* 본문 */}
       <main className="flex justify-center px-4 sm:px-[8%] lg:px-[17%] mt-10 mb-10 min-h-[70vh]">
         <div className="w-full max-w-screen-lg flex flex-col sm:flex-row gap-10 items-start">
-          {/* 카드 슬라이드 */}
+          {/* 왼쪽 슬라이드 */}
           <div className="relative w-full sm:w-[45%] flex flex-col items-center">
-            {/* ✅ 이미지/영상 박스: 여기 높이를 기준으로 우측 텍스트 높이를 맞춤 */}
             <div
               ref={slideBoxRef}
               className="relative w-full overflow-hidden"
               style={{ aspectRatio: "4 / 5" }}
             >
-              {/* 인디케이터 */}
+              {/* 슬라이드 인디케이터 */}
               <div className="z-10 absolute bottom-[2%] left-1/2 -translate-x-1/2 flex gap-1">
                 {slideImages.map((_, idx) => (
                   <div
                     key={idx}
                     className={`w-1.5 h-1.5 rounded-full ${
-                      idx === activeSlide
-                        ? "bg-white"
-                        : "bg-gray-500 opacity-85"
+                      idx === activeSlide ? "bg-white" : "bg-gray-500 opacity-85"
                     }`}
                   ></div>
                 ))}
@@ -212,7 +149,7 @@ export default function CardNewsDetailPage() {
                 }}
               >
                 {slideImages.map((src, idx) => {
-                  const isVideo = isVideoSrc(src);
+                  const isV = isVideoSrc(src);
                   return (
                     <div
                       key={idx}
@@ -223,7 +160,7 @@ export default function CardNewsDetailPage() {
                         flexShrink: 0,
                       }}
                     >
-                      {isVideo ? (
+                      {isV ? (
                         <video
                           ref={(el) => {
                             videoRefs.current[idx] = el;
@@ -236,7 +173,7 @@ export default function CardNewsDetailPage() {
                       ) : (
                         <Image
                           src={src}
-                          alt={`slide-${idx + 1}`}
+                          alt=""
                           fill
                           className="object-cover rounded-xl"
                         />
@@ -246,14 +183,11 @@ export default function CardNewsDetailPage() {
                 })}
               </div>
 
-              {/* 화살표 */}
+              {/* ← 화살표 */}
               {activeSlide > 0 && (
                 <button
-                  type="button"
                   className="absolute top-1/2 left-[1%] -translate-y-1/2 z-20"
-                  onClick={() =>
-                    setActiveSlide((prev) => Math.max(prev - 1, 0))
-                  }
+                  onClick={() => setActiveSlide((p) => Math.max(p - 1, 0))}
                 >
                   <Image
                     width={150}
@@ -264,14 +198,13 @@ export default function CardNewsDetailPage() {
                   />
                 </button>
               )}
+
+              {/* → 화살표 */}
               {activeSlide < slideCount - 1 && (
                 <button
-                  type="button"
                   className="absolute top-1/2 right-[1%] -translate-y-1/2 z-20"
                   onClick={() =>
-                    setActiveSlide((prev) =>
-                      Math.min(prev + 1, slideCount - 1)
-                    )
+                    setActiveSlide((p) => Math.min(p + 1, slideCount - 1))
                   }
                 >
                   <Image
@@ -286,36 +219,15 @@ export default function CardNewsDetailPage() {
             </div>
           </div>
 
-          {/* 텍스트 + 버튼 */}
+          {/* 오른쪽 텍스트 + 버튼 */}
           <div
-            className="w-full sm:w-[55%] flex flex-col mb-15 md:mb-0 overflow-hidden"
-            // ✅ 오른쪽 전체 박스를 카드 높이와 동일하게 고정
+            className="w-full sm:w-[55%] flex flex-col overflow-hidden"
             style={slideHeight ? { height: slideHeight } : undefined}
           >
-            {/* ✅ 텍스트 영역: 카드 이미지 높이까지만 보이고 내부 스크롤 */}
-            <div className="pr-2 py-2 flex-1 min-h-0 overflow-y-auto no-scrollbar">
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2">
-                {post.title}
-              </h1>
-              <div className="text-xs text-gray-500 mb-4">
-                {post.publishedAt
-                  ? new Date(post.publishedAt).toLocaleDateString("ko-KR")
-                  : ""}
-                {post.viewCount !== undefined && ` · ${post.viewCount} views`}
-                {post.bookmarkCount !== undefined &&
-                  ` · 냉장고에 담은 사람 ${post.bookmarkCount}`}
-              </div>
-              <h3 className="text-lg sm:text-xl lg:text-2xl font-bold mb-2">
-                {post.subTitle}
-              </h3>
-              <p className="text-sm sm:text-base text-gray-700 leading-relaxed whitespace-pre-line">
-                {post.content}
-              </p>
-            </div>
-
-            {/* ✅ 버튼은 항상 텍스트 박스 아래에 고정 */}
-            <div className="bg-white flex justify-end gap-4 pt-4 px-2 shrink-0">
+            {/* 버튼 (고정 높이 50px) */}
+            <div className="shrink-0 h-[50px] flex justify-end gap-4 px-2 items-center">
               <SaveToFridgeButton postId={post.id} />
+
               <button
                 className="border border-gray-300 rounded-full px-1.5 py-1 text-sm cursor-pointer"
                 onClick={handleShare}
@@ -328,13 +240,40 @@ export default function CardNewsDetailPage() {
                 />
               </button>
             </div>
+
+            {/* 텍스트 스크롤 영역 */}
+            <div
+              className="pr-2 py-2 overflow-y-auto no-scrollbar"
+              style={slideHeight ? { height: slideHeight - 50 } : undefined}
+            >
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2">
+                {post.title}
+              </h1>
+
+              <div className="text-xs text-gray-500 mb-4">
+                {post.publishedAt
+                  ? new Date(post.publishedAt).toLocaleDateString("ko-KR")
+                  : ""}
+                {post.viewCount !== undefined && ` · ${post.viewCount} views`}
+                {post.bookmarkCount !== undefined &&
+                  ` · 냉장고에 담은 사람 ${post.bookmarkCount}`}
+              </div>
+
+              <h3 className="text-lg sm:text-xl lg:text-2xl font-bold mb-2">
+                {post.subTitle}
+              </h3>
+
+              <p className="text-sm sm:text-base text-gray-700 leading-relaxed whitespace-pre-line">
+                {post.content}
+              </p>
+            </div>
           </div>
         </div>
       </main>
 
       <Footer />
 
-      {/* 공유 완료 안내 모달 */}
+      {/* 공유 완료 모달 */}
       <ConfirmModal
         isOpen={showShareModal}
         onClose={() => setShowShareModal(false)}
