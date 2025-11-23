@@ -268,9 +268,7 @@ export default function CardNewsDetailPage() {
                   type="button"
                   className="absolute top-1/2 right-[1%] -translate-y-1/2 z-20"
                   onClick={() =>
-                    setActiveSlide((prev) =>
-                      Math.min(prev + 1, slideCount - 1)
-                    )
+                    setActiveSlide((prev) => Math.min(prev + 1, slideCount - 1))
                   }
                 >
                   <Image
@@ -287,18 +285,14 @@ export default function CardNewsDetailPage() {
 
           {/* 텍스트 + 버튼 */}
           <div
-            className="self-center w-full sm:w-[55%] flex flex-col mb-15 md:mb-0"
-            style={{ height: slideHeight || "auto" }}
+            className="w-full sm:w-[55%] flex flex-col mb-15 md:mb-0" // ✅ self-center 제거
+            style={{ minHeight: slideHeight || "auto" }} // ✅ height → minHeight
           >
             <div
               className={`
-                pr-2 py-2
-                ${
-                  slideHeight
-                    ? "sm:flex-1 sm:overflow-y-auto sm:no-scrollbar"
-                    : ""
-                }
-              `}
+      pr-2 py-2
+      ${slideHeight ? "sm:flex-1 sm:overflow-y-auto sm:no-scrollbar" : ""}
+    `}
             >
               <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2">
                 {post.title}
