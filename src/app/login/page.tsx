@@ -65,10 +65,10 @@ const LoginPage: React.FC = () => {
     const loggedIn = computeLoggedIn();
     setIsLoggedIn(loggedIn);
 
-    // ⭐ autoLogin + 로그인 상태면 로그인 페이지에서 바로 홈으로
-    if (loggedIn && savedAutoLogin) {
-      router.replace("/");
-    }
+    // ❌ 여기 있던 autoLogin + router.replace("/") 는 제거
+    // if (loggedIn && savedAutoLogin) {
+    //   router.replace("/");
+    // }
 
     // 4) 다른 탭에서 로그인/로그아웃 반영
     const onStorage = () => {
