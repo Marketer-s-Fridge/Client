@@ -22,8 +22,6 @@ export default function CardNewsDetailPage() {
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
-  const slideBoxRef = useRef<HTMLDivElement>(null);
-  const [slideHeight, setSlideHeight] = useState<number>(0);
 
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
   const [showShareModal, setShowShareModal] = useState(false);
@@ -42,19 +40,6 @@ export default function CardNewsDetailPage() {
     const clean = src.split("?")[0].toLowerCase();
     return /\.(mp4|mov|webm|ogg|m4v)$/i.test(clean);
   };
-
-  // 이미지 박스 높이 측정
-  useEffect(() => {
-    const node = slideBoxRef.current;
-    if (!node) return;
-
-    const updateHeight = () => setSlideHeight(node.offsetHeight);
-    const observer = new ResizeObserver(updateHeight);
-    observer.observe(node);
-    updateHeight();
-
-    return () => observer.disconnect();
-  }, []);
 
   // 조회수 기록
   useEffect(() => {
@@ -109,7 +94,7 @@ export default function CardNewsDetailPage() {
       <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
 
-      {/* 카테고리 */}
+      {/* 카테고리 탭 */}
       <nav className="flex border-b border-gray-200 text-sm font-medium mt-1 overflow-x-auto no-scrollbar gap-5 px-[5%] lg:px-[17%] ">
         <span className="whitespace-nowrap px-2 py-2 text-red-500 font-bold border-b-2 border-red-500">
           {category}
@@ -120,11 +105,16 @@ export default function CardNewsDetailPage() {
 
       {/* 본문 */}
       <main className="flex justify-center px-4 sm:px-[8%] lg:px-[17%] mt-10 mb-10 min-h-[70vh]">
-        <div className="w-full max-w-screen-lg flex flex-col sm:flex-row gap-10 items-start">
+        <div
+          className="
+            w-full max-w-screen-lg 
+            flex flex-col sm:flex-row gap-10 
+            items-start sm:items-stretch
+          "
+        >
           {/* 왼쪽 슬라이드 */}
           <div className="relative w-full sm:w-[45%] flex flex-col items-center">
             <div
-              ref={slideBoxRef}
               className="relative w-full overflow-hidden"
               style={{ aspectRatio: "4 / 5" }}
             >
@@ -136,7 +126,7 @@ export default function CardNewsDetailPage() {
                     className={`w-1.5 h-1.5 rounded-full ${
                       idx === activeSlide ? "bg-white" : "bg-gray-500 opacity-85"
                     }`}
-                  ></div>
+                  />
                 ))}
               </div>
 
@@ -223,37 +213,41 @@ export default function CardNewsDetailPage() {
 
           {/* 오른쪽 텍스트 + 버튼 */}
           <div className="w-full sm:w-[55%] flex flex-col mb-15 md:mb-0">
-            {/* 텍스트 스크롤 영역: 카드 높이까지만 보이고 넘치면 내부 스크롤 */}
-            <div
-              className={`pr-2 py-2 ${
-                slideHeight ? "overflow-y-auto no-scrollbar" : ""
-              }`}
-              style={slideHeight ? { maxHeight: slideHeight } : undefined}
-            >
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2">
-                {post.title}
-              </h1>
+            {/* 🔥 이 래퍼가 왼쪽 카드 높이에 맞춰 늘어나도록 */}
+            <div className="flex-1 flex flex-col min-h-0">
+              {/* 제목/메타/서브타이틀 */}
+              <div className="pb-2">
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2">
+                  {post.title}
+                </h1>
 
-              <div className="text-xs text-gray-500 mb-4">
-                {post.publishedAt
-                  ? new Date(post.publishedAt).toLocaleDateString("ko-KR")
-                  : ""}
-                {post.viewCount !== undefined && ` · ${post.viewCount} views`}
-                {post.bookmarkCount !== undefined &&
-                  ` · 냉장고에 담은 사람 ${post.bookmarkCount}`}
+                <div className="text-xs text-gray-500 mb-4">
+                  {post.publishedAt
+                    ? new Date(post.publishedAt).toLocaleDateString("ko-KR")
+                    : ""}
+                  {post.viewCount !== undefined &&
+                    ` · ${post.viewCount} views`}
+                  {post.bookmarkCount !== undefined &&
+                    ` · 냉장고에 담은 사람 ${post.bookmarkCount}`}
+                </div>
+
+                {post.subTitle && (
+                  <h3 className="text-lg sm:text-xl lg:text-2xl font-bold">
+                    {post.subTitle}
+                  </h3>
+                )}
               </div>
 
-              <h3 className="text-lg sm:text-xl lg:text-2xl font-bold mb-2">
-                {post.subTitle}
-              </h3>
-
-              <p className="text-sm sm:text-base text-gray-700 leading-relaxed whitespace-pre-line">
-                {post.content}
-              </p>
+              {/* 🔥 내용: 여기만 스크롤되는 영역 */}
+              <div className="flex-1 mt-2 pr-2 overflow-y-auto no-scrollbar">
+                <p className="text-sm sm:text-base text-gray-700 leading-relaxed whitespace-pre-line">
+                  {post.content}
+                </p>
+              </div>
             </div>
 
-            {/* 버튼: 항상 텍스트 아래에 고정 */}
-            <div className="bg-white flex justify-end gap-4 mt-4">
+            {/* 🔥 버튼: 오른쪽 섹션 카드 끝나는 위치에 항상 고정 */}
+            <div className="bg-white flex justify-end gap-4 mt-4 flex-shrink-0">
               <SaveToFridgeButton postId={post.id} />
               <button
                 className="border border-gray-300 rounded-full px-1.5 py-1 text-sm cursor-pointer"

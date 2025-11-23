@@ -47,13 +47,13 @@ const PostFeature: React.FC<PostFeatureProps> = ({ title, item, fallback }) => {
           />
         </div>
 
-        {/* 텍스트 + 액션 영역 */}
-        <div className="flex-1 flex flex-col justify-between">
-          <div>
-            {/* 제목: 2줄까지 표시 후 ... */}
+        {/* 🔥 텍스트 + 액션 영역 (이미지 높이 안에서만 동작) */}
+        <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
+          {/* 상단: 제목 + 메타 */}
+          <div className="mb-2">
             <h3
               className="
-                text-xl sm:text-2xl font-bold mb-2
+                text-xl sm:text-2xl font-bold mb-1
                 overflow-hidden text-ellipsis
                 [display:-webkit-box]
                 [-webkit-line-clamp:2]
@@ -63,46 +63,32 @@ const PostFeature: React.FC<PostFeatureProps> = ({ title, item, fallback }) => {
               {item.title}
             </h3>
 
-            <div className="text-xs text-gray-500 mb-2">
+            <div className="text-xs text-gray-500">
               {item.category}
               {item.publishedAt &&
                 ` · ${new Date(item.publishedAt).toLocaleDateString("ko-KR")}`}
               {item.viewCount !== undefined && ` · ${item.viewCount} views`}
             </div>
+          </div>
 
-            {/* 서브타이틀: 2줄까지만 */}
+          {/* 🔥 가운데: 텍스트 스크롤 박스
+              → 여기까지가 '텍스트가 보이는 영역', 이 아래에 버튼 고정 */}
+          <div className="flex-1 overflow-y-auto pr-1 mt-2">
             {item.subTitle && (
-              <p
-                className="
-                  text-sm sm:text-base text-gray-700 mb-2
-                  overflow-hidden text-ellipsis
-                  [display:-webkit-box]
-                  [-webkit-line-clamp:2]
-                  [-webkit-box-orient:vertical]
-                "
-              >
+              <p className="text-sm sm:text-base text-gray-700 mb-2">
                 {item.subTitle}
               </p>
             )}
 
-            {/* 본문 내용: 4줄까지만 */}
             {item.content && (
-              <p
-                className="
-                  text-sm sm:text-base text-gray-600
-                  overflow-hidden text-ellipsis
-                  [display:-webkit-box]
-                  [-webkit-line-clamp:4]
-                  [-webkit-box-orient:vertical]
-                "
-              >
+              <p className="text-sm sm:text-base text-gray-600 whitespace-pre-line">
                 {item.content}
               </p>
             )}
           </div>
 
-          {/* 하단 버튼 영역: MY 냉장고 + 자세히 보기 */}
-          <div className="mt-4 flex justify-end items-center gap-3">
+          {/* 🔥 하단 버튼: 텍스트 잘리는 부분 ‘바로 아래’에 항상 고정 */}
+          <div className="mt-4 pt-3 flex justify-end items-center gap-3 border-t border-gray-200 flex-shrink-0">
             <SaveToFridgeButton postId={item.id} />
           </div>
         </div>
