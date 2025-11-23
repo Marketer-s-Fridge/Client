@@ -50,20 +50,52 @@ const PostFeature: React.FC<PostFeatureProps> = ({ title, item, fallback }) => {
         {/* 텍스트 + 액션 영역 */}
         <div className="flex-1 flex flex-col justify-between">
           <div>
-            <h3 className="text-xl sm:text-2xl font-bold mb-2">{item.title}</h3>
+            {/* 제목: 2줄까지 표시 후 ... */}
+            <h3
+              className="
+                text-xl sm:text-2xl font-bold mb-2
+                overflow-hidden text-ellipsis
+                [display:-webkit-box]
+                [-webkit-line-clamp:2]
+                [-webkit-box-orient:vertical]
+              "
+            >
+              {item.title}
+            </h3>
+
             <div className="text-xs text-gray-500 mb-2">
               {item.category}
               {item.publishedAt &&
                 ` · ${new Date(item.publishedAt).toLocaleDateString("ko-KR")}`}
               {item.viewCount !== undefined && ` · ${item.viewCount} views`}
             </div>
+
+            {/* 서브타이틀: 2줄까지만 */}
             {item.subTitle && (
-              <p className="text-sm sm:text-base text-gray-700 mb-4">
+              <p
+                className="
+                  text-sm sm:text-base text-gray-700 mb-2
+                  overflow-hidden text-ellipsis
+                  [display:-webkit-box]
+                  [-webkit-line-clamp:2]
+                  [-webkit-box-orient:vertical]
+                "
+              >
                 {item.subTitle}
               </p>
             )}
+
+            {/* 본문 내용: 4줄까지만 */}
             {item.content && (
-              <p className="text-sm sm:text-base text-gray-600 ">
+              <p
+                className="
+                  text-sm sm:text-base text-gray-600
+                  overflow-hidden text-ellipsis
+                  [display:-webkit-box]
+                  [-webkit-line-clamp:4]
+                  [-webkit-box-orient:vertical]
+                "
+              >
                 {item.content}
               </p>
             )}

@@ -79,6 +79,8 @@ export default function CardNewsDetailPage() {
   }, [activeSlide, slideImages]);
 
   const handleShare = async () => {
+    if (typeof window === "undefined") return;
+
     const url = window.location.href;
     try {
       await navigator.clipboard.writeText(url);
@@ -220,31 +222,13 @@ export default function CardNewsDetailPage() {
           </div>
 
           {/* 오른쪽 텍스트 + 버튼 */}
-          <div
-            className="w-full sm:w-[55%] flex flex-col overflow-hidden"
-            style={slideHeight ? { height: slideHeight } : undefined}
-          >
-            {/* 버튼 (고정 높이 50px) */}
-            <div className="shrink-0 h-[50px] flex justify-end gap-4 px-2 items-center">
-              <SaveToFridgeButton postId={post.id} />
-
-              <button
-                className="border border-gray-300 rounded-full px-1.5 py-1 text-sm cursor-pointer"
-                onClick={handleShare}
-              >
-                <Image
-                  src="/icons/share.png"
-                  alt="공유"
-                  width={16}
-                  height={16}
-                />
-              </button>
-            </div>
-
-            {/* 텍스트 스크롤 영역 */}
+          <div className="w-full sm:w-[55%] flex flex-col mb-15 md:mb-0">
+            {/* 텍스트 스크롤 영역: 카드 높이까지만 보이고 넘치면 내부 스크롤 */}
             <div
-              className="pr-2 py-2 overflow-y-auto no-scrollbar"
-              style={slideHeight ? { height: slideHeight - 50 } : undefined}
+              className={`pr-2 py-2 ${
+                slideHeight ? "overflow-y-auto no-scrollbar" : ""
+              }`}
+              style={slideHeight ? { maxHeight: slideHeight } : undefined}
             >
               <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2">
                 {post.title}
@@ -266,6 +250,22 @@ export default function CardNewsDetailPage() {
               <p className="text-sm sm:text-base text-gray-700 leading-relaxed whitespace-pre-line">
                 {post.content}
               </p>
+            </div>
+
+            {/* 버튼: 항상 텍스트 아래에 고정 */}
+            <div className="bg-white flex justify-end gap-4 mt-4">
+              <SaveToFridgeButton postId={post.id} />
+              <button
+                className="border border-gray-300 rounded-full px-1.5 py-1 text-sm cursor-pointer"
+                onClick={handleShare}
+              >
+                <Image
+                  src="/icons/share.png"
+                  alt="공유"
+                  width={16}
+                  height={16}
+                />
+              </button>
             </div>
           </div>
         </div>
