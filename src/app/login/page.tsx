@@ -13,6 +13,30 @@ import { SigninRequestDto } from "@/features/auth/types";
 import { useSignin } from "@/features/auth/hooks/useSignin";
 import api from "@/lib/apiClient"; // 서버에 /auth/signout 있으면 사용
 
+// ✅ 토큰 + user 기준으로 로그인 여부 계산
+const computeLoggedIn = () => {
+  if (typeof window === "undefined") return false;
+
+  const token =
+    localStorage.getItem("accessToken") ??
+    sessionStorage.getItem("accessToken");
+  const user = localStorage.getItem("user");
+
+  // user 정보 없으면 로그인 아님
+  if (!user) return false;
+
+  if (
+    !token ||
+    token === "null" ||
+    token === "undefined" ||
+    token === "false"
+  ) {
+    return false;
+  }
+
+  return true;
+};
+
 const LoginPage: React.FC = () => {
   const [input1, onChangeInput1] = useState(""); // 아이디
   const [input2, onChangeInput2] = useState(""); // 비밀번호
@@ -31,6 +55,8 @@ const LoginPage: React.FC = () => {
 
   // ✅ 초기 로드: 아이디 저장 + autoLogin + 로그인 여부 계산 + storage 이벤트 리스너
   useEffect(() => {
+    if (typeof window === "undefined") return;
+
     // 1) 아이디 저장 불러오기
     const savedId = localStorage.getItem("rememberIdValue");
     const remember = localStorage.getItem("rememberId") === "true";
@@ -45,30 +71,9 @@ const LoginPage: React.FC = () => {
       setAutoLogin(true);
     }
 
-    // 3) 로그인 여부 계산 함수 (accessToken 기준)
-    const computeLoggedIn = () => {
-      const token =
-        localStorage.getItem("accessToken") ??
-        sessionStorage.getItem("accessToken");
-
-      if (
-        !token ||
-        token === "null" ||
-        token === "undefined" ||
-        token === "false"
-      ) {
-        return false;
-      }
-      return true;
-    };
-
+    // 3) 로그인 여부 계산
     const loggedIn = computeLoggedIn();
     setIsLoggedIn(loggedIn);
-
-    // ❌ 여기 있던 autoLogin + router.replace("/") 는 제거
-    // if (loggedIn && savedAutoLogin) {
-    //   router.replace("/");
-    // }
 
     // 4) 다른 탭에서 로그인/로그아웃 반영
     const onStorage = () => {
@@ -78,7 +83,7 @@ const LoginPage: React.FC = () => {
 
     window.addEventListener("storage", onStorage);
     return () => window.removeEventListener("storage", onStorage);
-  }, [router]);
+  }, []);
 
   const handleLogin = () => {
     if (!input1.trim() || !input2.trim()) {
@@ -142,6 +147,8 @@ const LoginPage: React.FC = () => {
   };
 
   const handleLogout = async () => {
+    if (typeof window === "undefined") return;
+
     // ⭐ 로그아웃 전에 rememberId 관련 값 백업
     const remember = localStorage.getItem("rememberId") === "true";
     const savedId = localStorage.getItem("rememberIdValue") || "";

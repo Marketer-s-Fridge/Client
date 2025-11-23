@@ -31,14 +31,16 @@ const CARDS: Card[] = [
 const VISIBLE = 4; // 화면에 쌓아 보일 수
 const OVERLAP = 25; // 층 간 간격(px)
 
+// 카드별 고정 색 (idx 기준)
+const BG_BY_IDX = ["#FF4545", "#FF6C6C", "#FF9999", "#FFDADA"];
+const FG_BY_IDX = ["#FFFFFF", "#FFFFFF", "#FFFFFF", "#000000"];
+
 // 떠나는 카드(고스트)
 type Leaver = {
   idx: number; // 원본 인덱스(=front였던 카드)
   dir: 1 | -1; // +1: 오른쪽, -1: 왼쪽
   bottom: number; // 떠나기 시작 위치
   scale: number; // 떠나기 시작 스케일
-  bg: string;
-  fg: string;
   x0: number; // 드래그 종료 당시 x (연속성)
 };
 
@@ -48,8 +50,6 @@ type Arriver = {
   dir: 1 | -1; // 들어오는 방향
   bottom: number; // 맨 뒤 레이어의 bottom
   scale: number; // 맨 뒤 레이어의 scale
-  bg: string;
-  fg: string;
 };
 
 export default function InfiniteSwipeCarousel() {
@@ -73,10 +73,6 @@ export default function InfiniteSwipeCarousel() {
   // 최상단 카드 드래그 X
   const x = useMotionValue(0);
 
-  // ✅ 색 팔레트 대신 고정 색만 사용
-  const BASE_BG = "#FF4545";
-  const BASE_FG = "#FFFFFF";
-
   // 레이어(모든 카드 항상 마운트 → 끊김 X)
   const layers = useMemo(() => {
     return Array.from({ length: n }, (_, i) => {
@@ -87,16 +83,13 @@ export default function InfiniteSwipeCarousel() {
     }).sort((a, b) => a.depth - b.depth); // 뒤→앞 순으로 그리기
   }, [front, n]);
 
-  // 레이어 스타일 계산 헬퍼
+  // 레이어 스타일 계산 헬퍼 (위치/스케일/레이어만)
   const relStyle = (rel: number) => {
     const r = Math.max(0, Math.min(rel, VISIBLE - 1));
     const bottom = OVERLAP * r * 2.5; // rel 0 → 0(맨 아래)
     const scale = 1 - r * 0.04; // rel 커질수록 살짝 작게
     const z = 100 + (VISIBLE - 1 - r);
-    // ✅ 깊이와 관계없이 항상 같은 색
-    const bgc = BASE_BG;
-    const fgc = BASE_FG;
-    return { bottom, scale, z, bgc, fgc };
+    return { bottom, scale, z };
   };
 
   // 고스트(떠나는/들어오는)
@@ -113,26 +106,18 @@ export default function InfiniteSwipeCarousel() {
     setAnimating(true);
 
     // 현재 top(rel 0)의 스타일(맨 아래)
-    const {
-      bottom: topBottom,
-      scale: topScale,
-      bgc: topBg,
-      fgc: topFg,
-    } = relStyle(0);
+    const { bottom: topBottom, scale: topScale } = relStyle(0);
     const startX = x.get();
 
     // 떠나는 고스트 생성(현재 top)
+    setHiddenIdx(front); // 먼저 덱에서 숨기고
     setLeaver({
       idx: front,
       dir,
       bottom: topBottom,
       scale: topScale,
-      bg: topBg,
-      fg: topFg,
       x0: startX,
     });
-    // 덱에서는 해당 카드 숨김(중복 방지)
-    setHiddenIdx(front);
 
     // 덱 회전: 다음 카드가 top으로
     const nextFront = (front + (dir === 1 ? 1 : -1) + n) % n;
@@ -147,12 +132,7 @@ export default function InfiniteSwipeCarousel() {
 
     // 👉 "맨 뒤" 자리(보여주는 마지막 레이어 rel = min(VISIBLE-1, n-1))
     const backRel = Math.min(VISIBLE - 1, n - 1);
-    const {
-      bottom: backBottom,
-      scale: backScale,
-      bgc: backBg,
-      fgc: backFg,
-    } = relStyle(backRel);
+    const { bottom: backBottom, scale: backScale } = relStyle(backRel);
 
     // 들어오는 고스트 생성
     setArriver({
@@ -160,8 +140,6 @@ export default function InfiniteSwipeCarousel() {
       dir,
       bottom: backBottom,
       scale: backScale,
-      bg: backBg,
-      fg: backFg,
     });
     ax.set(dir * offX);
     await animate(ax, 0, { duration: 0.22, ease: "easeOut" });
@@ -183,10 +161,13 @@ export default function InfiniteSwipeCarousel() {
     if (animating) return;
     const dx = info.offset.x ?? 0;
     const vx = info.velocity.x ?? 0;
-    const DIST = 60,
-      VEL = 500;
+    const DIST = 60;
+    const VEL = 500;
+
     if (dx > DIST || vx > VEL) return swipeNext();
     if (dx < -DIST || vx < -VEL) return swipePrev();
+
+    // 스와이프 조건 안 되면 원위치
     animate(x, 0, { duration: 0.18, ease: "easeOut" });
   };
 
@@ -199,7 +180,9 @@ export default function InfiniteSwipeCarousel() {
         {/* 덱: 모든 카드 항상 마운트(끊김 방지) */}
         {layers.map(({ idx, card, rel, visible }) => {
           const isTop = rel === 0;
-          const { bottom, scale, z, bgc, fgc } = relStyle(rel);
+          const { bottom, scale, z } = relStyle(rel);
+          const bgc = BG_BY_IDX[idx % BG_BY_IDX.length];
+          const fgc = FG_BY_IDX[idx % FG_BY_IDX.length];
 
           return (
             <motion.div
@@ -211,22 +194,21 @@ export default function InfiniteSwipeCarousel() {
                 transformOrigin: "center bottom",
                 x: isTop ? x : 0,
                 pointerEvents: isTop ? "auto" : "none",
-                opacity: visible && hiddenIdx !== idx ? 1 : 0,
+                opacity: visible && hiddenIdx !== idx ? 1 : 0, // 단순 표시 여부만, 애니메이션 없음
               }}
               animate={{
                 bottom,
                 scale,
-                opacity: visible && hiddenIdx !== idx ? 1 : 0,
               }}
               transition={{
                 bottom: { type: "spring", stiffness: 320, damping: 30 },
                 scale: { type: "spring", stiffness: 280, damping: 28 },
-                opacity: { duration: 0.12 },
               }}
               drag={isTop ? "x" : false}
               dragElastic={0.15}
               dragMomentum={false}
               onDragEnd={isTop ? onDragEnd : undefined}
+              // whileTap 제거해도 되고, 유지해도 깜빡임엔 영향 거의 없음
               whileTap={isTop ? { scale: 0.995 } : undefined}
             >
               <div
@@ -269,17 +251,25 @@ export default function InfiniteSwipeCarousel() {
               x: gx,
             }}
           >
-            <div
-              className="flex flex-col rounded-xl px-5 py-6 h-[186px] text-base md:text-[20px] font-bold select-none"
-              style={{ backgroundColor: leaver.bg, color: leaver.fg }}
-            >
-              <div className="leading-tight font-semibold">
-                {CARDS[leaver.idx].title}
-              </div>
-              <p className="text-[13.5px] font-medium mt-7 leading-snug whitespace-pre-line">
-                {CARDS[leaver.idx].description}
-              </p>
-            </div>
+            {(() => {
+              const bgc = BG_BY_IDX[leaver.idx % BG_BY_IDX.length];
+              const fgc = FG_BY_IDX[leaver.idx % FG_BY_IDX.length];
+              const card = CARDS[leaver.idx];
+
+              return (
+                <div
+                  className="flex flex-col rounded-xl px-5 py-6 h-[186px] text-base md:text-[20px] font-bold select-none"
+                  style={{ backgroundColor: bgc, color: fgc }}
+                >
+                  <div className="leading-tight font-semibold">
+                    {card.title}
+                  </div>
+                  <p className="text-[13.5px] font-medium mt-7 leading-snug whitespace-pre-line">
+                    {card.description}
+                  </p>
+                </div>
+              );
+            })()}
           </motion.div>
         )}
 
@@ -296,17 +286,25 @@ export default function InfiniteSwipeCarousel() {
               x: ax,
             }}
           >
-            <div
-              className="flex flex-col rounded-xl px-5 py-6 h-[186px] text-base md:text-[20px] font-bold select-none"
-              style={{ backgroundColor: arriver.bg, color: arriver.fg }}
-            >
-              <div className="leading-tight font-semibold">
-                {CARDS[arriver.idx].title}
-              </div>
-              <p className="text-[13.5px] font-medium mt-7 leading-snug whitespace-pre-line">
-                {CARDS[arriver.idx].description}
-              </p>
-            </div>
+            {(() => {
+              const bgc = BG_BY_IDX[arriver.idx % BG_BY_IDX.length];
+              const fgc = FG_BY_IDX[arriver.idx % FG_BY_IDX.length];
+              const card = CARDS[arriver.idx];
+
+              return (
+                <div
+                  className="flex flex-col rounded-xl px-5 py-6 h-[186px] text-base md:text-[20px] font-bold select-none"
+                  style={{ backgroundColor: bgc, color: fgc }}
+                >
+                  <div className="leading-tight font-semibold">
+                    {card.title}
+                  </div>
+                  <p className="text-[13.5px] font-medium mt-7 leading-snug whitespace-pre-line">
+                    {card.description}
+                  </p>
+                </div>
+              );
+            })()}
           </motion.div>
         )}
       </div>
