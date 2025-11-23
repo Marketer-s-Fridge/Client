@@ -23,6 +23,9 @@ export default function CardNewsDetailPage() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
 
+  const slideBoxRef = useRef<HTMLDivElement>(null);
+  const [slideHeight, setSlideHeight] = useState<number>(0);
+
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
   const [showShareModal, setShowShareModal] = useState(false);
   const hasRecordedRef = useRef(false);
@@ -40,6 +43,22 @@ export default function CardNewsDetailPage() {
     const clean = src.split("?")[0].toLowerCase();
     return /\.(mp4|mov|webm|ogg|m4v)$/i.test(clean);
   };
+
+  // 왼쪽 이미지 박스 높이 측정해서 slideHeight에 저장
+  useEffect(() => {
+    const node = slideBoxRef.current;
+    if (!node) return;
+
+    const updateHeight = () => {
+      setSlideHeight(node.offsetHeight);
+    };
+
+    const observer = new ResizeObserver(updateHeight);
+    observer.observe(node);
+    updateHeight();
+
+    return () => observer.disconnect();
+  }, []);
 
   // 조회수 기록
   useEffect(() => {
@@ -115,6 +134,7 @@ export default function CardNewsDetailPage() {
           {/* 왼쪽 슬라이드 */}
           <div className="relative w-full sm:w-[45%] flex flex-col items-center">
             <div
+              ref={slideBoxRef}
               className="relative w-full overflow-hidden"
               style={{ aspectRatio: "4 / 5" }}
             >
@@ -212,8 +232,11 @@ export default function CardNewsDetailPage() {
           </div>
 
           {/* 오른쪽 텍스트 + 버튼 */}
-          <div className="w-full sm:w-[55%] flex flex-col mb-15 md:mb-0">
-            {/* 🔥 이 래퍼가 왼쪽 카드 높이에 맞춰 늘어나도록 */}
+          <div
+            className="w-full sm:w-[55%] flex flex-col mb-15 md:mb-0"
+            style={slideHeight ? { height: slideHeight } : undefined}
+          >
+            {/* 텍스트 영역 전체를 카드 높이 안에서 flex로 쪼갬 */}
             <div className="flex-1 flex flex-col min-h-0">
               {/* 제목/메타/서브타이틀 */}
               <div className="pb-2">
@@ -238,15 +261,17 @@ export default function CardNewsDetailPage() {
                 )}
               </div>
 
-              {/* 🔥 내용: 여기만 스크롤되는 영역 */}
-              <div className="flex-1 mt-2 pr-2 overflow-y-auto no-scrollbar">
+              {/* 내용: 여기만 스크롤 */}
+              <div
+                className="flex-1 mt-2 pr-2 overflow-y-auto no-scrollbar"
+              >
                 <p className="text-sm sm:text-base text-gray-700 leading-relaxed whitespace-pre-line">
                   {post.content}
                 </p>
               </div>
             </div>
 
-            {/* 🔥 버튼: 오른쪽 섹션 카드 끝나는 위치에 항상 고정 */}
+            {/* 버튼 영역: 오른쪽 섹션 카드 끝 위치에 고정 */}
             <div className="bg-white flex justify-end gap-4 mt-4 flex-shrink-0">
               <SaveToFridgeButton postId={post.id} />
               <button
