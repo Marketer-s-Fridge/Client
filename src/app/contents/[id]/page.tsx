@@ -17,17 +17,27 @@ export default function CardNewsDetailPage() {
   const { id } = useParams<{ id: string }>();
   const postId = Number(id);
 
-  // hooks
+  // 데이터
   const { data: post, isLoading, error } = usePost(postId);
 
+  // UI 상태
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
 
-  const slideBoxRef = useRef<HTMLDivElement>(null);
-  const [slideHeight, setSlideHeight] = useState<number>(0);
+  // 레이아웃 refs
+  const slideBoxRef = useRef<HTMLDivElement | null>(null); // 왼쪽 이미지 박스
+  const headerRef = useRef<HTMLDivElement | null>(null); // 오른쪽 제목/메타 영역
+  const buttonsRef = useRef<HTMLDivElement | null>(null); // 냉장고/공유 버튼 영역
 
+  const [scrollMaxHeight, setScrollMaxHeight] = useState(0);
+
+  // 슬라이드 영상 제어
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
+
+  // 공유 모달
   const [showShareModal, setShowShareModal] = useState(false);
+
+  // 조회수 기록
   const hasRecordedRef = useRef(false);
   const { mutate: recordView } = usePostViewRecord();
 
@@ -44,20 +54,39 @@ export default function CardNewsDetailPage() {
     return /\.(mp4|mov|webm|ogg|m4v)$/i.test(clean);
   };
 
-  // 왼쪽 이미지 박스 높이 측정해서 slideHeight에 저장
+  // 오른쪽 텍스트 영역 maxHeight 계산:
+  // 이미지 높이 - (오른쪽 헤더 높이 + 버튼 영역 높이 + 간격)
   useEffect(() => {
-    const node = slideBoxRef.current;
-    if (!node) return;
+    const imgNode = slideBoxRef.current;
+    const headNode = headerRef.current;
+    const btnNode = buttonsRef.current;
 
-    const updateHeight = () => {
-      setSlideHeight(node.offsetHeight);
+    if (!imgNode || !headNode || !btnNode) return;
+    if (typeof ResizeObserver === "undefined") return;
+
+    const updateHeights = () => {
+      const imgH = imgNode.offsetHeight;
+      const headH = headNode.offsetHeight;
+      const btnH = btnNode.offsetHeight;
+
+      // header의 padding, 텍스트/버튼 사이 margin 정도 여유값
+      const GAP = 24; // px 단위 대략 여유
+
+      const contentH = Math.max(imgH - headH - btnH - GAP, 0);
+      setScrollMaxHeight(contentH);
     };
 
-    const observer = new ResizeObserver(updateHeight);
-    observer.observe(node);
-    updateHeight();
+    const observer = new ResizeObserver(updateHeights);
+    observer.observe(imgNode);
+    observer.observe(headNode);
+    observer.observe(btnNode);
 
-    return () => observer.disconnect();
+    // 초기 한 번 실행
+    updateHeights();
+
+    return () => {
+      observer.disconnect();
+    };
   }, []);
 
   // 조회수 기록
@@ -84,7 +113,6 @@ export default function CardNewsDetailPage() {
 
   const handleShare = async () => {
     if (typeof window === "undefined") return;
-
     const url = window.location.href;
     try {
       await navigator.clipboard.writeText(url);
@@ -144,7 +172,9 @@ export default function CardNewsDetailPage() {
                   <div
                     key={idx}
                     className={`w-1.5 h-1.5 rounded-full ${
-                      idx === activeSlide ? "bg-white" : "bg-gray-500 opacity-85"
+                      idx === activeSlide
+                        ? "bg-white"
+                        : "bg-gray-500 opacity-85"
                     }`}
                   />
                 ))}
@@ -232,47 +262,48 @@ export default function CardNewsDetailPage() {
           </div>
 
           {/* 오른쪽 텍스트 + 버튼 */}
-          <div
-            className="w-full sm:w-[55%] flex flex-col mb-15 md:mb-0"
-            style={slideHeight ? { height: slideHeight } : undefined}
-          >
-            {/* 텍스트 영역 전체를 카드 높이 안에서 flex로 쪼갬 */}
-            <div className="flex-1 flex flex-col min-h-0">
-              {/* 제목/메타/서브타이틀 */}
-              <div className="pb-2">
-                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2">
-                  {post.title}
-                </h1>
+          <div className="w-full sm:w-[55%] flex flex-col mb-15 md:mb-0">
+            {/* 제목/메타/부제목 영역 (높이 측정 대상) */}
+            <div ref={headerRef} className="pb-2">
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2">
+                {post.title}
+              </h1>
 
-                <div className="text-xs text-gray-500 mb-4">
-                  {post.publishedAt
-                    ? new Date(post.publishedAt).toLocaleDateString("ko-KR")
-                    : ""}
-                  {post.viewCount !== undefined &&
-                    ` · ${post.viewCount} views`}
-                  {post.bookmarkCount !== undefined &&
-                    ` · 냉장고에 담은 사람 ${post.bookmarkCount}`}
-                </div>
-
-                {post.subTitle && (
-                  <h3 className="text-lg sm:text-xl lg:text-2xl font-bold">
-                    {post.subTitle}
-                  </h3>
-                )}
+              <div className="text-xs text-gray-500 mb-4">
+                {post.publishedAt
+                  ? new Date(post.publishedAt).toLocaleDateString("ko-KR")
+                  : ""}
+                {post.viewCount !== undefined && ` · ${post.viewCount} views`}
+                {post.bookmarkCount !== undefined &&
+                  ` · 냉장고에 담은 사람 ${post.bookmarkCount}`}
               </div>
 
-              {/* 내용: 여기만 스크롤 */}
-              <div
-                className="flex-1 mt-2 pr-2 overflow-y-auto no-scrollbar"
-              >
-                <p className="text-sm sm:text-base text-gray-700 leading-relaxed whitespace-pre-line">
-                  {post.content}
-                </p>
-              </div>
+              {post.subTitle && (
+                <h3 className="text-lg sm:text-xl lg:text-2xl font-bold">
+                  {post.subTitle}
+                </h3>
+              )}
             </div>
 
-            {/* 버튼 영역: 오른쪽 섹션 카드 끝 위치에 고정 */}
-            <div className="bg-white flex justify-end gap-4 mt-4 flex-shrink-0">
+            {/* 내용: 이미지 끝나는 높이까지만 보이고, 그 안에서만 스크롤 */}
+            <div
+              className={`mt-2 pr-2 ${
+                scrollMaxHeight > 0 ? "overflow-y-auto no-scrollbar" : ""
+              }`}
+              style={
+                scrollMaxHeight > 0 ? { maxHeight: scrollMaxHeight } : undefined
+              }
+            >
+              <p className="text-sm sm:text-base text-gray-700 leading-relaxed whitespace-pre-line">
+                {post.content}
+              </p>
+            </div>
+
+            {/* 버튼: 텍스트 스크롤 영역 밖, 카드 하단에 고정 */}
+            <div
+              ref={buttonsRef}
+              className="bg-white flex justify-end gap-4 mt-4"
+            >
               <SaveToFridgeButton postId={post.id} />
               <button
                 className="border border-gray-300 rounded-full px-1.5 py-1 text-sm cursor-pointer"
