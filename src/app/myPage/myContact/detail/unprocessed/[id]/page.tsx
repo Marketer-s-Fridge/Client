@@ -1,3 +1,4 @@
+// src/app/enquiries/[id]/unprocessed/page.tsx
 "use client";
 
 import React from "react";
@@ -15,20 +16,16 @@ export default function UnprocessedDetailPage() {
 
   const [menuOpen, setMenuOpen] = React.useState(false);
 
-  // ✅ 먼저 유효성 플래그 계산
   const isValidId = Number.isFinite(enquiryId);
-
-  // ✅ Hook은 항상 동일한 순서로 호출
   const { data, isLoading, error } = useEnquiry(enquiryId);
 
-  // 이후부터 분기
   if (!isValidId) {
     return (
       <div className="p-6">
         처리 완료된 문의가 아닙니다.
         <button
           onClick={() => router.back()}
-          className="ml-4 text-sm underline text-blue-500"
+          className="mt-4 inline-flex items-center justify-center rounded-full bg-[#FF4545] px-5 py-1.5 text-sm font-medium text-white"
         >
           뒤로가기
         </button>
@@ -38,86 +35,90 @@ export default function UnprocessedDetailPage() {
 
   if (isLoading) return <div className="p-6">불러오는 중...</div>;
   if (error) return <div className="p-6">오류가 발생했습니다.</div>;
-  if (!data)
+  if (!data || data.status === "PUBLISHED") {
     return (
       <div className="p-6">
         처리 완료된 문의가 아닙니다.
         <button
           onClick={() => router.back()}
-          className="ml-4 text-sm underline text-blue-500"
+          className="mt-4 inline-flex items-center justify-center rounded-full bg-[#FF4545] px-5 py-1.5 text-sm font-medium text-white"
         >
           뒤로가기
         </button>
       </div>
     );
-  if (data.status === "PUBLISHED")
-    return (
-      <div className="p-6">
-        처리 완료된 문의가 아닙니다.
-        <button
-          onClick={() => router.back()}
-          className="ml-4 text-sm underline text-blue-500"
-        >
-          뒤로가기
-        </button>
-      </div>
-    );
-    const {
-      category,
-      writer,
-      writerEmail,
-      createdAt,
-      title,
-      content,
-      imageUrl,
-    } = data; //
+  }
+
+  const {
+    category,
+    writer,
+    writerEmail,
+    createdAt,
+    title,
+    content,
+    imageUrl,
+  } = data;
 
   const writerName: string = writer?.username ?? "익명";
   const writerProfileImage: string =
     writer?.profileImageUrl || "/images/default-profile.png";
 
   return (
-    <div className="flex flex-col bg-white text-[#1D1D1D] pt-11 md:pt-0">
+    <div className="flex flex-col bg-white text-[#1D1D1D] pt-11 md:pt-0 min-h-screen">
       <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
-      <main className="w-full flex justify-center px-4">
-        <div className="w-full px-[5%] lg:px-[22.5%] mt-20">
-          <p className="text-lg font-bold mb-2">[ {category ?? "문의"} ]</p>
 
-          <div className="flex items-center gap-3 mb-1 border-y border-gray-300 py-2">
+      <main className="w-full flex justify-center px-4 pb-16">
+        {/* 가운데 정렬 + 최대 폭 제한 */}
+        <div className="w-full max-w-3xl mt-10 md:mt-16">
+          {/* 카테고리 */}
+          <p className="text-base md:text-lg font-bold mb-3">
+            [ {category ?? "문의"} ]
+          </p>
+
+          {/* 작성자 정보 */}
+          <div className="flex items-center gap-3 mb-4 border-y border-gray-200 py-3 text-sm">
             <Image
               src={writerProfileImage}
               alt="profile"
               width={32}
               height={32}
-              className="w-8 h-8 rounded-full object-cover"
+              className="h-8 w-8 rounded-full object-cover"
             />
-            <span className="text-sm font-medium">{writerName}</span>
+            <span className="font-medium">{writerName}</span>
             {writerEmail && (
-              <span className="text-sm text-[#8E8E8E]">{writerEmail}</span>
+              <span className="text-xs md:text-sm text-[#8E8E8E] truncate max-w-[40%] md:max-w-none">
+                {writerEmail}
+              </span>
             )}
-            <span className="ml-auto text-sm">
+            <span className="ml-auto text-xs md:text-sm text-gray-600">
               {new Date(createdAt).toLocaleDateString("ko-KR")}
             </span>
-            <span className="text-sm text-yellow-600">[미답변]</span>
+            <span className="text-xs md:text-sm text-yellow-600 whitespace-nowrap">
+              [미답변]
+            </span>
           </div>
 
-          <div className="py-8">
-            <p className="text-base font-bold mb-6">{title}</p>
+          {/* 문의 본문 */}
+          <section className="py-6 md:py-8">
+            <h1 className="text-base md:text-lg font-bold mb-4 md:mb-6">
+              {title}
+            </h1>
 
-            <p className="whitespace-pre-line text-sm leading-relaxed">
+            <p className="whitespace-pre-line text-sm md:text-base leading-relaxed text-[#333333]">
               {content}
             </p>
 
+            {/* 첨부 파일 */}
             {imageUrl ? (
-              <div className="flex items-center gap-1 text-sm text-[#000000] mt-10">
-                <span>첨부파일 1개</span>
+              <div className="mt-8 flex flex-wrap items-center gap-2 text-xs md:text-sm text-[#000000]">
+                <span className="font-medium">첨부파일 1개</span>
                 <FiPaperclip className="text-gray-500" />
                 <a
                   href={imageUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="text-[#8E8E8E] underline underline-offset-2 cursor-pointer"
+                  className="break-all text-[#8E8E8E] underline underline-offset-2"
                 >
                   {typeof imageUrl === "string"
                     ? imageUrl.split("/").pop()
@@ -125,19 +126,22 @@ export default function UnprocessedDetailPage() {
                 </a>
               </div>
             ) : null}
-          </div>
+          </section>
 
-          <div className="w-full h-[1px] bg-[#4a5565] mb-3" />
+          <div className="h-px w-full bg-gray-200" />
         </div>
       </main>
 
-      <div className="flex justify-end w-full px-[5%] lg:px-[22.5%] pt-[3%] pb-[8%]">
-        <button
-          onClick={() => router.back()}
-          className="bg-[#FF4545] text-white px-6 py-1.5 rounded-full text-sm font-medium"
-        >
-          돌아가기
-        </button>
+      {/* 하단 버튼 – 모바일에선 꽉, 데스크탑에선 오른쪽 */}
+      <div className="w-full bg-white">
+        <div className="mx-auto flex w-full max-w-3xl justify-end px-4 pb-10">
+          <button
+            onClick={() => router.back()}
+            className="w-full sm:w-auto rounded-full bg-[#FF4545] px-6 py-2 text-sm font-medium text-white text-center"
+          >
+            돌아가기
+          </button>
+        </div>
       </div>
     </div>
   );
