@@ -105,13 +105,16 @@ export default function CardNewsDetailPage() {
             w-full max-w-screen-lg 
             flex flex-col sm:flex-row gap-10 
             items-start sm:items-stretch
+            sm:h-[450px]   /* ← 카드 전체 높이 고정 (썸네일 기준) */
           "
         >
           {/* 왼쪽 슬라이드 (카드 전체 높이를 만드는 기준) */}
-          <div className="relative w-full sm:w-[45%] flex flex-col items-center">
+          <div className="relative w-full sm:w-[45%] flex flex-col items-center sm:h-full">
             <div
-              className="relative w-full overflow-hidden"
-              style={{ aspectRatio: "4 / 5" }}
+              className="
+                relative w-full overflow-hidden 
+                aspect-[4/5] sm:h-full sm:aspect-auto
+              "
             >
               {/* 슬라이드 인디케이터 */}
               <div className="z-10 absolute bottom-[2%] left-1/2 -translate-x-1/2 flex gap-1">
@@ -129,7 +132,7 @@ export default function CardNewsDetailPage() {
 
               {/* 슬라이드 컨테이너 */}
               <div
-                className="relative flex transition-transform duration-500 ease-in-out"
+                className="relative flex h-full transition-transform duration-500 ease-in-out"
                 style={{
                   width: `${slideCount * 100}%`,
                   transform: `translateX(-${
@@ -142,12 +145,7 @@ export default function CardNewsDetailPage() {
                   return (
                     <div
                       key={idx}
-                      className="relative"
-                      style={{
-                        width: `${100 / slideCount}%`,
-                        aspectRatio: "4 / 5",
-                        flexShrink: 0,
-                      }}
+                      className="relative w-full h-full flex-shrink-0"
                     >
                       {isV ? (
                         <video
@@ -239,7 +237,7 @@ export default function CardNewsDetailPage() {
               </p>
             </div>
 
-            {/* 버튼: 텍스트 영역 아래 + 섹션 하단 고정 느낌 */}
+            {/* 버튼: 텍스트 아래 + 섹션 하단 고정 느낌 */}
             <div className="bg-white flex justify-end gap-4 mt-4">
               <SaveToFridgeButton postId={post.id} />
               <ShareButton onShared={() => setShowShareModal(true)} />
