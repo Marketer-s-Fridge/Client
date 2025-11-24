@@ -129,7 +129,6 @@ export default function Header({ menuOpen, setMenuOpen }: HeaderProps) {
       </header>
 
       {/* 🔍 모바일 검색창 */}
-      {/* 🔍 모바일 검색창 */}
       {showMobileSearch && (
         <div className="md:hidden h-[100%] fixed top-[60px] left-0 w-full z-40 bg-white border-b border-gray-200 ">
           <div className="flex w-full main-red px-4 py-3">

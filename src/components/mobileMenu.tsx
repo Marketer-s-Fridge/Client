@@ -19,7 +19,6 @@ const baseMenuItems = [
 export const MobileMenu = ({ menuOpen, setMenuOpen }: MobileMenuProps) => {
   const router = useRouter();
   const pathname = usePathname();
-
   const { isAuthenticated, user } = useAuthStatus();
   const isAdmin = isAuthenticated && user?.id === "mf-admin";
 
@@ -31,16 +30,21 @@ export const MobileMenu = ({ menuOpen, setMenuOpen }: MobileMenuProps) => {
   return (
     <div
       className={`fixed inset-0 z-50 transition-all duration-300 ${
-        menuOpen ? "bg-black/40 backdrop-blur-[2px]" : "bg-transparent pointer-events-none"
+        menuOpen
+          ? "bg-black/40 backdrop-blur-[2px]"
+          : "bg-transparent pointer-events-none"
       }`}
       onClick={() => setMenuOpen(false)}
     >
       <aside
-        className={`fixed top-0 right-0 h-full w-[260px] max-w-[80%]
-        bg-white shadow-2xl border-l border-gray-100
-        transition-transform duration-300 ease-out
-        ${menuOpen ? "translate-x-0" : "translate-x-full"}
-         flex flex-col`}
+        className={`
+          fixed top-0 right-0 h-full w-[260px] max-w-[80%]
+          bg-white
+          transition-transform duration-300 ease-out
+          flex flex-col
+          ${menuOpen ? "translate-x-0" : "translate-x-full"}
+          ${menuOpen ? "shadow-2xl border-l border-gray-100" : "shadow-none border-l border-transparent"}
+        `}
         onClick={(e) => e.stopPropagation()}
       >
         {/* 상단 헤더 */}
@@ -61,7 +65,7 @@ export const MobileMenu = ({ menuOpen, setMenuOpen }: MobileMenuProps) => {
           </button>
         </div>
 
-        {/* 유저 상태 영역 (옵션) */}
+        {/* 유저 상태 영역 */}
         <div className="px-5 py-3 border-b border-gray-100">
           {isAuthenticated ? (
             <div className="flex items-center gap-2">
@@ -72,9 +76,7 @@ export const MobileMenu = ({ menuOpen, setMenuOpen }: MobileMenuProps) => {
                 <span className="text-xs font-semibold text-gray-800">
                   {user?.id}
                 </span>
-                <span className="text-[11px] text-gray-400">
-                  로그인 상태
-                </span>
+                <span className="text-[11px] text-gray-400">로그인 상태</span>
               </div>
             </div>
           ) : (
@@ -110,7 +112,6 @@ export const MobileMenu = ({ menuOpen, setMenuOpen }: MobileMenuProps) => {
                     }
                   `}
                 >
-                  {/* 좌측 포인트 바 */}
                   <span
                     className={`
                       h-6 w-0.5 rounded-full mr-1
