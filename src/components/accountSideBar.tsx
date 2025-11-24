@@ -84,28 +84,6 @@ export default function AccountSidebar() {
         계정 탈퇴
       </p>
 
-      {/* ✅ 모바일 하단 메뉴 */}
-      {/* <section className="flex md:hidden w-full justify-between items-center px-4">
-        <div className="flex gap-5">
-          <button
-            onClick={() => router.push("/myPage/account/myInfo")}
-            className={`${
-              pathname === "/myPage/account/myInfo" ? "font-bold underline" : ""
-            }`}
-          >
-            계정 관리
-          </button>
-          <button
-            onClick={() => router.push("/myPage/myContact")}
-            className={`${
-              pathname === "/myPage/myContact" ? "font-bold underline" : ""
-            }`}
-          >
-            내 문의 내역
-          </button>
-        </div>
-      </section> */}
-
       {/* ✅ 탈퇴 확인 모달 */}
       <DeleteAccountModal
         isOpen={isModalOpen}
