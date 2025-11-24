@@ -4,7 +4,7 @@ import "./globals.css";
 import localFont from "next/font/local";
 import "react-calendar/dist/Calendar.css";
 import Providers from "./providers";
-
+import ChunkErrorHandler from "@/components/chunkErrorHandler";
 
 const pretendard = localFont({
   src: [
@@ -29,6 +29,7 @@ const playFair = localFont({
   display: "swap",
   variable: "--font-playfair",
 });
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -52,11 +53,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${playFair.variable} ${pretendard.variable}     font-pretendard 
-
-
-        antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${playFair.variable} ${pretendard.variable} font-pretendard antialiased`}
       >
+        {/* ✅ 전역 ChunkLoadError 감지 */}
+        <ChunkErrorHandler />
+
         <Providers>{children}</Providers>
       </body>
     </html>
