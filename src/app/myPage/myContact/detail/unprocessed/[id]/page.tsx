@@ -15,7 +15,14 @@ export default function UnprocessedDetailPage() {
 
   const [menuOpen, setMenuOpen] = React.useState(false);
 
-  if (!Number.isFinite(enquiryId))
+  // ✅ 먼저 유효성 플래그 계산
+  const isValidId = Number.isFinite(enquiryId);
+
+  // ✅ Hook은 항상 동일한 순서로 호출
+  const { data, isLoading, error } = useEnquiry(enquiryId);
+
+  // 이후부터 분기
+  if (!isValidId) {
     return (
       <div className="p-6">
         처리 완료된 문의가 아닙니다.
@@ -27,8 +34,7 @@ export default function UnprocessedDetailPage() {
         </button>
       </div>
     );
-
-  const { data, isLoading, error } = useEnquiry(enquiryId);
+  }
 
   if (isLoading) return <div className="p-6">불러오는 중...</div>;
   if (error) return <div className="p-6">오류가 발생했습니다.</div>;
@@ -56,18 +62,16 @@ export default function UnprocessedDetailPage() {
         </button>
       </div>
     );
+    const {
+      category,
+      writer,
+      writerEmail,
+      createdAt,
+      title,
+      content,
+      imageUrl,
+    } = data; //
 
-  const {
-    category,
-    writer,
-    writerEmail,
-    createdAt,
-    title,
-    content,
-    imageUrl,
-  } = data as any;
-
-  // ✅ writer 방어
   const writerName: string = writer?.username ?? "익명";
   const writerProfileImage: string =
     writer?.profileImageUrl || "/images/default-profile.png";
@@ -81,7 +85,6 @@ export default function UnprocessedDetailPage() {
           <p className="text-lg font-bold mb-2">[ {category ?? "문의"} ]</p>
 
           <div className="flex items-center gap-3 mb-1 border-y border-gray-300 py-2">
-            {/* 작성자 사진 */}
             <Image
               src={writerProfileImage}
               alt="profile"
@@ -106,7 +109,6 @@ export default function UnprocessedDetailPage() {
               {content}
             </p>
 
-            {/* 첨부 파일 */}
             {imageUrl ? (
               <div className="flex items-center gap-1 text-sm text-[#000000] mt-10">
                 <span>첨부파일 1개</span>

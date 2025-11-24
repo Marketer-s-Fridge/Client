@@ -9,6 +9,8 @@ export interface WriterDto {
   id: number;
   /** 회원 닉네임/아이디 */
   username: string;
+
+  profileImageUrl: string;
 }
 
 /** 🔹 문의 생성/수정 요청 DTO (EnquiryRequestDto) */
