@@ -172,16 +172,16 @@ export default function CardNewsDetailPage() {
       <Breadcrumb category={category} />
 
       {/* 본문 */}
-      <main className="flex justify-center px-4 sm:px-[8%] lg:px-[17%] mt-10 mb-10 min-h-[70vh]">
+      <main className="flex justify-center px-4 md:px-[8%] lg:px-[17%] mt-10 mb-10 min-h-[70vh]">
         <div
           className="
             w-full max-w-screen-lg 
-            flex flex-col sm:flex-row gap-10 
-            items-start sm:items-stretch
+            flex flex-col md:flex-row gap-10 
+            items-start md:items-stretch
           "
         >
           {/* 왼쪽 슬라이드: 이 박스 높이가 데스크탑 기준 높이 */}
-          <div className="relative w-full sm:w-[45%] flex flex-col items-center">
+          <div className="relative w-full md:w-[45%] flex flex-col items-center">
             <div
               ref={slideBoxRef}
               className="relative w-full overflow-hidden"
@@ -286,13 +286,13 @@ export default function CardNewsDetailPage() {
 
           {/* 오른쪽 텍스트 + 버튼 */}
           <div
-            className="w-full sm:w-[55%] flex flex-col mb-15 md:mb-0"
+            className="w-full md:w-[55%] flex flex-col mb-15 md:mb-0"
             // 데스크탑에서만 높이 고정, 모바일에서는 자연 높이
             style={rightHeight ? { height: rightHeight } : undefined}
           >
             {/* 제목/메타/부제목 */}
             <div className="pb-2">
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2">
+              <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-2">
                 {post.title}
               </h1>
 
@@ -306,7 +306,7 @@ export default function CardNewsDetailPage() {
               </div>
 
               {post.subTitle && (
-                <h3 className="text-lg sm:text-xl lg:text-2xl font-bold">
+                <h3 className="text-lg md:text-xl lg:text-2xl font-bold">
                   {post.subTitle}
                 </h3>
               )}
@@ -320,7 +320,7 @@ export default function CardNewsDetailPage() {
                 rightHeight ? "overflow-y-auto no-scrollbar" : ""
               }`}
             >
-              <p className="text-sm sm:text-base text-gray-700 leading-relaxed whitespace-pre-line">
+              <p className="text-sm md:text-base text-gray-700 leading-relaxed whitespace-pre-line">
                 {post.content}
               </p>
             </div>
