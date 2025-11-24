@@ -15,27 +15,39 @@ const categories = ["전체", "Beauty", "Fashion", "Food", "Lifestyle", "Tech"];
 const ITEMS_PER_PAGE = 12;
 
 export default function MyFridgePage() {
-  // ✅ 상태에는 "전체"를 넣지 않음
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  // ✅ 초기에는 "전체" 선택 상태
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([
+    "전체",
+  ]);
   const [currentPage, setCurrentPage] = useState(1);
   const [menuOpen, setMenuOpen] = useState(false);
 
   const { data: bookmarkedPosts = [], isLoading } = useBookmarkedPosts(null);
 
-  // ✅ CategoryFilter에서 올라오는 값을 정리
+  // ✅ CategoryFilter에서 올라오는 값 처리
   const handleCategoryChange = (next: string[]) => {
-    // "전체"가 선택된 경우 → 실제 상태는 "아무 카테고리도 선택 안 함"으로 저장
-    if (next.includes("전체")) {
-      setSelectedCategories([]);
-    } else {
-      setSelectedCategories(next);
+    // 아무 것도 안 고르면 => "전체"로 되돌림
+    if (next.length === 0) {
+      setSelectedCategories(["전체"]);
+      return;
     }
+
+    // "전체" + 다른 카테고리 같이 선택되면 "전체"만 제거
+    if (next.includes("전체") && next.length > 1) {
+      setSelectedCategories(next.filter((c) => c !== "전체"));
+      return;
+    }
+
+    setSelectedCategories(next);
   };
 
   // ✅ 카테고리 필터
   const filteredPosts = useMemo(() => {
-    // 아무 카테고리도 선택 안 된 상태 = 전체 보기
-    if (selectedCategories.length === 0) {
+    // "전체"만 선택된 상태거나, 방어적으로 selectedCategories 비었을 때 => 전체 보기
+    if (
+      selectedCategories.length === 0 ||
+      (selectedCategories.length === 1 && selectedCategories[0] === "전체")
+    ) {
       return bookmarkedPosts;
     }
 
@@ -62,7 +74,7 @@ export default function MyFridgePage() {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
-        {/* 로딩 스피너 자리 */}
+        {/* 로딩 스피너 있으면 여기 */}
       </div>
     );
   }
@@ -78,12 +90,7 @@ export default function MyFridgePage() {
         {/* 카테고리 필터 */}
         <CategoryFilter
           categories={categories}
-          selectedCategories={
-            // 상태엔 "전체"를 안 들고 있으니까, UI에서만 표시용으로 가공
-            selectedCategories.length === 0
-              ? ["전체"]
-              : selectedCategories
-          }
+          selectedCategories={selectedCategories}
           onChange={handleCategoryChange}
         />
 
