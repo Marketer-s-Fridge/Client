@@ -2,14 +2,14 @@
 
 /** 🔹 검색어 저장 요청 DTO */
 export interface SearchHistoryRequestDto {
-    /** 검색 키워드 */
-    keyword: string;
-  }
-  
-  /** 🔹 인기 검색어 조회 응답 */
-  export type PopularSearchResponse = string[];
+  /** 검색 키워드 */
+  keyword: string;
+}
 
-  /** 🔹 검색 기록 응답 DTO */
+/** 🔹 인기 검색어 조회 응답 */
+export type PopularSearchResponse = string[];
+
+/** 🔹 검색 기록 응답 DTO */
 export interface SearchHistoryResponseDto {
   /** 검색 히스토리 ID */
   id: number;

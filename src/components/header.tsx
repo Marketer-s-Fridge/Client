@@ -15,16 +15,6 @@ interface HeaderProps {
   setMenuOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-// 🔹 인기 검색어 타입 (API shape 맞춰서 필요하면 수정)
-interface PopularKeyword {
-  keyword: string;
-}
-
-// 🔹 검색어 저장 payload 타입
-interface SaveSearchPayload {
-  keyword: string;
-}
-
 export default function Header({ menuOpen, setMenuOpen }: HeaderProps) {
   const pathname = usePathname();
   const [showMobileSearch, setShowMobileSearch] = useState(false);
@@ -47,6 +37,7 @@ export default function Header({ menuOpen, setMenuOpen }: HeaderProps) {
     ? [...navItems, { name: "Admin", href: "/admin" }]
     : navItems;
 
+  // ▼ 인기 검색어, 검색어 저장 훅
   const {
     data: popularKeywords,
     isLoading: popularLoading,
@@ -55,6 +46,7 @@ export default function Header({ menuOpen, setMenuOpen }: HeaderProps) {
 
   const { mutate: saveSearchKeyword } = useSaveSearchKeyword();
 
+  // ▼ 검색 실행
   const runSearch = (keyword: string) => {
     const trimmed = keyword.trim();
     if (!trimmed) {
@@ -62,8 +54,7 @@ export default function Header({ menuOpen, setMenuOpen }: HeaderProps) {
       return;
     }
 
-    const payload: SaveSearchPayload = { keyword: trimmed };
-    saveSearchKeyword(payload); // ✅ any 제거
+    saveSearchKeyword({ keyword: trimmed });
 
     router.push(`/search?q=${encodeURIComponent(trimmed)}`);
     setShowMobileSearch(false);
@@ -78,9 +69,8 @@ export default function Header({ menuOpen, setMenuOpen }: HeaderProps) {
     runSearch(keyword);
   };
 
-  // popularKeywords 를 명시 타입으로 정리 (any 안 씀)
-  const popularList: PopularKeyword[] = (popularKeywords ??
-    []) as unknown as PopularKeyword[];
+  // ▼ API 응답: string[] 그대로 사용
+  const popularList: string[] = popularKeywords ?? [];
 
   return (
     <main>
@@ -96,7 +86,6 @@ export default function Header({ menuOpen, setMenuOpen }: HeaderProps) {
           flex md:flex-row justify-between md:items-center
         `}
       >
-        {/* 로고 / 모바일 버튼 */}
         <div className="relative flex flex-1 justify-between items-center ">
           <Link
             href="/"
@@ -168,13 +157,13 @@ export default function Header({ menuOpen, setMenuOpen }: HeaderProps) {
           <div className="mt-3 flex flex-wrap gap-2 text-[11px] px-4 pb-4">
             {!popularLoading &&
               !popularError &&
-              popularList.map((k) => (
+              popularList.map((keyword) => (
                 <button
-                  key={k.keyword}
-                  onClick={() => handlePopularClick(k.keyword)}
+                  key={keyword}
+                  onClick={() => handlePopularClick(keyword)}
                   className="px-2.5 py-1 rounded-full bg-gray-100 text-gray-700"
                 >
-                  #{k.keyword}
+                  #{keyword}
                 </button>
               ))}
           </div>
