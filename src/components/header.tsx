@@ -129,6 +129,7 @@ export default function Header({ menuOpen, setMenuOpen }: HeaderProps) {
       </header>
 
       {/* 🔍 모바일 검색창 */}
+      {/* 🔍 모바일 검색창 */}
       {showMobileSearch && (
         <div className="md:hidden h-[100%] fixed top-[60px] left-0 w-full z-40 bg-white border-b border-gray-200 ">
           <div className="flex w-full main-red px-4 py-3">
@@ -153,19 +154,41 @@ export default function Header({ menuOpen, setMenuOpen }: HeaderProps) {
             </div>
           </div>
 
-          {/* 인기 검색어 */}
-          <div className="mt-3 flex flex-wrap gap-2 text-[11px] px-4 pb-4">
-            {!popularLoading &&
-              !popularError &&
-              popularList.map((keyword) => (
-                <button
-                  key={keyword}
-                  onClick={() => handlePopularClick(keyword)}
-                  className="px-2.5 py-1 rounded-full bg-gray-100 text-gray-700"
-                >
-                  #{keyword}
-                </button>
-              ))}
+          {/* ✅ 인기 검색어: 순위 리스트 스타일 */}
+          <div className="mt-1 px-4 pb-4 bg-white">
+            <div className="flex items-center justify-between mb-2">
+              <span className="mt-2 text-xs font-semibold text-gray-400">
+                실시간 인기 검색어
+              </span>
+            </div>
+
+            {!popularLoading && !popularError && popularList.length > 0 && (
+              <div className="space-y-1.5">
+                {popularList.slice(0, 10).map((keyword, index) => (
+                  <button
+                    key={keyword}
+                    onClick={() => handlePopularClick(keyword)}
+                    className="w-full flex items-center justify-between px-3 py-1.5 rounded-lg bg-gray-100 active:bg-gray-200"
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className="w-4 text-[11px] font-semibold text-red-500 text-center">
+                        {index + 1}
+                      </span>
+                      <span className="text-[12px] text-gray-800">
+                        {keyword}
+                      </span>
+                    </div>
+                    <span className="text-[10px] text-gray-400">검색</span>
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {!popularLoading && !popularError && popularList.length === 0 && (
+              <p className="mt-2 text-[11px] text-gray-400">
+                아직 인기 검색어가 없습니다.
+              </p>
+            )}
           </div>
         </div>
       )}
