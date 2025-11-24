@@ -12,39 +12,43 @@ import MobileMenu from "@/components/mobileMenu";
 import { useBookmarkedPosts } from "@/features/bookmarks/hooks/useBookmarkedPost";
 
 const categories = ["전체", "Beauty", "Fashion", "Food", "Lifestyle", "Tech"];
-const ITEMS_PER_PAGE = 12; // 한 페이지에 보여줄 카드 수
+const ITEMS_PER_PAGE = 12;
 
 export default function MyFridgePage() {
-  const [selectedCategories, setSelectedCategories] = useState<string[]>(["전체"]);
+  // ✅ 상태에는 "전체"를 넣지 않음
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // ✅ 전체 북마크 가져오기
   const { data: bookmarkedPosts = [], isLoading } = useBookmarkedPosts(null);
 
-  // ✅ 카테고리 필터 (여러 개 선택 가능)
+  // ✅ CategoryFilter에서 올라오는 값을 정리
+  const handleCategoryChange = (next: string[]) => {
+    // "전체"가 선택된 경우 → 실제 상태는 "아무 카테고리도 선택 안 함"으로 저장
+    if (next.includes("전체")) {
+      setSelectedCategories([]);
+    } else {
+      setSelectedCategories(next);
+    }
+  };
+
+  // ✅ 카테고리 필터
   const filteredPosts = useMemo(() => {
-    // 선택 안 했거나, "전체"가 포함되어 있으면 전체 보기
-    if (
-      selectedCategories.length === 0 ||
-      selectedCategories.includes("전체")
-    ) {
+    // 아무 카테고리도 선택 안 된 상태 = 전체 보기
+    if (selectedCategories.length === 0) {
       return bookmarkedPosts;
     }
 
     const selectedSet = new Set(selectedCategories);
-
-    return bookmarkedPosts.filter((post) =>
-      selectedSet.has(post.category)
-    );
+    return bookmarkedPosts.filter((post) => selectedSet.has(post.category));
   }, [bookmarkedPosts, selectedCategories]);
 
-  // ✅ 카테고리 변경 시 1페이지로 리셋
+  // ✅ 카테고리 변경 시 페이지 리셋
   useEffect(() => {
     setCurrentPage(1);
   }, [selectedCategories]);
 
-  // ✅ 페이지네이션 계산
+  // ✅ 페이지네이션
   const totalPages = Math.max(
     1,
     Math.ceil(filteredPosts.length / ITEMS_PER_PAGE)
@@ -58,7 +62,7 @@ export default function MyFridgePage() {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
-        {/* 로딩 스피너 있으면 여기 넣기 */}
+        {/* 로딩 스피너 자리 */}
       </div>
     );
   }
@@ -74,8 +78,13 @@ export default function MyFridgePage() {
         {/* 카테고리 필터 */}
         <CategoryFilter
           categories={categories}
-          selectedCategories={selectedCategories}
-          onChange={setSelectedCategories}
+          selectedCategories={
+            // 상태엔 "전체"를 안 들고 있으니까, UI에서만 표시용으로 가공
+            selectedCategories.length === 0
+              ? ["전체"]
+              : selectedCategories
+          }
+          onChange={handleCategoryChange}
         />
 
         {/* 콘텐츠 카드 영역 */}
