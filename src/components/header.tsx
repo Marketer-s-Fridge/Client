@@ -82,7 +82,7 @@ export default function Header({ menuOpen, setMenuOpen }: HeaderProps) {
           md:backdrop-blur-sm
           border-0
           md:border-b md:border-gray-300
-          px-4 sm:px-10 lg:px-[17%] py-4 md:py-3
+          px-4 lg:px-[17%] py-4 md:py-3
           flex md:flex-row justify-between md:items-center
         `}
       >
@@ -93,7 +93,7 @@ export default function Header({ menuOpen, setMenuOpen }: HeaderProps) {
           >
             Marketer&apos;s Fridge
           </Link>
-          <div className="place-self-center place-items-center">
+          <div className="flex place-self-center place-items-center ">
             <button
               className="cursor-pointer md:hidden mr-3"
               onClick={() => setShowMobileSearch((prev) => !prev)}
