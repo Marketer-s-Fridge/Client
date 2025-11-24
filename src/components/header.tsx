@@ -37,7 +37,7 @@ export default function Header({ menuOpen, setMenuOpen }: HeaderProps) {
     ? [...navItems, { name: "Admin", href: "/admin" }]
     : navItems;
 
-  // ▼ 인기 검색어, 검색어 저장 훅
+  // 인기 검색어, 검색어 저장 훅
   const {
     data: popularKeywords,
     isLoading: popularLoading,
@@ -46,7 +46,7 @@ export default function Header({ menuOpen, setMenuOpen }: HeaderProps) {
 
   const { mutate: saveSearchKeyword } = useSaveSearchKeyword();
 
-  // ▼ 검색 실행
+  // 검색 실행
   const runSearch = (keyword: string) => {
     const trimmed = keyword.trim();
     if (!trimmed) {
@@ -55,7 +55,6 @@ export default function Header({ menuOpen, setMenuOpen }: HeaderProps) {
     }
 
     saveSearchKeyword({ keyword: trimmed });
-
     router.push(`/search?q=${encodeURIComponent(trimmed)}`);
     setShowMobileSearch(false);
   };
@@ -69,7 +68,6 @@ export default function Header({ menuOpen, setMenuOpen }: HeaderProps) {
     runSearch(keyword);
   };
 
-  // ▼ API 응답: string[] 그대로 사용
   const popularList: string[] = popularKeywords ?? [];
 
   return (
@@ -130,7 +128,7 @@ export default function Header({ menuOpen, setMenuOpen }: HeaderProps) {
 
       {/* 🔍 모바일 검색창 */}
       {showMobileSearch && (
-        <div className="md:hidden h-[100%] fixed top-[60px] left-0 w-full z-40 bg-white border-b border-gray-200 ">
+        <div className="md:hidden h-[20%] fixed top-[60px] left-0 w-full z-40 bg-white border-b border-gray-200 ">
           <div className="flex w-full main-red px-4 py-3">
             <div className="flex w-full items-center gap-2">
               <div className="flex-1 bg-white flex items-center gap-2 border border-gray-300 rounded-full px-3 py-1.5">
@@ -140,7 +138,7 @@ export default function Header({ menuOpen, setMenuOpen }: HeaderProps) {
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   onKeyDown={handleSearch}
-                  placeholder="검색어를 입력하세요"
+                  placeholder="필요한 콘텐츠, 꺼내볼까요?"
                   className="w-full text-sm outline-none"
                 />
               </div>
@@ -153,7 +151,7 @@ export default function Header({ menuOpen, setMenuOpen }: HeaderProps) {
             </div>
           </div>
 
-          {/* ✅ 인기 검색어: 순위 리스트 스타일 */}
+          {/* ✅ 인기 검색어: 태그 스타일 (순위/세로 리스트 X) */}
           <div className="mt-1 px-4 pb-4 bg-white">
             <div className="flex items-center justify-between mb-2">
               <span className="mt-2 text-xs font-semibold text-gray-400">
@@ -162,22 +160,14 @@ export default function Header({ menuOpen, setMenuOpen }: HeaderProps) {
             </div>
 
             {!popularLoading && !popularError && popularList.length > 0 && (
-              <div className="space-y-1.5">
-                {popularList.slice(0, 10).map((keyword, index) => (
+              <div className="mt-2 flex flex-wrap gap-2">
+                {popularList.slice(0, 10).map((keyword) => (
                   <button
                     key={keyword}
                     onClick={() => handlePopularClick(keyword)}
-                    className="w-full flex items-center justify-between px-3 py-1.5 rounded-lg bg-gray-100 active:bg-gray-200"
+                    className="px-3 py-1.5 rounded-full bg-gray-100 text-[12px] text-gray-800 active:bg-gray-200"
                   >
-                    <div className="flex items-center gap-2">
-                      <span className="w-4 text-[11px] font-semibold text-red-500 text-center">
-                        {index + 1}
-                      </span>
-                      <span className="text-[12px] text-gray-800">
-                        {keyword}
-                      </span>
-                    </div>
-                    <span className="text-[10px] text-gray-400">검색</span>
+                    {keyword}
                   </button>
                 ))}
               </div>

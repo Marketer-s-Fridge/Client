@@ -205,7 +205,7 @@ export default function MyPage() {
           <p className="text-medium font-medium text-gray-700 text-center">
             <strong className="text-lg font-semibold">저장 완료!</strong>
             <br />
-            MY 냉장고에서 확인해보세요 🧊
+            MY 냉장고에서 확인해보세요
           </p>
         </div>
       </BaseModal>
@@ -715,9 +715,7 @@ export default function MyPage() {
                       onClick={() => goToPost(postId)}
                     >
                       <Image
-                        src={
-                          post.images?.[0] || "/icons/rectangle-gray.png"
-                        }
+                        src={post.images?.[0] || "/icons/rectangle-gray.png"}
                         alt={post.title}
                         fill
                         className="object-cover"
