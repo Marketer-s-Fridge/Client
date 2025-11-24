@@ -12,6 +12,7 @@ import SaveToFridgeButton from "@/components/saveToFridgeButton";
 import { usePost } from "@/features/posts/hooks/usePost";
 import { usePostViewRecord } from "@/features/views/hooks/useMostViewedCategory";
 import ConfirmModal from "@/components/confirmModal";
+import ShareButton from "@/components/shareButton"; // ✅ 추가
 
 export default function CardNewsDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -110,17 +111,6 @@ export default function CardNewsDetailPage() {
       }
     });
   }, [activeSlide, slideImages]);
-
-  const handleShare = async () => {
-    if (typeof window === "undefined") return;
-    const url = window.location.href;
-    try {
-      await navigator.clipboard.writeText(url);
-      setShowShareModal(true);
-    } catch {
-      alert("링크 복사 실패. 브라우저에서 직접 복사해주세요.");
-    }
-  };
 
   if (!Number.isFinite(postId)) return notFound();
   if (isLoading)
@@ -305,17 +295,8 @@ export default function CardNewsDetailPage() {
               className="bg-white flex justify-end gap-4 mt-4"
             >
               <SaveToFridgeButton postId={post.id} />
-              <button
-                className="border border-gray-300 rounded-full px-1.5 py-1 text-sm cursor-pointer"
-                onClick={handleShare}
-              >
-                <Image
-                  src="/icons/share.png"
-                  alt="공유"
-                  width={16}
-                  height={16}
-                />
-              </button>
+              <ShareButton onShared={() => setShowShareModal(true)} />{" "}
+              {/* ✅ 교체 */}
             </div>
           </div>
         </div>
