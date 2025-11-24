@@ -423,7 +423,7 @@ export default function Page() {
         {/* 모바일: 기존 플로우 유지 */}
         <MobileSectionPager offsetTop={0}>
           {/* 1) 로고 + 한줄 소개 */}
-          <div className="text-black page-inner safe-pt text-center mt-[-10%]">
+          <div className="text-black page-inner safe-pt text-center mt-[-5%]">
             <Image
               alt="서비스 로고"
               src="/icons/service-logo.png"

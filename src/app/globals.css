@@ -16,6 +16,22 @@
 }
 */
 
+/* 모바일 섹션 기본 상태: 살짝 아래 + 투명 */
+.mobile-fade-base {
+  opacity: 0;
+  transform: translateY(12px);
+  transition:
+    opacity 0.4s ease-out,
+    transform 0.4s ease-out;
+  will-change: opacity, transform;
+}
+
+/* 화면에 들어올 때: 서서히 위로 올라오면서 나타나기 */
+.mobile-fade-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 /* 한 화면 꽉/정중앙 유틸 */
 .page-inner {
   min-height: 100svh;         /* 모바일 브라우저 UI 제외 실제 화면 높이 */
