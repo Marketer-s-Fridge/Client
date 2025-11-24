@@ -20,17 +20,17 @@ interface Category {
 }
 
 const categories: Category[] = [
-  { name: "Food",      icon: "/icons/icon-food1.png" },
+  { name: "Food", icon: "/icons/icon-food1.png" },
   { name: "Lifestyle", icon: "/icons/icon-lifestyle1.png" },
-  { name: "Beauty",    icon: "/icons/icon-beauty1.png" },
-  { name: "Tech",      icon: "/icons/icon-tech1.png" },
-  { name: "Fashion",   icon: "/icons/icon-fashion1.png" },
+  { name: "Beauty", icon: "/icons/icon-beauty1.png" },
+  { name: "Tech", icon: "/icons/icon-tech1.png" },
+  { name: "Fashion", icon: "/icons/icon-fashion1.png" },
 ];
 
 const PAGE_SIZE = 12; // ✅ 한 페이지에 보여줄 카드 개수
 
 export default function Page() {
-  const [_, setLikedItems] = useState<number[]>([]);
+  // const [, setLikedItems] = useState<number[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -52,8 +52,14 @@ export default function Page() {
   // ✅ 현재 선택된 카테고리에 따라 실제 사용할 posts
   const isLoading = isAllLoading || isCatLoading;
   const error = allError || catError || null;
-  const posts = selectedCategory ? categoryPosts : allPosts;
+  // 최신 게시물 → 앞에 오도록 정렬(reverse)
+  const sortedPosts = useMemo(() => {
+    const source = selectedCategory ? categoryPosts : allPosts;
+    return [...source].reverse(); // 원본 보존 + 역순
+  }, [selectedCategory, categoryPosts, allPosts]);
 
+  // 이후 posts 대신 sortedPosts 사용
+  const posts = sortedPosts;
   // ✅ 카테고리 바뀔 때마다 페이지를 1페이지로 리셋
   useEffect(() => {
     setCurrentPage(1);
@@ -76,11 +82,11 @@ export default function Page() {
     };
   }, [posts, currentPage]);
 
-  const toggleLike = (id: number) => {
-    setLikedItems((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
-    );
-  };
+  // const toggleLike = (id: number) => {
+  //   setLikedItems((prev) =>
+  //     prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+  //   );
+  // };
 
   return (
     <div className="w-full bg-white pt-11 md:pt-0">
@@ -129,7 +135,7 @@ export default function Page() {
         {isLoading && <p className="text-center">로딩중...</p>}
         {error && <p className="text-center text-red-500">에러 발생!</p>}
 
-        {(!isLoading && !error && pagedPosts.length === 0) ? (
+        {!isLoading && !error && pagedPosts.length === 0 ? (
           <NoContentView />
         ) : (
           <>
