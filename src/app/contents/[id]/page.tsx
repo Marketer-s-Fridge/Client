@@ -27,7 +27,7 @@ export default function CardNewsDetailPage() {
 
   // 레이아웃 refs
   const slideBoxRef = useRef<HTMLDivElement | null>(null); // 왼쪽 이미지 전체 박스
-  const [rightHeight, setRightHeight] = useState<number | null>(null);
+  const [rightHeight, setRightHeight] = useState<number | null>(null); // 데스크탑에서만 사용
 
   // 슬라이드 영상 제어
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
@@ -52,12 +52,18 @@ export default function CardNewsDetailPage() {
     return /\.(mp4|mov|webm|ogg|m4v)$/i.test(clean);
   };
 
-  // 왼쪽 이미지 박스 높이를 그대로 오른쪽 전체 높이로 사용
+  // 왼쪽 이미지 박스 높이 → 오른쪽 섹션 전체 높이로 사용 (md 이상에서만)
   useEffect(() => {
     const node = slideBoxRef.current;
     if (!node || typeof ResizeObserver === "undefined") return;
 
     const updateHeight = () => {
+      if (typeof window === "undefined") return;
+      // 모바일에서는 높이 고정/스크롤 안 씀
+      if (window.innerWidth < 768) {
+        setRightHeight(null);
+        return;
+      }
       setRightHeight(node.offsetHeight);
     };
 
@@ -65,7 +71,12 @@ export default function CardNewsDetailPage() {
     observer.observe(node);
     updateHeight(); // 초기 1회
 
-    return () => observer.disconnect();
+    window.addEventListener("resize", updateHeight);
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", updateHeight);
+    };
   }, []);
 
   // 조회수 기록
@@ -89,6 +100,48 @@ export default function CardNewsDetailPage() {
       }
     });
   }, [activeSlide, slideImages]);
+
+  // =====================
+  // 모바일 스와이프 제스처
+  // =====================
+  const touchStartXRef = useRef<number | null>(null);
+  const touchStartYRef = useRef<number | null>(null);
+
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    const touch = e.touches[0];
+    touchStartXRef.current = touch.clientX;
+    touchStartYRef.current = touch.clientY;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
+    const startX = touchStartXRef.current;
+    const startY = touchStartYRef.current;
+    touchStartXRef.current = null;
+    touchStartYRef.current = null;
+
+    if (startX == null || startY == null) return;
+
+    const touch = e.changedTouches[0];
+    const endX = touch.clientX;
+    const endY = touch.clientY;
+
+    const diffX = endX - startX;
+    const diffY = endY - startY;
+
+    // 세로 움직임이 더 크면 스와이프 취급 안 함
+    if (Math.abs(diffY) > Math.abs(diffX)) return;
+
+    const THRESHOLD = 50; // px
+    if (Math.abs(diffX) < THRESHOLD) return;
+
+    if (diffX < 0 && activeSlide < slideCount - 1) {
+      // 왼쪽으로 스와이프 → 다음
+      setActiveSlide((prev) => Math.min(prev + 1, slideCount - 1));
+    } else if (diffX > 0 && activeSlide > 0) {
+      // 오른쪽으로 스와이프 → 이전
+      setActiveSlide((prev) => Math.max(prev - 1, 0));
+    }
+  };
 
   if (!Number.isFinite(postId)) return notFound();
   if (isLoading)
@@ -127,12 +180,14 @@ export default function CardNewsDetailPage() {
             items-start sm:items-stretch
           "
         >
-          {/* 왼쪽 슬라이드: 이 박스 높이가 기준 */}
+          {/* 왼쪽 슬라이드: 이 박스 높이가 데스크탑 기준 높이 */}
           <div className="relative w-full sm:w-[45%] flex flex-col items-center">
             <div
               ref={slideBoxRef}
               className="relative w-full overflow-hidden"
               style={{ aspectRatio: "4 / 5" }} // 비율 고정
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
             >
               {/* 슬라이드 인디케이터 */}
               <div className="z-10 absolute bottom-[2%] left-1/2 -translate-x-1/2 flex gap-1">
@@ -229,9 +284,10 @@ export default function CardNewsDetailPage() {
             </div>
           </div>
 
-          {/* 오른쪽 텍스트 + 버튼: 왼쪽 높이에 딱 맞춤 */}
+          {/* 오른쪽 텍스트 + 버튼 */}
           <div
             className="w-full sm:w-[55%] flex flex-col mb-15 md:mb-0"
+            // 데스크탑에서만 높이 고정, 모바일에서는 자연 높이
             style={rightHeight ? { height: rightHeight } : undefined}
           >
             {/* 제목/메타/부제목 */}
@@ -256,14 +312,20 @@ export default function CardNewsDetailPage() {
               )}
             </div>
 
-            {/* 내용: 남은 공간만큼만 차지, 내부 스크롤 */}
-            <div className="mt-2 pr-2 flex-1 overflow-y-auto no-scrollbar">
+            {/* 내용:
+                - 데스크탑(rightHeight 있을 때): 남은 공간 안에서만 스크롤
+                - 모바일(rightHeight 없음): 스크롤 제한 없이 전체 표시 */}
+            <div
+              className={`mt-2 pr-2 flex-1 ${
+                rightHeight ? "overflow-y-auto no-scrollbar" : ""
+              }`}
+            >
               <p className="text-sm sm:text-base text-gray-700 leading-relaxed whitespace-pre-line">
                 {post.content}
               </p>
             </div>
 
-            {/* 버튼: 텍스트 영역 아래 + 섹션 하단 고정 */}
+            {/* 버튼: 항상 텍스트 아래 */}
             <div className="bg-white flex justify-end gap-4 mt-4">
               <SaveToFridgeButton postId={post.id} />
               <ShareButton onShared={() => setShowShareModal(true)} />

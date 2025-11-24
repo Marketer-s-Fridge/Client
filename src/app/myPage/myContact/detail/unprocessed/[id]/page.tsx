@@ -19,10 +19,11 @@ export default function UnprocessedDetailPage() {
   const isValidId = Number.isFinite(enquiryId);
   const { data, isLoading, error } = useEnquiry(enquiryId);
 
+  // 잘못된 id
   if (!isValidId) {
     return (
       <div className="p-6">
-        처리 완료된 문의가 아닙니다.
+        미답변 상태의 문의가 아닙니다.
         <button
           onClick={() => router.back()}
           className="mt-4 inline-flex items-center justify-center rounded-full bg-[#FF4545] px-5 py-1.5 text-sm font-medium text-white"
@@ -35,10 +36,12 @@ export default function UnprocessedDetailPage() {
 
   if (isLoading) return <div className="p-6">불러오는 중...</div>;
   if (error) return <div className="p-6">오류가 발생했습니다.</div>;
+
+  // 이미 처리된 문의거나 데이터 없음
   if (!data || data.status === "PUBLISHED") {
     return (
       <div className="p-6">
-        처리 완료된 문의가 아닙니다.
+        미답변 상태의 문의가 아닙니다.
         <button
           onClick={() => router.back()}
           className="mt-4 inline-flex items-center justify-center rounded-full bg-[#FF4545] px-5 py-1.5 text-sm font-medium text-white"
@@ -64,10 +67,11 @@ export default function UnprocessedDetailPage() {
     writer?.profileImageUrl || "/images/default-profile.png";
 
   return (
-    <div className="flex flex-col bg-white text-[#1D1D1D] pt-11 md:pt-0 min-h-screen">
+    <div className="flex min-h-screen flex-col bg-white text-[#1D1D1D] pt-11 md:pt-0">
       <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
 
+      {/* 본문 */}
       <main className="w-full flex justify-center px-4 pb-16">
         {/* 가운데 정렬 + 최대 폭 제한 */}
         <div className="w-full max-w-3xl mt-10 md:mt-16">
@@ -132,12 +136,12 @@ export default function UnprocessedDetailPage() {
         </div>
       </main>
 
-      {/* 하단 버튼 – 모바일에선 꽉, 데스크탑에선 오른쪽 */}
+      {/* 하단 버튼 – 모바일에선 꽉, 데스크탑에선 오른쪽 정렬 */}
       <div className="w-full bg-white">
         <div className="mx-auto flex w-full max-w-3xl justify-end px-4 pb-10">
           <button
             onClick={() => router.back()}
-            className="w-full sm:w-auto rounded-full bg-[#FF4545] px-6 py-2 text-sm font-medium text-white text-center"
+            className="cursor-pointer w-full sm:w-auto rounded-full bg-[#FF4545] px-6 py-2 text-sm font-medium text-white text-center"
           >
             돌아가기
           </button>

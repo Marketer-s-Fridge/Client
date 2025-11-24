@@ -225,7 +225,7 @@ export default function ProcessedDetailPage() {
       </main>
 
       {/* 피드백 영역 – 모바일 기준 풀폭, 가운데 정렬 */}
-      <section className="w-full bg-[#F7F7F7]">
+      <section className="w-full bg-[#F7F7F7] mb-5">
         <div className="mx-auto w-full max-w-3xl px-4 py-8 md:py-10">
           <form
             onSubmit={handleSurveySubmit}
@@ -294,7 +294,7 @@ export default function ProcessedDetailPage() {
         <div className="mx-auto flex w-full max-w-3xl justify-end px-4 pb-10">
           <button
             onClick={() => router.back()}
-            className="w-full sm:w-auto rounded-full bg-[#FF4545] px-6 py-2 text-sm font-medium text-white text-center"
+            className="cursor-pointer w-full sm:w-auto rounded-full bg-[#FF4545] px-6 py-2 text-sm font-medium text-white text-center"
           >
             돌아가기
           </button>
