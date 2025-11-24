@@ -113,7 +113,7 @@ export default function CardNewsDetailPage() {
             <div
               className="
                 relative w-full overflow-hidden 
-                aspect-[4/5] sm:h-full sm:aspect-auto
+                aspect-[3/4] sm:h-full sm:aspect-auto
               "
             >
               {/* 슬라이드 인디케이터 */}
