@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, Dispatch, SetStateAction } from "react";
 import { Menu, Search, X } from "lucide-react";
@@ -9,12 +8,21 @@ import {
   usePopularSearchKeywords,
   useSaveSearchKeyword,
 } from "@/features/search/hooks/useSearchHistory";
-
 import { useAuthStatus } from "@/features/auth/hooks/useAuthStatus";
 
 interface HeaderProps {
   menuOpen: boolean;
   setMenuOpen: Dispatch<SetStateAction<boolean>>;
+}
+
+// 🔹 인기 검색어 타입 (API shape 맞춰서 필요하면 수정)
+interface PopularKeyword {
+  keyword: string;
+}
+
+// 🔹 검색어 저장 payload 타입
+interface SaveSearchPayload {
+  keyword: string;
 }
 
 export default function Header({ menuOpen, setMenuOpen }: HeaderProps) {
@@ -54,7 +62,9 @@ export default function Header({ menuOpen, setMenuOpen }: HeaderProps) {
       return;
     }
 
-    saveSearchKeyword({ keyword: trimmed } as any);
+    const payload: SaveSearchPayload = { keyword: trimmed };
+    saveSearchKeyword(payload); // ✅ any 제거
+
     router.push(`/search?q=${encodeURIComponent(trimmed)}`);
     setShowMobileSearch(false);
   };
@@ -67,6 +77,10 @@ export default function Header({ menuOpen, setMenuOpen }: HeaderProps) {
     setQuery(keyword);
     runSearch(keyword);
   };
+
+  // popularKeywords 를 명시 타입으로 정리 (any 안 씀)
+  const popularList: PopularKeyword[] = (popularKeywords ??
+    []) as unknown as PopularKeyword[];
 
   return (
     <main>
@@ -125,34 +139,36 @@ export default function Header({ menuOpen, setMenuOpen }: HeaderProps) {
         </nav>
       </header>
 
-      {/* 🔍 모바일 검색창 (Search 아이콘 눌렀을 때만 표시) */}
+      {/* 🔍 모바일 검색창 */}
       {showMobileSearch && (
-        <div className="md:hidden fixed top-[56px] left-0 w-full z-40 bg-white border-b border-gray-200 px-4 py-3">
-          <div className="flex items-center gap-2">
-            <div className="flex-1 flex items-center gap-2 border border-gray-300 rounded-full px-3 py-1.5">
-              <Search size={18} className="text-gray-500" />
-              <input
-                type="text"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                onKeyDown={handleSearch}
-                placeholder="검색어를 입력하세요"
-                className="w-full text-sm outline-none"
-              />
+        <div className="md:hidden h-[100%] fixed top-[60px] left-0 w-full z-40 bg-white border-b border-gray-200 ">
+          <div className="flex w-full main-red px-4 py-3">
+            <div className="flex w-full items-center gap-2">
+              <div className="flex-1 bg-white flex items-center gap-2 border border-gray-300 rounded-full px-3 py-1.5">
+                <Search size={18} className="text-gray-500 " />
+                <input
+                  type="text"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  onKeyDown={handleSearch}
+                  placeholder="검색어를 입력하세요"
+                  className="w-full text-sm outline-none"
+                />
+              </div>
+              <button
+                className="pr-2"
+                onClick={() => setShowMobileSearch(false)}
+              >
+                <X size={20} className="text-white" />
+              </button>
             </div>
-            <button
-              className="p-1"
-              onClick={() => setShowMobileSearch(false)}
-            >
-              <X size={20} className="text-gray-600" />
-            </button>
           </div>
 
-          {/* 인기 검색어 (선택) */}
-          <div className="mt-3 flex flex-wrap gap-2 text-[11px]">
-            {!popularLoading && !popularError &&
-              popularKeywords &&
-              popularKeywords.map((k: any) => (
+          {/* 인기 검색어 */}
+          <div className="mt-3 flex flex-wrap gap-2 text-[11px] px-4 pb-4">
+            {!popularLoading &&
+              !popularError &&
+              popularList.map((k) => (
                 <button
                   key={k.keyword}
                   onClick={() => handlePopularClick(k.keyword)}
