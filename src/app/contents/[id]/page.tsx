@@ -25,10 +25,6 @@ export default function CardNewsDetailPage() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
 
-  // 레이아웃 refs
-  const slideBoxRef = useRef<HTMLDivElement | null>(null); // 왼쪽 이미지 전체 박스
-  const [rightHeight, setRightHeight] = useState<number | null>(null);
-
   // 슬라이드 영상 제어
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
 
@@ -51,22 +47,6 @@ export default function CardNewsDetailPage() {
     const clean = src.split("?")[0].toLowerCase();
     return /\.(mp4|mov|webm|ogg|m4v)$/i.test(clean);
   };
-
-  // 왼쪽 이미지 박스 높이를 그대로 오른쪽 전체 높이로 사용
-  useEffect(() => {
-    const node = slideBoxRef.current;
-    if (!node || typeof ResizeObserver === "undefined") return;
-
-    const updateHeight = () => {
-      setRightHeight(node.offsetHeight);
-    };
-
-    const observer = new ResizeObserver(updateHeight);
-    observer.observe(node);
-    updateHeight(); // 초기 1회
-
-    return () => observer.disconnect();
-  }, []);
 
   // 조회수 기록
   useEffect(() => {
@@ -123,117 +103,117 @@ export default function CardNewsDetailPage() {
         <div
           className="
             w-full max-w-screen-lg 
-            flex flex-col sm:flex-row gap-10 
-            items-start sm:items-stretch
+            flex flex-col md:flex-row gap-10 
+            items-start md:items-stretch
+            md:h-[450px]   /* ← 카드 전체 높이 고정 (썸네일 기준) */
           "
         >
-          {/* 왼쪽 슬라이드: 이 박스 높이가 기준 */}
-          <div className="relative w-full sm:w-[45%] flex flex-col items-center">
+          {/* 왼쪽 슬라이드: postFeature처럼 비율 + 고정 높이 */}
+          <div className="relative w-full md:w-[45%] flex flex-col items-center">
             <div
-              ref={slideBoxRef}
-              className="relative w-full overflow-hidden"
-              style={{ aspectRatio: "4 / 5" }} // 비율 고정
+              className="
+                relative w-full max-w-[420px]
+                md:h-full md:w-auto
+                aspect-[4/5] flex-shrink-0 overflow-hidden rounded-xl
+              "
             >
-              {/* 슬라이드 인디케이터 */}
-              <div className="z-10 absolute bottom-[2%] left-1/2 -translate-x-1/2 flex gap-1">
-                {slideImages.map((_, idx) => (
-                  <div
-                    key={idx}
-                    className={`w-1.5 h-1.5 rounded-full ${
-                      idx === activeSlide
-                        ? "bg-white"
-                        : "bg-gray-500 opacity-85"
-                    }`}
-                  />
-                ))}
-              </div>
+              {/* 인디케이터 / 화살표까지 포함하는 슬라이드 래퍼 */}
+              <div className="absolute inset-0">
+                {/* 슬라이드 컨테이너 */}
+                <div
+                  className="relative flex h-full transition-transform duration-500 ease-in-out"
+                  style={{
+                    width: `${slideCount * 100}%`,
+                    transform: `translateX(-${
+                      (100 / slideCount) * activeSlide
+                    }%)`,
+                  }}
+                >
+                  {slideImages.map((src, idx) => {
+                    const isV = isVideoSrc(src);
+                    return (
+                      <div
+                        key={idx}
+                        className="relative w-full h-full flex-shrink-0"
+                      >
+                        {isV ? (
+                          <video
+                            ref={(el) => {
+                              videoRefs.current[idx] = el;
+                            }}
+                            src={src}
+                            className="w-full h-full object-cover rounded-xl"
+                            controls
+                            playsInline
+                          />
+                        ) : (
+                          <Image
+                            src={src}
+                            alt=""
+                            fill
+                            className="object-cover rounded-xl"
+                          />
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
 
-              {/* 슬라이드 컨테이너 */}
-              <div
-                className="relative flex transition-transform duration-500 ease-in-out"
-                style={{
-                  width: `${slideCount * 100}%`,
-                  transform: `translateX(-${
-                    (100 / slideCount) * activeSlide
-                  }%)`,
-                }}
-              >
-                {slideImages.map((src, idx) => {
-                  const isV = isVideoSrc(src);
-                  return (
+                {/* 슬라이드 인디케이터 */}
+                <div className="z-10 absolute bottom-[3%] left-1/2 -translate-x-1/2 flex gap-1">
+                  {slideImages.map((_, idx) => (
                     <div
                       key={idx}
-                      className="relative"
-                      style={{
-                        width: `${100 / slideCount}%`,
-                        aspectRatio: "4 / 5",
-                        flexShrink: 0,
-                      }}
-                    >
-                      {isV ? (
-                        <video
-                          ref={(el) => {
-                            videoRefs.current[idx] = el;
-                          }}
-                          src={src}
-                          className="w-full h-full object-cover rounded-xl"
-                          controls
-                          playsInline
-                        />
-                      ) : (
-                        <Image
-                          src={src}
-                          alt=""
-                          fill
-                          className="object-cover rounded-xl"
-                        />
-                      )}
-                    </div>
-                  );
-                })}
+                      className={`w-1.5 h-1.5 rounded-full ${
+                        idx === activeSlide
+                          ? "bg-white"
+                          : "bg-gray-500 opacity-85"
+                      }`}
+                    />
+                  ))}
+                </div>
+
+                {/* ← 화살표 */}
+                {activeSlide > 0 && (
+                  <button
+                    className="absolute top-1/2 left-[1%] -translate-y-1/2 z-20"
+                    onClick={() => setActiveSlide((p) => Math.max(p - 1, 0))}
+                  >
+                    <Image
+                      width={150}
+                      height={150}
+                      className="w-6 h-6"
+                      src="/icons/cardnews-bt-left.png"
+                      alt="←"
+                    />
+                  </button>
+                )}
+
+                {/* → 화살표 */}
+                {activeSlide < slideCount - 1 && (
+                  <button
+                    className="absolute top-1/2 right-[1%] -translate-y-1/2 z-20"
+                    onClick={() =>
+                      setActiveSlide((p) =>
+                        Math.min(p + 1, slideCount - 1)
+                      )
+                    }
+                  >
+                    <Image
+                      width={150}
+                      height={150}
+                      className="w-6 h-6"
+                      src="/icons/cardnews-bt-right.png"
+                      alt="→"
+                    />
+                  </button>
+                )}
               </div>
-
-              {/* ← 화살표 */}
-              {activeSlide > 0 && (
-                <button
-                  className="absolute top-1/2 left-[1%] -translate-y-1/2 z-20"
-                  onClick={() => setActiveSlide((p) => Math.max(p - 1, 0))}
-                >
-                  <Image
-                    width={150}
-                    height={150}
-                    className="w-6 h-6"
-                    src="/icons/cardnews-bt-left.png"
-                    alt="←"
-                  />
-                </button>
-              )}
-
-              {/* → 화살표 */}
-              {activeSlide < slideCount - 1 && (
-                <button
-                  className="absolute top-1/2 right-[1%] -translate-y-1/2 z-20"
-                  onClick={() =>
-                    setActiveSlide((p) => Math.min(p + 1, slideCount - 1))
-                  }
-                >
-                  <Image
-                    width={150}
-                    height={150}
-                    className="w-6 h-6"
-                    src="/icons/cardnews-bt-right.png"
-                    alt="→"
-                  />
-                </button>
-              )}
             </div>
           </div>
 
-          {/* 오른쪽 텍스트 + 버튼: 왼쪽 높이에 딱 맞춤 */}
-          <div
-            className="w-full sm:w-[55%] flex flex-col mb-15 md:mb-0"
-            style={rightHeight ? { height: rightHeight } : undefined}
-          >
+          {/* 오른쪽 텍스트 + 버튼: postFeature 패턴 그대로 */}
+          <div className="w-full md:w-[55%] flex flex-col mb-15 md:mb-0 md:h-full">
             {/* 제목/메타/부제목 */}
             <div className="pb-2">
               <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2">
@@ -256,15 +236,15 @@ export default function CardNewsDetailPage() {
               )}
             </div>
 
-            {/* 내용: 남은 공간만큼만 차지, 내부 스크롤 */}
+            {/* 내용: 카드 높이 안에서만 스크롤 */}
             <div className="mt-2 pr-2 flex-1 overflow-y-auto no-scrollbar">
               <p className="text-sm sm:text-base text-gray-700 leading-relaxed whitespace-pre-line">
                 {post.content}
               </p>
             </div>
 
-            {/* 버튼: 텍스트 영역 아래 + 섹션 하단 고정 */}
-            <div className="bg-white flex justify-end gap-4 mt-4">
+            {/* 버튼: 항상 텍스트 아래 + 카드 하단 고정 */}
+            <div className="mt-4 flex justify-end gap-4">
               <SaveToFridgeButton postId={post.id} />
               <ShareButton onShared={() => setShowShareModal(true)} />
             </div>
