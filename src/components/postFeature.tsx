@@ -25,7 +25,7 @@ const PostFeature: React.FC<PostFeatureProps> = ({ title, item, fallback }) => {
       <h2 className="text-xl sm:text-2xl font-bold mb-4">{title}</h2>
 
       {/* md 이상에서 카드 전체 높이를 썸네일과 맞춤 */}
-      <div className="flex flex-col md:flex-row gap-6 items-start md:h-[420px]">
+      <div className="flex flex-col md:flex-row gap-6 items-start md:h-[450px]">
         {/* 이미지 */}
         <div
           className="

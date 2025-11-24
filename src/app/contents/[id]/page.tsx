@@ -12,7 +12,7 @@ import SaveToFridgeButton from "@/components/saveToFridgeButton";
 import { usePost } from "@/features/posts/hooks/usePost";
 import { usePostViewRecord } from "@/features/views/hooks/useMostViewedCategory";
 import ConfirmModal from "@/components/confirmModal";
-import ShareButton from "@/components/shareButton"; // ✅ 추가
+import ShareButton from "@/components/shareButton";
 
 export default function CardNewsDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -24,13 +24,6 @@ export default function CardNewsDetailPage() {
   // UI 상태
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
-
-  // 레이아웃 refs
-  const slideBoxRef = useRef<HTMLDivElement | null>(null); // 왼쪽 이미지 박스
-  const headerRef = useRef<HTMLDivElement | null>(null); // 오른쪽 제목/메타 영역
-  const buttonsRef = useRef<HTMLDivElement | null>(null); // 냉장고/공유 버튼 영역
-
-  const [scrollMaxHeight, setScrollMaxHeight] = useState(0);
 
   // 슬라이드 영상 제어
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
@@ -54,41 +47,6 @@ export default function CardNewsDetailPage() {
     const clean = src.split("?")[0].toLowerCase();
     return /\.(mp4|mov|webm|ogg|m4v)$/i.test(clean);
   };
-
-  // 오른쪽 텍스트 영역 maxHeight 계산:
-  // 이미지 높이 - (오른쪽 헤더 높이 + 버튼 영역 높이 + 간격)
-  useEffect(() => {
-    const imgNode = slideBoxRef.current;
-    const headNode = headerRef.current;
-    const btnNode = buttonsRef.current;
-
-    if (!imgNode || !headNode || !btnNode) return;
-    if (typeof ResizeObserver === "undefined") return;
-
-    const updateHeights = () => {
-      const imgH = imgNode.offsetHeight;
-      const headH = headNode.offsetHeight;
-      const btnH = btnNode.offsetHeight;
-
-      // header의 padding, 텍스트/버튼 사이 margin 정도 여유값
-      const GAP = 24; // px 단위 대략 여유
-
-      const contentH = Math.max(imgH - headH - btnH - GAP, 0);
-      setScrollMaxHeight(contentH);
-    };
-
-    const observer = new ResizeObserver(updateHeights);
-    observer.observe(imgNode);
-    observer.observe(headNode);
-    observer.observe(btnNode);
-
-    // 초기 한 번 실행
-    updateHeights();
-
-    return () => {
-      observer.disconnect();
-    };
-  }, []);
 
   // 조회수 기록
   useEffect(() => {
@@ -149,10 +107,9 @@ export default function CardNewsDetailPage() {
             items-start sm:items-stretch
           "
         >
-          {/* 왼쪽 슬라이드 */}
+          {/* 왼쪽 슬라이드 (카드 전체 높이를 만드는 기준) */}
           <div className="relative w-full sm:w-[45%] flex flex-col items-center">
             <div
-              ref={slideBoxRef}
               className="relative w-full overflow-hidden"
               style={{ aspectRatio: "4 / 5" }}
             >
@@ -251,10 +208,10 @@ export default function CardNewsDetailPage() {
             </div>
           </div>
 
-          {/* 오른쪽 텍스트 + 버튼 */}
-          <div className="w-full sm:w-[55%] flex flex-col mb-15 md:mb-0">
-            {/* 제목/메타/부제목 영역 (높이 측정 대상) */}
-            <div ref={headerRef} className="pb-2">
+          {/* 오른쪽 텍스트 + 버튼 (왼쪽 카드와 높이 동일) */}
+          <div className="w-full sm:w-[55%] flex flex-col mb-15 md:mb-0 sm:h-full sm:min-h-0">
+            {/* 제목/메타/부제목 */}
+            <div className="pb-2">
               <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2">
                 {post.title}
               </h1>
@@ -275,28 +232,17 @@ export default function CardNewsDetailPage() {
               )}
             </div>
 
-            {/* 내용: 이미지 끝나는 높이까지만 보이고, 그 안에서만 스크롤 */}
-            <div
-              className={`mt-2 pr-2 ${
-                scrollMaxHeight > 0 ? "overflow-y-auto no-scrollbar" : ""
-              }`}
-              style={
-                scrollMaxHeight > 0 ? { maxHeight: scrollMaxHeight } : undefined
-              }
-            >
+            {/* 내용: 오른쪽 섹션 높이 안에서만 스크롤 */}
+            <div className="mt-2 pr-2 flex-1 sm:min-h-0 sm:overflow-y-auto sm:no-scrollbar">
               <p className="text-sm sm:text-base text-gray-700 leading-relaxed whitespace-pre-line">
                 {post.content}
               </p>
             </div>
 
-            {/* 버튼: 텍스트 스크롤 영역 밖, 카드 하단에 고정 */}
-            <div
-              ref={buttonsRef}
-              className="bg-white flex justify-end gap-4 mt-4"
-            >
+            {/* 버튼: 텍스트 영역 아래 + 섹션 하단 고정 느낌 */}
+            <div className="bg-white flex justify-end gap-4 mt-4">
               <SaveToFridgeButton postId={post.id} />
-              <ShareButton onShared={() => setShowShareModal(true)} />{" "}
-              {/* ✅ 교체 */}
+              <ShareButton onShared={() => setShowShareModal(true)} />
             </div>
           </div>
         </div>
