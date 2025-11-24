@@ -1,11 +1,10 @@
+// src/components/cardGrid.tsx
 "use client";
 
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useBookmarks } from "@/features/bookmarks/hooks/useBookmarks";
-import BaseModal from "@/components/baseModal";
-import LoginRequiredModal from "@/components/loginRequiredModal";
+import SaveToFridgeButton from "@/components/saveToFridgeButton";
 
 interface CardItem {
   id: number;
@@ -21,14 +20,6 @@ interface CardGridProps {
 export default function CardGrid({ items, columns = 4 }: CardGridProps) {
   const router = useRouter();
   const [isMobile, setIsMobile] = useState(false);
-  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
-  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-
-  const { bookmarkIds, toggleBookmarkMutate, isLoading } = useBookmarks();
-
-  // ✅ 로그인 여부 확인
-  const isLoggedIn =
-    typeof window !== "undefined" && !!localStorage.getItem("accessToken");
 
   useEffect(() => {
     const handleResize = () => {
@@ -73,31 +64,12 @@ export default function CardGrid({ items, columns = 4 }: CardGridProps) {
     router.push(`/contents/${id}`);
   };
 
-  // ✅ 하트 클릭 핸들러
-  const handleToggleBookmark = (postId: number, isSaved: boolean) => {
-    if (!isLoggedIn) {
-      setIsLoginModalOpen(true);
-      return;
-    }
-
-    toggleBookmarkMutate(postId, {
-      onSuccess: () => {
-        // 새로 추가된 경우에만 성공 모달 띄우기
-        if (!isSaved) {
-          setIsSuccessModalOpen(true);
-          setTimeout(() => setIsSuccessModalOpen(false), 1000);
-        }
-      },
-    });
-  };
-
   return (
     <>
       <div
         className={`grid grid-cols-2 sm:grid-cols-3 ${getLgGridColsClass()} gap-x-4 sm:gap-x-6 gap-y-8 sm:gap-y-10`}
       >
         {displayedItems.map((item) => {
-          const isSaved = bookmarkIds.includes(item.id);
           return (
             <div key={item.id} className="w-full">
               <div
@@ -119,52 +91,16 @@ export default function CardGrid({ items, columns = 4 }: CardGridProps) {
                 >
                   {item.title}
                 </span>
-                <button
-                  onClick={() => handleToggleBookmark(item.id, isSaved)}
-                  className="flex-shrink-0 cursor-pointer"
-                  disabled={isLoading}
-                >
-                  <Image
-                    src={
-                      isSaved
-                        ? "/icons/redheart.png"
-                        : "/icons/grayheart.png"
-                    }
-                    alt="MY 냉장고 저장"
-                    width={20}
-                    height={20}
-                    className={`w-4.5 h-5 cursor-pointer transition-transform ${
-                      isSaved ? "scale-105" : "opacity-30 grayscale scale-100"
-                    }`}
-                  />
-                </button>
+
+                {/* ✅ 기존 하트 버튼 → 공통 컴포넌트로 교체 */}
+                <div className="flex-shrink-0">
+                  <SaveToFridgeButton postId={item.id} />
+                </div>
               </div>
             </div>
           );
         })}
       </div>
-
-      {/* 🔒 로그인 안내 모달 */}
-      <LoginRequiredModal
-        isOpen={isLoginModalOpen}
-        onClose={() => setIsLoginModalOpen(false)}
-        message="로그인 후 MY 냉장고에 콘텐츠를 담을 수 있어요"
-        redirectPath="/login"
-      />
-
-      {/* ✅ 저장 성공 모달 */}
-      <BaseModal
-        isOpen={isSuccessModalOpen}
-        onClose={() => setIsSuccessModalOpen(false)}
-      >
-        <div className="flex flex-col items-center justify-center py-1.5 px-3">
-          <p className="text-medium font-medium text-gray-700 text-center">
-            <strong className="text-lg font-semibold">저장 완료!</strong>
-            <br />
-            MY 냉장고에서 확인해보세요 🧊
-          </p>
-        </div>
-      </BaseModal>
     </>
   );
 }
