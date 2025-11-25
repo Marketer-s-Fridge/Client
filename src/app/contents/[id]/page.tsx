@@ -44,21 +44,26 @@ export default function CardNewsDetailPage() {
     if (!post?.images || post.images.length === 0) {
       return ["/images/cardNews/hot/001.png"];
     }
-
-    // 🔥 REELS인 경우: images[0]은 썸네일이므로 보여주지 않음
+  
+    // 🔥 REELS인 경우: images[0]은 무조건 썸네일이니까 슬라이드에서 제외
     if (post.postType === "REELS") {
-      // 썸네일 + 실제 미디어가 1개 이상 있을 때는 썸네일 제외
-      if (post.images.length > 1) {
-        return post.images.slice(1); // [1]부터 끝까지 (영상/이미지들)
+      const mediaOnly = post.images.slice(1); // 0번 제거
+  
+      // 썸네일 빼고 아무 것도 없으면 기본 이미지로 대체
+      if (mediaOnly.length === 0) {
+        return ["/images/cardNews/hot/001.png"];
       }
-      // 썸네일만 있는 이상 케이스면 일단 그거라도 보여주기
-      return [post.images[0]];
+  
+      return mediaOnly;
     }
-
+  
     // NORMAL 게시글은 전체 그대로 사용
     return post.images;
   }, [post]);
 
+  // 🔥 여기 추가
+const isReelsType = post?.postType === "REELS";
+const slideAspect = isReelsType ? "9 / 16" : "4 / 5";
 
   const slideCount = slideImages.length;
   const category = post?.category ?? "카테고리";
@@ -201,7 +206,7 @@ export default function CardNewsDetailPage() {
             <div
               ref={slideBoxRef}
               className="relative w-full overflow-hidden"
-              style={{ aspectRatio: "4 / 5" }} // 비율 고정
+              style={{ aspectRatio: slideAspect }}   // 🔥 수정
               onTouchStart={handleTouchStart}
               onTouchEnd={handleTouchEnd}
             >
@@ -237,7 +242,7 @@ export default function CardNewsDetailPage() {
                       className="relative"
                       style={{
                         width: `${100 / slideCount}%`,
-                        aspectRatio: "4 / 5",
+                        aspectRatio: slideAspect,   // 🔥 수정
                         flexShrink: 0,
                       }}
                     >
