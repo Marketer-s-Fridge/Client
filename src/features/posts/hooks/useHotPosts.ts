@@ -18,6 +18,7 @@ const hotMock = (limit: number): PostResponseDto[] =>
             ? "콜라보의 새로운 기준 제니 X 스탠리"
             : `Hot Content #${idx + 1}`,
         subTitle: "마케팅 인사이트",
+        postType:"NORMAL",
         category: "트렌드",
         type: "CARD_NEWS",
         content:
