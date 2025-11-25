@@ -37,7 +37,6 @@ export default function Header({ menuOpen, setMenuOpen }: HeaderProps) {
     ? [...navItems, { name: "Admin", href: "/admin" }]
     : navItems;
 
-  // 인기 검색어, 검색어 저장 훅
   const {
     data: popularKeywords,
     isLoading: popularLoading,
@@ -46,7 +45,6 @@ export default function Header({ menuOpen, setMenuOpen }: HeaderProps) {
 
   const { mutate: saveSearchKeyword } = useSaveSearchKeyword();
 
-  // 검색 실행
   const runSearch = (keyword: string) => {
     const trimmed = keyword.trim();
     if (!trimmed) {
@@ -92,12 +90,24 @@ export default function Header({ menuOpen, setMenuOpen }: HeaderProps) {
             Marketer&apos;s Fridge
           </Link>
           <div className="flex place-self-center place-items-center ">
+            {/* 🔍 모바일 검색 토글 버튼: Search ↔ X 애니메이션 */}
             <button
-              className="cursor-pointer md:hidden mr-3"
+              className="cursor-pointer md:hidden mr-3 transition-transform duration-200 ease-out active:scale-90"
               onClick={() => setShowMobileSearch((prev) => !prev)}
             >
-              <Search size={20} className="text-white" />
+              {showMobileSearch ? (
+                <X
+                  size={20}
+                  className="text-white transition-transform duration-200 rotate-90"
+                />
+              ) : (
+                <Search
+                  size={20}
+                  className="text-white transition-transform duration-200 rotate-0"
+                />
+              )}
             </button>
+
             <button
               className="cursor-pointer md:hidden"
               onClick={() => setMenuOpen(!menuOpen)}
@@ -126,61 +136,62 @@ export default function Header({ menuOpen, setMenuOpen }: HeaderProps) {
         </nav>
       </header>
 
-      {/* 🔍 모바일 검색창 */}
-      {showMobileSearch && (
-        <div className="md:hidden h-[20%] fixed top-[60px] left-0 w-full z-40 bg-white border-b border-gray-200 ">
-          <div className="flex w-full main-red px-4 py-3">
-            <div className="flex w-full items-center gap-2">
-              <div className="flex-1 bg-white flex items-center gap-2 border border-gray-300 rounded-full px-3 py-1.5">
-                <Search size={18} className="text-gray-500 " />
-                <input
-                  type="text"
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  onKeyDown={handleSearch}
-                  placeholder="필요한 콘텐츠, 꺼내볼까요?"
-                  className="w-full text-sm outline-none"
-                />
-              </div>
-              <button
-                className="pr-2"
-                onClick={() => setShowMobileSearch(false)}
-              >
-                <X size={20} className="text-white" />
-              </button>
+      {/* 🔍 모바일 검색창 (항상 렌더링 + 트랜지션) */}
+      <div
+        className={`
+          md:hidden fixed top-[60px] left-0 w-full z-40
+          bg-white border-b border-gray-200
+          transform origin-top transition-all duration-250 ease-out
+          ${showMobileSearch
+            ? "opacity-100 translate-y-0 scale-y-100 pointer-events-auto"
+            : "opacity-0 -translate-y-2 scale-y-95 pointer-events-none"}
+        `}
+      >
+        <div className="flex w-full main-red px-4 py-3">
+          <div className="flex w-full items-center gap-2">
+            <div className="flex-1 bg-white flex items-center gap-2 border border-gray-300 rounded-full px-3 py-1.5">
+              <Search size={18} className="text-gray-500 " />
+              <input
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={handleSearch}
+                placeholder="필요한 콘텐츠, 꺼내볼까요?"
+                className="w-full text-sm outline-none"
+              />
             </div>
-          </div>
-
-          {/* ✅ 인기 검색어: 태그 스타일 (순위/세로 리스트 X) */}
-          <div className="mt-1 px-4 pb-4 bg-white">
-            <div className="flex items-center justify-between mb-2">
-              <span className="mt-2 text-xs font-semibold text-gray-400">
-                실시간 인기 검색어
-              </span>
-            </div>
-
-            {!popularLoading && !popularError && popularList.length > 0 && (
-              <div className="mt-2 flex flex-wrap gap-2">
-                {popularList.slice(0, 10).map((keyword) => (
-                  <button
-                    key={keyword}
-                    onClick={() => handlePopularClick(keyword)}
-                    className="px-3 py-1.5 rounded-full bg-gray-100 text-[12px] text-gray-800 active:bg-gray-200"
-                  >
-                    {keyword}
-                  </button>
-                ))}
-              </div>
-            )}
-
-            {!popularLoading && !popularError && popularList.length === 0 && (
-              <p className="mt-2 text-[11px] text-gray-400">
-                아직 인기 검색어가 없습니다.
-              </p>
-            )}
           </div>
         </div>
-      )}
+
+        {/* 인기 검색어 */}
+        <div className="mt-1 px-4 pb-4 bg-white">
+          <div className="flex items-center justify-between mb-2">
+            <span className="mt-2 text-xs font-semibold text-gray-400">
+              실시간 인기 검색어
+            </span>
+          </div>
+
+          {!popularLoading && !popularError && popularList.length > 0 && (
+            <div className="mt-2 flex flex-wrap gap-2">
+              {popularList.slice(0, 10).map((keyword) => (
+                <button
+                  key={keyword}
+                  onClick={() => handlePopularClick(keyword)}
+                  className="px-3 py-1.5 rounded-full bg-gray-100 text-[12px] text-gray-800 active:bg-gray-200"
+                >
+                  {keyword}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {!popularLoading && !popularError && popularList.length === 0 && (
+            <p className="mt-2 text-[11px] text-gray-400">
+              아직 인기 검색어가 없습니다.
+            </p>
+          )}
+        </div>
+      </div>
     </main>
   );
 }
