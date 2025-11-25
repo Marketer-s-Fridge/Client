@@ -15,8 +15,6 @@ import { useEditorPicks } from "@/features/posts/hooks/useEditorPicks";
 import PostFeature from "@/components/postFeature";
 import MobilePostCarousel from "@/components/mobilePostCarousel";
 import { usePosts } from "@/features/posts/hooks/usePosts";
-
-// 방문자 추적 훅
 import { useTrackVisitor } from "@/features/visitorStatus/hooks/useVisitorStatus";
 
 // 홈에서 쓰는 최소 필드 타입
@@ -32,17 +30,21 @@ export default function HomePage() {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
 
+  // 모바일 섹션 진입 애니메이션용
+  const [mobileEnter, setMobileEnter] = useState(false);
+
   // 첫 진입 시 1회 방문자 추적
   const { mutate: trackVisitor } = useTrackVisitor();
   useEffect(() => {
     trackVisitor(undefined);
+    setMobileEnter(true);
   }, [trackVisitor]);
 
   // 훅 데이터
   const { data: hot = [] } = useHotPosts(8);
   const { data: picks = [] } = useEditorPicks(8);
 
-  // 더미 데이터: 서버에서 아직 안 와도 로컬에서 느낌 볼 수 있게
+  // 더미 데이터
   const mockLatestPosts: SimplePost[] = [
     {
       id: 10001,
@@ -120,23 +122,31 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* 모바일 */}
-        <div className="block md:hidden bg-white pt-10 pb-10 px-5">
-          <div className="flex items-center justify-between mb-4">
-            <div className="w-full">
-              <p className="text-[11px] text-gray-400 mb-1">최근 업로드된</p>
-              <div className="relative flex w-full justify-between flex-row items-center">
-                <h3 className="text-xl font-bold">New Contents</h3>
-                {latestPosts.length > 0 && (
-                  <span className="text-[11px] text-gray-400">
-                    총 {latestPosts.length}개
-                  </span>
-                )}
-              </div>
+        {/* 모바일 New Contents */}
+        <div
+          className={`block md:hidden bg-white pt-10 pb-12 px-4 transform transition-all duration-500 ease-out ${
+            mobileEnter ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"
+          }`}
+        >
+          {/* 섹션 헤더 */}
+          <div className="flex items-center justify-between px-1 mb-3">
+            <div className="flex-1 pr-2">
+              <p className="text-[10px] uppercase tracking-[0.18em] text-main-red/80 font-semibold mb-1">
+                Archive
+              </p>
+              <h3 className="text-[20px] font-extrabold leading-snug text-gray-900">
+                New Contents
+              </h3>
+              <p className="mt-1 text-[11px] leading-relaxed text-gray-500">
+                지금 놓치면 아까운
+                <span className="font-semibold text-main-red/90"> 최신 </span>
+                콘텐츠만 담았어요.
+              </p>
             </div>
           </div>
 
-          <div className="-mx-5 px-5 flex gap-4 overflow-x-auto no-scrollbar snap-x snap-mandatory">
+          {/* 카드 슬라이드 */}
+          <div className="-mx-5 px-4 flex gap-4 overflow-x-auto no-scrollbar snap-x snap-mandatory">
             {latestPosts.map((post, index) => {
               const thumb =
                 post.images?.[0] ?? "/images/cardNews/default/001.png";
@@ -145,10 +155,10 @@ export default function HomePage() {
                 <button
                   key={post.id}
                   type="button"
-                  className="snap-center w-[82%] max-w-xs shrink-0"
+                  className="snap-center w-[84%] max-w-xs shrink-0 first:ml-2 last:mr-6 active:scale-[0.97] transition-transform duration-300"
                   onClick={() => router.push(`/contents/${post.id}`)}
                 >
-                  <div className="relative aspect-[4/5] rounded-lg overflow-hidden shadow-md bg-gray-100">
+                  <div className="relative aspect-[4/5] rounded-2xl overflow-hidden bg-gray-900 shadow-xl">
                     <Image
                       alt={post.title}
                       src={thumb}
@@ -157,15 +167,8 @@ export default function HomePage() {
                       sizes="(max-width: 768px) 80vw, 320px"
                     />
 
-                    {/* 아래쪽 그라데이션 + 텍스트 영역 */}
-                    <div className="absolute inset-x-0 bottom-0 pt-10 pb-3 px-3 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex flex-col justify-end">
-                      <p className="text-[11px] text-main-red font-semibold mb-1">
-                        오늘의 카드뉴스
-                      </p>
-                    </div>
-
-                    {/* 우상단 인덱스 뱃지 (1/4) */}
-                    <div className="absolute top-3 right-3 rounded-full bg-black/70 px-2 py-[2px] text-[10px] font-medium text-white">
+                    {/* 인덱스 뱃지 */}
+                    <div className="absolute top-3 right-3 rounded-full bg-black/70 px-2.5 py-[3px] text-[10px] font-medium text-white backdrop-blur-sm">
                       {index + 1}/{latestPosts.length}
                     </div>
                   </div>
@@ -192,18 +195,40 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 모바일: 훅 데이터로 슬라이드 적용 */}
-      <MobilePostCarousel
-        title="Hot Contents"
-        item={hotHero}
-        fallback="/images/cardNews/hot/001.png"
-      />
-      <div className="h-10 md:hidden" />
-      <MobilePostCarousel
-        title="Editor Pick"
-        item={pickHero}
-        fallback="/images/cardNews/editor/001.png"
-      />
+      {/* 모바일 Hot / Editor Pick */}
+      <section
+        className={`md:hidden bg-black text-white pt-10 pb-16 transform transition-all duration-600 ease-out ${
+          mobileEnter ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+        }`}
+      >
+        <div className="px-5 flex justify-center items-center mb-8">
+          <div className="relative flex flex-col justify-center items-center text-center">
+            <p className="text-[10px] uppercase tracking-[0.2em] text-main-red/80 mb-1">
+              Curated For You
+            </p>
+            <h2 className="text-[19px] font-bold leading-snug">
+              놓치기 아까운 큐레이션
+            </h2>
+            <p className="mt-1 text-[11px] text-gray-300">
+              실무에서 바로 참고하기 좋은 콘텐츠만 골라 담았어요.
+            </p>
+          </div>
+        </div>
+
+        <div className="px-4 space-y-8">
+          <MobilePostCarousel
+            title="Hot Contents"
+            item={hotHero}
+            fallback="/images/cardNews/hot/001.png"
+          />
+
+          <MobilePostCarousel
+            title="Editor Pick"
+            item={pickHero}
+            fallback="/images/cardNews/editor/001.png"
+          />
+        </div>
+      </section>
 
       <Footer />
     </main>

@@ -50,54 +50,94 @@ export default function MobilePostCarousel({
     });
   }, [activeIndex, imageList]);
 
+  const isHot = title === "Hot Contents";
+
   return (
-    <div className="md:hidden flex flex-col px-5 mt-8">
-      <div className="flex items-start gap-2 mb-4">
-        <h3 className="text-xl font-bold">{title}</h3>
+    <div className="md:hidden">
+      {/* 헤더 텍스트 */}
+      <div className="flex flex-col items-start gap-[2px] mb-3 px-2">
+        <p className="text-[10px] uppercase tracking-[0.2em] text-main-red/80">
+          {isHot ? "Hot Contents" : "Editor Pick"}
+        </p>
+        <h3 className="text-[15px] font-semibold text-white">
+          {isHot
+            ? "지금 반응 가장 좋은 콘텐츠"
+            : "에디터가 고른 추천 콘텐츠"}
+        </h3>
+        <p className="mt-1 text-[11px] text-gray-300">
+          {isHot
+            ? "조회·저장 지표가 높은 콘텐츠예요."
+            : "실제 마케터 시선으로 '꼭 보면 좋은' 콘텐츠예요."}
+        </p>
       </div>
 
-      <Swiper
-        slidesPerView={1}
-        spaceBetween={20}
-        className="w-full"
-        onSlideChange={(swiper) => setActiveIndex(swiper.activeIndex)}
-      >
-        {imageList.map((src, i) => {
-          const isVideo = isVideoSrc(src);
+      {/* 카드 영역 */}
+      <div className="rounded-lg px-2 py-2">
+        <Swiper
+          slidesPerView={1}
+          spaceBetween={18}
+          className="w-full"
+          onSlideChange={(swiper) => setActiveIndex(swiper.activeIndex)}
+        >
+          {imageList.map((src, i) => {
+            const isVideo = isVideoSrc(src);
+            const isActive = i === activeIndex;
 
-          return (
-            <SwiperSlide key={`${title}-${i}`} className="!w-full">
-              <div
-                className="w-full"
-                onClick={() => {
-                  if (item?.id) router.push(`/contents/${item.id}`);
-                }}
-              >
-                {isVideo ? (
-                  <video
-                    ref={(el) => {
-                      videoRefs.current[i] = el;
-                    }}
-                    src={src}
-                    className="w-full aspect-[3/4] object-cover rounded-lg shadow cursor-pointer"
-                    muted
-                    loop
-                    playsInline
-                  />
-                ) : (
-                  <Image
-                    alt={item?.title || title}
-                    src={src || fallback}
-                    className="w-full aspect-[3/4] object-cover rounded-lg shadow cursor-pointer"
-                    width={600}
-                    height={800}
-                  />
-                )}
-              </div>
-            </SwiperSlide>
-          );
-        })}
-      </Swiper>
+            return (
+              <SwiperSlide key={`${title}-${i}`} className="!w-full">
+                <div
+                  className={`relative w-full cursor-pointer transform transition-all duration-500 ease-out ${
+                    isActive
+                      ? "scale-[1.0] opacity-100"
+                      : "scale-[0.94] opacity-70"
+                  }`}
+                  onClick={() => {
+                    if (item?.id) router.push(`/contents/${item.id}`);
+                  }}
+                >
+                  {isVideo ? (
+                    <video
+                      ref={(el) => {
+                        videoRefs.current[i] = el;
+                      }}
+                      src={src}
+                      className="w-full aspect-[3/4] object-cover rounded-xl"
+                      muted
+                      loop
+                      playsInline
+                    />
+                  ) : (
+                    <Image
+                      alt={item?.title || title}
+                      src={src || fallback}
+                      className="w-full aspect-[3/4] object-cover rounded-xl"
+                      width={600}
+                      height={800}
+                    />
+                  )}
+
+                  {/* 오버레이: 상단 태그 + 인덱스 */}
+                  <div className="pointer-events-none">
+                    {/* 상단 왼쪽 태그 */}
+                    <div className="absolute top-3 left-3 flex items-center gap-1">
+                      <span className="rounded-full bg-black/70 px-2 py-[2px] text-[10px] font-medium text-white ">
+                        {isHot ? "HOT" : "PICK"}
+                      </span>
+                    </div>
+
+                    {/* 상단 오른쪽 인덱스 */}
+                    {imageList.length > 1 && (
+                      <div className="absolute top-3 right-3 rounded-full bg-black/70 px-2.5 py-[3px] text-[10px] font-medium text-white ">
+                        {i + 1}/{imageList.length}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </SwiperSlide>
+            );
+          })}
+        </Swiper>
+      </div>
     </div>
   );
 }
