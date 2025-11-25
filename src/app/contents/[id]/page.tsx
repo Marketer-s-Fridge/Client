@@ -40,9 +40,25 @@ export default function CardNewsDetailPage() {
   const { mutate: recordView } = usePostViewRecord();
 
   const slideImages = useMemo(() => {
-    if (post?.images?.length) return post.images;
-    return ["/images/cardNews/hot/001.png"];
+    // 이미지가 하나도 없으면 기본 이미지
+    if (!post?.images || post.images.length === 0) {
+      return ["/images/cardNews/hot/001.png"];
+    }
+
+    // 🔥 REELS인 경우: images[0]은 썸네일이므로 보여주지 않음
+    if (post.postType === "REELS") {
+      // 썸네일 + 실제 미디어가 1개 이상 있을 때는 썸네일 제외
+      if (post.images.length > 1) {
+        return post.images.slice(1); // [1]부터 끝까지 (영상/이미지들)
+      }
+      // 썸네일만 있는 이상 케이스면 일단 그거라도 보여주기
+      return [post.images[0]];
+    }
+
+    // NORMAL 게시글은 전체 그대로 사용
+    return post.images;
   }, [post]);
+
 
   const slideCount = slideImages.length;
   const category = post?.category ?? "카테고리";
