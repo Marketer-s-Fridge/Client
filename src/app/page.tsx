@@ -124,13 +124,13 @@ export default function HomePage() {
 
         {/* 모바일 New Contents */}
         <div
-          className={`block md:hidden bg-white pt-10 pb-12 px-4 transform transition-all duration-500 ease-out ${
+          className={`block md:hidden bg-white pt-10 pb-12  transform transition-all duration-500 ease-out ${
             mobileEnter ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"
           }`}
         >
           {/* 섹션 헤더 */}
-          <div className="flex items-center justify-between px-1 mb-3">
-            <div className="flex-1 pr-2">
+          <div className="px-6 flex items-center justify-between mb-3">
+            <div className="flex-1 ">
               <p className="text-[10px] uppercase tracking-[0.18em] text-main-red/80 font-semibold mb-1">
                 Archive
               </p>
@@ -146,7 +146,7 @@ export default function HomePage() {
           </div>
 
           {/* 카드 슬라이드 */}
-          <div className="-mx-5 px-4 flex gap-4 overflow-x-auto no-scrollbar snap-x snap-mandatory">
+          <div className="px-2 flex gap-4 overflow-x-auto no-scrollbar snap-x snap-mandatory">
             {latestPosts.map((post, index) => {
               const thumb =
                 post.images?.[0] ?? "/images/cardNews/default/001.png";
@@ -197,11 +197,11 @@ export default function HomePage() {
 
       {/* 모바일 Hot / Editor Pick */}
       <section
-        className={`md:hidden bg-black text-white pt-10 pb-16 transform transition-all duration-600 ease-out ${
+        className={`md:hidden main-red  text-white pt-10 pb-16 transform transition-all duration-600 ease-out ${
           mobileEnter ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
         }`}
       >
-        <div className="px-5 flex justify-center items-center mb-8">
+        <div className="px-5  flex justify-center items-center mb-8">
           <div className="relative flex flex-col justify-center items-center text-center">
             <p className="text-[10px] uppercase tracking-[0.2em] text-main-red/80 mb-1">
               Curated For You
@@ -209,7 +209,7 @@ export default function HomePage() {
             <h2 className="text-[19px] font-bold leading-snug">
               놓치기 아까운 큐레이션
             </h2>
-            <p className="mt-1 text-[11px] text-gray-300">
+            <p className="mt-1 text-[11px] text-white">
               실무에서 바로 참고하기 좋은 콘텐츠만 골라 담았어요.
             </p>
           </div>
