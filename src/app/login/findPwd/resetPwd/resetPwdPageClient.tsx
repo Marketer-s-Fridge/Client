@@ -51,12 +51,16 @@ const ResetPwdPageClient: React.FC<ResetPwdPageClientProps> = ({ userId }) => {
         "비밀번호는 영문, 숫자, 특수문자를 모두 포함해야 합니다. (8~20자)"
       );
       valid = false;
-    } else setPwdError("");
+    } else {
+      setPwdError("");
+    }
 
     if (newPwd !== confirmPwd) {
       setConfirmError("비밀번호가 일치하지 않습니다.");
       valid = false;
-    } else setConfirmError("");
+    } else {
+      setConfirmError("");
+    }
 
     if (!valid) return;
 
@@ -69,7 +73,14 @@ const ResetPwdPageClient: React.FC<ResetPwdPageClientProps> = ({ userId }) => {
       setModalOpen(true);
     } catch (e: unknown) {
       console.error("비밀번호 재설정 실패:", e);
-      setSubmitError("비밀번호 변경에 실패했습니다. 다시 시도해주세요.");
+
+      // 에러 메시지 노출이 필요하면 여기서 안전하게 분기
+      if (e instanceof Error && e.message) {
+        // 서버에서 온 메시지를 그대로 보여줄지 말지는 선택
+        setSubmitError("비밀번호 변경에 실패했습니다. 다시 시도해주세요.");
+      } else {
+        setSubmitError("비밀번호 변경에 실패했습니다. 다시 시도해주세요.");
+      }
     }
   };
 
@@ -87,7 +98,7 @@ const ResetPwdPageClient: React.FC<ResetPwdPageClientProps> = ({ userId }) => {
         <div className="w-full max-w-[480px] flex flex-col items-center">
           <AuthHeader
             title="비밀번호 재설정"
-            description={`새로운 비밀번호를 입력해 주세요.`}
+            description="새로운 비밀번호를 입력해 주세요."
           />
 
           <form
