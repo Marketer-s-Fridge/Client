@@ -167,7 +167,7 @@ export default function Header({ menuOpen, setMenuOpen }: HeaderProps) {
         <div className="mt-1 px-4 pb-4 bg-white">
           <div className="flex items-center justify-between mb-2">
             <span className="mt-2 text-xs font-semibold text-gray-400">
-              실시간 인기 검색어
+              최근 검색 기록
             </span>
           </div>
 
