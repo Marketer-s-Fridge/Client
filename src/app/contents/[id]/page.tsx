@@ -83,9 +83,13 @@ export default function CardNewsDetailPage() {
     const trimmed = line.trim();
     return (
       trimmed.startsWith("에디터 |") ||
-      trimmed.startsWith("출처 |") ||
       trimmed.startsWith("에디터|") ||
-      trimmed.startsWith("출처|")
+      trimmed.startsWith("에디터 ㅣ") ||
+      trimmed.startsWith("에디터ㅣ") ||
+      trimmed.startsWith("출처 |") ||
+      trimmed.startsWith("출처|") ||
+      trimmed.startsWith("출처 ㅣ") ||
+      trimmed.startsWith("출처ㅣ")
     );
   };
 
