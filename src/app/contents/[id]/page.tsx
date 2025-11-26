@@ -44,26 +44,26 @@ export default function CardNewsDetailPage() {
     if (!post?.images || post.images.length === 0) {
       return ["/images/cardNews/hot/001.png"];
     }
-  
-    // 🔥 REELS인 경우: images[0]은 무조건 썸네일이니까 슬라이드에서 제외
+
+    // REELS인 경우: images[0]은 무조건 썸네일이니까 슬라이드에서 제외
     if (post.postType === "REELS") {
       const mediaOnly = post.images.slice(1); // 0번 제거
-  
+
       // 썸네일 빼고 아무 것도 없으면 기본 이미지로 대체
       if (mediaOnly.length === 0) {
         return ["/images/cardNews/hot/001.png"];
       }
-  
+
       return mediaOnly;
     }
-  
+
     // NORMAL 게시글은 전체 그대로 사용
     return post.images;
   }, [post]);
 
-  // 🔥 여기 추가
-const isReelsType = post?.postType === "REELS";
-const slideAspect = isReelsType ? "9 / 16" : "4 / 5";
+  // REELS / NORMAL 에 따라 비율 분기
+  const isReelsType = post?.postType === "REELS";
+  const slideAspect = isReelsType ? "9 / 16" : "4 / 5";
 
   const slideCount = slideImages.length;
   const category = post?.category ?? "카테고리";
@@ -71,6 +71,22 @@ const slideAspect = isReelsType ? "9 / 16" : "4 / 5";
   const isVideoSrc = (src: string) => {
     const clean = src.split("?")[0].toLowerCase();
     return /\.(mp4|mov|webm|ogg|m4v)$/i.test(clean);
+  };
+
+  // 본문 줄 단위 분리
+  const contentLines = useMemo(() => {
+    if (!post?.content) return [];
+    return post.content.split("\n");
+  }, [post?.content]);
+
+  const isMetaLine = (line: string) => {
+    const trimmed = line.trim();
+    return (
+      trimmed.startsWith("에디터 |") ||
+      trimmed.startsWith("출처 |") ||
+      trimmed.startsWith("에디터|") ||
+      trimmed.startsWith("출처|")
+    );
   };
 
   // 왼쪽 이미지 박스 높이 → 오른쪽 섹션 전체 높이로 사용 (md 이상에서만)
@@ -201,12 +217,12 @@ const slideAspect = isReelsType ? "9 / 16" : "4 / 5";
             items-start md:items-stretch
           "
         >
-          {/* 왼쪽 슬라이드: 이 박스 높이가 데스크탑 기준 높이 */}
+          {/* 왼쪽 슬라이드 */}
           <div className="relative w-full md:w-[45%] flex flex-col items-center">
             <div
               ref={slideBoxRef}
               className="relative w-full overflow-hidden"
-              style={{ aspectRatio: slideAspect }}   // 🔥 수정
+              style={{ aspectRatio: slideAspect }}
               onTouchStart={handleTouchStart}
               onTouchEnd={handleTouchEnd}
             >
@@ -242,7 +258,7 @@ const slideAspect = isReelsType ? "9 / 16" : "4 / 5";
                       className="relative"
                       style={{
                         width: `${100 / slideCount}%`,
-                        aspectRatio: slideAspect,   // 🔥 수정
+                        aspectRatio: slideAspect,
                         flexShrink: 0,
                       }}
                     >
@@ -308,7 +324,6 @@ const slideAspect = isReelsType ? "9 / 16" : "4 / 5";
           {/* 오른쪽 텍스트 + 버튼 */}
           <div
             className="w-full md:w-[55%] flex flex-col mb-15 md:mb-0"
-            // 데스크탑에서만 높이 고정, 모바일에서는 자연 높이
             style={rightHeight ? { height: rightHeight } : undefined}
           >
             {/* 제목/메타/부제목 */}
@@ -333,17 +348,39 @@ const slideAspect = isReelsType ? "9 / 16" : "4 / 5";
               )}
             </div>
 
-            {/* 내용:
-                - 데스크탑(rightHeight 있을 때): 남은 공간 안에서만 스크롤
-                - 모바일(rightHeight 없음): 스크롤 제한 없이 전체 표시 */}
+            {/* 내용 */}
             <div
               className={`mt-2 pr-2 flex-1 ${
                 rightHeight ? "overflow-y-auto no-scrollbar" : ""
               }`}
             >
-              <p className="text-sm md:text-base text-gray-700 leading-relaxed whitespace-pre-line">
-                {post.content}
-              </p>
+              <div className="text-sm md:text-base text-gray-700 leading-relaxed">
+                {contentLines.map((line, idx) => {
+                  const trimmed = line.trim();
+
+                  // 빈 줄은 간격용
+                  if (trimmed === "") {
+                    return <div key={idx} className="h-3 md:h-3.5" />;
+                  }
+
+                  if (isMetaLine(trimmed)) {
+                    return (
+                      <p
+                        key={idx}
+                        className="mt-2 text-right text-[13px] md:text-sm font-medium text-gray-400"
+                      >
+                        {trimmed}
+                      </p>
+                    );
+                  }
+
+                  return (
+                    <p key={idx} className="mb-1">
+                      {line}
+                    </p>
+                  );
+                })}
+              </div>
             </div>
 
             {/* 버튼: 항상 텍스트 아래 */}
