@@ -187,7 +187,7 @@ export default function Header({ menuOpen, setMenuOpen }: HeaderProps) {
 
           {!popularLoading && !popularError && popularList.length === 0 && (
             <p className="mt-2 text-[11px] text-gray-400">
-              아직 인기 검색어가 없습니다.
+              최근 검색 기록이 없습니다.
             </p>
           )}
         </div>
