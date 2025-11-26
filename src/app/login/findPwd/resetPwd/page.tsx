@@ -1,11 +1,16 @@
 "use client";
 
-import { SubmitButton, TextInput, AuthHeader } from "@/components/authFormComponents";
+import {
+  SubmitButton,
+  TextInput,
+  AuthHeader,
+} from "@/components/authFormComponents";
 import Header from "@/components/header";
 import MobileMenu from "@/components/mobileMenu";
 import ConfirmModal from "@/components/confirmModal";
 import React, { useState } from "react";
-import { useUpdatePassword } from "@/features/auth/hooks/useUpdatePwd";
+import { useSearchParams, useRouter } from "next/navigation";
+import { useResetPasswordByFindPw } from "@/features/auth/hooks/useResetPasswordByFindPw";
 
 const ResetPwdPage: React.FC = () => {
   const [newPwd, setNewPwd] = useState("");
@@ -17,7 +22,11 @@ const ResetPwdPage: React.FC = () => {
   const [confirmError, setConfirmError] = useState("");
   const [submitError, setSubmitError] = useState("");
 
-  const { mutateAsync, isPending } = useUpdatePassword(); // ✅ 훅 사용
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const userId = searchParams.get("userId") ?? "";
+
+  const { mutateAsync, isPending } = useResetPasswordByFindPw();
 
   // 비밀번호 유효성 검사
   const isValidPassword = (password: string) =>
@@ -27,10 +36,18 @@ const ResetPwdPage: React.FC = () => {
 
   const handleSubmit = async () => {
     setSubmitError("");
+
+    if (!userId) {
+      setSubmitError("유효하지 않은 비밀번호 재설정 요청입니다.");
+      return;
+    }
+
     let valid = true;
 
     if (!isValidPassword(newPwd)) {
-      setPwdError("비밀번호는 영문, 숫자, 특수문자를 모두 포함해야 합니다. (8~20자)");
+      setPwdError(
+        "비밀번호는 영문, 숫자, 특수문자를 모두 포함해야 합니다. (8~20자)"
+      );
       valid = false;
     } else setPwdError("");
 
@@ -42,17 +59,21 @@ const ResetPwdPage: React.FC = () => {
     if (!valid) return;
 
     try {
-      // 비번 찾기 흐름에서는 currentPassword 없음 → 빈 문자열 전달
       await mutateAsync({
-        currentPassword: "",
+        userId,
         newPassword: newPwd,
         confirmNewPassword: confirmPwd,
       });
       setModalOpen(true);
-    } catch (e: any) {
-      console.error("비밀번호 변경 실패:", e);
+    } catch (e: unknown) {
+      console.error("비밀번호 재설정 실패:", e);
       setSubmitError("비밀번호 변경에 실패했습니다. 다시 시도해주세요.");
     }
+  };
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+    router.push("/login"); // 완료 후 로그인 페이지로 이동 등
   };
 
   return (
@@ -62,9 +83,11 @@ const ResetPwdPage: React.FC = () => {
 
       <div className="flex justify-center bg-white py-[16vh] px-4">
         <div className="w-full max-w-[480px] flex flex-col items-center">
-          <AuthHeader title="비밀번호 재설정" description={`새로운 비밀번호를 입력해 주세요.`} />
+          <AuthHeader
+            title="비밀번호 재설정"
+            description={`새로운 비밀번호를 입력해 주세요.`}
+          />
 
-          {/* 입력 필드 */}
           <form
             className="w-8/9 md:w-7/9 mb-10 flex flex-col items-center gap-y-4"
             onSubmit={(e) => {
@@ -97,13 +120,15 @@ const ResetPwdPage: React.FC = () => {
             disabled={isPending}
           />
 
-          {submitError && <p className="text-sm text-red-500 mt-4">{submitError}</p>}
+          {submitError && (
+            <p className="text-sm text-red-500 mt-4">{submitError}</p>
+          )}
         </div>
       </div>
 
       {/* ✅ 비밀번호 변경 완료 모달 */}
-      <ConfirmModal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
-        <p>비밀번호가 변경되었습니다.</p>
+      <ConfirmModal isOpen={modalOpen} onClose={handleCloseModal}>
+        <p>비밀번호가 변경되었습니다. 다시 로그인해 주세요.</p>
       </ConfirmModal>
     </div>
   );

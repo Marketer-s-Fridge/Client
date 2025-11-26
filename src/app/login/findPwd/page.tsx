@@ -37,9 +37,11 @@ const FindPwdPage: React.FC = () => {
     const { data } = await refetch();
     setShowResult(true);
 
-    // ✅ 서버가 200으로 "Successful" 또는 "Failed" 문자열을 반환한다는 전제
+    // ✅ 서버가 "Successful"이면 다음 단계 + userId를 쿼리로 전달
     if (data?.trim() === "Successful") {
-      router.push("/login/findPwd/resetPwd");
+      router.push(
+        `/login/findPwd/resetPwd?userId=${encodeURIComponent(userId)}`
+      );
     }
   };
 

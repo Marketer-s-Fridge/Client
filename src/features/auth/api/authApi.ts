@@ -209,6 +209,19 @@ export const updatePassword = async (
   return res.data; // "Successful" 등
 };
 
+export const resetPasswordByFindPw = async (
+  userId: string,
+  newPassword: string,
+  confirmNewPassword: string
+): Promise<string> => {
+  const res = await api.patch<string>("/auth/signin/find_pw/password", {
+    userId,
+    newPassword,
+    confirmNewPassword,
+  });
+  return res.data;
+};
+
 /** ✅ 내 정보 */
 export const fetchUserInfo = async (): Promise<UserResponseDto> => {
   const res = await api.get<UserResponseDto>("/auth/me");
