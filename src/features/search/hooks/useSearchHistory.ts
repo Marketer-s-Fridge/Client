@@ -2,11 +2,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { saveSearchKeyword,fetchPopularSearchKeywords } from "../api/searchHistory";
 import { SearchHistoryRequestDto,PopularSearchResponse } from "../types";
-
-export const isLoggedIn = () => {
-  if (typeof window === "undefined") return false;
-  return !!localStorage.getItem("accessToken");
-};
+import { isLoggedIn } from "@/utils/isLoggedIn";
 
 /** ✅ 최근 검색어 조회 (로그인 필요) */
 export const usePopularSearchKeywords = () => {

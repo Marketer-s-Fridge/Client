@@ -3,8 +3,10 @@ import { useQuery } from "@tanstack/react-query";
 import { useBookmarks } from "@/features/bookmarks/hooks/useBookmarks";
 import { fetchPostsByStatus } from "@/features/posts/api/postsApi";
 import { PostResponseDto } from "@/features/posts/types";
+import { isLoggedIn } from "@/utils/isLoggedIn";
 
 export function useBookmarkedPosts(selectedCategory: string | null) {
+  const loggedIn = isLoggedIn();
   const { bookmarkIds, isLoading: isBookmarkLoading } = useBookmarks();
 
   const {
@@ -14,10 +16,19 @@ export function useBookmarkedPosts(selectedCategory: string | null) {
   } = useQuery<PostResponseDto[]>({
     queryKey: ["posts", selectedCategory],
     queryFn: () => fetchPostsByStatus("PUBLISHED"),
-    staleTime: 60 * 1000,         // 1분 동안 재요청 X
-    gcTime: 5 * 60 * 1000,        // 캐시 5분 보관
-    refetchOnWindowFocus: false,  // 탭 이동 시 재요청 X
+    staleTime: 60 * 1000,
+    gcTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    enabled: loggedIn, // 🔥 로그인 안 되어 있으면 게시글 조회도 안 함
   });
+
+  if (!loggedIn) {
+    return {
+      data: [] as PostResponseDto[],
+      isLoading: false,
+      error: null as unknown as Error | null,
+    };
+  }
 
   const bookmarkedPosts = allPosts.filter((post) =>
     bookmarkIds.includes(post.id)
