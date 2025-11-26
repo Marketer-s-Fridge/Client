@@ -1,56 +1,15 @@
 @import "tailwindcss";
 
-/* :root 정의는 괜찮아 */
+/* ---------------- 기본 색, 안전 영역 ---------------- */
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
   color-scheme: light;
-}
 
-/* 이 부분 삭제하거나 주석 처리하세요
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-*/
-
-/* 모바일 섹션 기본 상태: 살짝 아래 + 작게 + 투명 */
-.mobile-fade-base {
-  opacity: 0;
-  transform: translateY(15px) scale(0.98);
-  transition: opacity 0.5s ease-out, transform 0.45s ease-out;
-  will-change: opacity, transform;
-}
-
-/* 화면에 들어올 때: 제자리 + 또렷 */
-.mobile-fade-visible {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-}
-
-/* 한 화면 꽉/정중앙 유틸 */
-.page-inner {
-  min-height: 100svh; /* 모바일 브라우저 UI 제외 실제 화면 높이 */
-  display: grid;
-  place-content: center; /* 수직/수평 중앙 정렬 */
-  padding-left: 5vw;
-  padding-right: 5vw;
-  margin-inline: auto;
-  width: min(100%, 680px); /* 모바일 가독 폭 제한 */
-}
-
-/* iOS 안전 영역 보정(옵션) */
-:root {
+  /* iOS 안전 영역 */
   --safe-top: env(safe-area-inset-top);
   --safe-bottom: env(safe-area-inset-bottom);
-}
-.safe-pt {
-  padding-top: max(var(--safe-top), 12px);
-}
-.safe-pb {
-  padding-bottom: max(var(--safe-bottom), 12px);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -59,6 +18,8 @@
     --foreground: #ededed;
   }
 }
+
+/* ---------------- 스크롤바 숨기기 ---------------- */
 
 .no-scrollbar::-webkit-scrollbar {
   display: none;
@@ -86,20 +47,32 @@
   scrollbar-width: none;
 }
 
+/* ---------------- 기본 바디 스타일 ---------------- */
+
+html,
 body {
-  background: #ffffff !important;
-  color: #000000 !important; /* ✅ 다크모드에서도 항상 검정색 글씨 */
-  font-family: "Pretendard", Helvetica, sans-serif;
-  /* @apply text-black font-pretendard; */
+  overscroll-behavior-y: none;
+  overscroll-behavior-x: none; /* 수평 체이닝 방지 */
 }
 
+body {
+  background: #ffffff !important;
+  color: #000000 !important; /* 다크모드여도 항상 검정 텍스트 */
+  font-family: "Pretendard", Helvetica, sans-serif;
+}
+
+/* Playfair를 따로 쓸 거면 @font-face도 같이 정의하고 사용 */
+/* 안 쓸 거면 이 클래스 자체를 삭제해도 됨 */
 .font-playfair {
-  font-family: var(--font-playfair);
+  font-family: "Playfair Display", "Times New Roman", serif;
 }
 
 .main-red {
   background-color: #ff4545;
 }
+
+/* ---------------- Pretendard 폰트 ---------------- */
+/* 전제: public/fonts 안에 실제 파일 존재해야 함 */
 
 @font-face {
   font-family: "Pretendard";
@@ -133,7 +106,6 @@ body {
   font-family: "Pretendard";
   src: url("/fonts/Pretendard-SemiBold.woff2") format("woff2"),
     url("/fonts/Pretendard-SemiBold.woff") format("woff");
-
   font-weight: 600;
   font-style: normal;
   font-display: swap;
@@ -143,10 +115,40 @@ body {
   font-family: "Pretendard";
   src: url("/fonts/Pretendard-Bold.woff2") format("woff2"),
     url("/fonts/Pretendard-Bold.woff") format("woff");
-
   font-weight: 700;
   font-style: normal;
   font-display: swap;
+}
+
+/* ---------------- 페이드/애니메이션 유틸 ---------------- */
+
+.mobile-fade-base {
+  opacity: 0;
+  transform: translateY(15px) scale(0.98);
+  transition: opacity 0.5s ease-out, transform 0.45s ease-out;
+  will-change: opacity, transform;
+}
+
+.mobile-fade-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.page-inner {
+  min-height: 100svh;
+  display: grid;
+  place-content: center;
+  padding-left: 5vw;
+  padding-right: 5vw;
+  margin-inline: auto;
+  width: min(100%, 680px);
+}
+
+.safe-pt {
+  padding-top: max(var(--safe-top), 12px);
+}
+.safe-pb {
+  padding-bottom: max(var(--safe-bottom), 12px);
 }
 
 .fade-in-section {
@@ -157,40 +159,36 @@ body {
 .fade-in-visible {
   opacity: 1;
 }
-/* 초기 상태 */
+
 .fade-in-section2 {
   opacity: 0;
   transform: translateY(30px);
   transition: opacity 0.8s ease-out, transform 0.8s ease-out;
 }
 
-/* 보이는 상태 */
 .fade-in-visible2 {
   opacity: 1;
   transform: translateY(0px);
 }
 
-/* 처음 상태: 살짝 아래+작게+블러 */
 .rise {
   opacity: 0;
   transform: translateY(24px) scale(0.96);
   filter: blur(6px);
 }
 
-/* 등장 상태: 또렷+제자리 */
 .rise-in {
   opacity: 1;
   transform: translateY(0) scale(1);
   filter: blur(0);
   transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1),
-    /* 살짝 스프링 느낌 */ opacity 600ms ease, filter 600ms ease;
+    opacity 600ms ease, filter 600ms ease;
 }
 
-/* 카드 안에서 이미지가 “마스크 위로 스르륵” 올라오는 효과 */
 .mask-reveal {
   overflow: hidden;
-  border-radius: 20px; /* 취향대로 */
-  background: rgba(0, 0, 0, 0.02); /* 살짝 병풍 느낌 */
+  border-radius: 20px;
+  background: rgba(0, 0, 0, 0.02);
 }
 .mask-reveal .art {
   transform: translateY(14%);
@@ -200,7 +198,6 @@ body {
   transform: translateY(0);
 }
 
-/* 살짝 살아있는 듯한 idle float */
 @keyframes floaty {
   0% {
     transform: translateY(0);
@@ -218,7 +215,6 @@ body {
   will-change: transform;
 }
 
-/* 살짝 그림자 튕김 */
 @keyframes dropShadowPop {
   0% {
     box-shadow: 0 0 0 rgba(0, 0, 0, 0);
@@ -231,7 +227,6 @@ body {
   animation: dropShadowPop 700ms ease forwards;
 }
 
-/* 섹션 내용이 아래에서 살짝 올라오면서 보이는 효과 */
 section .slide-enter {
   transform: translateY(20%);
   opacity: 0;
@@ -239,17 +234,15 @@ section .slide-enter {
 }
 section:is(:target, :hover, :focus-within),
 section:has(:is(h1, div):in-view) .slide-enter {
-} /* 옵션 */
+}
 
 @supports selector(:has(*)) {
-  /* 스크롤 스냅일 때 보이는 섹션만 활성화 (크로스브라우저 고려 필요) */
   section:has(h1:is(:hover, :focus, :active)) .slide-enter {
     transform: translateY(0);
     opacity: 1;
   }
 }
 
-/* 실무에선 JS로 in-view 제어가 안정적 */
 .in-view .slide-enter {
   transform: translateY(0);
   opacity: 1;
@@ -260,12 +253,6 @@ section:has(:is(h1, div):in-view) .slide-enter {
 }
 .overscroll-contain {
   overscroll-behavior: contain;
-}
-/* 안드 크롬 P2R 방지 + 스크롤 체이닝 차단 */
-html,
-body {
-  overscroll-behavior-y: none;
-  overscroll-behavior-x: none; /* 수평 체이닝도 방지 */
 }
 
 .scroll-anchor-none {

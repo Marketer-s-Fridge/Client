@@ -1,34 +1,13 @@
+// src/app/layout.tsx
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import localFont from "next/font/local";
 import "react-calendar/dist/Calendar.css";
 import Providers from "./providers";
 import ChunkErrorHandler from "@/components/chunkErrorHandler";
 
-const pretendard = localFont({
-  src: [
-    {
-      path: "../fonts/Pretendard-Regular.ttf",
-      weight: "400",
-      style: "normal",
-    },
-  ],
-  display: "swap",
-  variable: "--font-pretendard",
-});
-
-const playFair = localFont({
-  src: [
-    {
-      path: "../fonts/PlayfairDisplay-Regular.ttf",
-      weight: "400",
-      style: "normal",
-    },
-  ],
-  display: "swap",
-  variable: "--font-playfair",
-});
+// ✅ next/font/local 전부 제거
+// import localFont from "next/font/local";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -39,6 +18,10 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
+
+// ✅ Pretendard / Playfair 는 globals.css 의 @font-face + class 로 적용
+//  - body: font-family: "Pretendard", ...
+//  - .font-playfair: font-family: "Playfair Display", ...
 
 export const metadata: Metadata = {
   title: "Marketer's Fridge",
@@ -51,9 +34,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="ko">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${playFair.variable} ${pretendard.variable} font-pretendard antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} font-pretendard antialiased`}
       >
         {/* ✅ 전역 ChunkLoadError 감지 */}
         <ChunkErrorHandler />
