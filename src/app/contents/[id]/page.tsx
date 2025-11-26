@@ -318,7 +318,7 @@ export default function CardNewsDetailPage() {
 
           {/* 오른쪽 텍스트 + 버튼 */}
           <div
-            className="w-full md:w-[55%] flex flex-col mb-15 md:mb-0"
+            className="w-full md:w-[55%] flex flex-col"
             style={rightHeight ? { height: rightHeight } : undefined}
           >
             {/* 제목/메타/부제목 */}
