@@ -13,8 +13,8 @@ module.exports = {
           mainRed: "#FF4545",
         },
         fontFamily: {
-          playfair: ["var(--font-playfair)"],
-          pretendard: ["var(--font-pretendard)"], // 이 형태여야 함
+          playfair: ["var(--font-playfair)"], // 이건 따로 변수 정의해줘야 함(아래 참고)
+          pretendard: ["Pretendard", "system-ui", "sans-serif"], // ✅ 여기 수정
         },
       },
     },
