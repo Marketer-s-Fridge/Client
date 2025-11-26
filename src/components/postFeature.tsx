@@ -6,6 +6,11 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import type { PostResponseDto } from "@/features/posts/types";
 import SaveToFridgeButton from "@/components/saveToFridgeButton";
+import {
+  isMetaLine,
+  normalizeMetaLine,
+  splitContentLines,
+} from "@/utils/metaLine";
 
 interface PostFeatureProps {
   title: string;
@@ -19,6 +24,9 @@ const PostFeature: React.FC<PostFeatureProps> = ({ title, item, fallback }) => {
   if (!item) return null;
 
   const thumb = item.images?.[0] ?? fallback;
+
+  // 본문을 줄 단위로 분리 (훅 아님, 그냥 유틸 함수)
+  const contentLines = splitContentLines(item.content);
 
   return (
     <section className="w-full">
@@ -85,10 +93,36 @@ const PostFeature: React.FC<PostFeatureProps> = ({ title, item, fallback }) => {
             )}
 
             {/* 본문 (스크롤 영역) */}
-            {item.content && (
-              <p className="text-sm sm:text-base text-gray-600 whitespace-pre-line">
-                {item.content}
-              </p>
+            {contentLines.length > 0 && (
+              <div className="text-sm sm:text-base text-gray-600 leading-relaxed">
+                {contentLines.map((line, idx) => {
+                  const trimmed = line.trim();
+
+                  // 빈 줄은 간격용
+                  if (trimmed === "") {
+                    return <div key={idx} className="h-2 sm:h-2.5" />;
+                  }
+
+                  // 에디터 / 출처 라인
+                  if (isMetaLine(trimmed)) {
+                    return (
+                      <p
+                        key={idx}
+                        className="mt-2 text-right text-[13px] sm:text-sm font-medium text-gray-400"
+                      >
+                        {normalizeMetaLine(trimmed)}
+                      </p>
+                    );
+                  }
+
+                  // 일반 본문 라인
+                  return (
+                    <p key={idx} className="mb-1">
+                      {line}
+                    </p>
+                  );
+                })}
+              </div>
             )}
           </div>
 

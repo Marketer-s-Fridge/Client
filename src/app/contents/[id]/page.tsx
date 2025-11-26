@@ -13,6 +13,11 @@ import { usePost } from "@/features/posts/hooks/usePost";
 import { usePostViewRecord } from "@/features/views/hooks/useMostViewedCategory";
 import ConfirmModal from "@/components/confirmModal";
 import ShareButton from "@/components/shareButton";
+import {
+  isMetaLine,
+  normalizeMetaLine,
+  splitContentLines,
+} from "@/utils/metaLine";
 
 export default function CardNewsDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -73,25 +78,11 @@ export default function CardNewsDetailPage() {
     return /\.(mp4|mov|webm|ogg|m4v)$/i.test(clean);
   };
 
-  // 본문 줄 단위 분리
-  const contentLines = useMemo(() => {
-    if (!post?.content) return [];
-    return post.content.split("\n");
-  }, [post?.content]);
-
-  const isMetaLine = (line: string) => {
-    const trimmed = line.trim();
-    return (
-      trimmed.startsWith("에디터 |") ||
-      trimmed.startsWith("에디터|") ||
-      trimmed.startsWith("에디터 ㅣ") ||
-      trimmed.startsWith("에디터ㅣ") ||
-      trimmed.startsWith("출처 |") ||
-      trimmed.startsWith("출처|") ||
-      trimmed.startsWith("출처 ㅣ") ||
-      trimmed.startsWith("출처ㅣ")
-    );
-  };
+  // 본문 줄 단위 분리 (항상 훅 레벨에서 호출)
+  const contentLines = useMemo(
+    () => splitContentLines(post?.content),
+    [post?.content]
+  );
 
   // 왼쪽 이미지 박스 높이 → 오른쪽 섹션 전체 높이로 사용 (md 이상에서만)
   useEffect(() => {
@@ -373,7 +364,7 @@ export default function CardNewsDetailPage() {
                         key={idx}
                         className="mt-2 text-right text-[13px] md:text-sm font-medium text-gray-400"
                       >
-                        {trimmed}
+                        {normalizeMetaLine(trimmed)}
                       </p>
                     );
                   }
