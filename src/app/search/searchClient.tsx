@@ -53,7 +53,7 @@ export default function SearchClient() {
   // ✅ 검색 결과 없으면 /noResult 로 자동 이동
   useEffect(() => {
     if (!isLoading && !error && filteredContents.length === 0) {
-      router.push(`/noResult?q=${encodeURIComponent(query)}`);
+      router.push(`/search/noResult?q=${encodeURIComponent(query)}`);
     }
   }, [isLoading, error, filteredContents, query, router]);
 
