@@ -8,10 +8,23 @@ import {
 
 /** ✅ 최근 본 콘텐츠 목록 (GET /api/most-viewed-category/recentViews) */
 export const fetchRecentViews = async (): Promise<RecentViewedResponseDto[]> => {
-  const res = await api.get<RecentViewedResponseDto[]>(
-    "/api/most-viewed-category/recentViews"
-  );
-  return res.data;
+  console.log("📌 [fetchRecentViews] 요청 시작");
+
+  try {
+    const res = await api.get<RecentViewedResponseDto[]>(
+      "/api/most-viewed-category/recentViews"
+    );
+
+    console.log(
+      "📌 [fetchRecentViews] 요청 성공:",
+      Array.isArray(res.data) ? `데이터 ${res.data.length}개` : res.data
+    );
+
+    return res.data;
+  } catch (error) {
+    console.log("❌ [fetchRecentViews] 요청 실패:", error);
+    throw error;
+  }
 };
 
 /** ✅ 카테고리 별 조회수 통계 (GET /api/most-viewed-category/stats) */
