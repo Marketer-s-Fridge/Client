@@ -204,7 +204,7 @@ export default function CardNewsDetailPage() {
       <Breadcrumb category={category} />
 
       {/* 본문 */}
-      <main className="flex justify-center px-4 md:px-[8%] lg:px-[17%] mt-10 md:mb-10 min-h-[70vh]">
+      <main className="flex justify-center px-4 md:px-[8%] lg:px-[17%] mt-10 mb-0">
         <div
           className="
             w-full max-w-screen-lg 
