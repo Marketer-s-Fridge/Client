@@ -1,12 +1,14 @@
 // src/app/login/findPwd/resetPwd/page.tsx
 import ResetPwdPageClient from "./resetPwdPageClient";
 
-type ResetPwdPageProps = {
-  searchParams?: { [key: string]: string | string[] | undefined };
-};
-
-export default function ResetPwdPage({ searchParams }: ResetPwdPageProps) {
-  const raw = searchParams?.userId;
+export default async function ResetPwdPage({
+  searchParams,
+}: {
+  // ✅ Next 15가 내부적으로 기대하는 형태: Promise 기반
+  searchParams?: Promise<Record<string, string | string[]>>;
+}) {
+  const params = (await searchParams) ?? {};
+  const raw = params.userId;
   const userId =
     typeof raw === "string" ? raw : Array.isArray(raw) ? raw[0] : "";
 
