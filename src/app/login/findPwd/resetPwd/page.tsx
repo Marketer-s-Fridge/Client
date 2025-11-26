@@ -1,15 +1,14 @@
-// app/login/findPwd/resetPwd/page.tsx
+// src/app/login/findPwd/resetPwd/page.tsx
 import ResetPwdPageClient from "./resetPwdPageClient";
+
 type ResetPwdPageProps = {
-  searchParams: {
-    userId?: string | string[];
-    [key: string]: string | string[] | undefined;
-  };
+  searchParams?: { [key: string]: string | string[] | undefined };
 };
 
 export default function ResetPwdPage({ searchParams }: ResetPwdPageProps) {
-  const rawUserId = searchParams.userId;
-  const userId = Array.isArray(rawUserId) ? rawUserId[0] : rawUserId ?? "";
+  const raw = searchParams?.userId;
+  const userId =
+    typeof raw === "string" ? raw : Array.isArray(raw) ? raw[0] : "";
 
   return <ResetPwdPageClient userId={userId} />;
 }

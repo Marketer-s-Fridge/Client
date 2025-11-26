@@ -1,4 +1,4 @@
-// app/login/findPwd/resetPwd/ResetPwdPageClient.tsx
+// src/app/login/findPwd/resetPwd/resetPwdPageClient.tsx
 "use client";
 
 import {
@@ -13,9 +13,9 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useResetPasswordByFindPw } from "@/features/auth/hooks/useResetPasswordByFindPw";
 
-interface ResetPwdPageClientProps {
+type ResetPwdPageClientProps = {
   userId: string;
-}
+};
 
 const ResetPwdPageClient: React.FC<ResetPwdPageClientProps> = ({ userId }) => {
   const [newPwd, setNewPwd] = useState("");
