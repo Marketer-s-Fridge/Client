@@ -60,8 +60,8 @@ export default function NoResultClient() {
           />
         </div>
 
-        <section className="w-9/10 md:w-5/7 justify-self-center text-left py-12">
-          <h3 className="text-lg md:text-2xl text-center font-bold mb-10">
+        <section className="w-9/10 md:w-5/7 mx-auto flex flex-col items-center text-center py-12">
+          <h3 className="text-lg justify-self-center md:text-2xl text-center font-bold mb-10">
             이런 콘텐츠는 어떠세요?
           </h3>
 

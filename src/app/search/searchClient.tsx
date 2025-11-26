@@ -1,8 +1,8 @@
-// src/app/search/searchClient.tsx (예시 경로)
+// src/app/search/SearchClient.tsx
 "use client";
 
 import React, { useState, useMemo, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import SearchInput from "@/components/searchInput";
 import ScrollToTopButton from "@/components/scrollToTopButton";
 import CategoryTabBar from "@/components/categoryTabBar";
@@ -14,6 +14,8 @@ const PAGE_SIZE = 9; // 한 페이지 카드 개수 (3열 * 3행 기준)
 
 export default function SearchClient() {
   const searchParams = useSearchParams();
+  const router = useRouter();
+
   const query = searchParams.get("q")?.trim() || "";
 
   const [selectedSort, setSelectedSort] = useState("최신순");
@@ -23,18 +25,17 @@ export default function SearchClient() {
   // ✅ 전체 게시물(PUBLISHED) 조회
   const { data: posts, isLoading, error } = usePosts();
 
-  // ✅ 검색어 기반 필터링 (지금은 카테고리/정렬은 실제 필터에 아직 안 씀 — 원래 코드도 안 쓰고 있었음)
+  // ✅ 검색어 기반 필터링
   const filteredContents = useMemo(() => {
     if (!posts) return [];
 
-    // 검색어 없으면 전체 보기
     if (!query) return posts;
 
     const lower = query.toLowerCase();
     return posts.filter((item) => item.title.toLowerCase().includes(lower));
   }, [posts, query]);
 
-  // 검색어/정렬/카테고리 바뀌면 페이지 1로 리셋
+  // 검색 조건 바뀌면 페이지 1로 리셋
   useEffect(() => {
     setCurrentPage(1);
   }, [query, selectedSort, selectedCategory]);
@@ -49,9 +50,16 @@ export default function SearchClient() {
     return filteredContents.slice(start, start + PAGE_SIZE);
   }, [filteredContents, currentPage]);
 
+  // ✅ 검색 결과 없으면 /noResult 로 자동 이동
+  useEffect(() => {
+    if (!isLoading && !error && filteredContents.length === 0) {
+      router.push(`/noResult?q=${encodeURIComponent(query)}`);
+    }
+  }, [isLoading, error, filteredContents, query, router]);
+
   return (
     <>
-      {/* 검색 영역 (PC) */}
+      {/* PC 상단 검색 영역 */}
       <section className="hidden md:flex flex-col items-center main-red pb-10 px-4">
         <SearchInput showInstagramButton={false} />
       </section>
@@ -83,29 +91,22 @@ export default function SearchClient() {
           </p>
         )}
 
-        {!isLoading && !error && (
+        {!isLoading && !error && filteredContents.length > 0 && (
           <>
-            {filteredContents.length > 0 ? (
-              <>
-                <CardGrid
-                  items={pagedContents.map((post) => ({
-                    id: post.id,
-                    title: post.title,
-                    imageUrl: post.images?.[0], // ✅ 첫 번째 이미지 사용
-                  }))}
-                  columns={3}
-                />{" "}
-                <Pagination
-                  currentPage={currentPage}
-                  totalPages={totalPages}
-                  onPageChange={(page) => setCurrentPage(page)}
-                />
-              </>
-            ) : (
-              <p className="text-center text-gray-500 py-12">
-                ‘{query}’에 해당하는 결과가 없습니다 😢
-              </p>
-            )}
+            <CardGrid
+              items={pagedContents.map((post) => ({
+                id: post.id,
+                title: post.title,
+                imageUrl: post.images?.[0],
+              }))}
+              columns={3}
+            />
+
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={(page) => setCurrentPage(page)}
+            />
           </>
         )}
 
