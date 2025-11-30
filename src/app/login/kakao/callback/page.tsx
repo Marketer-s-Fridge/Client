@@ -1,10 +1,10 @@
-// src/app/auth/kakao/callback/page.tsx
+// src/app/login/kakao/callback/page.tsx
 "use client";
 
 import { useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
-import api from "@/lib/apiClient";
+import axios from "axios";
 
 interface KakaoLoginResponse {
   token: string;
@@ -27,16 +27,16 @@ function KakaoCallbackInner() {
 
     const doLogin = async () => {
       try {
-        const res = await api.get("/auth/kakao/callback", {
+        // ✅ 토큰 필요 없는 최초 로그인 요청이므로 apiClient 말고 axios 직접 사용
+        const res = await axios.get<KakaoLoginResponse>("/auth/kakao/callback", {
           params: { code },
         });
 
-        const data = res.data as KakaoLoginResponse;
+        const data = res.data;
 
         // JWT 저장
         localStorage.setItem("accessToken", data.token);
 
-        // ✅ isNewUser 기준으로만 분기
         // 신규 유저면 추가 정보 입력 페이지로
         if (data.isNewUser) {
           router.replace("/signUp/kakao");
@@ -46,7 +46,8 @@ function KakaoCallbackInner() {
         // 기존 유저면 홈으로
         router.replace("/");
       } catch (e) {
-        console.error(e);
+        // ⬇ 여기 타입 지정 아예 안 함 + 프로퍼티 접근 안 함 → TS 에러 안 남
+        console.error("KAKAO CALLBACK ERROR:", e);
         alert("카카오 로그인 중 오류가 발생했습니다.");
         router.replace("/login");
       }
