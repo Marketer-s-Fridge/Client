@@ -92,8 +92,7 @@ const KakaoExtraSignUpPage: React.FC = () => {
 
       // ✅ apiClient 대신 axios로 직접 요청
       await axios.patch(
-        // 서버 주소 맞춰서 사용 (예: https://api.marketersfridge.co.kr/auth/profile)
-        `http://marketersfridge.co.kr/auth/profile`,
+        "/auth/profile",
         {
           name: name.trim(),
           nickname: nickname.trim(),
