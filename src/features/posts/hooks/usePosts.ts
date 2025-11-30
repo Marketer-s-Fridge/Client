@@ -8,9 +8,12 @@ import { PostResponseDto } from "../types";
 export interface Content {
   id: number;
   title: string;
+  subTitle?: string;
+  category?: string;                 // ← 카테고리 필터용 (옵셔널로 두면 mock도 살고)
   images: string[];
+  publishedAt?: string | null;       // ← 정렬용
+  createdAt?: string;                // ← 정렬용 fallback
 }
-
 // 반환 타입
 type UsePostsResult = {
   data: Content[];
