@@ -36,17 +36,14 @@ pipeline {
     stage('Deploy'){
       steps {
         sshagent(['fridge']) {
-          sh '''
-                    # Jenkins 컨테이너에서 known_hosts 세팅
-            mkdir -p ~/.ssh
-            ssh-keyscan -H 15.165.137.5 >> ~/.ssh/known_hosts
+         sh '''
+        # Jenkins 컨테이너에서 known_hosts 세팅
+        mkdir -p ~/.ssh
+        ssh-keyscan -H 15.165.137.5 >> ~/.ssh/known_hosts
 
-         ssh -o StrictHostKeyChecking=no ec2-user@15.165.137.5 '
-              cd /home/ec2-user/app &&
-              docker-compose pull web &&
-              docker-compose up -d web
-          "
-          '''
+        # EC2에 접속해서 docker-compose 실행
+        ssh -o StrictHostKeyChecking=no ec2-user@15.165.137.5 "cd /home/ec2-user/app && docker-compose pull web && docker-compose up -d web"
+      '''
         }
       }
     }
