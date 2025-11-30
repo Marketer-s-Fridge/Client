@@ -7,7 +7,7 @@ import { Suspense } from "react";
 import api from "@/lib/apiClient";
 
 interface KakaoLoginResponse {
-  accessToken: string;
+  token: string;
   isNewUser: boolean;
 }
 
@@ -34,7 +34,7 @@ function KakaoCallbackInner() {
         const data = res.data as KakaoLoginResponse;
 
         // JWT 저장
-        localStorage.setItem("accessToken", data.accessToken);
+        localStorage.setItem("accessToken", data.token);
 
         // 회원가입에서 시작했는지 or 로그인에서 시작했는지
         const flow =
