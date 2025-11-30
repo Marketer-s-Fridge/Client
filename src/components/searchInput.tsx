@@ -12,6 +12,9 @@ import { usePosts } from "@/features/posts/hooks/usePosts";
 type SearchInputProps = {
   showInstagramButton?: boolean;
 };
+type SaveSearchKeywordInput = {
+  keyword: string;
+};
 
 export default function SearchInput({
   showInstagramButton = true,
@@ -23,7 +26,7 @@ export default function SearchInput({
   const { mutate: saveSearchKeyword } = useSaveSearchKeyword();
 
   // ✅ 전체 게시물 조회 (PUBLISHED)
-  const { data: posts, isLoading } = usePosts(); // 기본값으로 서버 모드 사용
+  const { isLoading } = usePosts(); // 기본값으로 서버 모드 사용
 
   const handleSearch = (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -34,29 +37,15 @@ export default function SearchInput({
       return;
     }
 
-    // 아직 게시물 로딩 중이면 검색 막기 (원하면 이 부분은 빼도 됨)
     if (isLoading) {
       alert("콘텐츠를 불러오는 중입니다. 잠시 후 다시 시도해주세요.");
       return;
     }
 
-    // ✅ 검색어 저장 (결과 여부와 상관없이 기록)
-    saveSearchKeyword({
-      keyword: trimmed,
-      // ex) userId, type 등 필요하면 여기서 같이 넘기기
-    } as any);
-
-    // ✅ 전체 게시물 기반으로 검색 결과 존재 여부 확인
-    const hasResult =
-      posts?.some((post) => post.title.includes(trimmed)) ?? false;
-
-    if (hasResult) {
-      router.push(`/search?q=${encodeURIComponent(trimmed)}`);
-    } else {
-      router.push(`/search/noResult?q=${encodeURIComponent(trimmed)}`);
-    }
+    const payload: SaveSearchKeywordInput = { keyword: trimmed };
+    saveSearchKeyword(payload);
+    router.push(`/search?q=${encodeURIComponent(trimmed)}`);
   };
-
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") handleSearch(e);
   };
