@@ -6,13 +6,23 @@ pipeline {
     TAG = "latest"
     COMPOSE_DIR = "/home/ec2-user/app"
 
-     // ✅ 카카오 env (Jenkins Credentials에서 가져오기)
     NEXT_PUBLIC_KAKAO_REST_API_KEY = credentials('KAKAO_REST_API_KEY')
     NEXT_PUBLIC_KAKAO_REDIRECT_URI = 'http://marketersfridge.co.kr/login/kakao/callback'
   }
   stages {
     stage('Checkout'){ steps { checkout scm } }
-    stage('Build Image'){ steps { sh 'docker build -t $IMAGE:$TAG .' } }
+
+    stage('Build Image'){ 
+      steps { 
+        sh """
+          docker build \
+            --build-arg NEXT_PUBLIC_KAKAO_REST_API_KEY=$NEXT_PUBLIC_KAKAO_REST_API_KEY \
+            --build-arg NEXT_PUBLIC_KAKAO_REDIRECT_URI=$NEXT_PUBLIC_KAKAO_REDIRECT_URI \
+            -t $IMAGE:$TAG .
+        """
+      } 
+    }
+
     stage('Push Image'){
       steps {
         withCredentials([usernamePassword(credentialsId: 'DOCKERHUB_CRED',
@@ -22,9 +32,10 @@ pipeline {
         }
       }
     }
+
     stage('Deploy'){
       steps {
-        sshagent(['fridge']) {   // 👈 여기 ID를 fridge로 교체
+        sshagent(['fridge']) {
           sh '''
           ssh ec2-user@15.165.137.5 "
             cd $COMPOSE_DIR &&
