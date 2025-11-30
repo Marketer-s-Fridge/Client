@@ -50,7 +50,7 @@ const SignUpPage: React.FC = () => {
             </button>
 
             {/* ✅ 네이버로 시작하기 (아직 준비중) */}
-            <button onClick={() => setShowSocialModal(true)}>
+            {/* <button onClick={() => setShowSocialModal(true)}>
               <Image
                 src="/icons/naver-join-bt.png"
                 alt="네이버로 시작하기"
@@ -58,10 +58,10 @@ const SignUpPage: React.FC = () => {
                 width={600}
                 height={200}
               />
-            </button>
+            </button> */}
 
             {/* ✅ Google로 시작하기 (아직 준비중) */}
-            <button onClick={() => setShowSocialModal(true)}>
+            {/* <button onClick={() => setShowSocialModal(true)}>
               <Image
                 src="/icons/google-join-bt.png"
                 alt="Google로 시작하기"
@@ -69,7 +69,7 @@ const SignUpPage: React.FC = () => {
                 width={600}
                 height={200}
               />
-            </button>
+            </button> */}
 
             {/* ✅ 이메일로 시작하기 (실제 라우팅) */}
             <button onClick={() => router.push("/signUp/email")}>

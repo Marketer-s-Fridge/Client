@@ -358,7 +358,7 @@ const LoginPage: React.FC = () => {
                   />
                 </button>
 
-                <button
+                {/* <button
                   className="cursor-pointer"
                   onClick={() => setShowSocialModal(true)}
                 >
@@ -369,8 +369,9 @@ const LoginPage: React.FC = () => {
                     width={500}
                     height={100}
                   />
-                </button>
-                <button
+                </button> */}
+
+                {/* <button
                   className="cursor-pointer"
                   onClick={() => setShowSocialModal(true)}
                 >
@@ -381,7 +382,7 @@ const LoginPage: React.FC = () => {
                     width={500}
                     height={100}
                   />
-                </button>
+                </button> */}
               </div>
             </>
           )}
