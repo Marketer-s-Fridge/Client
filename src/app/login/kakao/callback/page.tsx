@@ -29,7 +29,7 @@ function KakaoCallbackInner() {
       try {
         // ✅ 토큰 필요 없는 최초 로그인 요청이므로 apiClient 말고 axios 직접 사용
         const res = await axios.get<KakaoLoginResponse>(
-          "http://marketersfridge.co.kr/auth/kakao/callback",
+          "/auth/kakao/callback",
           {
             params: { code },
           }
