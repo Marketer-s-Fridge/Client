@@ -12,7 +12,7 @@ import {
 import CustomDropdown from "@/components/customDropdown";
 import ConfirmModal from "@/components/confirmModal";
 import { useRouter } from "next/navigation";
-import api from "@/lib/apiClient";
+import axios from "axios"; // ✅ apiClient 대신 axios 직접 사용
 
 // EmailJoinPage에서 사용한 것처럼 InputRow 따로 뺌
 const InputRow = ({
@@ -80,15 +80,32 @@ const KakaoExtraSignUpPage: React.FC = () => {
 
     if (Object.values(newErrors).some(Boolean)) return;
 
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      alert("로그인 정보가 없습니다. 다시 로그인 해주세요.");
+      router.replace("/login");
+      return;
+    }
+
     try {
       setSubmitting(true);
 
-      await api.post("/auth/profile", {
-        name: name.trim(),
-        nickname: nickname.trim(),
-        birth: birthday,
-        gender,
-      });
+      // ✅ apiClient 대신 axios로 직접 요청
+      await axios.post(
+        // 서버 주소 맞춰서 사용 (예: https://api.marketersfridge.co.kr/auth/profile)
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/profile`,
+        {
+          name: name.trim(),
+          nickname: nickname.trim(),
+          birth: birthday,
+          gender,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       setModalOpen(true);
     } catch (error) {
