@@ -1,6 +1,7 @@
 import { useRouter, usePathname } from "next/navigation";
 import { Dispatch, SetStateAction } from "react";
 import { useAuthStatus } from "@/features/auth/hooks/useAuthStatus";
+import Image from "next/image";
 
 interface MobileMenuProps {
   menuOpen: boolean;
@@ -43,7 +44,11 @@ export const MobileMenu = ({ menuOpen, setMenuOpen }: MobileMenuProps) => {
           transition-transform duration-300 ease-out
           flex flex-col
           ${menuOpen ? "translate-x-0" : "translate-x-full"}
-          ${menuOpen ? "shadow-2xl border-l border-gray-100" : "shadow-none border-l border-transparent"}
+          ${
+            menuOpen
+              ? "shadow-2xl border-l border-gray-100"
+              : "shadow-none border-l border-transparent"
+          }
         `}
         onClick={(e) => e.stopPropagation()}
       >
@@ -69,12 +74,26 @@ export const MobileMenu = ({ menuOpen, setMenuOpen }: MobileMenuProps) => {
         <div className="px-5 py-3 border-b border-gray-100">
           {isAuthenticated ? (
             <div className="flex items-center gap-2">
-              <div className="h-7 w-7 rounded-full bg-red-100 flex items-center justify-center text-[11px] font-semibold text-red-500">
-                {user?.id?.[0]?.toUpperCase() ?? "U"}
-              </div>
+              {/* 프로필 이미지 or 이니셜 */}
+              {user?.profileImageUrl ? (
+                <div className="relative h-7 w-7 rounded-full overflow-hidden bg-gray-100">
+                  <Image
+                    src={user.profileImageUrl}
+                    alt={user.nickname ?? user.id ?? "프로필"}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+              ) : (
+                <div className="h-7 w-7 rounded-full bg-red-100 flex items-center justify-center text-[11px] font-semibold text-red-500">
+                  {(user?.nickname ?? user?.id ?? "U")[0]?.toUpperCase()}
+                </div>
+              )}
+
+              {/* 닉네임/ID 텍스트 */}
               <div className="flex flex-col">
                 <span className="text-xs font-semibold text-gray-800">
-                  {user?.id}
+                  {user?.nickname ?? user?.id}
                 </span>
                 <span className="text-[11px] text-gray-400">로그인 상태</span>
               </div>
