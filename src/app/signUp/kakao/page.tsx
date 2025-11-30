@@ -12,7 +12,7 @@ import {
 import CustomDropdown from "@/components/customDropdown";
 import ConfirmModal from "@/components/confirmModal";
 import { useRouter } from "next/navigation";
-import axios from "axios"; // ✅ apiClient 대신 axios 직접 사용
+import { updateKakaoExtraProfile } from "@/features/auth/api/authApi";
 
 // EmailJoinPage에서 사용한 것처럼 InputRow 따로 뺌
 const InputRow = ({
@@ -90,20 +90,12 @@ const KakaoExtraSignUpPage: React.FC = () => {
     try {
       setSubmitting(true);
 
-      // ✅ apiClient 대신 axios로 직접 요청
-      await axios.patch(
-        "/auth/profile",
-        {
-          name: name.trim(),
-          nickname: nickname.trim(),
-          birthday: birthdayStr, // ← 여기
-          gender,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+      // ✅ 공용 authApi 함수 호출 (인터셉터에서 토큰 자동 첨부)
+      await updateKakaoExtraProfile(
+        name.trim(),
+        nickname.trim(),
+        birthdayStr,
+        gender
       );
 
       setModalOpen(true);

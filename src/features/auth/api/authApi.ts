@@ -15,6 +15,7 @@ const AUTH_REQUIRED_PATHS = [
   "/auth/profile-image",
   "/auth/update",
   "/auth/password",
+  "/auth/profile", // ← 이거
 ];
 
 /** ✅ Axios 인스턴스 */
@@ -280,5 +281,49 @@ export const verifyEmailCodeApi = async (
   const res = await api.get<string>("/auth/verify_code", {
     params: { email, code },
   });
+  return res.data;
+};
+
+// 맨 아래 쯤에 추가
+export interface KakaoLoginResponse {
+  token: string;
+  isNewUser: boolean;
+}
+
+/** ✅ 카카오 로그인 (코드 -> JWT) */
+export const kakaoLogin = async (
+  code: string
+): Promise<KakaoLoginResponse> => {
+  const res = await api.get<KakaoLoginResponse>("/auth/kakao/callback", {
+    params: { code },
+  });
+
+  const { token, isNewUser } = res.data;
+
+  if (!token) {
+    console.error("🚨 카카오 로그인 응답에 token 없음:", res.data);
+    throw new Error("카카오 로그인 토큰 없음");
+  }
+
+  // 공통 로그인 로직과 맞추고 싶으면 여기서도 저장
+  localStorage.setItem("accessToken", token);
+
+  return { token, isNewUser };
+};
+
+/** ✅ 카카오 추가 정보 입력 (JWT 필요) */
+export const updateKakaoExtraProfile = async (
+  name: string,
+  nickname: string,
+  birthday: string,
+  gender: string
+): Promise<string> => {
+  const res = await api.patch<string>("/auth/profile", {
+    name,
+    nickname,
+    birthday,
+    gender,
+  });
+
   return res.data;
 };
