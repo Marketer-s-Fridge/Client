@@ -71,19 +71,15 @@ export function usePosts(isMock: boolean = USE_MOCK): UsePostsResult {
   // DTO → Content[] 변환
   // ---------------------
   const mapped: Content[] =
-    data?.map((post) => {
-      const p = post as any;
-      const images: string[] =
-        p.images ??
-        p.imageUrls ??
-        (p.thumbnailUrl ? [p.thumbnailUrl] : []);
-
-      return {
-        id: p.id,
-        title: p.title,
-        images: images ?? [],
-      };
-    }) ?? [];
+    data?.map((post) => ({
+      id: post.id,
+      title: post.title,
+      subTitle: post.subTitle,
+      category: post.category,
+      images: post.images ?? [],
+      publishedAt: post.publishedAt,
+      createdAt: post.createdAt,
+    })) ?? [];
 
   return {
     data: mapped,
