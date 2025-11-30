@@ -46,8 +46,20 @@ export default function NoResultClient() {
       />
 
       <section className="px-[7%] lg:px-[17%] py-18 text-center">
-        <h1 className="text-xl md:text-2xl font-bold mb-10">
-          ‘{query || " "}’에 대한 콘텐츠가 아직 준비되지 않았습니다.
+        <h1
+          className="
+    text-xl md:text-2xl font-bold mb-10
+    text-center
+  "
+        >
+          <span className="md:hidden">
+            ‘{query || " "}’에 대한 콘텐츠가<br />
+            아직 준비되지 않았습니다.
+          </span>
+
+          <span className="hidden md:inline">
+            ‘{query || " "}’에 대한 콘텐츠가 아직 준비되지 않았습니다.
+          </span>
         </h1>
 
         <div className="flex justify-center mb-8">
