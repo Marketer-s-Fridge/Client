@@ -36,16 +36,9 @@ function KakaoCallbackInner() {
         // JWT 저장
         localStorage.setItem("accessToken", data.token);
 
-        // 회원가입에서 시작했는지 or 로그인에서 시작했는지
-        const flow =
-          sessionStorage.getItem("kakaoFlow") === "signup"
-            ? "signup"
-            : "login";
-
-        sessionStorage.removeItem("kakaoFlow");
-
-        // 1) signup flow or 2) 백엔드에서 신규유저라고 보낸 경우 → 추가정보 입력
-        if (flow === "signup" || data.isNewUser) {
+        // ✅ isNewUser 기준으로만 분기
+        // 신규 유저면 추가 정보 입력 페이지로
+        if (data.isNewUser) {
           router.replace("/signUp/kakao");
           return;
         }
