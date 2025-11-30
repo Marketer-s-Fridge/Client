@@ -204,8 +204,8 @@ export const GenderRadioGroup: React.FC<GenderRadioGroupProps> = ({
   value,
   onChange,
   options = [
-    { value: "male", label: "남성" },
-    { value: "female", label: "여성" },
+    { value: "MALE", label: "남성" },
+    { value: "FEMALE", label: "여성" },
   ],
   required = false,
   error,
