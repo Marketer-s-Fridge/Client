@@ -1,16 +1,20 @@
 // src/app/login/kakao/callback/page.tsx
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense } from "react";
 import { kakaoLogin } from "@/features/auth/api/authApi";
 
 function KakaoCallbackInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const isCalledRef = useRef(false); // ✅ 중복 호출 방지 플래그
 
   useEffect(() => {
+    // 이미 한 번 실행됐으면 더 이상 호출 X
+    if (isCalledRef.current) return;
+    isCalledRef.current = true;
+
     const code = searchParams.get("code");
 
     if (!code) {
@@ -21,10 +25,10 @@ function KakaoCallbackInner() {
 
     const doLogin = async () => {
       try {
-        // ✅ 이제 axios 생짜 말고, 공용 api 인스턴스 사용!
+        // ✅ 공용 kakaoLogin API 사용
         const { token, isNewUser } = await kakaoLogin(code);
 
-        // 혹시 kakaoLogin에서 localStorage 안 건드리게 하고 싶으면 여기에 둬도 됨
+        // ✅ 액세스 토큰 저장
         localStorage.setItem("accessToken", token);
 
         if (isNewUser) {
