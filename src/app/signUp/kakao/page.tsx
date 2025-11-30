@@ -44,7 +44,7 @@ const KakaoExtraSignUpPage: React.FC = () => {
   // 입력값
   const [name, setName] = useState("");
   const [nickname, setNickname] = useState("");
-  const [birth, setBirth] = useState({ year: "", month: "", day: "" });
+  const [birthday, setBirthday] = useState({ year: "", month: "", day: "" });
   const [gender, setGender] = useState("");
 
   const [submitting, setSubmitting] = useState(false);
@@ -54,7 +54,7 @@ const KakaoExtraSignUpPage: React.FC = () => {
   const [errors, setErrors] = useState({
     name: false,
     nickname: false,
-    birth: false,
+    birthday: false,
     gender: false,
   });
 
@@ -67,13 +67,13 @@ const KakaoExtraSignUpPage: React.FC = () => {
   }, [router]);
 
   const handleSubmit = async () => {
-    const hasBirth = birth.year && birth.month && birth.day;
-    const birthday = `${birth.year}-${birth.month}-${birth.day}`;
+    const hasBirth = birthday.year && birthday.month && birthday.day;
+    const birthdayStr = `${birthday.year}-${birthday.month}-${birthday.day}`;
 
     const newErrors = {
       name: !name.trim(),
       nickname: !nickname.trim(),
-      birth: !hasBirth,
+      birthday: !hasBirth,
       gender: !gender,
     };
     setErrors(newErrors);
@@ -96,7 +96,7 @@ const KakaoExtraSignUpPage: React.FC = () => {
         {
           name: name.trim(),
           nickname: nickname.trim(),
-          birth: birthday,
+          birthday: birthdayStr, // ← 여기
           gender,
         },
         {
@@ -161,7 +161,7 @@ const KakaoExtraSignUpPage: React.FC = () => {
               <CustomDropdown
                 label="년도"
                 options={Array.from({ length: 50 }, (_, i) => String(1980 + i))}
-                onSelect={(v) => setBirth((prev) => ({ ...prev, year: v }))}
+                onSelect={(v) => setBirthday((prev) => ({ ...prev, year: v }))}
                 buttonClassName="rounded-lg border-[#C2C2C2]"
               />
 
@@ -170,7 +170,7 @@ const KakaoExtraSignUpPage: React.FC = () => {
                 options={Array.from({ length: 12 }, (_, i) =>
                   String(i + 1).padStart(2, "0")
                 )}
-                onSelect={(v) => setBirth((prev) => ({ ...prev, month: v }))}
+                onSelect={(v) => setBirthday((prev) => ({ ...prev, month: v }))}
                 buttonClassName="rounded-lg border-[#C2C2C2]"
               />
 
@@ -179,12 +179,12 @@ const KakaoExtraSignUpPage: React.FC = () => {
                 options={Array.from({ length: 31 }, (_, i) =>
                   String(i + 1).padStart(2, "0")
                 )}
-                onSelect={(v) => setBirth((prev) => ({ ...prev, day: v }))}
+                onSelect={(v) => setBirthday((prev) => ({ ...prev, day: v }))}
                 buttonClassName="rounded-lg border-[#C2C2C2]"
               />
             </InputRow>
 
-            {errors.birth && (
+            {errors.birthday && (
               <p className="text-[11px] text-red-500 self-start px-2">
                 생년월일을 선택해주세요.
               </p>
