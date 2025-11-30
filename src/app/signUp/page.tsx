@@ -8,13 +8,25 @@ import { AuthHeader } from "@/components/authFormComponents";
 import Image from "next/image";
 import MobileMenu from "@/components/mobileMenu";
 import ConfirmModal from "@/components/confirmModal";
+import { getKakaoAuthUrl } from "@/utils/getKakaoAuthUrl";
 
 const SignUpPage: React.FC = () => {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // ✅ SNS 회원가입 준비중 모달
+  // ✅ 네이버/구글은 아직 준비중 모달 유지
   const [showSocialModal, setShowSocialModal] = useState(false);
+
+  const handleKakaoSignUp = () => {
+    if (typeof window !== "undefined") {
+      // ✅ 회원가입 플로우로 시작했다는 표시
+      sessionStorage.setItem("kakaoFlow", "signup");
+    }
+    const url = getKakaoAuthUrl();
+    if (url !== "#") {
+      window.location.href = url;
+    }
+  };
 
   return (
     <div className="bg-white pt-18 md:pt-0">
@@ -26,8 +38,8 @@ const SignUpPage: React.FC = () => {
           <AuthHeader />
 
           <div className="flex flex-col px-8 md:px-0 w-full mb-6 md:mb-14 justify-self-center justify-center items-center self-center">
-            {/* ✅ 카카오로 시작하기 */}
-            <button onClick={() => setShowSocialModal(true)}>
+            {/* ✅ 카카오로 시작하기 -> 카카오 로그인 플로우 진입 */}
+            <button onClick={handleKakaoSignUp}>
               <Image
                 src="/icons/kakao-join-bt.png"
                 alt="카카오로 시작하기"
@@ -37,7 +49,7 @@ const SignUpPage: React.FC = () => {
               />
             </button>
 
-            {/* ✅ 네이버로 시작하기 */}
+            {/* ✅ 네이버로 시작하기 (아직 준비중) */}
             <button onClick={() => setShowSocialModal(true)}>
               <Image
                 src="/icons/naver-join-bt.png"
@@ -48,7 +60,7 @@ const SignUpPage: React.FC = () => {
               />
             </button>
 
-            {/* ✅ Google로 시작하기 */}
+            {/* ✅ Google로 시작하기 (아직 준비중) */}
             <button onClick={() => setShowSocialModal(true)}>
               <Image
                 src="/icons/google-join-bt.png"
@@ -85,7 +97,7 @@ const SignUpPage: React.FC = () => {
         </div>
       </main>
 
-      {/* ✅ SNS 회원가입 준비중 모달 */}
+      {/* ✅ SNS 회원가입 준비중 모달 (네이버/구글용) */}
       <ConfirmModal
         isOpen={showSocialModal}
         onClose={() => setShowSocialModal(false)}

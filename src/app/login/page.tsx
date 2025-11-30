@@ -12,6 +12,7 @@ import MobileMenu from "@/components/mobileMenu";
 import { SigninRequestDto } from "@/features/auth/types";
 import { useSignin } from "@/features/auth/hooks/useSignin";
 import api from "@/lib/apiClient"; // 서버에 /auth/signout 있으면 사용
+import { getKakaoAuthUrl } from "@/utils/getKakaoAuthUrl";
 
 const LoginPage: React.FC = () => {
   const [input1, onChangeInput1] = useState(""); // 아이디
@@ -338,9 +339,15 @@ const LoginPage: React.FC = () => {
               </div>
 
               <div className="w-full flex flex-col items-center gap-y-3 mb-10">
+                {/* 카카오 로그인 버튼 */}
                 <button
                   className="cursor-pointer"
-                  onClick={() => setShowSocialModal(true)}
+                  onClick={() => {
+                    const url = getKakaoAuthUrl();
+                    if (url !== "#") {
+                      window.location.href = url;
+                    }
+                  }}
                 >
                   <Image
                     src="/icons/kakao-login-bt.png"
@@ -350,6 +357,7 @@ const LoginPage: React.FC = () => {
                     height={100}
                   />
                 </button>
+
                 <button
                   className="cursor-pointer"
                   onClick={() => setShowSocialModal(true)}
