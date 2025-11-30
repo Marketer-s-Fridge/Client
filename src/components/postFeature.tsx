@@ -11,6 +11,7 @@ import {
   normalizeMetaLine,
   splitContentLines,
 } from "@/utils/metaLine";
+import ShareButton from "./shareButton";
 
 interface PostFeatureProps {
   title: string;
@@ -25,7 +26,13 @@ const PostFeature: React.FC<PostFeatureProps> = ({ title, item, fallback }) => {
 
   const thumb = item.images?.[0] ?? fallback;
 
-  // 본문을 줄 단위로 분리 (훅 아님, 그냥 유틸 함수)
+  // ✅ 공유용 URL / 이미지
+  const shareUrl = `https://marketersfridge.co.kr/contents/${item.id}`;
+  const shareImage = thumb.startsWith("http")
+    ? thumb
+    : `https://marketersfridge.co.kr${thumb}`;
+
+  // 본문을 줄 단위로 분리
   const contentLines = splitContentLines(item.content);
 
   return (
@@ -98,12 +105,10 @@ const PostFeature: React.FC<PostFeatureProps> = ({ title, item, fallback }) => {
                 {contentLines.map((line, idx) => {
                   const trimmed = line.trim();
 
-                  // 빈 줄은 간격용
                   if (trimmed === "") {
                     return <div key={idx} className="h-2 sm:h-2.5" />;
                   }
 
-                  // 에디터 / 출처 라인
                   if (isMetaLine(trimmed)) {
                     return (
                       <p
@@ -115,7 +120,6 @@ const PostFeature: React.FC<PostFeatureProps> = ({ title, item, fallback }) => {
                     );
                   }
 
-                  // 일반 본문 라인
                   return (
                     <p key={idx} className="mb-1">
                       {line}
@@ -126,9 +130,17 @@ const PostFeature: React.FC<PostFeatureProps> = ({ title, item, fallback }) => {
             )}
           </div>
 
-          {/* 버튼: 항상 텍스트 아래 + 오른쪽 정렬, 썸네일 높이 안에서 맨 아래에 위치 */}
-          <div className="mt-4 flex justify-end">
+          {/* 버튼: 항상 텍스트 아래 + 오른쪽 정렬 */}
+          <div className="mt-4 flex justify-end gap-3">
             <SaveToFridgeButton postId={item.id} />
+            <ShareButton
+              title={item.title}
+              description={
+                item.subTitle ?? "마케터를 위한 카드뉴스 아카이브 콘텐츠"
+              }
+              url={shareUrl}
+              imageUrl={shareImage}
+            />
           </div>
         </div>
       </div>

@@ -11,13 +11,14 @@ export default function AccountSidebar() {
   const pathname = usePathname();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // ✅ 로그인 사용자 정보 가져오기
   const { user, isAuthenticated, isLoading } = useAuthStatus();
 
   const isMyInfo = pathname === "/myPage/account/myInfo";
   const isMyPwd = pathname === "/myPage/account/myPwd";
 
-  // ✅ 로딩 상태
+  // ✅ 카카오 로그인 여부 (필드명은 백엔드 응답에 맞춰 조정)
+  const isKakaoUser = user?.id?.startsWith("kakao_");
+
   if (isLoading) {
     return (
       <aside className="bg-gray-100 flex items-center justify-center w-full h-screen text-sm text-gray-500">
@@ -26,7 +27,6 @@ export default function AccountSidebar() {
     );
   }
 
-  // ✅ 비로그인 상태
   if (!isAuthenticated) {
     return (
       <aside className="bg-gray-100 flex items-center justify-center w-full h-screen text-sm text-gray-500">
@@ -36,9 +36,10 @@ export default function AccountSidebar() {
   }
 
   const profileImageSrc =
-  user?.profileImageUrl && user.profileImageUrl.trim() !== ""
-    ? user.profileImageUrl
-    : "/images/profile-character.png";
+    user?.profileImageUrl && user.profileImageUrl.trim() !== ""
+      ? user.profileImageUrl
+      : "/images/profile-character.png";
+
   return (
     <aside className="bg-gray-100 flex flex-col items-center py-5 md:py-10 px-2 md:px-4 text-center w-full md:w-[280px] h-auto md:h-screen">
       {/* 프로필 이미지 */}
@@ -50,7 +51,7 @@ export default function AccountSidebar() {
         height={200}
       />
 
-      {/* ✅ 사용자 정보 */}
+      {/* 사용자 정보 */}
       <h2 className="mt-4 text-xl md:text-2xl font-bold">
         {user?.nickname ?? "사용자"}
       </h2>
@@ -66,14 +67,18 @@ export default function AccountSidebar() {
         >
           회원정보 수정
         </button>
-        <button
-          className={`cursor-pointer py-1 ${
-            isMyPwd ? "font-bold underline" : "text-gray-600"
-          }`}
-          onClick={() => router.push("/myPage/account/myPwd")}
-        >
-          비밀번호 변경
-        </button>
+
+        {/* ✅ 카카오 로그인 유저에게는 비밀번호 변경 메뉴 숨김 */}
+        {!isKakaoUser && (
+          <button
+            className={`cursor-pointer py-1 ${
+              isMyPwd ? "font-bold underline" : "text-gray-600"
+            }`}
+            onClick={() => router.push("/myPage/account/myPwd")}
+          >
+            비밀번호 변경
+          </button>
+        )}
       </div>
 
       {/* 탈퇴 */}
@@ -84,14 +89,12 @@ export default function AccountSidebar() {
         계정 탈퇴
       </p>
 
-      {/* ✅ 탈퇴 확인 모달 */}
       <DeleteAccountModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         email={user?.email ?? ""}
         onConfirm={() => {
           console.log("탈퇴 처리됨");
-          // 실제 탈퇴 API 호출 가능
         }}
       />
     </aside>

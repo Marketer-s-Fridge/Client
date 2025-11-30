@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import BaseModal from "@/components/baseModal";
 import { TextInput } from "@/components/authFormComponents";
 import { useDeleteAccount } from "@/features/auth/hooks/useDeleteAccount";
+import { useAuthStatus } from "@/features/auth/hooks/useAuthStatus";
 
 interface DeleteAccountModalProps {
   isOpen: boolean;
@@ -20,6 +21,10 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
   const [password, setPassword] = useState("");
   const [success, setSuccess] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+  // ✅ 현재 로그인 유저 (id로 카카오 여부 판단)
+  const { user } = useAuthStatus();
+  const isKakaoUser = user?.id?.startsWith("kakao_") ?? false;
 
   const resetAndClose = () => {
     setPassword("");
@@ -52,12 +57,16 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
 
   const handleConfirm = async () => {
     setErrorMsg(null);
-    if (!password) {
+
+    // ✅ 일반 회원만 비밀번호 필수
+    if (!isKakaoUser && !password) {
       setErrorMsg("비밀번호를 입력하세요.");
       return;
     }
+
     try {
-      await deleteAccountAsync(password);
+      // ✅ 카카오 유저는 빈 문자열 등으로 호출 (백엔드에서 분기)
+      await deleteAccountAsync(isKakaoUser ? "" : password);
     } catch {
       /* onError에서 처리됨 */
     }
@@ -76,7 +85,9 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
               계정을 탈퇴하시겠습니까?
             </h2>
             <p className="text-center text-xs sm:text-sm text-gray-600 mb-6 sm:mb-8">
-              계속 진행하시려면 비밀번호를 입력해주세요.
+              {isKakaoUser
+                ? "카카오 로그인 계정을 탈퇴하시겠습니까?"
+                : "계속 진행하시려면 비밀번호를 입력해주세요."}
             </p>
 
             <div className="flex flex-col gap-4 mb-2">
@@ -86,7 +97,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                   label="계정"
                   type="email"
                   value={email}
-                  onChange={() => {}} // 수정 불가
+                  onChange={() => {}}
                   placeholder=""
                   readOnly
                   bgColor="bg-gray-100"
@@ -95,18 +106,25 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                 />
               </div>
 
-              {/* 비밀번호 입력 */}
-              <div className="w-full">
-                <TextInput
-                  label="비밀번호"
-                  type="password"
-                  value={password}
-                  onChange={handlePasswordChange}
-                  placeholder="비밀번호 입력"
-                  error={errorMsg || undefined}
-                  className="border border-gray-300 rounded-lg px-3 py-2 text-xs sm:text-sm w-full"
-                />
-              </div>
+              {/* 🔹 일반 회원만 비밀번호 입력 노출 */}
+              {!isKakaoUser && (
+                <div className="w-full">
+                  <TextInput
+                    label="비밀번호"
+                    type="password"
+                    value={password}
+                    onChange={handlePasswordChange}
+                    placeholder="비밀번호 입력"
+                    error={errorMsg || undefined}
+                    className="border border-gray-300 rounded-lg px-3 py-2 text-xs sm:text-sm w-full"
+                  />
+                </div>
+              )}
+
+              {/* 🔹 카카오 유저 안내 (선택) */}
+              {isKakaoUser && errorMsg && (
+                <p className="text-[11px] text-red-500">{errorMsg}</p>
+              )}
             </div>
 
             {/* 🔹 모바일: 세로 버튼 / 데스크탑: 가로 버튼 */}
@@ -120,7 +138,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
               </button>
               <button
                 onClick={handleConfirm}
-                disabled={isLoading || password.length === 0}
+                disabled={isLoading || (!isKakaoUser && password.length === 0)}
                 className="cursor-pointer px-6 py-2 rounded-2xl bg-[#FF4545] text-white text-xs sm:text-sm hover:bg-red-600 disabled:opacity-60 w-full sm:w-auto"
               >
                 {isLoading ? "처리 중..." : "확인"}
@@ -133,7 +151,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
               <span className="text-[#FF4545] font-playfair">
                 Marketer’s Fridge
               </span>{" "}
-              계정이 탈퇴되었습니다.
+            계정이 탈퇴되었습니다.
             </h2>
             <p className="text-xs sm:text-sm text-gray-600 mb-5 sm:mb-6">
               이용해주셔서 감사합니다.
