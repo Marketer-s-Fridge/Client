@@ -189,6 +189,16 @@ export default function CardNewsDetailPage() {
       </div>
     );
 
+  // ✅ 공유용 URL / 썸네일
+  const shareUrl = `http://marketersfridge.co.kr/contents/${post.id}`;
+
+  const shareImage =
+    post.images && post.images.length > 0
+      ? post.images[0].startsWith("http")
+        ? post.images[0]
+        : `https://marketersfridge.co.kr${post.images[0]}`
+      : undefined;
+
   return (
     <div className="bg-white pt-17 md:pt-0">
       <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
@@ -381,12 +391,19 @@ export default function CardNewsDetailPage() {
             {/* 버튼: 항상 텍스트 아래 */}
             <div className="bg-white flex justify-end gap-4 mt-4">
               <SaveToFridgeButton postId={post.id} />
-              <ShareButton onShared={() => setShowShareModal(true)} />
+              <ShareButton
+                title={post.title}
+                description={
+                  post.subTitle ?? "마케터를 위한 카드뉴스 아카이브 콘텐츠"
+                }
+                url={shareUrl}
+                imageUrl={shareImage}
+                onShared={() => setShowShareModal(true)}
+              />{" "}
             </div>
           </div>
         </div>
       </main>
-
       <Footer />
 
       {/* 공유 완료 모달 */}
@@ -395,9 +412,9 @@ export default function CardNewsDetailPage() {
         onClose={() => setShowShareModal(false)}
       >
         <p className="text-center text-sm">
-          현재 페이지 링크가 복사되었습니다.
+          공유가 준비되었습니다.
           <br />
-          원하는 곳에 붙여넣기 해서 공유해 주세요!
+          카카오톡 또는 복사된 링크로 자유롭게 공유해 주세요!
         </p>
       </ConfirmModal>
     </div>

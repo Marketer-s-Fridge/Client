@@ -5,6 +5,7 @@ import "./globals.css";
 import "react-calendar/dist/Calendar.css";
 import Providers from "./providers";
 import ChunkErrorHandler from "@/components/chunkErrorHandler";
+import Script from "next/script";
 
 // ✅ next/font/local 전부 제거
 // import localFont from "next/font/local";
@@ -35,14 +36,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
+      <head>
+        {/* 카카오 JS SDK */}
+        <Script
+          src="https://developers.kakao.com/sdk/js/kakao.min.js"
+          strategy="beforeInteractive"
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} font-pretendard antialiased`}
       >
-        {/* ✅ 전역 ChunkLoadError 감지 */}
         <ChunkErrorHandler />
-
         <Providers>{children}</Providers>
       </body>
     </html>
   );
 }
+

@@ -30,6 +30,15 @@ export default function HomePage() {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
 
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (!window.Kakao) return;
+  
+    if (!window.Kakao.isInitialized()) {
+      window.Kakao.init(process.env.NEXT_PUBLIC_KAKAO_JAVASCRIPT_KEY);
+    }
+  }, []);
+
   // 모바일 섹션 진입 애니메이션용
   const [mobileEnter, setMobileEnter] = useState(false);
 
