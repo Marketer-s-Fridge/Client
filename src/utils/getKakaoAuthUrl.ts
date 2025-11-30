@@ -6,6 +6,8 @@ export const getKakaoAuthUrl = () => {
       console.error("Kakao env not set");
       return "#";
     }
+    console.log("KAKAO KEY", clientId);
+
   
     const params = new URLSearchParams({
       client_id: clientId,
