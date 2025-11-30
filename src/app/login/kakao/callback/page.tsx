@@ -3,6 +3,7 @@
 
 import { useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 import api from "@/lib/apiClient";
 
 interface KakaoLoginResponse {
@@ -10,7 +11,8 @@ interface KakaoLoginResponse {
   isNewUser: boolean;
 }
 
-export default function KakaoCallbackPage() {
+// 실제 로직이 들어가는 컴포넌트
+function KakaoCallbackInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -36,7 +38,9 @@ export default function KakaoCallbackPage() {
 
         // 회원가입에서 시작했는지 or 로그인에서 시작했는지
         const flow =
-          sessionStorage.getItem("kakaoFlow") === "signup" ? "signup" : "login";
+          sessionStorage.getItem("kakaoFlow") === "signup"
+            ? "signup"
+            : "login";
 
         sessionStorage.removeItem("kakaoFlow");
 
@@ -56,11 +60,27 @@ export default function KakaoCallbackPage() {
     };
 
     doLogin();
-  }, []);
+  }, [router, searchParams]);
 
+  // 실제 화면은 거의 안 보이고, 대부분 라우팅으로 넘어감
   return (
     <div className="min-h-screen flex items-center justify-center">
       <p>카카오 로그인 처리 중입니다...</p>
     </div>
+  );
+}
+
+// Suspense로 감싼 페이지 컴포넌트 (Next 요구사항 충족)
+export default function KakaoCallbackPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center">
+          <p>카카오 로그인 처리 중입니다...</p>
+        </div>
+      }
+    >
+      <KakaoCallbackInner />
+    </Suspense>
   );
 }
