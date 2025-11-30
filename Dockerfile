@@ -1,6 +1,15 @@
 # ---- build ----
     FROM node:18-bookworm-slim AS builder
     WORKDIR /app
+
+    # ✅ Jenkins에서 build-arg로 넘길 값들 선언
+    ARG NEXT_PUBLIC_KAKAO_REST_API_KEY
+    ARG NEXT_PUBLIC_KAKAO_REDIRECT_URI
+
+    # ✅ Next 빌드 시 process.env로 보이도록 ENV 설정
+    ENV NEXT_PUBLIC_KAKAO_REST_API_KEY=$NEXT_PUBLIC_KAKAO_REST_API_KEY
+    ENV NEXT_PUBLIC_KAKAO_REDIRECT_URI=$NEXT_PUBLIC_KAKAO_REDIRECT_URI
+
     COPY package*.json ./
     RUN npm ci --omit=dev=false
     COPY . .

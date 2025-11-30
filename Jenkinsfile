@@ -5,6 +5,10 @@ pipeline {
     IMAGE = "${REGISTRY}/mf-web"
     TAG = "latest"
     COMPOSE_DIR = "/home/ec2-user/app"
+
+     // ✅ 카카오 env (Jenkins Credentials에서 가져오기)
+    NEXT_PUBLIC_KAKAO_REST_API_KEY = credentials('KAKAO_REST_API_KEY')
+    NEXT_PUBLIC_KAKAO_REDIRECT_URI = 'http://marketersfridge.co.kr/login/kakao/callback'
   }
   stages {
     stage('Checkout'){ steps { checkout scm } }
