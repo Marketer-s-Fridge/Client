@@ -1,4 +1,4 @@
-// src/app/login/kakao/callback/page.tsx
+// src/app/auth/kakao/callback/page.tsx
 "use client";
 
 import { useEffect } from "react";
