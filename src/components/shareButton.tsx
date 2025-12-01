@@ -10,15 +10,13 @@ declare global {
   }
 }
 
-
 interface ShareButtonProps {
-  // ✅ 공유 내용들 (페이지마다 다르게 넣을 수 있음)
   title: string;
   description: string;
-  url?: string;       // 안 주면 현재 페이지 URL
-  imageUrl?: string;  // 썸네일 (없으면 기본 이미지 써도 됨)
+  url?: string;
+  imageUrl?: string;
 
-  onShared?: () => void; // 공유 성공 시 실행할 콜백 (ex. 토스트, 모달)
+  onShared?: () => void;
   className?: string;
 }
 
@@ -33,14 +31,24 @@ const ShareButton: React.FC<ShareButtonProps> = ({
   const handleShare = async () => {
     if (typeof window === "undefined") return;
 
-    const shareUrl = url ?? window.location.href;
+    const currentUrl = window.location.href;
+
+    // ⭐ 게시글 id 자동 추출 (예: /contents/123 → 123)
+    const postId = (() => {
+      const match = currentUrl.match(/contents\/(\d+)/);
+      return match ? match[1] : "";
+    })();
+
+    // ⭐ fallback URL 강제 생성
+    const fallbackUrl = `http://marketersfridge.co.kr/contents/${postId}`;
+
+    const shareUrl = url ?? fallbackUrl;
     const shareImage =
       imageUrl ?? "https://marketersfridge.co.kr/images/og-default.png";
 
-    // 1️⃣ Kakao 공유 시도
+    // 1️⃣ Kakao 공유 시도 (에러면 자동 fallback)
     try {
       if (window.Kakao && window.Kakao.Link) {
-        // 혹시 초기화 안 된 경우 한 번 더 방어적으로 init
         if (!window.Kakao.isInitialized?.()) {
           window.Kakao.init(
             process.env.NEXT_PUBLIC_KAKAO_JAVASCRIPT_KEY as string
@@ -74,17 +82,16 @@ const ShareButton: React.FC<ShareButtonProps> = ({
       }
     } catch (e) {
       console.error("카카오 공유 실패:", e);
-      // Kakao 실패하면 아래 클립보드 fallback으로 넘어감
     }
 
-    // 2️⃣ Kakao 안 되면 → 링크 복사 fallback
+    // 2️⃣ Kakao 안 되면 → http://.../contents/[id] 링크 복사
     try {
       if (navigator?.clipboard?.writeText) {
-        await navigator.clipboard.writeText(shareUrl);
+        await navigator.clipboard.writeText(fallbackUrl);
         onShared?.();
       } else {
         alert(
-          "이 브라우저에서는 자동 복사가 지원되지 않습니다. 주소창의 URL을 직접 복사해주세요."
+          "자동 복사가 지원되지 않습니다. 주소창의 URL을 직접 복사해주세요."
         );
       }
     } catch (e) {
