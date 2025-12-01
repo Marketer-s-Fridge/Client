@@ -13,6 +13,7 @@ import CustomDropdown from "@/components/customDropdown";
 import ConfirmModal from "@/components/confirmModal";
 import { useRouter } from "next/navigation";
 import { updateKakaoExtraProfile } from "@/features/auth/api/authApi";
+import { useCheckNickname } from "@/features/auth/hooks/useCheckNickname"; // ✅ 추가
 
 // EmailJoinPage에서 사용한 것처럼 InputRow 따로 뺌
 const InputRow = ({
@@ -68,6 +69,16 @@ const KakaoExtraSignUpPage: React.FC = () => {
     agreements: false,
   });
 
+  // ✅ 닉네임 중복 확인 플래그
+  const [isNicknameChecked, setIsNicknameChecked] = useState(false);
+
+  // ✅ 닉네임 중복 체크 훅
+  const {
+    data: nicknameCheckResult,
+    isFetching: isCheckingNickname,
+    refetch: refetchNicknameCheck,
+  } = useCheckNickname(nickname);
+
   // 카카오 콜백을 정상적으로 거쳤는지 확인
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
@@ -103,13 +114,44 @@ const KakaoExtraSignUpPage: React.FC = () => {
     });
   };
 
+  // ✅ 닉네임 중복 확인 버튼
+  const handleNicknameCheck = async () => {
+    const normalized = (nickname ?? "").trim();
+    if (!normalized) {
+      alert("닉네임을 입력해주세요.");
+      return;
+    }
+    try {
+      const { data } = await refetchNicknameCheck();
+      const result = (data ?? "").toString().trim();
+      if (result === "Failed") {
+        alert("이미 사용 중인 닉네임입니다 ❌");
+        setIsNicknameChecked(false);
+      } else {
+        alert("사용 가능한 닉네임입니다 ✅");
+        setIsNicknameChecked(true);
+        setErrors((prev) => ({ ...prev, nickname: false }));
+      }
+    } catch {
+      alert("닉네임 중복 확인 중 오류가 발생했습니다.");
+      setIsNicknameChecked(false);
+      setErrors((prev) => ({ ...prev, nickname: true }));
+    }
+  };
+
+  // ✅ 닉네임 입력값이 바뀌면 다시 확인해야 하므로 플래그 리셋
+  useEffect(() => {
+    setIsNicknameChecked(false);
+  }, [nickname]);
+
   const handleSubmit = async () => {
     const hasBirth = birthday.year && birthday.month && birthday.day;
     const birthdayStr = `${birthday.year}-${birthday.month}-${birthday.day}`;
 
     const newErrors = {
       name: !name.trim(),
-      nickname: !nickname.trim(),
+      // ✅ 닉네임: 값 + 중복확인 둘 다 필요
+      nickname: !nickname.trim() || !isNicknameChecked,
       birthday: !hasBirth,
       gender: !gender,
       // 🔥 필수 약관: age / provide / collect
@@ -129,12 +171,6 @@ const KakaoExtraSignUpPage: React.FC = () => {
     try {
       setSubmitting(true);
 
-      // ✅ 약관 동의 값 포함해서 전송
-      // authApi에서 아래 형태로 받도록 구현:
-      // updateKakaoExtraProfile({
-      //   name, nickname, birthday, gender,
-      //   agreeAge14, agreePrivacyProvide, agreePrivacyCollect, agreeMarketing
-      // })
       await updateKakaoExtraProfile(
         name.trim(),
         nickname.trim(),
@@ -185,14 +221,28 @@ const KakaoExtraSignUpPage: React.FC = () => {
               className="rounded-lg"
             />
 
-            {/* 닉네임 */}
+            {/* 닉네임 + 중복확인 */}
             <TextInput
               required
               label="닉네임"
               type="text"
               value={nickname}
               onChange={(e) => setNickname(e.target.value)}
-              error={errors.nickname ? "닉네임을 입력해주세요." : ""}
+              rightButtonText={
+                isCheckingNickname
+                  ? "확인 중..."
+                  : isNicknameChecked
+                  ? "확인 완료"
+                  : "중복 확인"
+              }
+              onRightButtonClick={handleNicknameCheck}
+              error={
+                errors.nickname
+                  ? !nickname.trim()
+                    ? "닉네임을 입력해주세요."
+                    : "닉네임 중복확인을 완료해주세요."
+                  : ""
+              }
               className="rounded-lg"
             />
 
