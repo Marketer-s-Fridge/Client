@@ -238,8 +238,8 @@ export default function EmailJoinPage() {
 
       // 🔥 약관 동의 값들 추가
       agreeAge14: agreements.age,
-      agreePrivacyProvide: agreements.provide,
-      agreePrivacyCollect: agreements.collect,
+      agreeProvidePersonalInfo: agreements.provide,
+      agreeCollectPersonalInfo: agreements.collect,
       agreeMarketing: agreements.marketing,
     };
 
