@@ -14,24 +14,17 @@ import NoContentView from "@/components/noContentView";
 import { usePosts } from "@/features/posts/hooks/usePosts";
 import { usePostsByCategory } from "@/features/posts/hooks/usePostsByCategory";
 
-// ✅ 정적 이미지 import (가장 중요한 부분)
-import foodIcon from "public/icons/icon-food1.png";
-import lifestyleIcon from "public/icons/icon-lifestyle1.png";
-import beautyIcon from "public/icons/icon-beauty1.png";
-import techIcon from "public/icons/icon-tech1.png";
-import fashionIcon from "public/icons/icon-fashion1.png";
-
 interface Category {
   name: string;
-  icon: any; // StaticImageData
+  icon: string;
 }
 
 const categories: Category[] = [
-  { name: "Food", icon: foodIcon },
-  { name: "Lifestyle", icon: lifestyleIcon },
-  { name: "Beauty", icon: beautyIcon },
-  { name: "Tech", icon: techIcon },
-  { name: "Fashion", icon: fashionIcon },
+  { name: "Food", icon: "/icons/icon-food1.png" },
+  { name: "Lifestyle", icon: "/icons/icon-lifestyle1.png" },
+  { name: "Beauty", icon: "/icons/icon-beauty1.png" },
+  { name: "Tech", icon: "/icons/icon-tech1.png" },
+  { name: "Fashion", icon: "/icons/icon-fashion1.png" },
 ];
 
 const PAGE_SIZE = 12;
