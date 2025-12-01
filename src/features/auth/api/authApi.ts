@@ -317,7 +317,7 @@ export const updateKakaoExtraProfile = async (
   nickname: string,
   birthday: string,
   gender: string,
-  agreeAge14: boolean,
+  over14: boolean,
   agreeProvidePersonalInfo: boolean,
   agreeCollectPersonalInfo: boolean,
   agreeMarketing: boolean
@@ -327,7 +327,7 @@ export const updateKakaoExtraProfile = async (
     nickname,
     birthday,
     gender,
-    agreeAge14,
+    over14,
     agreeProvidePersonalInfo,
     agreeCollectPersonalInfo,
     agreeMarketing,

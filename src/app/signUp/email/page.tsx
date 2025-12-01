@@ -237,7 +237,7 @@ export default function EmailJoinPage() {
       nickname,
 
       // 🔥 약관 동의 값들 추가
-      agreeAge14: agreements.age,
+      over14: agreements.age,
       agreeProvidePersonalInfo: agreements.provide,
       agreeCollectPersonalInfo: agreements.collect,
       agreeMarketing: agreements.marketing,

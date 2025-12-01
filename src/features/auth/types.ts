@@ -16,7 +16,7 @@ export interface SignupRequestDto {
   nickname?: string;
 
   // 🔥 신규 추가
-  agreeAge14: boolean;
+  over14: boolean;
   agreeProvidePersonalInfo: boolean;
   agreeCollectPersonalInfo: boolean;
   agreeMarketing: boolean;
