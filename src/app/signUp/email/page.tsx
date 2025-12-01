@@ -74,22 +74,16 @@ export default function EmailJoinPage() {
   } = useCheckNickname(nickname);
 
   // ✅ 아이디 중복 체크 훅
-  const {
-    mutate: checkIdDuplication,
-    isPending: isCheckingId,
-  } = useCheckIdDuplication();
+  const { mutate: checkIdDuplication, isPending: isCheckingId } =
+    useCheckIdDuplication();
 
   // ✅ 인증코드 발송 훅
-  const {
-    mutate: sendVerificationCode,
-    isPending: isSendingCode,
-  } = useSendVerificationCode();
+  const { mutate: sendVerificationCode, isPending: isSendingCode } =
+    useSendVerificationCode();
 
   // ✅ 이메일 + 코드 검증 훅
-  const {
-    mutate: verifyEmailCode,
-    isPending: isVerifyingCode,
-  } = useVerifyEmailCode();
+  const { mutate: verifyEmailCode, isPending: isVerifyingCode } =
+    useVerifyEmailCode();
 
   // ✅ 아이디 중복 확인 버튼
   const handleIdCheck = () => {
@@ -228,7 +222,11 @@ export default function EmailJoinPage() {
 
     if (Object.values(newErrors).some(Boolean)) return;
 
-    const birthday = `${birth.year}-${birth.month}-${birth.day}`;
+    // 🔹 생년월일은 모두 선택됐을 때만 문자열로 만들어서 보내기
+    const birthday =
+      birth.year && birth.month && birth.day
+        ? `${birth.year}-${birth.month}-${birth.day}`
+        : undefined;
 
     const signupData: SignupRequestDto = {
       id,
@@ -237,6 +235,12 @@ export default function EmailJoinPage() {
       name,
       birthday,
       nickname,
+
+      // 🔥 약관 동의 값들 추가
+      agreeAge14: agreements.age,
+      agreePrivacyProvide: agreements.provide,
+      agreePrivacyCollect: agreements.collect,
+      agreeMarketing: agreements.marketing,
     };
 
     signupMutate(signupData, {
@@ -402,20 +406,14 @@ export default function EmailJoinPage() {
             <InputRow label="생년월일" required>
               <CustomDropdown
                 label="년도"
-                options={Array.from(
-                  { length: 50 },
-                  (_, i) => String(1980 + i)
-                )}
-                onSelect={(val) =>
-                  setBirth((prev) => ({ ...prev, year: val }))
-                }
+                options={Array.from({ length: 50 }, (_, i) => String(1980 + i))}
+                onSelect={(val) => setBirth((prev) => ({ ...prev, year: val }))}
                 buttonClassName="rounded-lg border-[#C2C2C2]"
               />
               <CustomDropdown
                 label="월"
-                options={Array.from(
-                  { length: 12 },
-                  (_, i) => String(i + 1).padStart(2, "0")
+                options={Array.from({ length: 12 }, (_, i) =>
+                  String(i + 1).padStart(2, "0")
                 )}
                 onSelect={(val) =>
                   setBirth((prev) => ({ ...prev, month: val }))
@@ -424,13 +422,10 @@ export default function EmailJoinPage() {
               />
               <CustomDropdown
                 label="일"
-                options={Array.from(
-                  { length: 31 },
-                  (_, i) => String(i + 1).padStart(2, "0")
+                options={Array.from({ length: 31 }, (_, i) =>
+                  String(i + 1).padStart(2, "0")
                 )}
-                onSelect={(val) =>
-                  setBirth((prev) => ({ ...prev, day: val }))
-                }
+                onSelect={(val) => setBirth((prev) => ({ ...prev, day: val }))}
                 buttonClassName="rounded-lg border-[#C2C2C2]"
               />
             </InputRow>
@@ -454,7 +449,9 @@ export default function EmailJoinPage() {
               type="password"
               value={passwordCheck}
               onChange={(e) => setPasswordCheck(e.target.value)}
-              error={errors.passwordCheck ? "비밀번호를 다시 확인해주세요." : ""}
+              error={
+                errors.passwordCheck ? "비밀번호를 다시 확인해주세요." : ""
+              }
               className="rounded-lg"
             />
 

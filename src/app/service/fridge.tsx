@@ -47,7 +47,7 @@ export default function Fridge({
         fill
         quality={100} // ← 추가
         className="object-contain pointer-events-none"
-        sizes="100%" // ← fill일 때는 sizes 필수로 넣는 게 좋음
+        sizes="10%" // ← fill일 때는 sizes 필수로 넣는 게 좋음
       />
 
       {/* 문짝 */}

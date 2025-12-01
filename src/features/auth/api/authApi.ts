@@ -311,18 +311,26 @@ export const kakaoLogin = async (
   return { token, isNewUser };
 };
 
-/** ✅ 카카오 추가 정보 입력 (JWT 필요) */
+/** ✅ 카카오 추가 정보 입력 (JWT 필요 + 동의 항목 포함) */
 export const updateKakaoExtraProfile = async (
   name: string,
   nickname: string,
   birthday: string,
-  gender: string
-): Promise<string> => {
-  const res = await api.patch<string>("/auth/profile", {
+  gender: string,
+  agreeAge14: boolean,
+  agreePrivacyProvide: boolean,
+  agreePrivacyCollect: boolean,
+  agreeMarketing: boolean
+): Promise<UserResponseDto> => {
+  const res = await api.patch<UserResponseDto>("/auth/profile", {
     name,
     nickname,
     birthday,
     gender,
+    agreeAge14,
+    agreePrivacyProvide,
+    agreePrivacyCollect,
+    agreeMarketing,
   });
 
   return res.data;

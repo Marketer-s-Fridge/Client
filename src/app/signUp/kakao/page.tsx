@@ -50,12 +50,22 @@ const KakaoExtraSignUpPage: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
 
+  // 약관 동의 상태 (이메일 가입과 동일 구조)
+  const [agreements, setAgreements] = useState({
+    all: false,
+    age: false,
+    provide: false,
+    collect: false,
+    marketing: false,
+  });
+
   // 에러 상태
   const [errors, setErrors] = useState({
     name: false,
     nickname: false,
     birthday: false,
     gender: false,
+    agreements: false,
   });
 
   // 카카오 콜백을 정상적으로 거쳤는지 확인
@@ -66,6 +76,33 @@ const KakaoExtraSignUpPage: React.FC = () => {
     }
   }, [router]);
 
+  // 전체 동의 동기화
+  useEffect(() => {
+    const allChecked =
+      agreements.age &&
+      agreements.provide &&
+      agreements.collect &&
+      agreements.marketing;
+    if (agreements.all !== allChecked) {
+      setAgreements((prev) => ({ ...prev, all: allChecked }));
+    }
+  }, [
+    agreements.age,
+    agreements.provide,
+    agreements.collect,
+    agreements.marketing,
+  ]);
+
+  const handleAllAgree = (checked: boolean) => {
+    setAgreements({
+      all: checked,
+      age: checked,
+      provide: checked,
+      collect: checked,
+      marketing: checked,
+    });
+  };
+
   const handleSubmit = async () => {
     const hasBirth = birthday.year && birthday.month && birthday.day;
     const birthdayStr = `${birthday.year}-${birthday.month}-${birthday.day}`;
@@ -75,6 +112,12 @@ const KakaoExtraSignUpPage: React.FC = () => {
       nickname: !nickname.trim(),
       birthday: !hasBirth,
       gender: !gender,
+      // 🔥 필수 약관: age / provide / collect
+      agreements: !(
+        agreements.age &&
+        agreements.provide &&
+        agreements.collect
+      ),
     };
     setErrors(newErrors);
 
@@ -90,13 +133,22 @@ const KakaoExtraSignUpPage: React.FC = () => {
     try {
       setSubmitting(true);
 
-      // ✅ 공용 authApi 함수 호출 (인터셉터에서 토큰 자동 첨부)
-      await updateKakaoExtraProfile(
-        name.trim(),
-        nickname.trim(),
-        birthdayStr,
-        gender
-      );
+      // ✅ 약관 동의 값 포함해서 전송
+      // authApi에서 아래 형태로 받도록 구현:
+      // updateKakaoExtraProfile({
+      //   name, nickname, birthday, gender,
+      //   agreeAge14, agreePrivacyProvide, agreePrivacyCollect, agreeMarketing
+      // })
+      await updateKakaoExtraProfile({
+        name: name.trim(),
+        nickname: nickname.trim(),
+        birthday: birthdayStr,
+        gender,
+        agreeAge14: agreements.age,
+        agreePrivacyProvide: agreements.provide,
+        agreePrivacyCollect: agreements.collect,
+        agreeMarketing: agreements.marketing,
+      });
 
       setModalOpen(true);
     } catch (error) {
@@ -190,6 +242,45 @@ const KakaoExtraSignUpPage: React.FC = () => {
               error={errors.gender ? "성별을 선택해주세요." : ""}
             />
 
+            {/* 동의 체크박스 (이메일 가입과 동일 구조) */}
+            <div className="w-11/12 sm:w-7/9 place-self-center mt-6 border-gray-200 pt-6 space-y-2 text-sm">
+              {[
+                { key: "all", text: "모두 동의하기", bold: true },
+                { key: "age", text: "[필수] 만 14세 이상입니다." },
+                { key: "provide", text: "[필수] 개인정보 제공에 동의합니다." },
+                {
+                  key: "collect",
+                  text: "[필수] 개인정보 수집 및 이용에 동의합니다.",
+                },
+                {
+                  key: "marketing",
+                  text: "[선택] 마케팅 활용 및 광고 수신에 동의합니다.",
+                },
+              ].map(({ key, text, bold }) => (
+                <label key={key} className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={agreements[key as keyof typeof agreements]}
+                    onChange={(e) => {
+                      if (key === "all") handleAllAgree(e.target.checked);
+                      else
+                        setAgreements((prev) => ({
+                          ...prev,
+                          [key]: e.target.checked,
+                        }));
+                    }}
+                    className="w-3 h-3 accent-red-500"
+                  />
+                  {bold ? <b>{text}</b> : text}
+                </label>
+              ))}
+              {errors.agreements && (
+                <p className="text-[11px] text-red-500 mt-1">
+                  필수 동의를 눌러주세요.
+                </p>
+              )}
+            </div>
+
             <div className="w-full text-center mt-8">
               <SubmitButton
                 text={submitting ? "처리 중..." : "회원가입 완료하기"}
@@ -209,9 +300,9 @@ const KakaoExtraSignUpPage: React.FC = () => {
         }}
       >
         <p className="text-lg font-semibold text-gray-800 mb-3">
-          회원가입이 완료되었습니다 🎉
+          회원가입이 완료되었습니다
         </p>
-        <p className="text-sm text-gray-500">즐거운 시간 보내세요!</p>
+        <p className="text-sm text-gray-500">마케터의 냉장고를 편하게 이용해보세요!</p>
       </ConfirmModal>
     </div>
   );

@@ -52,7 +52,7 @@ export default function AccountSidebar() {
       />
 
       {/* 사용자 정보 */}
-      <h2 className="mt-4 mb-2 sm:mb-0  text-xl md:text-2xl font-bold">
+      <h2 className="mt-4 mb-1 sm:mb-0  text-xl md:text-2xl font-bold">
         {user?.nickname ?? "사용자"}
       </h2>
       <p className="mb-2 sm:mb-0 text-sm text-gray-500">{user?.email ?? "-"}</p>
