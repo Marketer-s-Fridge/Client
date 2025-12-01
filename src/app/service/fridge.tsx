@@ -42,10 +42,12 @@ export default function Fridge({
     >
       {/* 본체 */}
       <Image
-        src="/icons/character/fridge-body.png"
+        src="/icons/character/fridge-body-big-4.png"
         alt="fridge body"
         fill
+        quality={100} // ← 추가
         className="object-contain pointer-events-none"
+        sizes="100%" // ← fill일 때는 sizes 필수로 넣는 게 좋음
       />
 
       {/* 문짝 */}
