@@ -52,10 +52,10 @@ export default function AccountSidebar() {
       />
 
       {/* 사용자 정보 */}
-      <h2 className="mt-4 text-xl md:text-2xl font-bold">
+      <h2 className="mt-4 mb-2 sm:mb-0  text-xl md:text-2xl font-bold">
         {user?.nickname ?? "사용자"}
       </h2>
-      <p className="text-sm text-gray-500">{user?.email ?? "-"}</p>
+      <p className="mb-2 sm:mb-0 text-sm text-gray-500">{user?.email ?? "-"}</p>
 
       {/* 메뉴 버튼 */}
       <div className="hidden md:flex flex-col items-center gap-10 md:mt-14 text-sm w-full">
@@ -83,7 +83,7 @@ export default function AccountSidebar() {
 
       {/* 탈퇴 */}
       <p
-        className="mb-10 md:mt-auto text-xs text-gray-400 cursor-pointer"
+        className="mb-10 mb:mb-auto md:mt-auto text-xs text-gray-400 cursor-pointer"
         onClick={() => setIsModalOpen(true)}
       >
         계정 탈퇴
