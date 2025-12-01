@@ -1,9 +1,9 @@
 "use client";
 import React, { useState } from "react";
-import BaseModal from "@/components/baseModal";
 import { TextInput } from "@/components/authFormComponents";
 import { useDeleteAccount } from "@/features/auth/hooks/useDeleteAccount";
 import { useAuthStatus } from "@/features/auth/hooks/useAuthStatus";
+import BigModal from "@/components/bigModal";
 
 interface DeleteAccountModalProps {
   isOpen: boolean;
@@ -73,102 +73,99 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
   };
 
   return (
-    <BaseModal isOpen={isOpen} onClose={resetAndClose}>
-      {/* 전체 화면 기준 가운데 정렬 래퍼 */}
-      <div className="w-full h-full flex items-center justify-center px-4">
-        {/* 모바일: 전체폭 / 데스크탑: 최대 420px 카드 */}
-        <div className="w-full max-w-[340px] sm:max-w-[420px] mx-auto text-left py-4 px-4 sm:px-6 bg-white rounded-2xl shadow-lg">
-          {!success ? (
-            <>
-              <h2 className="text-center text-base sm:text-lg font-medium mb-1 leading-snug">
-                <span className="text-[#FF4545] font-playfair font-semibold">
-                  Marketer’s Fridge
-                </span>{" "}
-                계정을 탈퇴하시겠습니까?
-              </h2>
-              <p className="text-center text-xs sm:text-sm text-gray-600 mb-6 sm:mb-8">
-                {isKakaoUser
-                  ? "카카오 로그인 계정을 탈퇴하시겠습니까?"
-                  : "계속 진행하시려면 비밀번호를 입력해주세요."}
-              </p>
+    <BigModal isOpen={isOpen} onClose={resetAndClose}>
+      {/* 🔹 모바일: 전체폭 / 데스크탑: 최대 420px */}
+      <div className="w-full max-w-[340px] sm:max-w-[420px] text-left py-4 px-4 sm:px-6">
+        {!success ? (
+          <>
+            <h2 className="text-center text-base sm:text-lg font-medium mb-1 leading-snug">
+              <span className="text-[#FF4545] font-playfair font-semibold">
+                Marketer’s Fridge
+              </span>{" "}
+              계정을 탈퇴하시겠습니까?
+            </h2>
+            <p className="text-center text-xs sm:text-sm text-gray-600 mb-6 sm:mb-8">
+              {isKakaoUser
+                ? "카카오 로그인 계정을 탈퇴하시겠습니까?"
+                : "계속 진행하시려면 비밀번호를 입력해주세요."}
+            </p>
 
-              <div className="flex flex-col gap-4 mb-2">
-                {/* 계정(이메일) - readOnly */}
+            <div className="flex flex-col gap-4 mb-2">
+              {/* 계정(이메일) - readOnly */}
+              <div className="w-full">
+                <TextInput
+                  label="계정"
+                  type="email"
+                  value={email}
+                  onChange={() => {}}
+                  placeholder=""
+                  readOnly
+                  bgColor="bg-gray-100"
+                  textColor="text-gray-500"
+                  className="border border-gray-300 rounded-lg px-3 py-2 text-xs sm:text-sm cursor-not-allowed w-full"
+                />
+              </div>
+
+              {/* 🔹 일반 회원만 비밀번호 입력 노출 */}
+              {!isKakaoUser && (
                 <div className="w-full">
                   <TextInput
-                    label="계정"
-                    type="email"
-                    value={email}
-                    onChange={() => {}}
-                    placeholder=""
-                    readOnly
-                    bgColor="bg-gray-100"
-                    textColor="text-gray-500"
-                    className="border border-gray-300 rounded-lg px-3 py-2 text-xs sm:text-sm cursor-not-allowed w-full"
+                    label="비밀번호"
+                    type="password"
+                    value={password}
+                    onChange={handlePasswordChange}
+                    placeholder="비밀번호 입력"
+                    error={errorMsg || undefined}
+                    className="border border-gray-300 rounded-lg px-3 py-2 text-xs sm:text-sm w-full"
                   />
                 </div>
+              )}
 
-                {/* 🔹 일반 회원만 비밀번호 입력 노출 */}
-                {!isKakaoUser && (
-                  <div className="w-full">
-                    <TextInput
-                      label="비밀번호"
-                      type="password"
-                      value={password}
-                      onChange={handlePasswordChange}
-                      placeholder="비밀번호 입력"
-                      error={errorMsg || undefined}
-                      className="border border-gray-300 rounded-lg px-3 py-2 text-xs sm:text-sm w-full"
-                    />
-                  </div>
-                )}
+              {/* 🔹 카카오 유저 안내 (선택) */}
+              {isKakaoUser && errorMsg && (
+                <p className="text-[11px] text-red-500">{errorMsg}</p>
+              )}
+            </div>
 
-                {/* 🔹 카카오 유저 안내 (선택) */}
-                {isKakaoUser && errorMsg && (
-                  <p className="text-[11px] text-red-500">{errorMsg}</p>
-                )}
-              </div>
-
-              {/* 🔹 모바일: 세로 버튼 / 데스크탑: 가로 버튼 */}
-              <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-8 mt-6">
-                <button
-                  onClick={resetAndClose}
-                  disabled={isLoading}
-                  className="cursor-pointer px-6 py-2 rounded-2xl bg-gray-300 text-white text-xs sm:text-sm hover:bg-gray-400 disabled:opacity-60 w-full sm:w-auto"
-                >
-                  취소
-                </button>
-                <button
-                  onClick={handleConfirm}
-                  disabled={isLoading || (!isKakaoUser && password.length === 0)}
-                  className="cursor-pointer px-6 py-2 rounded-2xl bg-[#FF4545] text-white text-xs sm:text-sm hover:bg-red-600 disabled:opacity-60 w-full sm:w-auto"
-                >
-                  {isLoading ? "처리 중..." : "확인"}
-                </button>
-              </div>
-            </>
-          ) : (
-            <div className="text-center py-4 px-1 sm:px-2">
-              <h2 className="text-base sm:text-lg font-medium mb-3 leading-snug">
-                <span className="text-[#FF4545] font-playfair">
-                  Marketer’s Fridge
-                </span>{" "}
-                계정이 탈퇴되었습니다.
-              </h2>
-              <p className="text-xs sm:text-sm text-gray-600 mb-5 sm:mb-6">
-                이용해주셔서 감사합니다.
-              </p>
+            {/* 🔹 모바일: 세로 버튼 / 데스크탑: 가로 버튼 */}
+            <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-8 mt-6">
               <button
                 onClick={resetAndClose}
-                className="cursor-pointer px-6 py-2 rounded-2xl bg-[#FF4545] text-white text-xs sm:text-sm hover:bg-red-600 w-full"
+                disabled={isLoading}
+                className="cursor-pointer px-6 py-2 rounded-2xl bg-gray-300 text-white text-xs sm:text-sm hover:bg-gray-400 disabled:opacity-60 w-full sm:w-auto"
               >
-                확인
+                취소
+              </button>
+              <button
+                onClick={handleConfirm}
+                disabled={isLoading || (!isKakaoUser && password.length === 0)}
+                className="cursor-pointer px-6 py-2 rounded-2xl bg-[#FF4545] text-white text-xs sm:text-sm hover:bg-red-600 disabled:opacity-60 w-full sm:w-auto"
+              >
+                {isLoading ? "처리 중..." : "확인"}
               </button>
             </div>
-          )}
-        </div>
+          </>
+        ) : (
+          <div className="text-center py-4 px-1 sm:px-2">
+            <h2 className="text-base sm:text-lg font-medium mb-3 leading-snug">
+              <span className="text-[#FF4545] font-playfair">
+                Marketer’s Fridge
+              </span>{" "}
+              계정이 탈퇴되었습니다.
+            </h2>
+            <p className="text-xs sm:text-sm text-gray-600 mb-5 sm:mb-6">
+              이용해주셔서 감사합니다.
+            </p>
+            <button
+              onClick={resetAndClose}
+              className="cursor-pointer px-6 py-2 rounded-2xl bg-[#FF4545] text-white text-xs sm:text-sm hover:bg-red-600 w-full"
+            >
+              확인
+            </button>
+          </div>
+        )}
       </div>
-    </BaseModal>
+    </BigModal>
   );
 };
 

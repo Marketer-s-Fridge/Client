@@ -14,58 +14,59 @@ import NoContentView from "@/components/noContentView";
 import { usePosts } from "@/features/posts/hooks/usePosts";
 import { usePostsByCategory } from "@/features/posts/hooks/usePostsByCategory";
 
+// ✅ 정적 이미지 import (가장 중요한 부분)
+import foodIcon from "@/public/icons/icon-food1.png";
+import lifestyleIcon from "@/public/icons/icon-lifestyle1.png";
+import beautyIcon from "@/public/icons/icon-beauty1.png";
+import techIcon from "@/public/icons/icon-tech1.png";
+import fashionIcon from "@/public/icons/icon-fashion1.png";
+
 interface Category {
   name: string;
-  icon: string;
+  icon: any; // StaticImageData
 }
 
 const categories: Category[] = [
-  { name: "Food", icon: "/icons/icon-food1.png" },
-  { name: "Lifestyle", icon: "/icons/icon-lifestyle1.png" },
-  { name: "Beauty", icon: "/icons/icon-beauty1.png" },
-  { name: "Tech", icon: "/icons/icon-tech1.png" },
-  { name: "Fashion", icon: "/icons/icon-fashion1.png" },
+  { name: "Food", icon: foodIcon },
+  { name: "Lifestyle", icon: lifestyleIcon },
+  { name: "Beauty", icon: beautyIcon },
+  { name: "Tech", icon: techIcon },
+  { name: "Fashion", icon: fashionIcon },
 ];
 
-const PAGE_SIZE = 12; // ✅ 한 페이지에 보여줄 카드 개수
+const PAGE_SIZE = 12;
 
 export default function Page() {
-  // const [, setLikedItems] = useState<number[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // ✅ 전체 게시물
   const {
     data: allPosts = [],
     isLoading: isAllLoading,
     error: allError,
   } = usePosts();
 
-  // ✅ 카테고리별 게시물
   const {
     data: categoryPosts = [],
     isLoading: isCatLoading,
     error: catError,
   } = usePostsByCategory(selectedCategory);
 
-  // ✅ 현재 선택된 카테고리에 따라 실제 사용할 posts
   const isLoading = isAllLoading || isCatLoading;
   const error = allError || catError || null;
-  // 최신 게시물 → 앞에 오도록 정렬(reverse)
+
   const sortedPosts = useMemo(() => {
     const source = selectedCategory ? categoryPosts : allPosts;
-    return [...source].reverse(); // 원본 보존 + 역순
+    return [...source].reverse();
   }, [selectedCategory, categoryPosts, allPosts]);
 
-  // 이후 posts 대신 sortedPosts 사용
   const posts = sortedPosts;
-  // ✅ 카테고리 바뀔 때마다 페이지를 1페이지로 리셋
+
   useEffect(() => {
     setCurrentPage(1);
   }, [selectedCategory]);
 
-  // ✅ 페이지네이션 계산 (게시글 수에 따라 자동)
   const { pagedPosts, totalPages } = useMemo(() => {
     if (!posts || posts.length === 0) {
       return { pagedPosts: [], totalPages: 1 };
@@ -73,6 +74,7 @@ export default function Page() {
 
     const totalPagesCalc = Math.max(1, Math.ceil(posts.length / PAGE_SIZE));
     const safeCurrentPage = Math.min(currentPage, totalPagesCalc);
+
     const startIndex = (safeCurrentPage - 1) * PAGE_SIZE;
     const endIndex = startIndex + PAGE_SIZE;
 
@@ -82,19 +84,13 @@ export default function Page() {
     };
   }, [posts, currentPage]);
 
-  // const toggleLike = (id: number) => {
-  //   setLikedItems((prev) =>
-  //     prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
-  //   );
-  // };
-
   return (
     <div className="w-full bg-white pt-11 md:pt-0">
       <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
 
       {/* 검색 영역 */}
-      <section className="flex flex-col items-center main-red pt-5 pb-6 gap-3 px-4 sm:px-8 lg:px-20 sm:pt-10 lg:pt-15 sm:pb-10">
+      <section className="flex flex-col items-center main-red pt-5 pb-6 gap-3 px-4 sm:px-8 lg:px-20 sm:pt-10 sm:pb-10">
         <div className="hidden md:flex w-[100vw]">
           <SearchInput showInstagramButton={false} />
         </div>
@@ -103,6 +99,7 @@ export default function Page() {
         <div className="flex justify-center mt-6 mb-4 sm:mt-10 sm:mb-6 gap-2 sm:gap-6 lg:gap-10">
           {categories.map((cat) => {
             const isSelected = selectedCategory === cat.name;
+
             return (
               <button
                 key={cat.name}
@@ -113,12 +110,15 @@ export default function Page() {
                 }
                 className="flex flex-col items-center text-white cursor-pointer transition-all duration-200"
               >
-                <div className="w-16 h-16 sm:w-24 sm:h-24 lg:w-34 lg:h-34 flex items-center justify-center transition-all duration-300">
+                <div className="w-16 h-16 sm:w-24 sm:h-24 lg:w-28 lg:h-28 flex items-center justify-center transition-all duration-300">
                   <Image
                     src={cat.icon}
                     alt={cat.name}
-                    width={200}
-                    height={200}
+                    width={96}
+                    height={96}
+                    priority
+                    loading="eager"
+                    sizes="(max-width: 768px) 64px, (max-width: 1024px) 80px, 96px"
                     className={`object-contain transition-transform duration-300 ${
                       isSelected ? "scale-100" : "scale-90 opacity-80"
                     }`}
@@ -148,7 +148,6 @@ export default function Page() {
               columns={4}
             />
 
-            {/* 페이지가 2개 이상일 때만 표시 */}
             {totalPages > 1 && (
               <Pagination
                 currentPage={currentPage}
