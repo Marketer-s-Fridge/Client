@@ -11,7 +11,6 @@ import MobileMenu from "@/components/mobileMenu";
 import SaveToFridgeButton from "@/components/saveToFridgeButton";
 import { usePost } from "@/features/posts/hooks/usePost";
 import { usePostViewRecord } from "@/features/views/hooks/useMostViewedCategory";
-import ConfirmModal from "@/components/confirmModal";
 import ShareButton from "@/components/shareButton";
 import {
   isMetaLine,
@@ -36,9 +35,6 @@ export default function CardNewsDetailPage() {
 
   // 슬라이드 영상 제어
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
-
-  // 공유 모달
-  const [showShareModal, setShowShareModal] = useState(false);
 
   // 조회수 기록
   const hasRecordedRef = useRef(false);
@@ -398,25 +394,12 @@ export default function CardNewsDetailPage() {
                 }
                 url={shareUrl}
                 imageUrl={shareImage}
-                onShared={() => setShowShareModal(true)}
-              />{" "}
+              />
             </div>
           </div>
         </div>
       </main>
       <Footer />
-
-      {/* 공유 완료 모달 */}
-      <ConfirmModal
-        isOpen={showShareModal}
-        onClose={() => setShowShareModal(false)}
-      >
-        <p className="text-center text-sm">
-          공유가 준비되었습니다.
-          <br />
-          카카오톡 또는 복사된 링크로 자유롭게 공유해 주세요!
-        </p>
-      </ConfirmModal>
     </div>
   );
 }
