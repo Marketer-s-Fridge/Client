@@ -1,30 +1,27 @@
-// src/features/auth/hooks/useAuthStatus.ts
-"use client";
-
-import { useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { UserResponseDto } from "../types";
 import { fetchUserInfo } from "../api/authApi";
-import type { UserResponseDto } from "../types";
+import { useEffect } from "react";
 
 export function useAuthStatus() {
-  // 클라이언트에서만 토큰 조회
   const token =
     typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
 
   const hasToken = !!token;
+  const queryClient = useQueryClient();
 
   const {
-    data: user,
+    data,
     isLoading,
     isError,
     error,
   } = useQuery<UserResponseDto, Error>({
-    queryKey: ["auth", "me"],       // 유저 정보 캐시 키
-    queryFn: fetchUserInfo,         // /auth/me 호출 함수
-    enabled: hasToken,              // 토큰 있을 때만 호출
-    staleTime: 5 * 60 * 1000,       // 5분 동안 재요청 X
-    gcTime: 30 * 60 * 1000,         // (v5) 예전 cacheTime 역할
-    refetchOnWindowFocus: false,    // 탭 포커스 시 재요청 X
+    queryKey: ["auth", "me"],
+    queryFn: fetchUserInfo,
+    enabled: hasToken,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
+    refetchOnWindowFocus: false,
     retry: false,
   });
 
@@ -33,10 +30,13 @@ export function useAuthStatus() {
     const status = (error as any)?.response?.status;
     if (isError && (status === 401 || status === 403)) {
       localStorage.removeItem("accessToken");
+      queryClient.removeQueries({ queryKey: ["auth", "me"] });
     }
-  }, [isError, error]);
+  }, [isError, error, queryClient]);
 
-  // 로딩 끝 + 토큰 있음 + 유저 데이터 존재 → 로그인 상태로 판단
+  // 🔹 토큰이 없으면 user는 무조건 undefined로 강제
+  const user = hasToken ? data : undefined;
+
   const isAuthenticated = !isLoading && hasToken && !!user;
 
   return {
