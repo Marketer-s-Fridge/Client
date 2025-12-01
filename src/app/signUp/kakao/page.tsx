@@ -113,11 +113,7 @@ const KakaoExtraSignUpPage: React.FC = () => {
       birthday: !hasBirth,
       gender: !gender,
       // 🔥 필수 약관: age / provide / collect
-      agreements: !(
-        agreements.age &&
-        agreements.provide &&
-        agreements.collect
-      ),
+      agreements: !(agreements.age && agreements.provide && agreements.collect),
     };
     setErrors(newErrors);
 
@@ -139,16 +135,16 @@ const KakaoExtraSignUpPage: React.FC = () => {
       //   name, nickname, birthday, gender,
       //   agreeAge14, agreePrivacyProvide, agreePrivacyCollect, agreeMarketing
       // })
-      await updateKakaoExtraProfile({
-        name: name.trim(),
-        nickname: nickname.trim(),
-        birthday: birthdayStr,
+      await updateKakaoExtraProfile(
+        name.trim(),
+        nickname.trim(),
+        birthdayStr,
         gender,
-        agreeAge14: agreements.age,
-        agreePrivacyProvide: agreements.provide,
-        agreePrivacyCollect: agreements.collect,
-        agreeMarketing: agreements.marketing,
-      });
+        agreements.age,
+        agreements.provide,
+        agreements.collect,
+        agreements.marketing
+      );
 
       setModalOpen(true);
     } catch (error) {
@@ -302,7 +298,9 @@ const KakaoExtraSignUpPage: React.FC = () => {
         <p className="text-lg font-semibold text-gray-800 mb-3">
           회원가입이 완료되었습니다
         </p>
-        <p className="text-sm text-gray-500">마케터의 냉장고를 편하게 이용해보세요!</p>
+        <p className="text-sm text-gray-500">
+          마케터의 냉장고를 편하게 이용해보세요!
+        </p>
       </ConfirmModal>
     </div>
   );
