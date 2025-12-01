@@ -13,8 +13,11 @@ import { useUpdatePassword } from "@/features/auth/hooks/useUpdatePwd";
 
 export default function PasswordChangePage() {
   const [modalOpen, setModalOpen] = useState(false);
+
+  const [currentPwd, setCurrentPwd] = useState("");
   const [newPwd, setNewPwd] = useState("");
   const [confirmPwd, setConfirmPwd] = useState("");
+
   const [menuOpen, setMenuOpen] = useState(false);
   const [localError, setLocalError] = useState<string | null>(null);
 
@@ -23,17 +26,19 @@ export default function PasswordChangePage() {
   const handleSubmit = async () => {
     setLocalError(null);
 
-    if (!newPwd || !confirmPwd) {
-      setLocalError("새 비밀번호와 확인 비밀번호를 모두 입력해주세요.");
+    // 1) 필수값 체크
+    if (!currentPwd || !newPwd || !confirmPwd) {
+      setLocalError("현재 비밀번호, 새 비밀번호, 확인 비밀번호를 모두 입력해주세요.");
       return;
     }
 
+    // 2) 새 비번 = 확인 비번 동일 체크
     if (newPwd !== confirmPwd) {
       setLocalError("새 비밀번호와 확인 비밀번호가 일치하지 않습니다.");
       return;
     }
 
-    // 비밀번호 규칙 간단 체크 (원래 메시지 유지)
+    // 3) 비밀번호 규칙 체크
     const pwdRule =
       /^(?=.*[A-Za-z])(?=.*\d)(?=.*[~!@#$%^&*()_\-+={}[\]|\\:;"'<>,.?/]).{8,20}$/;
     if (!pwdRule.test(newPwd)) {
@@ -45,12 +50,13 @@ export default function PasswordChangePage() {
 
     try {
       await updatePassword({
-        // currentPassword는 비번 찾기 흐름 아닐 때 서버에서 분기 처리 가정
+        currentPassword: currentPwd,   // ✅ 현재 비밀번호 추가
         newPassword: newPwd,
         confirmNewPassword: confirmPwd,
       });
 
       setModalOpen(true);
+      setCurrentPwd("");
       setNewPwd("");
       setConfirmPwd("");
     } catch (e) {
@@ -78,6 +84,21 @@ export default function PasswordChangePage() {
           </h3>
 
           <div className="w-full flex flex-col gap-5 max-w-[400px]">
+            {/* ✅ 현재 비밀번호 */}
+            <TextInput
+              label="현재 비밀번호"
+              type="password"
+              value={currentPwd}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setCurrentPwd(e.target.value)
+              }
+              rounded="rounded-lg"
+              borderColor="border-gray-300"
+              required
+              error={localError || undefined} // 공통 에러 메시지 노출
+            />
+
+            {/* 새 비밀번호 */}
             <TextInput
               label="새 비밀번호"
               type="password"
@@ -88,9 +109,9 @@ export default function PasswordChangePage() {
               rounded="rounded-lg"
               borderColor="border-gray-300"
               required
-              error={localError || undefined}
             />
 
+            {/* 새 비밀번호 확인 */}
             <TextInput
               label="새 비밀번호 확인"
               type="password"

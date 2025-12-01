@@ -13,9 +13,7 @@ export interface SignupRequestDto {
   name: string;
   birthday?: string;  // "YYYY-MM-DD" 가정
   phone?: string;     // 하이픈 포함 문자열 가정
-  nickname?: string;
-
-  // 🔥 신규 추가
+  nickname?: string; // 🔥 신규 추가
   over14: boolean;
   agreeProvidePersonalInfo: boolean;
   agreeCollectPersonalInfo: boolean;
