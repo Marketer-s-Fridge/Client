@@ -15,11 +15,11 @@ import { usePosts } from "@/features/posts/hooks/usePosts";
 import { usePostsByCategory } from "@/features/posts/hooks/usePostsByCategory";
 
 // ✅ 정적 이미지 import (가장 중요한 부분)
-import foodIcon from "@/public/icons/icon-food1.png";
-import lifestyleIcon from "@/public/icons/icon-lifestyle1.png";
-import beautyIcon from "@/public/icons/icon-beauty1.png";
-import techIcon from "@/public/icons/icon-tech1.png";
-import fashionIcon from "@/public/icons/icon-fashion1.png";
+import foodIcon from "public/icons/icon-food1.png";
+import lifestyleIcon from "public/icons/icon-lifestyle1.png";
+import beautyIcon from "public/icons/icon-beauty1.png";
+import techIcon from "public/icons/icon-tech1.png";
+import fashionIcon from "public/icons/icon-fashion1.png";
 
 interface Category {
   name: string;
