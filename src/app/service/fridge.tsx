@@ -42,7 +42,7 @@ export default function Fridge({
     >
       {/* 본체 */}
       <Image
-        src="/icons/character/fridge-body-big-4.png"
+        src="/icons/character/fridge-body-re.png"
         alt="fridge body"
         fill
         quality={100} // ← 추가
