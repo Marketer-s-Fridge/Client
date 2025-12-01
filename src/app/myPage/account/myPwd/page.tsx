@@ -1,3 +1,4 @@
+// app/(whatever)/page.tsx
 "use client";
 
 import Header from "@/components/header";
@@ -8,12 +9,58 @@ import ConfirmModal from "@/components/confirmModal";
 import { TextInput } from "@/components/authFormComponents";
 import MobileMenu from "@/components/mobileMenu";
 import ToggleButtons from "../toggleButtons";
+import { useUpdatePassword } from "@/features/auth/hooks/useUpdatePwd";
 
 export default function PasswordChangePage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [newPwd, setNewPwd] = useState("");
   const [confirmPwd, setConfirmPwd] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
+  const [localError, setLocalError] = useState<string | null>(null);
+
+  const { mutateAsync: updatePassword, isPending } = useUpdatePassword();
+
+  const handleSubmit = async () => {
+    setLocalError(null);
+
+    if (!newPwd || !confirmPwd) {
+      setLocalError("새 비밀번호와 확인 비밀번호를 모두 입력해주세요.");
+      return;
+    }
+
+    if (newPwd !== confirmPwd) {
+      setLocalError("새 비밀번호와 확인 비밀번호가 일치하지 않습니다.");
+      return;
+    }
+
+    // 비밀번호 규칙 간단 체크 (원래 메시지 유지)
+    const pwdRule =
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[~!@#$%^&*()_\-+={}[\]|\\:;"'<>,.?/]).{8,20}$/;
+    if (!pwdRule.test(newPwd)) {
+      setLocalError(
+        "비밀번호는 영문, 숫자, 특수문자를 모두 포함한 8~20자리로 입력해주세요."
+      );
+      return;
+    }
+
+    try {
+      await updatePassword({
+        // currentPassword는 비번 찾기 흐름 아닐 때 서버에서 분기 처리 가정
+        newPassword: newPwd,
+        confirmNewPassword: confirmPwd,
+      });
+
+      setModalOpen(true);
+      setNewPwd("");
+      setConfirmPwd("");
+    } catch (e) {
+      const msg =
+        e instanceof Error
+          ? e.message
+          : "비밀번호 변경 중 오류가 발생했습니다.";
+      setLocalError(msg);
+    }
+  };
 
   return (
     <div className="flex flex-1 flex-col bg-white min-h-screen pt-11 md:pt-0">
@@ -23,9 +70,9 @@ export default function PasswordChangePage() {
 
       <main className="w-full max-w-[1024px] grid grid-cols-1 md:grid-cols-[280px_1fr] justify-self-center self-center">
         <AccountSidebar />
-        <ToggleButtons></ToggleButtons>
+        <ToggleButtons />
 
-        <section className="h-full place-items-center md:place-items-start  flex flex-1 flex-col w-full px-6 md:px-15 pt-6 md:pt-17.5 pb-25">
+        <section className="h-full place-items-center md:place-items-start flex flex-1 flex-col w-full px-6 md:px-15 pt-6 md:pt-17.5 pb-25">
           <h3 className="hidden md:block text-[20px] sm:text-[22px] font-bold mb-10">
             비밀번호 변경
           </h3>
@@ -35,18 +82,22 @@ export default function PasswordChangePage() {
               label="새 비밀번호"
               type="password"
               value={newPwd}
-              onChange={(e) => setNewPwd(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setNewPwd(e.target.value)
+              }
               rounded="rounded-lg"
               borderColor="border-gray-300"
               required
-              error="비밀번호는 영문, 숫자, 특수문자를 모두 포함한 8~20자리로 입력해주세요."
+              error={localError || undefined}
             />
 
             <TextInput
               label="새 비밀번호 확인"
               type="password"
               value={confirmPwd}
-              onChange={(e) => setConfirmPwd(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setConfirmPwd(e.target.value)
+              }
               required
               rounded="rounded-lg"
               borderColor="border-gray-300"
@@ -55,10 +106,11 @@ export default function PasswordChangePage() {
 
           <div className="flex flex-1 items-end self-end mt-25 md:mt-8 w-full sm:w-auto">
             <button
-              onClick={() => setModalOpen(true)}
-              className="cursor-pointer w-full sm:w-auto bg-red-500 text-white rounded-lg sm:rounded-full px-4 py-3 sm:py-1.5 text-[15px] sm:text-[11px] font-semibold hover:bg-red-600"
+              onClick={handleSubmit}
+              disabled={isPending}
+              className="cursor-pointer w-full sm:w-auto bg-red-500 text-white rounded-lg sm:rounded-full px-4 py-3 sm:py-1.5 text-[15px] sm:text-[11px] font-semibold hover:bg-red-600 disabled:opacity-60"
             >
-              변경 완료
+              {isPending ? "변경 중..." : "변경 완료"}
             </button>
           </div>
         </section>
