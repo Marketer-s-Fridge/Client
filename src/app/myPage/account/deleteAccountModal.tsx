@@ -75,7 +75,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
   return (
     <BigModal isOpen={isOpen} onClose={resetAndClose}>
       {/* 🔹 모바일: 전체폭 / 데스크탑: 최대 420px */}
-      <div className="w-full max-w-[340px] sm:max-w-[420px] text-left py-4 px-4 sm:px-6">
+      <div className="w-full max-w-[340px] sm:max-w-[420px] mx-auto py-4 px-4 sm:px-6">
         {!success ? (
           <>
             <h2 className="text-center text-base sm:text-lg font-medium mb-1 leading-snug">

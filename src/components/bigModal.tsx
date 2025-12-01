@@ -42,17 +42,13 @@ const BigModal: React.FC<BigModalProps> = ({
       <div
         onClick={(e) => e.stopPropagation()}
         className={`
-          bg-white rounded-2xl shadow-xl
-          transition-all duration-300 transform
-          ${isOpen ? "scale-100 opacity-100" : "scale-95 opacity-0"}
-          
-          /* 🔥 너비 확장: 모바일은 90%, 데스크탑은 최대 540px */
-          w-full max-w-[540px]
-          
-          /* 여백 */
-          mx-6
-          px-6 py-6
-        `}
+    bg-white rounded-2xl shadow-xl
+    transition-all duration-300 transform
+    ${isOpen ? "scale-100 opacity-100" : "scale-95 opacity-0"}
+    w-full max-w-[540px]
+    mx-4 sm:mx-6
+    px-4 sm:px-6 py-6
+  `}
       >
         {children}
       </div>
