@@ -13,8 +13,11 @@ import { SigninRequestDto } from "@/features/auth/types";
 import { useSignin } from "@/features/auth/hooks/useSignin";
 import api from "@/lib/apiClient"; // 서버에 /auth/signout 있으면 사용
 import { getKakaoAuthUrl } from "@/utils/getKakaoAuthUrl";
+import { useQueryClient } from "@tanstack/react-query";
+import { clearUserClientDataOnLogout } from "@/utils/logoutUtils";
 
 const LoginPage: React.FC = () => {
+  const queryClient = useQueryClient();
   const [input1, onChangeInput1] = useState(""); // 아이디
   const [input2, onChangeInput2] = useState(""); // 비밀번호
   const [menuOpen, setMenuOpen] = useState(false);
@@ -23,6 +26,7 @@ const LoginPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false); // 로그인 성공 모달
   const [showSocialModal, setShowSocialModal] = useState(false); // SNS 준비중 모달
+  
 
   // 초기에는 false로 두고, 클라이언트에서 storage 기준으로 계산
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -146,7 +150,6 @@ const LoginPage: React.FC = () => {
   };
 
   const handleLogout = async () => {
-    // 로그아웃 전에 rememberId 관련 값 백업
     const remember = localStorage.getItem("rememberId") === "true";
     const savedId = localStorage.getItem("rememberIdValue") || "";
 
@@ -154,16 +157,18 @@ const LoginPage: React.FC = () => {
       await api.post("/auth/signout");
     } catch {
     } finally {
-      // localStorage 싹 삭제
-      localStorage.clear();
+      // 🔥 1) 계정 기반 localStorage 데이터 제거
+      clearUserClientDataOnLogout();
 
-      // 아이디 저장 옵션은 유지
+      // 🔥 2) React Query 캐시 제거
+      queryClient.clear(); // ← 이거 한 줄이면 전체 캐시 삭제
+      
+      // rememberId는 복구
       if (remember && savedId) {
         localStorage.setItem("rememberId", "true");
         localStorage.setItem("rememberIdValue", savedId);
       }
 
-      // autoLogin은 무조건 해제
       localStorage.removeItem("autoLogin");
 
       setIsLoggedIn(false);
