@@ -17,8 +17,8 @@ export interface SignupRequestDto {
 
   // 🔥 신규 추가
   agreeAge14: boolean;
-  agreePrivacyProvide: boolean;
-  agreePrivacyCollect: boolean;
+  agreeProvidePersonalInfo: boolean;
+  agreeCollectPersonalInfo: boolean;
   agreeMarketing: boolean;
 }
 

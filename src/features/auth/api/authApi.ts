@@ -318,8 +318,8 @@ export const updateKakaoExtraProfile = async (
   birthday: string,
   gender: string,
   agreeAge14: boolean,
-  agreePrivacyProvide: boolean,
-  agreePrivacyCollect: boolean,
+  agreeProvidePersonalInfo: boolean,
+  agreeCollectPersonalInfo: boolean,
   agreeMarketing: boolean
 ): Promise<UserResponseDto> => {
   const res = await api.patch<UserResponseDto>("/auth/profile", {
@@ -328,8 +328,8 @@ export const updateKakaoExtraProfile = async (
     birthday,
     gender,
     agreeAge14,
-    agreePrivacyProvide,
-    agreePrivacyCollect,
+    agreeProvidePersonalInfo,
+    agreeCollectPersonalInfo,
     agreeMarketing,
   });
 
