@@ -14,8 +14,8 @@ export const AuthHeader: React.FC<AuthHeaderProps> = ({
 }) => {
   return (
     <div className="w-full max-w-[550px] mx-auto text-center mb-10">
-      <h1 className="text-2xl sm:text-4xl font-bold mb-4">{title}</h1>
-      <p className="text-gray-700 text-[13px] sm:text-base whitespace-pre-line">
+      <h1 className="text-3xl sm:text-4xl font-bold mb-4 sm:mb-7">{title}</h1>
+      <p className="text-gray-700 text-[14.5px] sm:text-[17.5px] whitespace-pre-line">
         {description}
       </p>
     </div>
@@ -39,7 +39,6 @@ export interface TextInputProps {
   textColor?: string;
   bgColor?: string;
   readOnly?: boolean; // ✅ 추가
-
 }
 
 export const TextInput: React.FC<TextInputProps> = ({
@@ -58,12 +57,11 @@ export const TextInput: React.FC<TextInputProps> = ({
   textColor = "text-gray-900",
   bgColor = "bg-white",
   readOnly = false, // ✅ 추가
-
 }) => {
   return (
     <div className="w-full max-w-[500px] flex flex-col gap-1">
       <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
-        <label className="text-[15.5px] sm:text-[14.5px] font-semibold min-w-[80px] sm:w-28 whitespace-nowrap">
+        <label className="text-[15.5px] sm:text-[14.5px] font-medium min-w-[80px] sm:w-28 whitespace-nowrap">
           {label}
           {required && <span className="text-red-500 ml-1">*</span>}
         </label>
@@ -74,7 +72,6 @@ export const TextInput: React.FC<TextInputProps> = ({
             onChange={onChange}
             placeholder={placeholder}
             readOnly={readOnly} // ✅ 여기서 적용
-
             className={`w-full text-[13px] border ${textColor} ${bgColor} ${
               error ? "border-red-500" : borderColor
             } ${rounded} px-3 py-2 ${className}`}
@@ -169,7 +166,7 @@ export const SubmitButton: React.FC<SubmitButtonProps> = ({
   disabled = false, // ✅ 기본값
 }) => {
   const baseStyle =
-    "cursor-pointer text-[17px] font-bold py-3 rounded-lg place-self-center w-10/11 md:w-9/11";
+    "cursor-pointer text-[17px] font-bold py-3 rounded-lg place-self-center w-full sm:w-10/11";
   const widthStyle = fullWidth ? "w-9/11" : "px-6";
   const solidStyle = `bg-[${color}] text-white`;
   const outlineStyle = `bg-white border border-[${color}] text-[${color}]`;
@@ -213,7 +210,7 @@ export const GenderRadioGroup: React.FC<GenderRadioGroupProps> = ({
   return (
     <div className="w-full max-w-[500px] flex flex-col gap-1">
       <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
-        <label className="text-[15.5px] sm:text-[14.5px] font-semibold min-w-[80px] sm:w-28 whitespace-nowrap">
+        <label className="text-[15.5px] sm:text-[14.5px] font-medium min-w-[80px] sm:w-28 whitespace-nowrap">
           {label}
           {required && <span className="text-red-500 ml-1">*</span>}
         </label>

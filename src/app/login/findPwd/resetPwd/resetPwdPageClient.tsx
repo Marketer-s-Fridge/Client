@@ -1,17 +1,12 @@
 // src/app/login/findPwd/resetPwd/resetPwdPageClient.tsx
 "use client";
 
-import {
-  SubmitButton,
-  TextInput,
-  AuthHeader,
-} from "@/components/authFormComponents";
-import Header from "@/components/header";
-import MobileMenu from "@/components/mobileMenu";
-import ConfirmModal from "@/components/confirmModal";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import { SubmitButton, TextInput } from "@/components/authFormComponents";
+import ConfirmModal from "@/components/confirmModal";
 import { useResetPasswordByFindPw } from "@/features/auth/hooks/useResetPasswordByFindPw";
+import AuthPageLayout from "@/components/authPageLayout";
 
 type ResetPwdPageClientProps = {
   userId: string;
@@ -21,7 +16,6 @@ const ResetPwdPageClient: React.FC<ResetPwdPageClientProps> = ({ userId }) => {
   const [newPwd, setNewPwd] = useState("");
   const [confirmPwd, setConfirmPwd] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
 
   const [pwdError, setPwdError] = useState("");
   const [confirmError, setConfirmError] = useState("");
@@ -30,7 +24,6 @@ const ResetPwdPageClient: React.FC<ResetPwdPageClientProps> = ({ userId }) => {
   const router = useRouter();
   const { mutateAsync, isPending } = useResetPasswordByFindPw();
 
-  // 비밀번호 유효성 검사
   const isValidPassword = (password: string) =>
     /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z\d!@#$%^&*(),.?":{}|<>]{8,20}$/.test(
       password
@@ -73,14 +66,7 @@ const ResetPwdPageClient: React.FC<ResetPwdPageClientProps> = ({ userId }) => {
       setModalOpen(true);
     } catch (e: unknown) {
       console.error("비밀번호 재설정 실패:", e);
-
-      // 에러 메시지 노출이 필요하면 여기서 안전하게 분기
-      if (e instanceof Error && e.message) {
-        // 서버에서 온 메시지를 그대로 보여줄지 말지는 선택
-        setSubmitError("비밀번호 변경에 실패했습니다. 다시 시도해주세요.");
-      } else {
-        setSubmitError("비밀번호 변경에 실패했습니다. 다시 시도해주세요.");
-      }
+      setSubmitError("비밀번호 변경에 실패했습니다. 다시 시도해주세요.");
     }
   };
 
@@ -90,59 +76,57 @@ const ResetPwdPageClient: React.FC<ResetPwdPageClientProps> = ({ userId }) => {
   };
 
   return (
-    <div className="bg-white pt-11 md:pt-0">
-      <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
-      <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+    <AuthPageLayout
+      title="비밀번호 재설정"
+      description="새로운 비밀번호를 입력해 주세요."
+      maxWidthClass="max-w-[480px]"
+      wrapperClassName="py-[16vh]"
+    >
+            <div className="relative w-full flex-col items-center  flex justify-self-center justify-center justify-items-center max-w-[450px]">
 
-      <div className="flex justify-center bg-white py-[16vh] px-4">
-        <div className="w-full max-w-[480px] flex flex-col items-center">
-          <AuthHeader
-            title="비밀번호 재설정"
-            description="새로운 비밀번호를 입력해 주세요."
-          />
+      <form
+        className="w-full  md:w-7/9 mb-10 flex flex-col items-center gap-y-4 justify-self-center"
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleSubmit();
+        }}
+      >
+        <TextInput
+          label="새 비밀번호"
+          value={newPwd}
+          onChange={(e) => setNewPwd(e.target.value)}
+          type="password"
+          required
+          error={pwdError}
+        />
 
-          <form
-            className="w-8/9 md:w-7/9 mb-10 flex flex-col items-center gap-y-4"
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleSubmit();
-            }}
-          >
-            <TextInput
-              label="새 비밀번호"
-              value={newPwd}
-              onChange={(e) => setNewPwd(e.target.value)}
-              type="password"
-              required
-              error={pwdError}
-            />
+        <TextInput
+          label="새 비밀번호 확인"
+          value={confirmPwd}
+          onChange={(e) => setConfirmPwd(e.target.value)}
+          type="password"
+          required
+          error={confirmError}
+        />
+      </form>
 
-            <TextInput
-              label="새 비밀번호 확인"
-              value={confirmPwd}
-              onChange={(e) => setConfirmPwd(e.target.value)}
-              type="password"
-              required
-              error={confirmError}
-            />
-          </form>
-
-          <SubmitButton
-            text={isPending ? "변경 중..." : "비밀번호 변경"}
-            onClick={handleSubmit}
-            disabled={isPending}
-          />
-
-          {submitError && (
-            <p className="text-sm text-red-500 mt-4">{submitError}</p>
-          )}
-        </div>
+      <div className="flex justify-center">
+        <SubmitButton
+          text={isPending ? "변경 중..." : "비밀번호 변경"}
+          onClick={handleSubmit}
+          disabled={isPending}
+        />
       </div>
+
+      {submitError && (
+        <p className="text-sm text-red-500 mt-4 text-center">{submitError}</p>
+      )}
 
       <ConfirmModal isOpen={modalOpen} onClose={handleCloseModal}>
         <p>비밀번호가 변경되었습니다. 다시 로그인해 주세요.</p>
       </ConfirmModal>
-    </div>
+      </div>
+    </AuthPageLayout>
   );
 };
 

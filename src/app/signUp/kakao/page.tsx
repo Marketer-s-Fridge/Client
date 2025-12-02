@@ -1,10 +1,8 @@
+// src/app/signUp/kakao/extra/page.tsx
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Header from "@/components/header";
-import MobileMenu from "@/components/mobileMenu";
 import {
-  AuthHeader,
   SubmitButton,
   TextInput,
   GenderRadioGroup,
@@ -13,9 +11,13 @@ import CustomDropdown from "@/components/customDropdown";
 import ConfirmModal from "@/components/confirmModal";
 import { useRouter } from "next/navigation";
 import { updateKakaoExtraProfile } from "@/features/auth/api/authApi";
-import { useCheckNickname } from "@/features/auth/hooks/useCheckNickname"; // ✅ 추가
+import { useCheckNickname } from "@/features/auth/hooks/useCheckNickname";
+import AgreementsSection, {
+  AgreementsState,
+} from "@/components/agreementSection";
+import AuthPageLayout from "@/components/authPageLayout";
 
-// EmailJoinPage에서 사용한 것처럼 InputRow 따로 뺌
+// 생년월일 인풋 라인 공통 컴포넌트
 const InputRow = ({
   label,
   required = false,
@@ -40,7 +42,6 @@ const InputRow = ({
 
 const KakaoExtraSignUpPage: React.FC = () => {
   const router = useRouter();
-  const [menuOpen, setMenuOpen] = useState(false);
 
   // 입력값
   const [name, setName] = useState("");
@@ -51,8 +52,8 @@ const KakaoExtraSignUpPage: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
 
-  // 약관 동의 상태 (이메일 가입과 동일 구조)
-  const [agreements, setAgreements] = useState({
+  // 약관 동의 상태
+  const [agreements, setAgreements] = useState<AgreementsState>({
     all: false,
     age: false,
     provide: false,
@@ -69,17 +70,14 @@ const KakaoExtraSignUpPage: React.FC = () => {
     agreements: false,
   });
 
-  // ✅ 닉네임 중복 확인 플래그
+  // 닉네임 중복 확인 플래그
   const [isNicknameChecked, setIsNicknameChecked] = useState(false);
 
-  // ✅ 닉네임 중복 체크 훅
-  const {
-    data: nicknameCheckResult,
-    isFetching: isCheckingNickname,
-    refetch: refetchNicknameCheck,
-  } = useCheckNickname(nickname);
+  // 닉네임 중복 체크 훅
+  const { isFetching: isCheckingNickname, refetch: refetchNicknameCheck } =
+    useCheckNickname(nickname);
 
-  // 카카오 콜백을 정상적으로 거쳤는지 확인
+  // 카카오 콜백 정상 거쳤는지 확인
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
     if (!token) {
@@ -94,6 +92,7 @@ const KakaoExtraSignUpPage: React.FC = () => {
       agreements.provide &&
       agreements.collect &&
       agreements.marketing;
+
     if (agreements.all !== allChecked) {
       setAgreements((prev) => ({ ...prev, all: allChecked }));
     }
@@ -102,19 +101,10 @@ const KakaoExtraSignUpPage: React.FC = () => {
     agreements.provide,
     agreements.collect,
     agreements.marketing,
+    agreements.all,
   ]);
 
-  const handleAllAgree = (checked: boolean) => {
-    setAgreements({
-      all: checked,
-      age: checked,
-      provide: checked,
-      collect: checked,
-      marketing: checked,
-    });
-  };
-
-  // ✅ 닉네임 중복 확인 버튼
+  // 닉네임 중복 확인
   const handleNicknameCheck = async () => {
     const normalized = (nickname ?? "").trim();
     if (!normalized) {
@@ -127,6 +117,7 @@ const KakaoExtraSignUpPage: React.FC = () => {
       if (result === "Failed") {
         alert("이미 사용 중인 닉네임입니다 ❌");
         setIsNicknameChecked(false);
+        setErrors((prev) => ({ ...prev, nickname: true }));
       } else {
         alert("사용 가능한 닉네임입니다 ✅");
         setIsNicknameChecked(true);
@@ -139,7 +130,7 @@ const KakaoExtraSignUpPage: React.FC = () => {
     }
   };
 
-  // ✅ 닉네임 입력값이 바뀌면 다시 확인해야 하므로 플래그 리셋
+  // 닉네임 변경 시 플래그 리셋
   useEffect(() => {
     setIsNicknameChecked(false);
   }, [nickname]);
@@ -150,11 +141,9 @@ const KakaoExtraSignUpPage: React.FC = () => {
 
     const newErrors = {
       name: !name.trim(),
-      // ✅ 닉네임: 값 + 중복확인 둘 다 필요
       nickname: !nickname.trim() || !isNicknameChecked,
       birthday: !hasBirth,
       gender: !gender,
-      // 🔥 필수 약관: age / provide / collect
       agreements: !(agreements.age && agreements.provide && agreements.collect),
     };
     setErrors(newErrors);
@@ -192,152 +181,111 @@ const KakaoExtraSignUpPage: React.FC = () => {
   };
 
   return (
-    <div className="w-full bg-white pt-18 md:pt-0 min-h-[100svh]">
-      <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
-      <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
-
-      <div className="w-full bg-white px-4 sm:px-6 md:px-8 min-h-[100svh] py-16 flex items-center justify-center">
-        <div className="w-full max-w-[550px] self-center">
-          <AuthHeader
-            title="추가 정보 입력"
-            description={`마케터의 냉장고 이용을 위해\n추가 정보를 입력해주세요.`}
+    <AuthPageLayout
+      title="추가 정보 입력"
+      description={`마케터의 냉장고 이용을 위해\n추가 정보를 입력해주세요.`}
+    >
+      <form
+        className="flex w-full px-2 md:px-0 flex-col gap-6 text-sm items-center"
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleSubmit();
+        }}
+      >
+        <div className="w-full md:w-7/9 mb-10 flex flex-col items-center gap-y-4">
+          {/* 이름 */}
+          <TextInput
+            required
+            label="이름"
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            error={errors.name ? "이름을 입력해주세요." : ""}
+            className="rounded-lg"
           />
 
-          <form
-            className="flex w-full px-2 md:px-0 flex-col gap-6 text-sm items-center mt-6"
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleSubmit();
-            }}
-          >
-            {/* 이름 */}
-            <TextInput
-              required
-              label="이름"
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              error={errors.name ? "이름을 입력해주세요." : ""}
-              className="rounded-lg"
+          {/* 닉네임 + 중복확인 */}
+          <TextInput
+            required
+            label="닉네임"
+            type="text"
+            value={nickname}
+            onChange={(e) => setNickname(e.target.value)}
+            rightButtonText={
+              isCheckingNickname
+                ? "확인 중..."
+                : isNicknameChecked
+                ? "확인 완료"
+                : "중복 확인"
+            }
+            onRightButtonClick={handleNicknameCheck}
+            error={
+              errors.nickname
+                ? !nickname.trim()
+                  ? "닉네임을 입력해주세요."
+                  : "닉네임 중복확인을 완료해주세요."
+                : ""
+            }
+            className="rounded-lg"
+          />
+
+          {/* 생년월일 (드롭다운) */}
+          <InputRow label="생년월일" required>
+            <CustomDropdown
+              label="년도"
+              options={Array.from({ length: 50 }, (_, i) => String(1980 + i))}
+              onSelect={(v) => setBirthday((prev) => ({ ...prev, year: v }))}
+              buttonClassName="rounded-lg border-[#C2C2C2]"
             />
 
-            {/* 닉네임 + 중복확인 */}
-            <TextInput
-              required
-              label="닉네임"
-              type="text"
-              value={nickname}
-              onChange={(e) => setNickname(e.target.value)}
-              rightButtonText={
-                isCheckingNickname
-                  ? "확인 중..."
-                  : isNicknameChecked
-                  ? "확인 완료"
-                  : "중복 확인"
-              }
-              onRightButtonClick={handleNicknameCheck}
-              error={
-                errors.nickname
-                  ? !nickname.trim()
-                    ? "닉네임을 입력해주세요."
-                    : "닉네임 중복확인을 완료해주세요."
-                  : ""
-              }
-              className="rounded-lg"
-            />
-
-            {/* 생년월일 (드롭다운) */}
-            <InputRow label="생년월일" required>
-              <CustomDropdown
-                label="년도"
-                options={Array.from({ length: 50 }, (_, i) => String(1980 + i))}
-                onSelect={(v) => setBirthday((prev) => ({ ...prev, year: v }))}
-                buttonClassName="rounded-lg border-[#C2C2C2]"
-              />
-
-              <CustomDropdown
-                label="월"
-                options={Array.from({ length: 12 }, (_, i) =>
-                  String(i + 1).padStart(2, "0")
-                )}
-                onSelect={(v) => setBirthday((prev) => ({ ...prev, month: v }))}
-                buttonClassName="rounded-lg border-[#C2C2C2]"
-              />
-
-              <CustomDropdown
-                label="일"
-                options={Array.from({ length: 31 }, (_, i) =>
-                  String(i + 1).padStart(2, "0")
-                )}
-                onSelect={(v) => setBirthday((prev) => ({ ...prev, day: v }))}
-                buttonClassName="rounded-lg border-[#C2C2C2]"
-              />
-            </InputRow>
-
-            {errors.birthday && (
-              <p className="text-[11px] text-red-500 self-start px-2">
-                생년월일을 선택해주세요.
-              </p>
-            )}
-
-            {/* 성별 */}
-            <GenderRadioGroup
-              value={gender}
-              onChange={setGender}
-              required
-              error={errors.gender ? "성별을 선택해주세요." : ""}
-            />
-
-            {/* 동의 체크박스 (이메일 가입과 동일 구조) */}
-            <div className="w-11/12 sm:w-7/9 place-self-center mt-6 border-gray-200 pt-6 space-y-2 text-sm">
-              {[
-                { key: "all", text: "모두 동의하기", bold: true },
-                { key: "age", text: "[필수] 만 14세 이상입니다." },
-                { key: "provide", text: "[필수] 개인정보 제공에 동의합니다." },
-                {
-                  key: "collect",
-                  text: "[필수] 개인정보 수집 및 이용에 동의합니다.",
-                },
-                {
-                  key: "marketing",
-                  text: "[선택] 마케팅 활용 및 광고 수신에 동의합니다.",
-                },
-              ].map(({ key, text, bold }) => (
-                <label key={key} className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={agreements[key as keyof typeof agreements]}
-                    onChange={(e) => {
-                      if (key === "all") handleAllAgree(e.target.checked);
-                      else
-                        setAgreements((prev) => ({
-                          ...prev,
-                          [key]: e.target.checked,
-                        }));
-                    }}
-                    className="w-3 h-3 accent-red-500"
-                  />
-                  {bold ? <b>{text}</b> : text}
-                </label>
-              ))}
-              {errors.agreements && (
-                <p className="text-[11px] text-red-500 mt-1">
-                  필수 동의를 눌러주세요.
-                </p>
+            <CustomDropdown
+              label="월"
+              options={Array.from({ length: 12 }, (_, i) =>
+                String(i + 1).padStart(2, "0")
               )}
-            </div>
+              onSelect={(v) => setBirthday((prev) => ({ ...prev, month: v }))}
+              buttonClassName="rounded-lg border-[#C2C2C2]"
+            />
 
-            <div className="w-full text-center mt-8">
-              <SubmitButton
-                text={submitting ? "처리 중..." : "회원가입 완료하기"}
-                type="submit"
-              />
-            </div>
-          </form>
+            <CustomDropdown
+              label="일"
+              options={Array.from({ length: 31 }, (_, i) =>
+                String(i + 1).padStart(2, "0")
+              )}
+              onSelect={(v) => setBirthday((prev) => ({ ...prev, day: v }))}
+              buttonClassName="rounded-lg border-[#C2C2C2]"
+            />
+          </InputRow>
+
+          {errors.birthday && (
+            <p className="text-[11px] text-red-500 self-start px-2">
+              생년월일을 선택해주세요.
+            </p>
+          )}
+
+          {/* 성별 */}
+          <GenderRadioGroup
+            value={gender}
+            onChange={setGender}
+            required
+            error={errors.gender ? "성별을 선택해주세요." : ""}
+          />
+
+          {/* 약관 동의 섹션 */}
+          <AgreementsSection
+            agreements={agreements}
+            onChange={setAgreements}
+            showError={errors.agreements}
+          />
         </div>
+      </form>
+      <div className="justify-self-center w-full md:w-11/12 text-center ">
+        <SubmitButton
+          text={submitting ? "처리 중..." : "회원가입 완료하기"}
+          type="submit"
+        />
       </div>
 
-      {/* 완료 모달 */}
       <ConfirmModal
         isOpen={modalOpen}
         onClose={() => {
@@ -346,13 +294,13 @@ const KakaoExtraSignUpPage: React.FC = () => {
         }}
       >
         <p className="text-lg font-semibold text-gray-800 mb-3">
-          회원가입이 완료되었습니다
+          가입이 완료되었어요!
         </p>
         <p className="text-sm text-gray-500">
-          마케터의 냉장고를 편하게 이용해보세요!
+          지금 바로 마케터의 냉장고를 시작해보세요.
         </p>
       </ConfirmModal>
-    </div>
+    </AuthPageLayout>
   );
 };
 

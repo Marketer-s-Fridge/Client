@@ -26,7 +26,6 @@ const LoginPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false); // 로그인 성공 모달
   const [showSocialModal, setShowSocialModal] = useState(false); // SNS 준비중 모달
-  
 
   // 초기에는 false로 두고, 클라이언트에서 storage 기준으로 계산
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -162,7 +161,7 @@ const LoginPage: React.FC = () => {
 
       // 🔥 2) React Query 캐시 제거
       queryClient.clear(); // ← 이거 한 줄이면 전체 캐시 삭제
-      
+
       // rememberId는 복구
       if (remember && savedId) {
         localStorage.setItem("rememberId", "true");

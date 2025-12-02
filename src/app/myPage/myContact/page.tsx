@@ -1,3 +1,4 @@
+// src/app/myPage/myContact/page.tsx (경로는 네 프로젝트에 맞게)
 "use client";
 
 import Header from "@/components/header";
@@ -24,7 +25,6 @@ export default function MyContact() {
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
 
-  // ✅ 내 문의 전체 조회 (마운트 시 1번만)
   useEffect(() => {
     const loadMyEnquiries = async () => {
       try {
@@ -48,7 +48,6 @@ export default function MyContact() {
 
   const hasInquiries = inquiries.length > 0;
 
-  // ✅ 정렬 적용
   const sortedInquiries = useMemo(() => {
     const copy = [...inquiries];
     return copy.sort((a, b) => {
@@ -58,14 +57,12 @@ export default function MyContact() {
     });
   }, [inquiries, sortOrder]);
 
-  // ✅ 페이지네이션 적용
   const paginatedInquiries = useMemo(() => {
     const start = (currentPage - 1) * PAGE_SIZE;
     const end = start + PAGE_SIZE;
     return sortedInquiries.slice(start, end);
   }, [sortedInquiries, currentPage]);
 
-  // 페이지 변경 시 전체 페이지 범위 넘어가면 보정
   useEffect(() => {
     const maxPage = Math.max(1, Math.ceil(inquiries.length / PAGE_SIZE));
     if (currentPage > maxPage) {
@@ -95,14 +92,13 @@ export default function MyContact() {
               label={sortOrder === "desc" ? "최신순" : "오래된순"}
               onSelect={(value) => {
                 setSortOrder(value === "최신순" ? "desc" : "asc");
-                setCurrentPage(1); // 정렬 바뀌면 1페이지로
+                setCurrentPage(1);
               }}
               buttonClassName="rounded-lg"
             />
           </div>
         </div>
 
-        {/* 로딩 / 빈 상태 / 리스트 */}
         {loading ? (
           <p className="text-gray-500 text-center py-10">불러오는 중...</p>
         ) : !hasInquiries ? (
@@ -110,11 +106,10 @@ export default function MyContact() {
             <p className="text-gray-500 text-center py-10">
               작성한 문의가 없습니다.
             </p>
-            {/* 문의 없을 때는 페이지네이션 없이 글쓰기 버튼만 중앙에 */}
             <div className="flex justify-center mt-4">
               <BaseConfirmButton
                 onClick={() => router.push("/contact")}
-                className="w-auto px-6 py-2 text-xs"
+                className="!w-auto sm:!w-auto px-6 py-2 text-xs"
               >
                 문의 작성하기
               </BaseConfirmButton>
@@ -122,7 +117,7 @@ export default function MyContact() {
           </>
         ) : (
           <>
-            {/* 테이블 (데스크탑/태블릿 이상) */}
+            {/* 테이블 (데스크탑) */}
             <div className="hidden sm:block overflow-x-auto text-[10px] sm:text-[13px]">
               <table className="w-full text-center border-t">
                 <thead className="border-b-2 border-t-2 border-black">
@@ -173,7 +168,7 @@ export default function MyContact() {
               </table>
             </div>
 
-            {/* 리스트 (모바일 전용) */}
+            {/* 리스트 (모바일) */}
             <div className="sm:hidden space-y-3">
               {paginatedInquiries.map((item, idx) => {
                 const isDone = item.status === "PUBLISHED";
@@ -220,7 +215,6 @@ export default function MyContact() {
               })}
             </div>
 
-            {/* ✅ 페이지네이션 + 글쓰기 버튼 (문의 있을 때만) */}
             {totalPages > 1 && (
               <div className="mt-6 flex justify-center">
                 <Pagination
@@ -234,7 +228,7 @@ export default function MyContact() {
             <div className="flex justify-end mt-4">
               <BaseConfirmButton
                 onClick={() => router.push("/contact")}
-                className="w-auto px-6 py-2 text-xs"
+                className="!w-auto sm:!w-auto px-6 py-2 text-xs"
               >
                 글쓰기
               </BaseConfirmButton>
