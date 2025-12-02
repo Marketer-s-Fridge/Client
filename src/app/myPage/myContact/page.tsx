@@ -106,10 +106,8 @@ export default function MyContact() {
             <p className="text-gray-500 text-center py-10">
               작성한 문의가 없습니다.
             </p>
-            <div className="flex justify-center mt-4">
-              <BaseConfirmButton
-                onClick={() => router.push("/contact")}
-              >
+            <div className="flex justify-center sm:justify-end mt-4 w-full">
+              <BaseConfirmButton onClick={() => router.push("/contact")}>
                 글쓰기
               </BaseConfirmButton>
             </div>
@@ -224,7 +222,8 @@ export default function MyContact() {
               </div>
             )}
 
-            <div className="flex flex-1 items-end self-end mt-4 w-full sm:w-auto">
+            {/* 🔽 하단 글쓰기 버튼: 모바일 중앙, 데스크탑 오른쪽 */}
+            <div className="mt-4 flex w-full justify-center sm:justify-end">
               <BaseConfirmButton onClick={() => router.push("/contact")}>
                 글쓰기
               </BaseConfirmButton>

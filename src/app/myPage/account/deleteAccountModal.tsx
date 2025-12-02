@@ -1,9 +1,8 @@
 "use client";
 import React, { useState } from "react";
-import { TextInput } from "@/components/authFormComponents";
+import BigModal from "@/components/bigModal";
 import { useDeleteAccount } from "@/features/auth/hooks/useDeleteAccount";
 import { useAuthStatus } from "@/features/auth/hooks/useAuthStatus";
-import BigModal from "@/components/bigModal";
 
 interface DeleteAccountModalProps {
   isOpen: boolean;
@@ -22,7 +21,6 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
   const [success, setSuccess] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  // ✅ 현재 로그인 유저 (id로 카카오 여부 판단)
   const { user } = useAuthStatus();
   const isKakaoUser = user?.id?.startsWith("kakao_") ?? false;
 
@@ -58,23 +56,20 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
   const handleConfirm = async () => {
     setErrorMsg(null);
 
-    // ✅ 일반 회원만 비밀번호 필수
     if (!isKakaoUser && !password) {
       setErrorMsg("비밀번호를 입력하세요.");
       return;
     }
 
     try {
-      // ✅ 카카오 유저는 빈 문자열 등으로 호출 (백엔드에서 분기)
       await deleteAccountAsync(isKakaoUser ? "" : password);
     } catch {
-      /* onError에서 처리됨 */
+      /* onError에서 처리 */
     }
   };
 
   return (
     <BigModal isOpen={isOpen} onClose={resetAndClose}>
-      {/* 🔹 모바일: 전체폭 / 데스크탑: 최대 420px */}
       <div className="w-full sm:max-w-[480px] mx-auto py-2 px-4 sm:px-6">
         {!success ? (
           <>
@@ -90,64 +85,64 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                 : "계속 진행하시려면 비밀번호를 입력해주세요."}
             </p>
 
-            <div className="flex flex-col gap-4 mb-2">
-              {/* 계정(이메일) - readOnly */}
-              <div className="w-full">
-                <TextInput
-                  label="계정"
+            {/* 🔹 필드 영역: 모바일/웹 모두 한 줄 정렬 */}
+            <div className="flex flex-col gap-3 mb-2 text-xs sm:text-sm">
+              {/* 계정 (라벨 + 입력 한 줄) */}
+              <div className="flex items-center gap-2">
+                <label className="w-14 sm:w-16 text-[11px] sm:text-xs font-semibold">
+                  계정
+                </label>
+                <input
                   type="email"
                   value={email}
-                  onChange={() => {}}
-                  placeholder=""
                   readOnly
-                  bgColor="bg-gray-100"
-                  textColor="text-gray-500"
-                  className="border border-gray-300 rounded-lg px-3 py-2 text-xs sm:text-sm cursor-not-allowed w-full"
+                  className="flex-1 bg-gray-100 text-gray-500 border border-gray-300 rounded-lg px-3 py-2 text-xs sm:text-sm cursor-not-allowed"
                 />
               </div>
 
-              {/* 🔹 일반 회원만 비밀번호 입력 노출 */}
+              {/* 비밀번호 (일반 회원일 때만 노출, 라벨 + 입력 한 줄) */}
               {!isKakaoUser && (
-                <div className="w-full">
-                  <TextInput
-                    label="비밀번호"
+                <div className="flex items-center gap-2">
+                  <label className="w-14 sm:w-16 text-[11px] sm:text-xs font-semibold">
+                    비밀번호
+                  </label>
+                  <input
                     type="password"
                     value={password}
                     onChange={handlePasswordChange}
                     placeholder="비밀번호 입력"
-                    error={errorMsg || undefined}
-                    className="border border-gray-300 rounded-lg px-3 py-2 text-xs sm:text-sm w-full"
+                    className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-xs sm:text-sm"
                   />
                 </div>
               )}
 
-              {/* 🔹 카카오 유저 안내 (선택) */}
-              {isKakaoUser && errorMsg && (
-                <p className="text-[11px] text-red-500">{errorMsg}</p>
+              {/* 에러 메시지 */}
+              {errorMsg && (
+                <p className="text-[11px] text-red-500 mt-1 ml-[4.2rem] sm:ml-[4.5rem]">
+                  {errorMsg}
+                </p>
               )}
             </div>
 
-            {/* 🔹 모바일/데스크톱 모두 가로 정렬 */}
-            <div className="flex justify-center gap-3  sm:gap-6 mt-6 w-full">
+            {/* 버튼: 모바일은 양쪽 꽉, 데스크탑은 내용만 */}
+            <div className="flex justify-center gap-3 sm:gap-6 mt-6 w-full">
               <button
                 onClick={resetAndClose}
                 disabled={isLoading}
                 className="
-                cursor-pointer
-                w-full              /* 모바일: 가득 */
-                py-2
-                bg-white
-      text-gray-700
-                text-[13px] sm:text-[12.5px] font-medium
-                rounded-lg
-      hover:bg-gray-50      
-                transition
-                sm:w-auto
-                sm:px-9        /* ≥640px: 짧은 버튼 */
-                sm:py-0.5             /* 데스크탑에서는 살짝 얇게 */
-                border-1
-                border-gray-500
-              "
+                  cursor-pointer
+                  w-full
+                  py-2
+                  bg-white text-gray-700
+                  text-[13px] sm:text-[12.5px] font-medium
+                  rounded-lg
+                  hover:bg-gray-50
+                  transition
+                  sm:w-auto
+                  sm:px-9
+                  sm:py-0.5
+                  border border-gray-300
+                "
               >
                 취소
               </button>
@@ -156,20 +151,20 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                 onClick={handleConfirm}
                 disabled={isLoading || (!isKakaoUser && password.length === 0)}
                 className="
-                cursor-pointer
-                w-full              /* 모바일: 가득 */
-                py-2
-                bg-red-500 text-white
-                text-[13px] sm:text-[12.5px] font-medium
-                rounded-lg
-                hover:bg-red-600
-                transition
-                sm:w-auto
-                sm:px-9        /* ≥640px: 짧은 버튼 */
-                sm:py-0.5             /* 데스크탑에서는 살짝 얇게 */
-                border-1
-                border-red-500
-              "
+                  cursor-pointer
+                  w-full
+                  py-2
+                  bg-red-500 text-white
+                  text-[13px] sm:text-[12.5px] font-medium
+                  rounded-lg
+                  hover:bg-red-600
+                  transition
+                  sm:w-auto
+                  sm:px-9
+                  sm:py-0.5
+                  border border-red-500
+                  disabled:opacity-60
+                "
               >
                 {isLoading ? "처리 중..." : "확인"}
               </button>
