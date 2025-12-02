@@ -211,29 +211,36 @@ export default function MyPage() {
       </BaseModal>
 
       {/* 👤 프로필 영역 */}
+      {/* 👤 프로필 영역 */}
       <section className="flex py-5 md:py-10 px-[5%] lg:px-[17%] main-red text-white w-full">
         <div className="w-full flex flex-col md:flex-row justify-between items-center">
-          <div className="flex flex-col md:flex-row items-center w-1/2 gap-[5%] sm:gap-[10%]">
-            <div className="w-[35%] sm:w-[45%] aspect-square">
-              <Image
-                src={profileImageSrc}
-                alt="프로필"
-                className="w-full h-full rounded-full object-cover"
-                width={230}
-                height={230}
-              />
+          {/* 왼쪽: 프로필 + 이름/이메일/버튼 */}
+          <div className="flex flex-row items-center w-full md:w-1/2 gap-4 sm:gap-6">
+            {/* 프로필 이미지 */}
+            <div className="flex-shrink-0">
+              <div className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32">
+                <Image
+                  src={profileImageSrc}
+                  alt="프로필"
+                  className="w-full h-full rounded-full object-cover"
+                  width={230}
+                  height={230}
+                />
+              </div>
             </div>
-            <div className="w-full flex flex-col items-center md:items-start">
-              <h2 className="text-medium sm:text-3xl font-bold">
+
+            {/* 이름 / 이메일 / 프로필 편집 */}
+            <div className="flex-1 flex flex-col items-start">
+              <h2 className="text-lg sm:text-2xl md:text-3xl font-bold leading-snug">
                 {user?.nickname || user?.name || "비회원"}
               </h2>
-              <p className="text-xs sm:text-sm">
+              <p className="mt-1 text-[11px] sm:text-sm">
                 {user?.email || "로그인이 필요합니다"}
               </p>
               {isAuthenticated && (
                 <button
                   onClick={() => setIsNicknameModalOpen(true)}
-                  className="cursor-pointer w-9/13 mt-2 border border-white rounded-full text-xs px-4 py-1 sm:text-sm"
+                  className="cursor-pointer mt-2 border border-white rounded-full text-[11px] sm:text-xs md:text-sm px-4 py-1"
                 >
                   프로필 편집
                 </button>
@@ -241,8 +248,9 @@ export default function MyPage() {
             </div>
           </div>
 
-          <div className="mt-10 md:mt-0 flex w-full md:w-[50%] text-sm sm:text-lg md:text-2xl font-semibold justify-between">
-            <div className="flex flex-1 md:gap-30 gap-5 md:justify-end">
+          {/* 오른쪽: 계정 관리 / 내 문의 내역 / 모바일 전용 토글 버튼 */}
+          <div className="mt-6 md:mt-0 flex w-full md:w-[50%] text-sm sm:text-lg md:text-2xl font-semibold justify-between">
+            <div className="flex flex-1 gap-5 md:gap-8 md:justify-end">
               <button
                 onClick={() => router.push("/myPage/account/myInfo")}
                 className="cursor-pointer"
@@ -256,8 +264,10 @@ export default function MyPage() {
                 내 문의 내역
               </button>
             </div>
+
+            {/* 모바일에서만 보이는 리포트 토글 버튼 */}
             <button
-              className="block md:hidden"
+              className="block md:hidden text-xs font-normal"
               onClick={() => setMobileReportView((v) => !v)}
             >
               {mobileReportView ? "콘텐츠 목록 보기" : "콘텐츠 소비 리포트"}
