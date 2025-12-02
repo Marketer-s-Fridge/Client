@@ -8,6 +8,7 @@ import MobileMenu from "@/components/mobileMenu";
 import { FiPaperclip } from "react-icons/fi";
 import { useEnquiry } from "@/features/enquiries/hooks/useEnquiry";
 import Image from "next/image";
+import BaseConfirmButton from "@/components/baseConfirmButton";
 
 export default function UnprocessedDetailPage() {
   const router = useRouter();
@@ -24,12 +25,12 @@ export default function UnprocessedDetailPage() {
     return (
       <div className="p-6">
         미답변 상태의 문의가 아닙니다.
-        <button
+        <BaseConfirmButton
           onClick={() => router.back()}
-          className="mt-4 inline-flex items-center justify-center rounded-full bg-[#FF4545] px-5 py-1.5 text-sm font-medium text-white"
+          className="mt-4 w-auto px-5 py-1.5 text-sm"
         >
           뒤로가기
-        </button>
+        </BaseConfirmButton>
       </div>
     );
   }
@@ -42,12 +43,12 @@ export default function UnprocessedDetailPage() {
     return (
       <div className="p-6">
         미답변 상태의 문의가 아닙니다.
-        <button
+        <BaseConfirmButton
           onClick={() => router.back()}
-          className="mt-4 inline-flex items-center justify-center rounded-full bg-[#FF4545] px-5 py-1.5 text-sm font-medium text-white"
+          className="mt-4 w-auto px-5 py-1.5 text-sm"
         >
           뒤로가기
-        </button>
+        </BaseConfirmButton>
       </div>
     );
   }
@@ -136,15 +137,15 @@ export default function UnprocessedDetailPage() {
         </div>
       </main>
 
-      {/* 하단 버튼 – 모바일에선 꽉, 데스크탑에선 오른쪽 정렬 */}
+      {/* 하단 버튼 – 모바일 꽉 / 데스크탑 오른쪽 */}
       <div className="w-full bg-white">
         <div className="mx-auto flex w-full max-w-3xl justify-end px-4 pb-10">
-          <button
+          <BaseConfirmButton
             onClick={() => router.back()}
-            className="cursor-pointer w-full sm:w-auto rounded-full bg-[#FF4545] px-6 py-2 text-sm font-medium text-white text-center"
+            className="w-full sm:w-auto px-6 py-2 text-sm"
           >
             돌아가기
-          </button>
+          </BaseConfirmButton>
         </div>
       </div>
     </div>

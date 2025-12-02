@@ -10,6 +10,7 @@ import ConfirmModal from "@/components/confirmModal";
 import MobileMenu from "@/components/mobileMenu";
 import ToggleButtons from "../toggleButtons";
 import { useAuthStatus } from "@/features/auth/hooks/useAuthStatus";
+import BaseConfirmButton from "@/components/baseConfirmButton"; // ✅ 추가
 
 export default function AccountPage() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -156,12 +157,9 @@ export default function AccountPage() {
           </div>
 
           <div className="flex flex-1 items-end self-end mt-25 md:mt-8 w-full sm:w-auto">
-            <button
-              onClick={() => setModalOpen(true)} // TODO: 저장 API 연결
-              className="cursor-pointer w-full sm:w-auto bg-red-500 text-white rounded-lg sm:rounded-full px-4 py-3 sm:py-1.5 text-[15px] sm:text-[11px] font-semibold hover:bg-red-600"
-            >
+            <BaseConfirmButton onClick={() => setModalOpen(true)}>
               변경 완료
-            </button>
+            </BaseConfirmButton>
           </div>
         </section>
       </main>

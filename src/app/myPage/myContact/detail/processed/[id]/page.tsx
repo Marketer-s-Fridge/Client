@@ -13,6 +13,7 @@ import {
   useCreateFeedback,
 } from "@/features/feedback/hooks/useFeedback";
 import Image from "next/image";
+import BaseConfirmButton from "@/components/baseConfirmButton";
 
 export default function ProcessedDetailPage() {
   const router = useRouter();
@@ -64,12 +65,12 @@ export default function ProcessedDetailPage() {
     return (
       <div className="p-6">
         처리 완료된 문의가 아닙니다.
-        <button
+        <BaseConfirmButton
           onClick={() => router.back()}
-          className="mt-4 inline-flex items-center justify-center rounded-full bg-[#FF4545] px-5 py-1.5 text-sm font-medium text-white"
+          className="mt-4 w-auto px-5 py-1.5 text-sm"
         >
           뒤로가기
-        </button>
+        </BaseConfirmButton>
       </div>
     );
   }
@@ -80,12 +81,12 @@ export default function ProcessedDetailPage() {
     return (
       <div className="p-6">
         처리 완료된 문의가 아닙니다.
-        <button
+        <BaseConfirmButton
           onClick={() => router.back()}
-          className="mt-4 inline-flex items-center justify-center rounded-full bg-[#FF4545] px-5 py-1.5 text-sm font-medium text-white"
+          className="mt-4 w-auto px-5 py-1.5 text-sm"
         >
           뒤로가기
-        </button>
+        </BaseConfirmButton>
       </div>
     );
   }
@@ -292,12 +293,12 @@ export default function ProcessedDetailPage() {
       {/* 하단 버튼 */}
       <div className="w-full bg-white">
         <div className="mx-auto flex w-full max-w-3xl justify-end px-4 pb-10">
-          <button
+          <BaseConfirmButton
             onClick={() => router.back()}
-            className="cursor-pointer w-full sm:w-auto rounded-full bg-[#FF4545] px-6 py-2 text-sm font-medium text-white text-center"
+            className="w-full sm:w-auto px-6 py-2 text-sm"
           >
             돌아가기
-          </button>
+          </BaseConfirmButton>
         </div>
       </div>
     </div>

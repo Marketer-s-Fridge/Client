@@ -10,6 +10,7 @@ import CustomDropdown from "@/components/customDropdown";
 import MobileMenu from "@/components/mobileMenu";
 import { fetchMyEnquiries } from "@/features/enquiries/api/enquiriesApi";
 import { EnquiryResponseDto } from "@/features/enquiries/types";
+import BaseConfirmButton from "@/components/baseConfirmButton";
 
 const PAGE_SIZE = 10;
 
@@ -139,9 +140,7 @@ export default function MyContact() {
                         <td>{no}</td>
                         <td className="text-left px-4">{item.title}</td>
                         <td>
-                          {new Date(
-                            item.createdAt
-                          ).toLocaleDateString("ko-KR")}
+                          {new Date(item.createdAt).toLocaleDateString("ko-KR")}
                         </td>
                         <td>
                           {isDone ? (
@@ -201,9 +200,7 @@ export default function MyContact() {
                     </div>
 
                     <div className="mt-1 text-[11px] text-gray-500">
-                      {new Date(
-                        item.createdAt
-                      ).toLocaleDateString("ko-KR")}
+                      {new Date(item.createdAt).toLocaleDateString("ko-KR")}
                     </div>
                   </button>
                 );
@@ -215,12 +212,12 @@ export default function MyContact() {
         {/* 하단 버튼 + 페이지네이션 */}
         <div className="flex justify-between items-center mt-6">
           <div></div>
-          <button
+          <BaseConfirmButton
             onClick={() => router.push("/contact")}
-            className="cursor-pointer bg-red-500 text-white px-4 py-1 rounded-full text-xs hover:bg-red-600"
+            className="w-auto px-4 py-1 text-xs" // 리스트 페이지에 맞게 조금 작게
           >
             글쓰기
-          </button>
+          </BaseConfirmButton>
         </div>
         <Pagination
           currentPage={currentPage}

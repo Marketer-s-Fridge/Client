@@ -10,6 +10,7 @@ import { TextInput } from "@/components/authFormComponents";
 import MobileMenu from "@/components/mobileMenu";
 import ToggleButtons from "../toggleButtons";
 import { useUpdatePassword } from "@/features/auth/hooks/useUpdatePwd";
+import BaseConfirmButton from "@/components/baseConfirmButton"; // ✅ 추가
 
 export default function PasswordChangePage() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -50,7 +51,7 @@ export default function PasswordChangePage() {
 
     try {
       await updatePassword({
-        currentPassword: currentPwd,   // ✅ 현재 비밀번호 추가
+        currentPassword: currentPwd,
         newPassword: newPwd,
         confirmNewPassword: confirmPwd,
       });
@@ -84,7 +85,7 @@ export default function PasswordChangePage() {
           </h3>
 
           <div className="w-full flex flex-col gap-5 max-w-[400px]">
-            {/* ✅ 현재 비밀번호 */}
+            {/* 현재 비밀번호 */}
             <TextInput
               label="현재 비밀번호"
               type="password"
@@ -95,7 +96,7 @@ export default function PasswordChangePage() {
               rounded="rounded-lg"
               borderColor="border-gray-300"
               required
-              error={localError || undefined} // 공통 에러 메시지 노출
+              error={localError || undefined}
             />
 
             {/* 새 비밀번호 */}
@@ -126,13 +127,12 @@ export default function PasswordChangePage() {
           </div>
 
           <div className="flex flex-1 items-end self-end mt-25 md:mt-8 w-full sm:w-auto">
-            <button
+            <BaseConfirmButton
               onClick={handleSubmit}
               disabled={isPending}
-              className="cursor-pointer w-full sm:w-auto bg-red-500 text-white rounded-lg sm:rounded-full px-4 py-3 sm:py-1.5 text-[15px] sm:text-[11px] font-semibold hover:bg-red-600 disabled:opacity-60"
             >
               {isPending ? "변경 중..." : "변경 완료"}
-            </button>
+            </BaseConfirmButton>
           </div>
         </section>
       </main>

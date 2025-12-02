@@ -1,4 +1,4 @@
-// src/app/contact/page.tsx (예시 경로)
+// src/app/contact/page.tsx
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -10,7 +10,8 @@ import MobileMenu from "@/components/mobileMenu";
 import { createEnquiry } from "@/features/enquiries/api/enquiriesApi";
 import { EnquiryRequestDto } from "@/features/enquiries/types";
 import LoginRequiredModal from "@/components/loginRequiredModal";
-import { useImageUpload } from "@/features/posts/hooks/useImageUpload"; // ✅ 이미지 업로드 훅
+import { useImageUpload } from "@/features/posts/hooks/useImageUpload";
+import BaseConfirmButton from "@/components/baseConfirmButton"; // ✅ 추가
 
 export default function ContactPage() {
   const [category, setCategory] = useState("");
@@ -19,19 +20,17 @@ export default function ContactPage() {
   const [content, setContent] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [fileName, setFileName] = useState("");
-  const [imageUrl, setImageUrl] = useState<string | null>(null); // ✅ 업로드 된 URL
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [agreed, setAgreed] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
-  // ✅ 단일 이미지 업로드 mutation
   const {
     mutateAsync: uploadImage,
     isPending: isUploading,
   } = useImageUpload();
 
-  // ✅ 로그인 여부 체크
   const isLoggedIn =
     typeof window !== "undefined" && !!localStorage.getItem("accessToken");
 
@@ -65,13 +64,12 @@ export default function ContactPage() {
     기타: "어떤 문의든 괜찮아요! 궁금한 점이나 불편한 점을 자유롭게 적어주세요 :)",
   };
 
-  // ✅ 파일 선택 + 즉시 업로드
   const handleFileChange = async (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     const selected = e.target.files?.[0] || null;
     setFile(selected);
-    setImageUrl(null); // 새로 선택 시 이전 URL 초기화
+    setImageUrl(null);
 
     if (!selected) {
       setFileName("");
@@ -81,7 +79,7 @@ export default function ContactPage() {
     setFileName(selected.name);
 
     try {
-      const url = await uploadImage(selected); // File -> string(URL)
+      const url = await uploadImage(selected);
       setImageUrl(url);
       console.log("문의 이미지 업로드 성공: ", url);
     } catch (err) {
@@ -93,12 +91,10 @@ export default function ContactPage() {
     }
   };
 
-  // ✅ 문의 등록 API 연결
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!isFormValid) return;
 
-    // 파일을 선택했는데 아직 업로드 중이거나 URL이 없는 경우 막기
     if (file && (isUploading || !imageUrl)) {
       alert("이미지 업로드가 완료된 후에 제출해주세요.");
       return;
@@ -113,14 +109,13 @@ export default function ContactPage() {
         writerEmail: email,
         content,
         agreement: agreed,
-        imageUrl: imageUrl ?? undefined, // ✅ 업로드된 URL 사용
+        imageUrl: imageUrl ?? undefined,
       };
 
       const res = await createEnquiry(dto);
       console.log("문의 등록 성공:", res);
       alert("문의가 성공적으로 제출되었습니다! 💌");
 
-      // 폼 초기화
       setCategory("");
       setTitle("");
       setEmail("");
@@ -143,7 +138,6 @@ export default function ContactPage() {
       <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <Banner title="문의하기" />
 
-      {/* 🔒 로그인 유도 모달 */}
       <LoginRequiredModal
         isOpen={isLoginModalOpen}
         onClose={() => setIsLoginModalOpen(false)}
@@ -287,21 +281,16 @@ export default function ContactPage() {
 
           {/* 제출 버튼 */}
           <div className="text-end mt-10">
-            <button
+            <BaseConfirmButton
               type="submit"
               disabled={!isFormValid || loading || isUploading}
-              className={`rounded-full px-6 py-1.5 text-sm font-medium transition-colors ${
-                isFormValid && !loading && !isUploading
-                  ? "bg-red-500 text-white hover:bg-red-600"
-                  : "bg-gray-100 text-gray-400 cursor-not-allowed"
-              }`}
             >
               {loading
                 ? "제출 중..."
                 : isUploading
                 ? "이미지 업로드 중..."
                 : "제출하기"}
-            </button>
+            </BaseConfirmButton>
           </div>
         </form>
       </main>
