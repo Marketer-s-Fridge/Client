@@ -41,15 +41,18 @@ export default function LoginRequiredModal({
             router.push(redirectPath);
           }}
           className="
-            cursor-pointer
-            w-full max-w-[260px]          /* 모바일 풀, 최대폭 제한 */
-            py-3                           /* 터치 영역 넉넉하게 */
-            bg-red-500 text-white
-            rounded-2xl
-            text-sm font-semibold
-            hover:bg-red-600
-            transition
-          "
+          cursor-pointer
+          w-full              /* 모바일: 가득 */
+          py-3
+          bg-red-500 text-white
+          text-sm font-semibold
+          rounded-2xl
+          hover:bg-red-600
+          transition
+
+          sm:w-[120px]        /* ≥640px: 짧은 버튼 */
+          sm:py-2             /* 데스크탑에서는 살짝 얇게 */
+        "
         >
           {buttonText}
         </button>

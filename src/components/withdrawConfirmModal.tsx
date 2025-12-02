@@ -25,30 +25,36 @@ const WithdrawConfirmModalProps: React.FC<WithdrawConfirmModalProps> = ({
         <button
           onClick={onClose}
           className="
-            cursor-pointer
-            flex-1
-            py-3
-            rounded-2xl
-            bg-gray-200 text-gray-800
-            text-sm font-medium
-            hover:bg-gray-300
-            transition
-          "
+          cursor-pointer
+          w-full              /* 모바일: 가득 */
+          py-3
+          bg-red-500 text-white
+          text-sm font-semibold
+          rounded-2xl
+          hover:bg-red-600
+          transition
+
+          sm:w-[120px]        /* ≥640px: 짧은 버튼 */
+          sm:py-2             /* 데스크탑에서는 살짝 얇게 */
+        "
         >
           취소
         </button>
         <button
           onClick={onConfirm}
           className="
-            cursor-pointer
-            flex-1
-            py-3
-            rounded-2xl
-            bg-red-500 text-white
-            text-sm font-medium
-            hover:bg-red-600
-            transition
-          "
+              cursor-pointer
+              w-full              /* 모바일: 가득 */
+              py-3
+              bg-red-500 text-white
+              text-sm font-semibold
+              rounded-2xl
+              hover:bg-red-600
+              transition
+
+              sm:w-[120px]        /* ≥640px: 짧은 버튼 */
+              sm:py-2             /* 데스크탑에서는 살짝 얇게 */
+            "
         >
           탈퇴하기
         </button>
