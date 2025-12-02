@@ -23,15 +23,15 @@ export default function ConfirmModal({
             className="
             cursor-pointer
             w-full              /* 모바일: 가득 */
-            py-3
+            py-2
             bg-red-500 text-white
-            text-sm font-semibold
-            rounded-2xl
+            text-[13px] sm:text-[12.5px] font-medium
+            rounded-lg
             hover:bg-red-600
             transition
-
-            sm:w-[120px]        /* ≥640px: 짧은 버튼 */
-            sm:py-2             /* 데스크탑에서는 살짝 얇게 */
+            sm:w-auto
+            sm:px-9        /* ≥640px: 짧은 버튼 */
+            sm:py-0.5             /* 데스크탑에서는 살짝 얇게 */
           "
           >
             확인
