@@ -53,15 +53,8 @@ export default function UnprocessedDetailPage() {
     );
   }
 
-  const {
-    category,
-    writer,
-    writerEmail,
-    createdAt,
-    title,
-    content,
-    imageUrl,
-  } = data;
+  const { category, writer, writerEmail, createdAt, title, content, imageUrl } =
+    data;
 
   const writerName: string = writer?.username ?? "익명";
   const writerProfileImage: string =
@@ -82,7 +75,7 @@ export default function UnprocessedDetailPage() {
           </p>
 
           {/* 작성자 정보 */}
-          <div className="flex items-center gap-3 mb-4 border-y border-gray-200 py-3 text-sm">
+          <div className="flex items-center gap-3 border-y border-gray-200 py-3 text-sm">
             <Image
               src={writerProfileImage}
               alt="profile"

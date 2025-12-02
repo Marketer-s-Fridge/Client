@@ -148,7 +148,7 @@ export default function ProcessedDetailPage() {
           </p>
 
           {/* 작성자 정보 */}
-          <div className="flex items-center gap-3 mb-4 border-y border-gray-200 py-3 text-sm">
+          <div className="flex items-center gap-3 border-y border-gray-200 py-3 text-sm">
             <Image
               src={writerProfileImage}
               alt="profile"

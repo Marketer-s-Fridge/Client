@@ -46,6 +46,8 @@ export default function MyContact() {
     loadMyEnquiries();
   }, []);
 
+  const hasInquiries = inquiries.length > 0;
+
   // ✅ 정렬 적용
   const sortedInquiries = useMemo(() => {
     const copy = [...inquiries];
@@ -100,13 +102,24 @@ export default function MyContact() {
           </div>
         </div>
 
-        {/* 로딩 상태 */}
+        {/* 로딩 / 빈 상태 / 리스트 */}
         {loading ? (
           <p className="text-gray-500 text-center py-10">불러오는 중...</p>
-        ) : inquiries.length === 0 ? (
-          <p className="text-gray-500 text-center py-10">
-            작성한 문의가 없습니다.
-          </p>
+        ) : !hasInquiries ? (
+          <>
+            <p className="text-gray-500 text-center py-10">
+              작성한 문의가 없습니다.
+            </p>
+            {/* 문의 없을 때는 페이지네이션 없이 글쓰기 버튼만 중앙에 */}
+            <div className="flex justify-center mt-4">
+              <BaseConfirmButton
+                onClick={() => router.push("/contact")}
+                className="w-auto px-6 py-2 text-xs"
+              >
+                문의 작성하기
+              </BaseConfirmButton>
+            </div>
+          </>
         ) : (
           <>
             {/* 테이블 (데스크탑/태블릿 이상) */}
@@ -206,24 +219,28 @@ export default function MyContact() {
                 );
               })}
             </div>
+
+            {/* ✅ 페이지네이션 + 글쓰기 버튼 (문의 있을 때만) */}
+            {totalPages > 1 && (
+              <div className="mt-6 flex justify-center">
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={(page) => setCurrentPage(page)}
+                />
+              </div>
+            )}
+
+            <div className="flex justify-end mt-4">
+              <BaseConfirmButton
+                onClick={() => router.push("/contact")}
+                className="w-auto px-6 py-2 text-xs"
+              >
+                글쓰기
+              </BaseConfirmButton>
+            </div>
           </>
         )}
-
-        {/* 하단 버튼 + 페이지네이션 */}
-        <div className="flex justify-between items-center mt-6">
-          <div></div>
-          <BaseConfirmButton
-            onClick={() => router.push("/contact")}
-            className="w-auto px-4 py-1 text-xs" // 리스트 페이지에 맞게 조금 작게
-          >
-            글쓰기
-          </BaseConfirmButton>
-        </div>
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={(page) => setCurrentPage(page)}
-        />
       </main>
       <Footer />
     </div>
