@@ -10,7 +10,9 @@ interface SaveToFridgeButtonProps {
   postId?: number; // ✅ 선택적 (필수 아님)
 }
 
-export default function SaveToFridgeButton({ postId }: SaveToFridgeButtonProps) {
+export default function SaveToFridgeButton({
+  postId,
+}: SaveToFridgeButtonProps) {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
 
@@ -87,12 +89,31 @@ export default function SaveToFridgeButton({ postId }: SaveToFridgeButtonProps) 
         isOpen={isSuccessModalOpen}
         onClose={() => setIsSuccessModalOpen(false)}
       >
-        <div className="flex flex-col items-center justify-center py-1.5 px-3">
-          <p className="text-medium font-medium text-gray-700 text-center">
-            <strong className="text-lg font-semibold">저장 완료!</strong>
-            <br />
+        <div className="flex flex-col items-center justify-center px-4 py-4">
+          <p className="text-center text-base text-gray-700 mb-4 leading-snug">
+            <strong className="text-lg font-semibold block mb-1">
+              저장 완료!
+            </strong>
             MY 냉장고에서 확인해보세요
           </p>
+
+          {/* 🔽 모바일에서도 통일된 CTA 버튼 */}
+          <button
+            onClick={() => setIsSuccessModalOpen(false)}
+            className="
+        cursor-pointer
+        w-full max-w-[260px]
+        py-3
+        mt-2
+        bg-red-500 text-white
+        text-sm font-semibold
+        rounded-2xl
+        hover:bg-red-600
+        transition
+      "
+          >
+            확인
+          </button>
         </div>
       </BaseModal>
     </>

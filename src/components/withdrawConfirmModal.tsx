@@ -6,30 +6,49 @@ interface WithdrawConfirmModalProps {
   onClose: () => void;
   onConfirm: () => void;
 }
-
-const WithdrawConfirmModal: React.FC<WithdrawConfirmModalProps> = ({
+const WithdrawConfirmModalProps: React.FC<WithdrawConfirmModalProps> = ({
   isOpen,
   onClose,
   onConfirm,
 }) => {
   return (
     <BaseModal isOpen={isOpen} onClose={onClose}>
-      <div className="text-xl font-semibold mb-1 mt-3">
+      <div className="text-lg font-semibold mb-2 mt-3 text-center">
         정말 탈퇴하시겠어요?
       </div>
-      <div className="text-medium text-gray-600 mb-4">
+      <div className="text-sm text-gray-600 mb-5 text-center">
         탈퇴 시 모든 데이터가 삭제되며 복구할 수 없습니다.
       </div>
-      <div className="flex justify-center flex-row gap-2">
+
+      {/* 🔽 모바일: 두 버튼이 가로로 꽉 차게 */}
+      <div className="flex w-full gap-3 mt-1">
         <button
           onClick={onClose}
-          className="w-[30%] text-xs px-4 py-1.5 rounded-2xl bg-gray-300 text-black hover:bg-gray-400 transition cursor-pointer"
+          className="
+            cursor-pointer
+            flex-1
+            py-3
+            rounded-2xl
+            bg-gray-200 text-gray-800
+            text-sm font-medium
+            hover:bg-gray-300
+            transition
+          "
         >
           취소
         </button>
         <button
           onClick={onConfirm}
-          className="w-[30%] text-xs px-4 py-1.5 rounded-2xl bg-red-500 text-white hover:bg-red-600 transition cursor-pointer"
+          className="
+            cursor-pointer
+            flex-1
+            py-3
+            rounded-2xl
+            bg-red-500 text-white
+            text-sm font-medium
+            hover:bg-red-600
+            transition
+          "
         >
           탈퇴하기
         </button>
@@ -37,5 +56,3 @@ const WithdrawConfirmModal: React.FC<WithdrawConfirmModalProps> = ({
     </BaseModal>
   );
 };
-
-export default WithdrawConfirmModal;

@@ -271,11 +271,21 @@ export default function ChangeNicknameModal({ onClose, onUpdated }: Props) {
         </div>
 
         {/* 확인 버튼 */}
-        <div className="mt-10 text-center">
+        <div className="mt-8">
           <button
             onClick={handleSubmit}
             disabled={submitting || (!nicknameChanged && !avatarChanged)}
-            className="cursor-pointer bg-red-500 text-xs text-white font-medium rounded-full px-6 py-1 hover:bg-red-600 disabled:opacity-50"
+            className={`
+              cursor-pointer
+              w-full
+              py-3
+              rounded-2xl
+              bg-red-500 text-white
+              text-sm font-semibold
+              hover:bg-red-600
+              disabled:opacity-50
+              transition
+            `}
           >
             {submitting ? "저장 중..." : "확인"}
           </button>
