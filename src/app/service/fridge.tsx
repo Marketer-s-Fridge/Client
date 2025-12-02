@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { useEffect, useState, useRef } from "react";
 import { useInView } from "framer-motion";
-import fridgeBody from "@/public/icons/character/fridge-body-re.png";
+import fridgeBody from "../../../public/icons/character/fridge-body-re.png";
 
 export default function Fridge({
   stageNum,
