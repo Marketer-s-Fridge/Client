@@ -10,7 +10,6 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useImageUpload } from "@/features/posts/hooks/useImageUpload";
 // import { useImageUpload } from "@/hooks/useImageUpload"; // ✅ S3 업로드 훅
 
-
 type Props = { onClose: () => void; onUpdated?: () => void };
 
 export default function ChangeNicknameModal({ onClose, onUpdated }: Props) {
@@ -76,7 +75,7 @@ export default function ChangeNicknameModal({ onClose, onUpdated }: Props) {
   // S3 업로드 훅
   // const { uploadSingle, loading: uploadingAvatar } = useImageUpload();
   const { mutateAsync: uploadAvatar, isPending: uploadingAvatar } =
-  useImageUpload();
+    useImageUpload();
 
   const handleDuplicateCheck = async () => {
     if (!nickValid) {
@@ -275,17 +274,19 @@ export default function ChangeNicknameModal({ onClose, onUpdated }: Props) {
           <button
             onClick={handleSubmit}
             disabled={submitting || (!nicknameChanged && !avatarChanged)}
-            className={`
-              cursor-pointer
-              w-full
-              py-3
-              rounded-2xl
-              bg-red-500 text-white
-              text-sm font-semibold
-              hover:bg-red-600
-              disabled:opacity-50
-              transition
-            `}
+            className="
+            cursor-pointer
+            w-full              /* 모바일: 가득 */
+            py-3
+            bg-red-500 text-white
+            text-sm font-semibold
+            rounded-2xl
+            hover:bg-red-600
+            transition
+
+            sm:w-[120px]        /* ≥640px: 짧은 버튼 */
+            sm:py-2             /* 데스크탑에서는 살짝 얇게 */
+          "
           >
             {submitting ? "저장 중..." : "확인"}
           </button>
