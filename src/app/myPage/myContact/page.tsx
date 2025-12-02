@@ -225,7 +225,7 @@ export default function MyContact() {
               </div>
             )}
 
-            <div className="flex flex-1 items-end self-end  w-full sm:w-auto">
+            <div className="flex flex-1 items-end self-end mt-4 w-full sm:w-auto">
               <BaseConfirmButton onClick={() => router.push("/contact")}>
                 글쓰기
               </BaseConfirmButton>

@@ -75,7 +75,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
   return (
     <BigModal isOpen={isOpen} onClose={resetAndClose}>
       {/* 🔹 모바일: 전체폭 / 데스크탑: 최대 420px */}
-      <div className="w-full sm:max-w-[480px] mx-auto py-4 px-4 sm:px-6">
+      <div className="w-full sm:max-w-[480px] mx-auto py-2 px-4 sm:px-6">
         {!success ? (
           <>
             <h2 className="text-center text-base sm:text-lg font-medium mb-1 leading-snug">
@@ -145,6 +145,8 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                 sm:w-auto
                 sm:px-9        /* ≥640px: 짧은 버튼 */
                 sm:py-0.5             /* 데스크탑에서는 살짝 얇게 */
+                border-1
+                border-gray-700
               "
               >
                 취소
@@ -165,6 +167,8 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                 sm:w-auto
                 sm:px-9        /* ≥640px: 짧은 버튼 */
                 sm:py-0.5             /* 데스크탑에서는 살짝 얇게 */
+                border-1
+                border-red-500
               "
               >
                 {isLoading ? "처리 중..." : "확인"}
