@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { useEffect, useState, useRef } from "react";
 import { useInView } from "framer-motion";
+import fridgeBody from "@/public/icons/character/fridge-body-re.png";
 
 export default function Fridge({
   stageNum,
@@ -42,12 +43,13 @@ export default function Fridge({
     >
       {/* 본체 */}
       <Image
-        src="/icons/character/fridge-body-re.png"
+        src={fridgeBody}
         alt="fridge body"
         fill
-        quality={100} // ← 추가
+        priority // ✅ 첫 화면에서 꼭 보여야 하는 이미지면 무조건 넣기
+        placeholder="blur" // ✅ blur 미리 보기 (선택)
         className="object-contain pointer-events-none"
-        sizes="10%" // ← fill일 때는 sizes 필수로 넣는 게 좋음
+        sizes="(min-width: 1024px) 20vw, 40vw" // 대충 이런 느낌으로 교체 (선택)
       />
 
       {/* 문짝 */}

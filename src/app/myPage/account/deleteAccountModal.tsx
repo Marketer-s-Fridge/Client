@@ -75,7 +75,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
   return (
     <BigModal isOpen={isOpen} onClose={resetAndClose}>
       {/* 🔹 모바일: 전체폭 / 데스크탑: 최대 420px */}
-      <div className="w-full max-w-[340px] sm:max-w-[420px] mx-auto py-4 px-4 sm:px-6">
+      <div className="w-full max-w-[340px] sm:max-w-[480px] mx-auto py-4 px-4 sm:px-6">
         {!success ? (
           <>
             <h2 className="text-center text-base sm:text-lg font-medium mb-1 leading-snug">
@@ -127,19 +127,41 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
               )}
             </div>
 
-            {/* 🔹 모바일: 세로 버튼 / 데스크탑: 가로 버튼 */}
-            <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-8 mt-6">
+            {/* 🔹 모바일/데스크톱 모두 가로 정렬 */}
+            <div className="flex justify-center gap-3 mt-6 w-full">
               <button
                 onClick={resetAndClose}
                 disabled={isLoading}
-                className="cursor-pointer px-6 py-2 rounded-2xl bg-gray-300 text-white text-xs sm:text-sm hover:bg-gray-400 disabled:opacity-60 w-full sm:w-auto"
+                className="
+      flex-1
+      py-3 px-5 sm:py-1.5
+      rounded-lg sm:rounded-full
+      border border-gray-300
+      bg-white text-gray-700
+      text-[15px] sm:text-[11px] font-medium
+      shadow-sm
+      hover:bg-gray-50
+      disabled:opacity-60 disabled:cursor-not-allowed
+      transition-all
+    "
               >
                 취소
               </button>
+
               <button
                 onClick={handleConfirm}
                 disabled={isLoading || (!isKakaoUser && password.length === 0)}
-                className="cursor-pointer px-6 py-2 rounded-2xl bg-[#FF4545] text-white text-xs sm:text-sm hover:bg-red-600 disabled:opacity-60 w-full sm:w-auto"
+                className="
+      flex-1
+      py-3 px-5 sm:py-1.5
+      rounded-lg sm:rounded-full
+      bg-[#FF4545] text-white
+      text-[15px] sm:text-[11px] font-semibold
+      shadow-sm
+      hover:bg-red-600
+      disabled:opacity-60 disabled:cursor-not-allowed
+      transition-all
+    "
               >
                 {isLoading ? "처리 중..." : "확인"}
               </button>
@@ -158,7 +180,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
             </p>
             <button
               onClick={resetAndClose}
-              className="cursor-pointer px-6 py-2 rounded-2xl bg-[#FF4545] text-white text-xs sm:text-sm hover:bg-red-600 w-full"
+              className="cursor-pointer px-6 py-2 rounded-2xl bg-[#FF4545] text-white text-xs sm:text-[11px] hover:bg-red-600 w-full"
             >
               확인
             </button>
