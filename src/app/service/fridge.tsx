@@ -49,7 +49,7 @@ export default function Fridge({
         priority // ✅ 첫 화면에서 꼭 보여야 하는 이미지면 무조건 넣기
         placeholder="blur" // ✅ blur 미리 보기 (선택)
         className="object-contain pointer-events-none"
-        sizes="3vw" // 대충 이런 느낌으로 교체 (선택)
+        sizes="20vw" // 대충 이런 느낌으로 교체 (선택)
       />
 
       {/* 문짝 */}
