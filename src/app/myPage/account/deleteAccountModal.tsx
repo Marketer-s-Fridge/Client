@@ -133,16 +133,19 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                 onClick={resetAndClose}
                 disabled={isLoading}
                 className="
-      flex-1
-      py-3 px-5 sm:py-1.5
-      rounded-lg sm:rounded-full
-      border border-gray-300
-      bg-white text-gray-700
-      text-[12px] sm:text-[11px] font-medium
-      hover:bg-gray-50
-      disabled:opacity-60 disabled:cursor-not-allowed
-      transition-all
-    "
+                cursor-pointer
+                w-full              /* 모바일: 가득 */
+                py-2
+                bg-white
+      text-gray-700
+                text-[13px] sm:text-[12.5px] font-medium
+                rounded-lg
+      hover:bg-gray-50      
+                transition
+                sm:w-auto
+                sm:px-9        /* ≥640px: 짧은 버튼 */
+                sm:py-0.5             /* 데스크탑에서는 살짝 얇게 */
+              "
               >
                 취소
               </button>
@@ -151,15 +154,18 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                 onClick={handleConfirm}
                 disabled={isLoading || (!isKakaoUser && password.length === 0)}
                 className="
-      flex-1
-      py-3 px-5 sm:py-1.5
-      rounded-lg sm:rounded-full
-      bg-[#FF4545] text-white
-      text-[15px] sm:text-[11px] font-semibold
-      hover:bg-red-600
-      disabled:opacity-60 disabled:cursor-not-allowed
-      transition-all
-    "
+                cursor-pointer
+                w-full              /* 모바일: 가득 */
+                py-2
+                bg-red-500 text-white
+                text-[13px] sm:text-[12.5px] font-medium
+                rounded-lg
+                hover:bg-red-600
+                transition
+                sm:w-auto
+                sm:px-9        /* ≥640px: 짧은 버튼 */
+                sm:py-0.5             /* 데스크탑에서는 살짝 얇게 */
+              "
               >
                 {isLoading ? "처리 중..." : "확인"}
               </button>
