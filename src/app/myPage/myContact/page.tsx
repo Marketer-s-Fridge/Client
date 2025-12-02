@@ -109,9 +109,8 @@ export default function MyContact() {
             <div className="flex justify-center mt-4">
               <BaseConfirmButton
                 onClick={() => router.push("/contact")}
-                className="!w-auto sm:!w-auto px-6 py-2 text-xs"
               >
-                문의 작성하기
+                글쓰기
               </BaseConfirmButton>
             </div>
           </>

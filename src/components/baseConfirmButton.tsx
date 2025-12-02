@@ -24,8 +24,8 @@ const BaseConfirmButton: React.FC<PrimaryButtonProps> = ({
 
         // 기본 스타일
         "cursor-pointer w-full sm:w-auto bg-red-500 text-white",
-        "rounded-lg sm:rounded-full px-5 py-3 sm:py-1.5",
-        "text-[15px] sm:text-[11px] font-medium",
+        "rounded-lg sm:rounded-full px-5 py-2.5 sm:py-1",
+        "text-[14.5px] sm:text-[12px] font-medium",
         "hover:bg-red-600 transition-colors",
 
         className
