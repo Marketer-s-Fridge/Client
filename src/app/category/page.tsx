@@ -5,7 +5,7 @@ import React, { useState, useMemo, useEffect } from "react";
 import Header from "@/components/header";
 import SearchInput from "@/components/searchInput";
 import ScrollToTopButton from "@/components/scrollToTopButton";
-import Image from "next/image";
+import Image, { type StaticImageData } from "next/image";
 import Footer from "@/components/footer";
 import Pagination from "@/components/pagination";
 import CardGrid from "@/components/cardGrid";
@@ -14,17 +14,23 @@ import NoContentView from "@/components/noContentView";
 import { usePosts } from "@/features/posts/hooks/usePosts";
 import { usePostsByCategory } from "@/features/posts/hooks/usePostsByCategory";
 
+import foodIcon from "../../../public/icons/icon-food1.png";
+import lifestyleIcon from "../../../public/icons/icon-lifestyle1.png";
+import beautyIcon from "../../../public/icons/icon-beauty1.png";
+import techIcon from "../../../public/icons/icon-tech1.png";
+import fashionIcon from "../../../public/icons/icon-fashion1.png";
+
 interface Category {
   name: string;
-  icon: string;
+  icon: StaticImageData;
 }
 
 const categories: Category[] = [
-  { name: "Food", icon: "/icons/icon-food1.png" },
-  { name: "Lifestyle", icon: "/icons/icon-lifestyle1.png" },
-  { name: "Beauty", icon: "/icons/icon-beauty1.png" },
-  { name: "Tech", icon: "/icons/icon-tech1.png" },
-  { name: "Fashion", icon: "/icons/icon-fashion1.png" },
+  { name: "Food", icon: foodIcon },
+  { name: "Lifestyle", icon: lifestyleIcon },
+  { name: "Beauty", icon: beautyIcon },
+  { name: "Tech", icon: techIcon },
+  { name: "Fashion", icon: fashionIcon },
 ];
 
 const PAGE_SIZE = 12;
@@ -105,30 +111,26 @@ export default function Page() {
               >
                 <div
                   className="
-            flex items-center justify-center
-            w-16  h-16          /* 모바일 기본 */
-            sm:w-20 sm:h-20    /* 작은 태블릿 */
-            md:w-24 md:h-24    /* 태블릿/작은 노트북 */
-            lg:w-28 lg:h-28    /* 일반 데스크탑 */
-            xl:w-32 xl:h-32    /* 큰 데스크탑 */
-            2xl:w-40 2xl:h-40  /* 진짜 큰 화면 (노트북 1592도 여기 들어옴) */
-            transition-all duration-300
-          "
+                    flex items-center justify-center
+                    w-16 h-16
+                    sm:w-20 sm:h-20
+                    md:w-24 md:h-24
+                    lg:w-28 lg:h-28
+                    xl:w-32 xl:h-32
+                    2xl:w-40 2xl:h-40
+                    transition-all duration-300
+                  "
                 >
-                  {" "}
                   <Image
                     src={cat.icon}
                     alt={cat.name}
-                    width={160} // 값은 크게 잡아도 됨, 실제 렌더는 sizes 따라감
-                    height={160}
-                    priority
-                    loading="eager"
+                    priority // ✅ 위쪽에 노출되니까 우선 로드
                     sizes="
-          (max-width: 768px) 64px,
-          (max-width: 1024px) 96px,
-          (max-width: 1280px) 112px,
-          160px
-        "
+                      (max-width: 768px) 64px,
+                      (max-width: 1024px) 96px,
+                      (max-width: 1280px) 112px,
+                      160px
+                    "
                     className={`object-contain transition-transform duration-300 ${
                       isSelected ? "scale-105" : "scale-95 opacity-80"
                     }`}

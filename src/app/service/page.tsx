@@ -10,7 +10,7 @@ import MobileMenu from "@/components/mobileMenu";
 import InfiniteSwipeCarousel from "./infiniteSwipeCarousel";
 import MobileSectionPager from "./mobileSectionPager";
 import CharacterSlideOverlay, { type Slide } from "./characterSlideOverlay";
-// import CharacterSlideOverlay from "./characterHandSection";
+import serviceLogo from "../../../public/icons/service-logo.png";
 
 // ✅ 파일명/시그니처 유지: 고정 오버레이
 // import CharacterSlideOverlay, { type Slide } from "./characterSlideOverlay";
@@ -249,7 +249,7 @@ export default function Page() {
         <section className="hidden md:flex flex-col items-start pl-6 md:pb-[0%] sm:pl-[10%] lg:pl-[17%] pt-[8%] sm:pt-[6%] lg:pt-[4%]">
           <Image
             alt="서비스 로고"
-            src="/icons/service-logo.png"
+            src={serviceLogo}                // ✅ 여기
             width={2500}
             height={674}
             className="w-[80%] sm:w-[65%] lg:w-[60%]"
@@ -426,7 +426,7 @@ export default function Page() {
           <div className="text-black page-inner safe-pt text-center mt-[-8%]">
             <Image
               alt="서비스 로고"
-              src="/icons/service-logo.png"
+              src={serviceLogo}                // ✅ 여기
               width={2500}
               height={674}
               className="w-[80%] max-w-[520px] mx-auto h-auto"

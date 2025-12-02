@@ -128,7 +128,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
             </div>
 
             {/* 🔹 모바일/데스크톱 모두 가로 정렬 */}
-            <div className="flex justify-center sm:gap-6 mt-6 w-full">
+            <div className="flex justify-center gap-3  sm:gap-6 mt-6 w-full">
               <button
                 onClick={resetAndClose}
                 disabled={isLoading}
@@ -146,7 +146,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                 sm:px-9        /* ≥640px: 짧은 버튼 */
                 sm:py-0.5             /* 데스크탑에서는 살짝 얇게 */
                 border-1
-                border-gray-700
+                border-gray-500
               "
               >
                 취소
