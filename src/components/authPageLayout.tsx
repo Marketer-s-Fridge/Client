@@ -27,18 +27,18 @@ const AuthPageLayout: React.FC<AuthPageLayoutProps> = ({
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <div className="w-full bg-white pt-11 md:pt-0">
+    <div className="w-full bg-white pt-11 md:pt-0 ">
       <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
 
       <div
         className={clsx(
           "w-full bg-white px-4 sm:px-6 md:px-8",
-          "min-h-[100svh] py-16 flex items-center justify-center",
+          "min-h-[100svh] py-16 flex   justify-center",
           wrapperClassName
         )}
       >
-        <div className={clsx("w-full self-center", maxWidthClass)}>
+        <div className={clsx("w-full self-start", maxWidthClass)}>
           <AuthHeader title={title} description={description ?? ""} />
           {children}
         </div>

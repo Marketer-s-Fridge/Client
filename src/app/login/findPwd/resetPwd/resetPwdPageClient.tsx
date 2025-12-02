@@ -110,7 +110,7 @@ const ResetPwdPageClient: React.FC<ResetPwdPageClientProps> = ({ userId }) => {
         />
       </form>
 
-      <div className="flex justify-center">
+      <div className="flex justify-center w-full">
         <SubmitButton
           text={isPending ? "변경 중..." : "비밀번호 변경"}
           onClick={handleSubmit}
