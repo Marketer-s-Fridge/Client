@@ -71,6 +71,7 @@ export default function SearchInput({
             className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 cursor-pointer"
             width={50}
             height={50}
+            priority
           />
         </button>
       </div>
@@ -82,19 +83,20 @@ export default function SearchInput({
           rel="noopener noreferrer"
           className="block text-right place-self-end "
         >
-          <Image
+          {/* <Image
             src="/icons/insta-bt2.png"
             alt="Marketer's Fridge Instagram"
-            className=" object-contain block w-[30px] md:hidden h-auto"
+            className="object-contain block w-[30px] md:hidden h-auto"
             width={50}
             height={50}
-          />
+          /> */}
           <Image
             src="/icons/insta-bt.png"
             alt="Marketer's Fridge Instagram"
             className="hidden md:block w-[100px] sm:w-[110px] md:w-[120px] h-auto"
             width={200}
-            height={250}
+            height={65}
+            priority
           />
         </a>
       )}

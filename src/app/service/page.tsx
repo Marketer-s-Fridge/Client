@@ -253,6 +253,7 @@ export default function Page() {
             width={2500}
             height={674}
             className="w-[80%] sm:w-[65%] lg:w-[60%]"
+            priority   // ← 이거 넣으면 최우선 로딩!
           />
         </section>
 
