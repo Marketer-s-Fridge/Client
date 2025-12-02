@@ -48,8 +48,8 @@ export default function Fridge({
         fill
         priority // ✅ 첫 화면에서 꼭 보여야 하는 이미지면 무조건 넣기
         placeholder="blur" // ✅ blur 미리 보기 (선택)
+        quality={100} // 기본 75 → 100으로
         className="object-contain pointer-events-none"
-        sizes="20vw" // 대충 이런 느낌으로 교체 (선택)
       />
 
       {/* 문짝 */}
