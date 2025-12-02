@@ -75,7 +75,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
   return (
     <BigModal isOpen={isOpen} onClose={resetAndClose}>
       {/* 🔹 모바일: 전체폭 / 데스크탑: 최대 420px */}
-      <div className="w-full max-w-[340px] sm:max-w-[480px] mx-auto py-4 px-4 sm:px-6">
+      <div className="w-full sm:max-w-[480px] mx-auto py-4 px-4 sm:px-6">
         {!success ? (
           <>
             <h2 className="text-center text-base sm:text-lg font-medium mb-1 leading-snug">
@@ -128,7 +128,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
             </div>
 
             {/* 🔹 모바일/데스크톱 모두 가로 정렬 */}
-            <div className="flex justify-center gap-3 mt-6 w-full">
+            <div className="flex justify-center sm:gap-6 mt-6 w-full">
               <button
                 onClick={resetAndClose}
                 disabled={isLoading}
@@ -138,8 +138,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
       rounded-lg sm:rounded-full
       border border-gray-300
       bg-white text-gray-700
-      text-[15px] sm:text-[11px] font-medium
-      shadow-sm
+      text-[12px] sm:text-[11px] font-medium
       hover:bg-gray-50
       disabled:opacity-60 disabled:cursor-not-allowed
       transition-all
@@ -157,7 +156,6 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
       rounded-lg sm:rounded-full
       bg-[#FF4545] text-white
       text-[15px] sm:text-[11px] font-semibold
-      shadow-sm
       hover:bg-red-600
       disabled:opacity-60 disabled:cursor-not-allowed
       transition-all
