@@ -249,7 +249,7 @@ export default function MyPage() {
 
           {/* 오른쪽: 계정 관리 / 내 문의 내역 / 모바일 전용 토글 버튼 */}
           <div className="mt-6 md:mt-0 flex w-full md:w-[50%] text-sm sm:text-lg md:text-2xl font-semibold justify-between">
-            <div className="flex flex-1 gap-5 md:gap-14 md:justify-end">
+            <div className="flex flex-1 gap-5 md:gap-17 md:justify-end">
               <button
                 onClick={() => router.push("/myPage/account/myInfo")}
                 className="cursor-pointer"
@@ -266,7 +266,7 @@ export default function MyPage() {
 
             {/* 모바일에서만 보이는 리포트 토글 버튼 */}
             <button
-              className="block md:hidden text-sm font-normal"
+              className="block md:hidden text-sm sm:text-lg font-semibold"
               onClick={() => setMobileReportView((v) => !v)}
             >
               {mobileReportView ? "콘텐츠 목록 보기" : "콘텐츠 소비 리포트"}
