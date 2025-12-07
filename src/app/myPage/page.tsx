@@ -211,14 +211,13 @@ export default function MyPage() {
       </BaseModal>
 
       {/* 👤 프로필 영역 */}
-      {/* 👤 프로필 영역 */}
       <section className="flex py-5 md:py-10 px-[5%] lg:px-[17%] main-red text-white w-full">
         <div className="w-full flex flex-col md:flex-row justify-between items-center">
           {/* 왼쪽: 프로필 + 이름/이메일/버튼 */}
-          <div className="flex flex-row items-center w-full md:w-1/2 gap-4 sm:gap-6">
+          <div className="flex flex-row items-center w-full md:w-1/2 gap-4 sm:gap-8">
             {/* 프로필 이미지 */}
             <div className="flex-shrink-0">
-              <div className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32">
+              <div className="w-24 h-24 sm:w-30 sm:h-30 md:w-40 md:h-40">
                 <Image
                   src={profileImageSrc}
                   alt="프로필"
@@ -250,7 +249,7 @@ export default function MyPage() {
 
           {/* 오른쪽: 계정 관리 / 내 문의 내역 / 모바일 전용 토글 버튼 */}
           <div className="mt-6 md:mt-0 flex w-full md:w-[50%] text-sm sm:text-lg md:text-2xl font-semibold justify-between">
-            <div className="flex flex-1 gap-5 md:gap-8 md:justify-end">
+            <div className="flex flex-1 gap-5 md:gap-14 md:justify-end">
               <button
                 onClick={() => router.push("/myPage/account/myInfo")}
                 className="cursor-pointer"
@@ -267,7 +266,7 @@ export default function MyPage() {
 
             {/* 모바일에서만 보이는 리포트 토글 버튼 */}
             <button
-              className="block md:hidden text-xs font-normal"
+              className="block md:hidden text-sm font-normal"
               onClick={() => setMobileReportView((v) => !v)}
             >
               {mobileReportView ? "콘텐츠 목록 보기" : "콘텐츠 소비 리포트"}
