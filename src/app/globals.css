@@ -1,5 +1,48 @@
 @import "tailwindcss";
 
+/* 기본 불릿 */
+.swiper-pagination-bullet {
+  background: #d1d1d1 !important; /* 연회색 */
+  opacity: 1 !important;
+  width: 8px;
+  height: 8px;
+}
+
+/* 활성(선택된) 불릿 */
+.swiper-pagination-bullet-active {
+  background: #555555 !important; /* 찐회색 */
+  width: 10px;
+  height: 10px;
+}
+
+.lined-description {
+  /* 줄 간격: 1.8rem 기준 예시 (글자 line-height랑 맞춰야 함) */
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent calc(1.8rem - 1px),
+    rgba(0, 0, 0, 0.35) calc(1.8rem - 1px),
+    rgba(0, 0, 0, 0.35) 1.8rem
+  );
+}
+
+.line-box {
+  width: 100%;
+  display: block;
+  position: relative;
+  line-height: 1.9;
+  padding-bottom: 4px;
+}
+
+.line-box::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%; /* ✅ 항상 끝까지 */
+  height: 1px;
+  background-color: rgba(0, 0, 0, 0.35);
+}
 /* ---------------- 기본 색, 안전 영역 ---------------- */
 
 :root {
@@ -181,8 +224,8 @@ body {
   opacity: 1;
   transform: translateY(0) scale(1);
   filter: blur(0);
-  transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1),
-    opacity 600ms ease, filter 600ms ease;
+  transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1), opacity 600ms ease,
+    filter 600ms ease;
 }
 
 .mask-reveal {

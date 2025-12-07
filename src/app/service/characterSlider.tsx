@@ -8,6 +8,7 @@ import { Pagination } from "swiper/modules";
 
 import "swiper/css";
 import "swiper/css/pagination";
+import UnderlinedDescription from "@/components/underlineDescription";
 
 const characters = [
   {
@@ -54,9 +55,9 @@ const characters = [
     id: "tomi",
     name: "토미는 매일 아침 미니 패션쇼를 열어요",
     description: [
-      "하루의 시작은 옷장 앞 패션쇼",
-      "홍대 셀렉샵부터 디자이너 브랜드까지 완벽 정리!",
-      "소품 하나에도 진심인 감각적인 패셔니스타",
+      "옷장 앞에서 미니 패션쇼를 여는 것으로 하루를 시작해요",
+      "홍대 셀렉샵부터 디자이너 브랜드까지 모르는게 없어요",
+      "양말, 키링 소품 하나하나 신경쓰는 까칠한 패셔니스타!",
     ],
     image: "/icons/character/mobile/tomi.png",
   },
@@ -74,7 +75,6 @@ export default function CharacterSlider() {
         spaceBetween={30}
         slidesPerView={1}
         allowTouchMove={true}
-        // ✅ 부모 레이아웃 변화를 감지해서 다시 계산
         observer={true}
         observeParents={true}
         onResize={(swiper) => swiper.update()}
@@ -83,8 +83,8 @@ export default function CharacterSlider() {
           const safe = Math.max(0, Math.min(characters.length - 1, idx));
           setActive(safe);
         }}
-        className="w-full "
-        style={{ height: 360, width: 350 }}
+        className="w-full flex justify-center"
+        style={{ height: 340, width: 500 }}
       >
         {characters.map((c) => (
           <SwiperSlide
@@ -94,35 +94,31 @@ export default function CharacterSlider() {
             <Image
               src={c.image}
               alt={c.name}
-              width={300}
-              height={400}
-              style={{ width: "300px", height: "auto" }}
-              className="object-contain"
+              width={285}
+              height={330}
+              className="object-contain mx-auto"
               priority={c.id === "melo"}
+              style={{ height: "auto" }}
             />
           </SwiperSlide>
         ))}
       </Swiper>
 
       {/* 아래 텍스트 영역 */}
-      <div className="relative flex flex-col items-center mt-4">
+      <div className="relative flex flex-col items-center mt-2">
         <Image
-          src="/icons/character/sketch.png"
+          src="/icons/character/mobileSketch.png"
           alt="스케치북"
-          width={290}
-          height={250}
-          className="object-contain shadow-xl"
+          width={350}
+          height={300}
+          className="object-contain"
           priority
         />
-        <div className="absolute top-[18%] w-[72%] text-left text-gray-700 text-[13.5px] leading-relaxed font-medium">
-          <p className="font-semibold text-[15.5px] mb-3 underline-title">
+        <div className="absolute top-[25%] w-[77%] text-left">
+          <p className="font-semibold text-[15.5px] mb-1 pb-1 border-b-[1px] border-gray-400">
             {cur.name}
           </p>
-          {cur.description.map((line, i) => (
-            <div key={i} className="underline-line mb-2">
-              {line}
-            </div>
-          ))}
+          <UnderlinedDescription lines={cur.description} />
         </div>
       </div>
     </div>
