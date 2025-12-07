@@ -11,6 +11,7 @@ import InfiniteSwipeCarousel from "./infiniteSwipeCarousel";
 import MobileSectionPager from "./mobileSectionPager";
 import CharacterSlideOverlay, { type Slide } from "./characterSlideOverlay";
 import serviceLogo from "../../../public/icons/service-logo.png";
+import CharacterSlider from "./characterSlide";
 
 // ✅ 파일명/시그니처 유지: 고정 오버레이
 // import CharacterSlideOverlay, { type Slide } from "./characterSlideOverlay";
@@ -249,11 +250,11 @@ export default function Page() {
         <section className="hidden md:flex flex-col items-start pl-6 md:pb-[0%] sm:pl-[10%] lg:pl-[17%] pt-[8%] sm:pt-[6%] lg:pt-[4%]">
           <Image
             alt="서비스 로고"
-            src={serviceLogo}                // ✅ 여기
+            src={serviceLogo} // ✅ 여기
             width={2500}
             height={674}
             className="w-[80%] sm:w-[65%] lg:w-[60%]"
-            priority   // ← 이거 넣으면 최우선 로딩!
+            priority // ← 이거 넣으면 최우선 로딩!
           />
         </section>
 
@@ -427,7 +428,7 @@ export default function Page() {
           <div className="text-black page-inner safe-pt text-center mt-[-8%]">
             <Image
               alt="서비스 로고"
-              src={serviceLogo}                // ✅ 여기
+              src={serviceLogo} // ✅ 여기
               width={2500}
               height={674}
               className="w-[80%] max-w-[520px] mx-auto h-auto"
@@ -614,7 +615,7 @@ export default function Page() {
           </div>
 
           {/* 7) 캐릭터 소개 초반 1 (모바일) */}
-          {/* <div className=" text-black w-full h-full !max-w-none bg-gray-100 pt-[10%] px-[2%]">
+          <div className=" text-black w-full h-full !max-w-none bg-gray-100 pt-[9%] px-[2%]">
             <p className="text-red-500 text-[26vw] text-left font-bold mb-7">
               Hello
             </p>
@@ -627,8 +628,7 @@ export default function Page() {
             <p className="text-red-500 text-[26vw] text-right font-bold ">
               Family
             </p>
-         
-          </div> */}
+          </div>
           {/* 7) 캐릭터 소개 초반 2 (모바일) */}
           {/* <div className="text-black page-inner !max-w-none bg-gray-100">
             <Image
@@ -640,9 +640,9 @@ export default function Page() {
           </div> */}
 
           {/* 8) 캐릭터 소개 리스트 (모바일) */}
-          {/* <div className="text-black page-inner bg-gray-100 mt-[-3%] !max-w-none ">
+          <div className="text-black page-inner bg-gray-100 mt-[-3%] !max-w-none ">
             <CharacterSlider></CharacterSlider>
-          </div> */}
+          </div>
         </MobileSectionPager>
         <Footer />
       </main>

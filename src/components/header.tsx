@@ -85,7 +85,7 @@ export default function Header({ menuOpen, setMenuOpen }: HeaderProps) {
         <div className="relative flex flex-1 justify-between items-center ">
           <Link
             href="/"
-            className="text-white md:text-red-500 font-bold text-2xl md:text-sm font-playfair"
+            className="text-white md:text-red-500 font-bold text-2xl md:text-2xl font-playfair"
           >
             Marketer&apos;s Fridge
           </Link>
@@ -118,7 +118,7 @@ export default function Header({ menuOpen, setMenuOpen }: HeaderProps) {
         </div>
 
         {/* PC 네비 */}
-        <nav className="hidden md:flex justify-end gap-x-8 text-xs text-gray-700">
+        <nav className="hidden md:flex justify-end gap-x-8 text-sm text-gray-700">
           {finalNavItems.map((item) => {
             const isActive = pathname === item.href;
             return (
@@ -142,9 +142,11 @@ export default function Header({ menuOpen, setMenuOpen }: HeaderProps) {
           md:hidden fixed top-[60px] left-0 w-full z-40
           bg-white border-b border-gray-200
           transform origin-top transition-all duration-250 ease-out
-          ${showMobileSearch
-            ? "opacity-100 translate-y-0 scale-y-100 pointer-events-auto"
-            : "opacity-0 -translate-y-2 scale-y-95 pointer-events-none"}
+          ${
+            showMobileSearch
+              ? "opacity-100 translate-y-0 scale-y-100 pointer-events-auto"
+              : "opacity-0 -translate-y-2 scale-y-95 pointer-events-none"
+          }
         `}
       >
         <div className="flex w-full main-red px-4 py-3">
