@@ -89,7 +89,7 @@ export default function SaveToFridgeButton({
         isOpen={isSuccessModalOpen}
         onClose={() => setIsSuccessModalOpen(false)}
       >
-        <div className="flex flex-col items-center justify-center px-4 py-4">
+        <div className="flex flex-col items-center justify-center px-4 py-2">
           <p className="text-center text-base text-gray-700 mb-4 leading-snug">
             <strong className="text-lg font-semibold block mb-1">
               저장 완료!
