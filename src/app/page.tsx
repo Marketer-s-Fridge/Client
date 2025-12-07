@@ -111,7 +111,6 @@ export default function HomePage() {
         desktopImage="/images/popup/popup.png" // PC용 이미지 경로
         mobileImage="/images/popup/popup.png" // 모바일용 이미지 경로
         alt="마케터의 냉장고 오픈 기념 이벤트"
-        href="/event/open" // 클릭 시 이동할 경로 (없으면 빼도 됨)
         oncePerDayKey="mf_home_popup" // 오늘 하루 안보기 키 (원치 않으면 삭제)
       />
 
