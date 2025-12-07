@@ -24,17 +24,17 @@ type UsePostsByCategoryResult = {
  */
 export function usePostsByCategory(
   category: string | null,
-  limit?: number
+  limit: number = 60   // ✅ 기본값 60
 ): UsePostsByCategoryResult {
   const enabled = !!category;
 
   const { data, isLoading, error } = useQuery<PostResponseDto[], Error>({
-    queryKey: ["posts", "by-category", category, limit],
+    queryKey: ["posts", "by-category", category, limit], // ✅ limit도 캐시 키에 포함
     queryFn: () => {
       if (!category) return Promise.resolve([] as PostResponseDto[]);
-      return fetchByCategory(category, limit);
+      return fetchByCategory(category, limit);           // ✅ limit 전달
     },
-    enabled, // 카테고리 선택됐을 때만 호출
+    enabled,
     staleTime: 60_000,
     gcTime: 5 * 60_000,
     refetchOnWindowFocus: false,
