@@ -96,26 +96,6 @@ export default function SaveToFridgeButton({
             </strong>
             MY 냉장고에서 확인해보세요
           </p>
-
-          {/* 🔽 모바일에서도 통일된 CTA 버튼 */}
-          <button
-            onClick={() => setIsSuccessModalOpen(false)}
-            className="
-            cursor-pointer
-            w-full              /* 모바일: 가득 */
-            py-2
-            bg-red-500 text-white
-            text-[13px] sm:text-[12.5px] font-medium
-            rounded-lg
-            hover:bg-red-600
-            transition
-            sm:w-auto
-            sm:px-9        /* ≥640px: 짧은 버튼 */
-            sm:py-0.5             /* 데스크탑에서는 살짝 얇게 */
-          "
-          >
-            확인
-          </button>
         </div>
       </BaseModal>
     </>
