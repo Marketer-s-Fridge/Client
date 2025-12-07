@@ -144,7 +144,6 @@ export default function Page() {
 
       {/* 카드 리스트 */}
       <section className="bg-white w-full max-w-screen-xl mx-auto px-4 sm:px-8 lg:px-20 py-10 sm:py-16">
-        {isLoading && <p className="text-center">로딩중...</p>}
         {error && <p className="text-center text-red-500">에러 발생!</p>}
 
         {!isLoading && !error && pagedPosts.length === 0 ? (
