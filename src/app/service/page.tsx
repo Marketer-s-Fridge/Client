@@ -11,7 +11,7 @@ import InfiniteSwipeCarousel from "./infiniteSwipeCarousel";
 import MobileSectionPager from "./mobileSectionPager";
 import CharacterSlideOverlay, { type Slide } from "./characterSlideOverlay";
 import serviceLogo from "../../../public/icons/service-logo.png";
-import CharacterSlider from "./characterSlide";
+import CharacterSlider from "./characterSlider";
 
 // ✅ 파일명/시그니처 유지: 고정 오버레이
 // import CharacterSlideOverlay, { type Slide } from "./characterSlideOverlay";
@@ -640,9 +640,16 @@ export default function Page() {
           </div> */}
 
           {/* 8) 캐릭터 소개 리스트 (모바일) */}
-          <div className="text-black page-inner bg-gray-100 mt-[-3%] !max-w-none ">
-            <CharacterSlider></CharacterSlider>
-          </div>
+          {/* <div className="text-black bg-gray-100 mt-[-3%] !max-w-none pointer-events-auto">
+            <CharacterSlider />
+          </div> */}
+          <div className="text-black bg-gray-100 mt-[-3%] !max-w-none pointer-events-auto min-h-[500px]">
+  <CharacterSlider />
+</div>
+
+          {/* <div className="text-black page-inner !max-w-none bg-gray-100">
+            <CharacterSlider />
+          </div> */}
         </MobileSectionPager>
         <Footer />
       </main>

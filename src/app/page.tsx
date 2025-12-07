@@ -16,6 +16,7 @@ import PostFeature from "@/components/postFeature";
 import MobilePostCarousel from "@/components/mobilePostCarousel";
 import { usePosts } from "@/features/posts/hooks/usePosts";
 import { useTrackVisitor } from "@/features/visitorStatus/hooks/useVisitorStatus";
+import PopupBanner from "@/components/popupBanner";
 
 // 홈에서 쓰는 최소 필드 타입
 type SimplePost = {
@@ -33,7 +34,7 @@ export default function HomePage() {
   useEffect(() => {
     if (typeof window === "undefined") return;
     if (!window.Kakao) return;
-  
+
     if (!window.Kakao.isInitialized()) {
       window.Kakao.init(process.env.NEXT_PUBLIC_KAKAO_JAVASCRIPT_KEY);
     }
@@ -42,11 +43,17 @@ export default function HomePage() {
   // 모바일 섹션 진입 애니메이션용
   const [mobileEnter, setMobileEnter] = useState(false);
 
+  // ✅ 팝업 노출 상태
+  const [showPopup, setShowPopup] = useState(true);
+
   // 첫 진입 시 1회 방문자 추적
   const { mutate: trackVisitor } = useTrackVisitor();
   useEffect(() => {
     trackVisitor(undefined);
     setMobileEnter(true);
+
+    // ✅ 첫 진입 시 팝업 열기
+    setShowPopup(true);
   }, [trackVisitor]);
 
   // 훅 데이터
@@ -97,6 +104,17 @@ export default function HomePage() {
       <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
 
+      {/* ✅ 팝업 배너 */}
+      <PopupBanner
+        isOpen={showPopup}
+        onClose={() => setShowPopup(false)}
+        desktopImage="/images/popup/popup.png" // PC용 이미지 경로
+        mobileImage="/images/popup/popup.png" // 모바일용 이미지 경로
+        alt="마케터의 냉장고 오픈 기념 이벤트"
+        href="/event/open" // 클릭 시 이동할 경로 (없으면 빼도 됨)
+        oncePerDayKey="mf_home_popup" // 오늘 하루 안보기 키 (원치 않으면 삭제)
+      />
+
       {/* 검색 입력창 (데스크톱) */}
       <section className="hidden md:block bg-white flex-col items-center pb-6 pt-14 sm:pb-12 relative">
         <SearchInput showInstagramButton />
@@ -134,7 +152,9 @@ export default function HomePage() {
         {/* 모바일 New Contents */}
         <div
           className={`block md:hidden bg-white pt-10 pb-12  transform transition-all duration-500 ease-out ${
-            mobileEnter ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"
+            mobileEnter
+              ? "opacity-100 translate-y-0"
+              : "opacity-0 translate-y-3"
           }`}
         >
           {/* 섹션 헤더 */}

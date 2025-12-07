@@ -1,22 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import dynamic from "next/dynamic";
 import Image from "next/image";
-import "swiper/css";
-import "swiper/css/pagination";
+
+import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination } from "swiper/modules";
 
-// ✅ 컴포넌트만 동적 import
-const Swiper = dynamic(
-  () => import("swiper/react").then((m) => m.Swiper),
-  { ssr: false }
-) as any;
-
-const SwiperSlide = dynamic(
-  () => import("swiper/react").then((m) => m.SwiperSlide),
-  { ssr: false }
-) as any;
+import "swiper/css";
+import "swiper/css/pagination";
 
 const characters = [
   {
@@ -37,7 +28,7 @@ const characters = [
       "인센스 피우고 감성 플레이리스트 들으며 마음을 정리해요",
       "사진 감각이 뛰어나 친구들이 감성 브이로그 찍으라며 부러워해요 ",
     ],
-    image: "/icons/character/mobile/max.png",
+    image: "/icons/character/mobile/berry.png",
   },
   {
     id: "seri_lio",
@@ -47,7 +38,7 @@ const characters = [
       "리오는 자연스럽게 화장품에 눈뜬 끼쟁이",
       "둘은 늘 뷰티 팝업 행사에서 트렌드를 선도해요!",
     ],
-    image: "/icons/character/mobile/berry.png",
+    image: "/icons/character/mobile/twin.png",
   },
   {
     id: "max",
@@ -57,7 +48,7 @@ const characters = [
       "노션에 신제품 기능을 꼼꼼히 정리하고 리뷰하는 게 일상!",
       "가전 브랜드 언팩행사에서 늘 첫 줄에 앉아 있어요",
     ],
-    image: "/icons/character/mobile/berry.png",
+    image: "/icons/character/mobile/max.png",
   },
   {
     id: "tomi",
@@ -77,36 +68,35 @@ export default function CharacterSlider() {
 
   return (
     <div className="flex flex-col items-center w-full">
-      {/* 위: 캐릭터 이미지만 슬라이드 */}
       <Swiper
         modules={[Pagination]}
         pagination={{ clickable: true }}
         spaceBetween={30}
         slidesPerView={1}
-        observer
-        observeParents
-        onActiveIndexChange={(swiper: any) => {
-          // 필요하면 디버깅용
-          // console.log("activeIndex:", swiper.activeIndex, "realIndex:", swiper.realIndex);
-          const index =
-            typeof swiper.realIndex === "number"
-              ? swiper.realIndex
-              : swiper.activeIndex ?? 0;
-          setActive(index);
+        allowTouchMove={true}
+        // ✅ 부모 레이아웃 변화를 감지해서 다시 계산
+        observer={true}
+        observeParents={true}
+        onResize={(swiper) => swiper.update()}
+        onSlideChange={(swiper) => {
+          const idx = swiper.realIndex ?? swiper.activeIndex ?? 0;
+          const safe = Math.max(0, Math.min(characters.length - 1, idx));
+          setActive(safe);
         }}
-        className="w-full"
-        style={{ height: 360 }}
+        className="w-full "
+        style={{ height: 360, width: 350 }}
       >
         {characters.map((c) => (
           <SwiperSlide
             key={c.id}
-            className="flex justify-center items-center h-[360px]"
+            className="flex justify-center items-center h-[360px] w-full"
           >
             <Image
               src={c.image}
               alt={c.name}
               width={300}
               height={400}
+              style={{ width: "300px", height: "auto" }}
               className="object-contain"
               priority={c.id === "melo"}
             />
@@ -114,7 +104,7 @@ export default function CharacterSlider() {
         ))}
       </Swiper>
 
-      {/* 아래: 스케치북 고정 + 텍스트만 교체 */}
+      {/* 아래 텍스트 영역 */}
       <div className="relative flex flex-col items-center mt-4">
         <Image
           src="/icons/character/sketch.png"
