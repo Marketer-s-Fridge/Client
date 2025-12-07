@@ -278,13 +278,13 @@ const KakaoExtraSignUpPage: React.FC = () => {
             showError={errors.agreements}
           />
         </div>
+        <div className="justify-self-center w-full md:w-11/12 text-center ">
+          <SubmitButton
+            text={submitting ? "처리 중..." : "회원가입 완료하기"}
+            type="submit"
+          />
+        </div>
       </form>
-      <div className="justify-self-center w-full md:w-11/12 text-center ">
-        <SubmitButton
-          text={submitting ? "처리 중..." : "회원가입 완료하기"}
-          type="submit"
-        />
-      </div>
 
       <ConfirmModal
         isOpen={modalOpen}
