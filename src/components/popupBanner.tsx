@@ -2,14 +2,15 @@
 
 import { useEffect } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation"; // ⭐ 추가
 
 interface PopupBannerProps {
-  isOpen: boolean; // 팝업 노출 여부
-  onClose: () => void; // 닫기 콜백
-  desktopImage: string; // 데스크톱용 이미지 경로 (/images/...)
-  mobileImage: string; // 모바일용 이미지 경로
+  isOpen: boolean;
+  onClose: () => void;
+  desktopImage: string;
+  mobileImage: string;
   alt?: string;
-  oncePerDayKey?: string; // 오늘 하루 안 보기용 localStorage key (선택)
+  oncePerDayKey?: string;
 }
 
 export default function PopupBanner({
@@ -20,7 +21,9 @@ export default function PopupBanner({
   alt = "팝업 배너",
   oncePerDayKey,
 }: PopupBannerProps) {
-  // ✅ 오늘 하루 안 보기 처리
+  const router = useRouter(); // ⭐ 추가
+
+  // 오늘 하루 안 보기
   useEffect(() => {
     if (!oncePerDayKey || !isOpen) return;
 
@@ -34,6 +37,12 @@ export default function PopupBanner({
 
   if (!isOpen) return null;
 
+  // ⭐ 이미지 클릭 시 로그인 페이지 이동
+  const handleImageClick = () => {
+    router.push("/login");
+    onClose(); // 팝업 닫기까지 할 경우
+  };
+
   return (
     <div className="fixed inset-0 z-[9999] bg-black/60 flex items-center justify-center">
       <div className="relative bg-transparent">
@@ -46,31 +55,33 @@ export default function PopupBanner({
           ✕
         </button>
 
-        {/* ✅ 모바일 이미지 */}
+        {/* 모바일 이미지 */}
         <div className="block md:hidden">
           <Image
             src={mobileImage}
             alt={alt}
             width={360}
             height={480}
-            className="w-[90vw] max-w-[360px] h-auto rounded-lg shadow-xl"
+            className="w-[90vw] max-w-[360px] h-auto rounded-lg shadow-xl cursor-pointer"
+            onClick={handleImageClick} // ⭐ 추가
             priority
           />
         </div>
 
-        {/* ✅ 데스크톱 이미지 */}
+        {/* 데스크톱 이미지 */}
         <div className="hidden md:block">
           <Image
             src={desktopImage}
             alt={alt}
             width={520}
             height={520}
-            className="w-[480px] max-w-[520px] h-auto rounded-lg shadow-xl"
+            className="w-[480px] max-w-[520px] h-auto rounded-lg shadow-xl cursor-pointer"
+            onClick={handleImageClick} // ⭐ 추가
             priority
           />
         </div>
 
-        {/* ✅ 오늘 하루 안 보기 */}
+        {/* 오늘 하루 안 보기 */}
         {oncePerDayKey && (
           <button
             onClick={() => {

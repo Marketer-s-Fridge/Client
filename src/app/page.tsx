@@ -18,6 +18,9 @@ import { usePosts } from "@/features/posts/hooks/usePosts";
 import { useTrackVisitor } from "@/features/visitorStatus/hooks/useVisitorStatus";
 import PopupBanner from "@/components/popupBanner";
 
+// ✅ 추가됨
+import { motion } from "framer-motion";
+
 // 홈에서 쓰는 최소 필드 타입
 type SimplePost = {
   id: number;
@@ -31,32 +34,21 @@ export default function HomePage() {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    if (!window.Kakao) return;
-
-    if (!window.Kakao.isInitialized()) {
-      window.Kakao.init(process.env.NEXT_PUBLIC_KAKAO_JAVASCRIPT_KEY);
-    }
-  }, []);
-
   // 모바일 섹션 진입 애니메이션용
   const [mobileEnter, setMobileEnter] = useState(false);
 
-  // ✅ 팝업 노출 상태
+  // 팝업 노출 상태
   const [showPopup, setShowPopup] = useState(true);
 
-  // 첫 진입 시 1회 방문자 추적
+  // 첫 진입 시 방문자 추적
   const { mutate: trackVisitor } = useTrackVisitor();
   useEffect(() => {
     trackVisitor(undefined);
     setMobileEnter(true);
-
-    // ✅ 첫 진입 시 팝업 열기
     setShowPopup(true);
   }, [trackVisitor]);
 
-  // 훅 데이터
+  // HOT / PICK
   const { data: hot = [] } = useHotPosts(8);
   const { data: picks = [] } = useEditorPicks(8);
 
@@ -84,11 +76,11 @@ export default function HomePage() {
     },
   ];
 
-  // 실제 데이터 + 타입 맞추기
+  // 전체 게시물
   const { data: _allPosts = [] } = usePosts();
   const allPosts = _allPosts as SimplePost[];
 
-  // 전체 게시물 중 "마지막 4개" → 최신이 앞쪽에 오도록 역순 정렬
+  // 최신 4개
   const latestPosts = useMemo(() => {
     const source = allPosts.length > 0 ? allPosts : mockLatestPosts;
     if (!source.length) return [];
@@ -104,24 +96,24 @@ export default function HomePage() {
       <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
 
-      {/* ✅ 팝업 배너 */}
+      {/* 팝업 배너 */}
       <PopupBanner
         isOpen={showPopup}
         onClose={() => setShowPopup(false)}
-        desktopImage="/images/popup/popup1.png" // PC용 이미지 경로
-        mobileImage="/images/popup/popup1.png" // 모바일용 이미지 경로
+        desktopImage="/images/popup/popup1.png"
+        mobileImage="/images/popup/popup1.png"
         alt="마케터의 냉장고 오픈 기념 이벤트"
-        oncePerDayKey="mf_home_popup" // 오늘 하루 안보기 키 (원치 않으면 삭제)
+        oncePerDayKey="mf_home_popup"
       />
 
-      {/* 검색 입력창 (데스크톱) */}
+      {/* 검색 (데스크톱) */}
       <section className="hidden md:block bg-white flex-col items-center pb-6 pt-14 sm:pb-12 relative">
         <SearchInput showInstagramButton />
       </section>
 
-      {/* New Contents: 최신 게시글 4개 */}
+      {/* 최신 콘텐츠 New Contents */}
       <section className="w-full">
-        {/* 데스크톱 */}
+        {/* 데스크톱 최신 콘텐츠 */}
         <div className="hidden md:block main-red py-8 px-5 sm:px-10 lg:px-[17%]">
           <h2 className="text-white text-xl sm:text-3xl font-bold mb-6">
             New Contents
@@ -137,9 +129,7 @@ export default function HomePage() {
                   alt={post.title}
                   src={thumb}
                   className="aspect-[3/4] bg-white rounded-lg shadow cursor-pointer transition duration-300 ease-in-out hover:scale-105 w-full object-cover"
-                  onClick={() => {
-                    router.push(`/contents/${post.id}`);
-                  }}
+                  onClick={() => router.push(`/contents/${post.id}`)}
                   width={250}
                   height={300}
                 />
@@ -148,15 +138,15 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* 모바일 New Contents */}
+        {/* 모바일 최신 콘텐츠 */}
         <div
-          className={`block md:hidden bg-white pt-10 pb-12  transform transition-all duration-500 ease-out ${
+          className={`block md:hidden bg-white pt-10 pb-12 transform transition-all duration-500 ease-out ${
             mobileEnter
               ? "opacity-100 translate-y-0"
               : "opacity-0 translate-y-3"
           }`}
         >
-          {/* 섹션 헤더 */}
+          {/* 헤더 */}
           <div className="px-6 flex items-center justify-between mb-3">
             <div className="flex-1 ">
               <p className="text-[10px] uppercase tracking-[0.18em] text-main-red/80 font-semibold mb-1">
@@ -207,7 +197,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 데스크톱: 섹션당 1장 + 설명 */}
+      {/* 데스크톱 Hot & Pick */}
       <section className="hidden md:block bg-white py-12 px-5 sm:px-10 lg:px-[25%]">
         <div className="max-w-[1024px] mx-auto space-y-16">
           <PostFeature
@@ -223,13 +213,13 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 모바일 Hot / Editor Pick */}
+      {/* 모바일 Hot & Editor Pick */}
       <section
-        className={`md:hidden main-red  text-white pt-10 pb-16 transform transition-all duration-600 ease-out ${
+        className={`md:hidden main-red text-white pt-10 pb-16 transform transition-all duration-600 ease-out ${
           mobileEnter ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
         }`}
       >
-        <div className="px-5  flex justify-center items-center mb-8">
+        <div className="px-5 flex justify-center items-center mb-8">
           <div className="relative flex flex-col justify-center items-center text-center">
             <p className="text-[10px] uppercase tracking-[0.2em] text-main-red/80 mb-1">
               Curated For You
@@ -243,13 +233,34 @@ export default function HomePage() {
           </div>
         </div>
 
+        {/* ⭐ 여기 변경됨: 흔들리는 벡터 */}
+        <div className="justify-self-center relative w-[50px] h-[20px] mb-7">
+          <motion.div
+            className="w-full h-full relative"
+            animate={{ y: [0, 4, 0] }} // 위아래 흔들림
+            transition={{
+              duration: 1.6,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          >
+            <Image
+              src="/icons/Vector11.svg"
+              alt="벡터 아이콘"
+              fill
+              sizes="28px"
+              quality={100}
+              className="object-contain"
+            />
+          </motion.div>
+        </div>
+
         <div className="px-4 space-y-8">
           <MobilePostCarousel
             title="Hot Contents"
             item={hotHero}
             fallback="/images/cardNews/hot/001.png"
           />
-
           <MobilePostCarousel
             title="Editor Pick"
             item={pickHero}
