@@ -112,7 +112,7 @@ export default function SearchClient() {
       </section>
 
       <CategoryTabBar
-        categories={["All", "food", "lifestyle", "beauty", "tech", "fashion"]}
+        categories={["All", "Food", "Lifestyle", "Beauty", "Tech", "Fashion"]}
         selected={selectedCategory}
         onSelect={setSelectedCategory}
         sortOptions={["최신순", "오래된순"]}
