@@ -365,7 +365,7 @@ function CardNewsDetailPage({ postId }: { postId: number }) {
                 rightHeight ? "overflow-y-auto no-scrollbar" : ""
               }`}
             >
-              <div className="text-base md:text-base text-gray-700 leading-tight md:leading-relaxed">
+              <div className="text-base md:text-base text-gray-700 leading-tight md:leading-snug">
                 {contentLines.map((line, idx) => {
                   const trimmed = line.trim();
 
