@@ -96,9 +96,7 @@ export default function MyPage() {
 
   const filteredRecentViews: RecentViewWithDelete[] = rawRecentViews
     .filter((item: RecentViewWithDelete) => {
-      // 백엔드에서 isDeleted / deleted 둘 중 하나를 쓸 수 있으니 둘 다 체크
       if (item.isDeleted || item.deleted) return false;
-      // 혹시 postId 이상하면 걸러도 됨 (안전장치)
       if (!item.postId) return false;
       return true;
     })
@@ -707,7 +705,10 @@ export default function MyPage() {
           ) : (
             <div className="grid grid-cols-3 gap-6">
               {myFridgeContents.map((post) => (
-                <div key={post.id} className="w-full">
+                <div
+                  key={post.id}
+                  className="w-full md:w-[140px] flex flex-col"
+                >
                   <div
                     className="relative aspect-[3/4] rounded-lg bg-gray-100 overflow-hidden cursor-pointer"
                     onClick={() => goToPost(post.id)}
@@ -727,7 +728,8 @@ export default function MyPage() {
                       className="absolute right-2 bottom-2 w-4 h-4"
                     />
                   </div>
-                  <div className="pt-2 text-sm font-semibold truncate">
+                  {/* 제목 영역 높이 통일 */}
+                  <div className="pt-2 text-sm font-semibold truncate min-h-[24px]">
                     {post.title}
                   </div>
                 </div>
@@ -746,13 +748,16 @@ export default function MyPage() {
           ) : !hasRecommended ? (
             <EmptySectionBox message="추천할 콘텐츠가 아직 없습니다" />
           ) : (
-            <div className="grid grid-cols-2 gap-4 md:flex md:gap-4 md:justify-center">
+            <div className="grid grid-cols-3 gap-6">
               {recommendedPosts.map((post) => {
                 const postId = post.id;
                 const isSaved = bookmarkIds.includes(postId);
 
                 return (
-                  <div key={postId} className="w-full md:w-[140px]">
+                  <div
+                    key={postId}
+                    className="w-full md:w-[140px] flex flex-col"
+                  >
                     <div
                       className="relative aspect-[3/4] rounded-lg bg-gray-100 overflow-hidden cursor-pointer"
                       onClick={() => goToPost(postId)}
@@ -766,8 +771,8 @@ export default function MyPage() {
                       />
                     </div>
 
-                    {/* ✅ 제목 + 하트 (오른쪽) */}
-                    <div className="pt-2 px-1 text-sm font-semibold flex items-center justify-between">
+                    {/* 제목 + 하트 영역 높이 통일 */}
+                    <div className="pt-2 px-1 text-sm font-semibold flex items-center justify-between min-h-[24px]">
                       <span className="truncate pr-2 flex-1">{post.title}</span>
                       <button
                         onClick={() => handleToggleBookmark(postId, isSaved)}
