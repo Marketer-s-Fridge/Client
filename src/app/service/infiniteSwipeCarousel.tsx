@@ -9,17 +9,17 @@ const CARDS: Card[] = [
   {
     title: "트렌드 리포트",
     description:
-      "지금 소비자와 시장은 어디로 가고 있을까요?\n핵심만 정리된 인사이트를 간결하게 제공합니다",
+      "지금 소비자와 시장은 어디로 가고 있을까요?\n핵심만 정리된 인사이트를 간결하게 제공합니다.",
   },
   {
     title: "광고 사례 분석",
     description:
-      "성공한 캠페인 속 전략, 브랜드의 '한 수'를 마케터의 눈으로 해석합니다",
+      "성공한 캠페인 속 전략, 브랜드의 '한 수'를 마케터의 눈으로 해석합니다.",
   },
   {
     title: "SNS 캠페인 모음",
     description:
-      "인스타그램, 틱톡, 유튜브 쇼츠까지\n가장 반응 좋았던 콘텐츠들을 맥락과 함께 소개합니다",
+      "인스타그램, 틱톡, 유튜브 쇼츠까지\n가장 반응 좋았던 콘텐츠들을 맥락과 함께 소개합니다.",
   },
   {
     title: "브랜드 전략 코멘터리",
@@ -31,9 +31,9 @@ const CARDS: Card[] = [
 const VISIBLE = 4; // 화면에 쌓아 보일 수
 const OVERLAP = 25; // 층 간 간격(px)
 
-// 카드별 고정 색 (idx 기준)
+// 카드별 고정 색 (idx 기준) - 배경만 유지, 글씨색은 전부 검정
 const BG_BY_IDX = ["#FF4545", "#FF6C6C", "#FF9999", "#FFDADA"];
-const FG_BY_IDX = ["#FFFFFF", "#FFFFFF", "#FFFFFF", "#000000"];
+const FG_BY_IDX = ["#000000", "#000000", "#000000", "#000000"];
 
 // 떠나는 카드(고스트)
 type Leaver = {
@@ -208,7 +208,6 @@ export default function InfiniteSwipeCarousel() {
               dragElastic={0.15}
               dragMomentum={false}
               onDragEnd={isTop ? onDragEnd : undefined}
-              // whileTap 제거해도 되고, 유지해도 깜빡임엔 영향 거의 없음
               whileTap={isTop ? { scale: 0.995 } : undefined}
             >
               <div

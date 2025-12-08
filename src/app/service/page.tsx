@@ -167,7 +167,7 @@ export default function Page() {
       description: `배달앱 VIP, 동네 맛집 리스트를 엑셀로 정리해두는 철저함
 
 인스타 릴스에 매일 식사 기록 올리는 ‘푸드로그 인플루언서’
-(종종 맛집 협찬도 들어온다.)
+(종종 맛집 협찬도 들어온다)
 
 먹는 게 곧 힐링이고, 사람들과 함께 나누는 게 또 다른 기쁨!
 
@@ -197,7 +197,7 @@ export default function Page() {
       tags: ["#뷰티남성", "#뷰티리뷰", "#코덕", "#뷰티팁"],
       imageUri: "/icons/character/seri-rio-card.png",
       description: `세리는 뷰티 제품 리뷰가 주력 콘텐츠에요
-신상 쿠션이나 틴트는 무조건 사용한답니다.
+신상 쿠션이나 틴트는 무조건 사용한답니다
 
 뷰티 브랜드들이 선물로 보내준 뜯지도 못한 화장품이 한가득
 
@@ -267,7 +267,7 @@ export default function Page() {
             </h1>
             <div className="text-center text-sm sm:text-base lg:text-lg space-y-10">
               {[
-                "매일같이 쏟아지는 광고 사례, 소비자 반응, 트렌드 리포트 <br />그 안에서 지금 진짜 필요한 정보를 골라내는 건 쉽지 않은 일이죠",
+                "매일같이 쏟아지는 광고 사례, 소비자 반응, 트렌드 리포트 <br />그 안에서 지금 진짜 필요한 정보를 골라내는 건 쉽지 않은 일이죠.",
                 "그래서 우리는 마케터의 시선으로 <br />쓸 수 있는 정보만 선별하고 꺼내 쓰기 좋게 보관합니다.",
                 "마치 냉장고 안에서 먹고 싶은 음식을 꺼내 먹듯이 <br />이곳에서는 당신이 필요한 순간, 원하는 인사이트만 콕 집어갈 수 있습니다.",
               ].map((text, idx) => (
@@ -365,8 +365,8 @@ export default function Page() {
               </h1>
               <div className="text-sm sm:text-base lg:text-lg space-y-6 leading-relaxed">
                 <p>
-                  우리는 정보를 그냥 흘려보내지 않습니다
-                  <br /> 꺼내 쓰기 좋은 형태로 정리하고 차갑게 보관합니다
+                  우리는 정보를 그냥 흘려보내지 않습니다.
+                  <br /> 꺼내 쓰기 좋은 형태로 정리하고 차갑게 보관합니다.
                 </p>
                 <p>
                   그래서 오늘은 지나쳤지만
@@ -462,7 +462,7 @@ export default function Page() {
                 그 안에서{" "}
                 <span className="font-bold">지금 진짜 필요한 정보</span>를
                 골라내는 건 <br />
-                쉽지 않은 일이죠
+                쉽지 않은 일이죠.
               </p>
 
               <p className="text-black text-sm">
@@ -515,7 +515,7 @@ export default function Page() {
               <h1 className="font-bold text-3xl mb-10">왜 ‘Fridge’ 일까요?</h1>
               <div className="text-base space-y-6 leading-relaxed">
                 <p>
-                  우리는 정보를 그냥 흘려보내지 않습니다
+                  우리는 정보를 그냥 흘려보내지 않습니다.
                   <br />
                   꺼내쓰기 좋은 형태로 정리하고 차갑게 보관합니다.
                 </p>

@@ -108,8 +108,8 @@ export default function HomePage() {
       <PopupBanner
         isOpen={showPopup}
         onClose={() => setShowPopup(false)}
-        desktopImage="/images/popup/popup.png" // PC용 이미지 경로
-        mobileImage="/images/popup/popup.png" // 모바일용 이미지 경로
+        desktopImage="/images/popup/popup1.png" // PC용 이미지 경로
+        mobileImage="/images/popup/popup1.png" // 모바일용 이미지 경로
         alt="마케터의 냉장고 오픈 기념 이벤트"
         oncePerDayKey="mf_home_popup" // 오늘 하루 안보기 키 (원치 않으면 삭제)
       />
@@ -168,7 +168,7 @@ export default function HomePage() {
               <p className="mt-1 text-[11px] leading-relaxed text-gray-500">
                 지금 놓치면 아까운
                 <span className="font-semibold text-main-red/90"> 최신 </span>
-                콘텐츠만 담았어요.
+                콘텐츠만 담았어요
               </p>
             </div>
           </div>
@@ -238,7 +238,7 @@ export default function HomePage() {
               놓치기 아까운 큐레이션
             </h2>
             <p className="mt-1 text-[11px] text-white">
-              실무에서 바로 참고하기 좋은 콘텐츠만 골라 담았어요.
+              실무에서 바로 참고하기 좋은 콘텐츠만 골라 담았어요
             </p>
           </div>
         </div>
