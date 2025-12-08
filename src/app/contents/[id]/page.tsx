@@ -18,12 +18,28 @@ import {
   splitContentLines,
 } from "@/utils/metaLine";
 
-export default function CardNewsDetailPage() {
+// ✅ 래퍼 컴포넌트: 여기서만 notFound() 호출
+export default function CardNewsDetailPageWrapper() {
   const { id } = useParams<{ id: string }>();
   const postId = Number(id);
 
-  // 데이터
+  if (!Number.isFinite(postId)) {
+    return notFound();
+  }
+
+  return <CardNewsDetailPage postId={postId} />;
+}
+
+// ✅ 실제 훅을 사용하는 컴포넌트 (항상 동일한 순서로 훅 호출)
+function CardNewsDetailPage({ postId }: { postId: number }) {
+  // ============================
+  // 실제 API 연동
+  // ============================
   const { data: post, isLoading, error } = usePost(postId);
+  const { mutate: recordView } = usePostViewRecord();
+
+  // 조회수 중복 기록 방지
+  const hasRecordedRef = useRef(false);
 
   // UI 상태
   const [menuOpen, setMenuOpen] = useState(false);
@@ -36,33 +52,25 @@ export default function CardNewsDetailPage() {
   // 슬라이드 영상 제어
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
 
-  // 조회수 기록
-  const hasRecordedRef = useRef(false);
-  const { mutate: recordView } = usePostViewRecord();
-
+  // ============================
+  // 슬라이드 이미지 구성
+  // ============================
   const slideImages = useMemo(() => {
-    // 이미지가 하나도 없으면 기본 이미지
     if (!post?.images || post.images.length === 0) {
       return ["/images/cardNews/hot/001.png"];
     }
 
-    // REELS인 경우: images[0]은 무조건 썸네일이니까 슬라이드에서 제외
     if (post.postType === "REELS") {
-      const mediaOnly = post.images.slice(1); // 0번 제거
-
-      // 썸네일 빼고 아무 것도 없으면 기본 이미지로 대체
+      const mediaOnly = post.images.slice(1); // 0번 썸네일 제외
       if (mediaOnly.length === 0) {
         return ["/images/cardNews/hot/001.png"];
       }
-
       return mediaOnly;
     }
 
-    // NORMAL 게시글은 전체 그대로 사용
     return post.images;
   }, [post]);
 
-  // REELS / NORMAL 에 따라 비율 분기
   const isReelsType = post?.postType === "REELS";
   const slideAspect = isReelsType ? "9 / 16" : "4 / 5";
 
@@ -74,7 +82,7 @@ export default function CardNewsDetailPage() {
     return /\.(mp4|mov|webm|ogg|m4v)$/i.test(clean);
   };
 
-  // 본문 줄 단위 분리 (항상 훅 레벨에서 호출)
+  // 본문 줄 단위 분리
   const contentLines = useMemo(
     () => splitContentLines(post?.content),
     [post?.content]
@@ -87,7 +95,6 @@ export default function CardNewsDetailPage() {
 
     const updateHeight = () => {
       if (typeof window === "undefined") return;
-      // 모바일에서는 높이 고정/스크롤 안 씀
       if (window.innerWidth < 768) {
         setRightHeight(null);
         return;
@@ -97,7 +104,7 @@ export default function CardNewsDetailPage() {
 
     const observer = new ResizeObserver(updateHeight);
     observer.observe(node);
-    updateHeight(); // 초기 1회
+    updateHeight();
 
     window.addEventListener("resize", updateHeight);
 
@@ -107,7 +114,7 @@ export default function CardNewsDetailPage() {
     };
   }, []);
 
-  // 조회수 기록
+  // 조회수 기록 (한 번만)
   useEffect(() => {
     if (!post || hasRecordedRef.current) return;
     recordView({ postId: post.id, category: post.category });
@@ -156,28 +163,28 @@ export default function CardNewsDetailPage() {
     const diffX = endX - startX;
     const diffY = endY - startY;
 
-    // 세로 움직임이 더 크면 스와이프 취급 안 함
     if (Math.abs(diffY) > Math.abs(diffX)) return;
 
-    const THRESHOLD = 50; // px
+    const THRESHOLD = 50;
     if (Math.abs(diffX) < THRESHOLD) return;
 
     if (diffX < 0 && activeSlide < slideCount - 1) {
-      // 왼쪽으로 스와이프 → 다음
       setActiveSlide((prev) => Math.min(prev + 1, slideCount - 1));
     } else if (diffX > 0 && activeSlide > 0) {
-      // 오른쪽으로 스와이프 → 이전
       setActiveSlide((prev) => Math.max(prev - 1, 0));
     }
   };
 
-  if (!Number.isFinite(postId)) return notFound();
+  // =====================
+  // 로딩 / 에러 처리
+  // =====================
   if (isLoading)
     return (
       <div className="min-h-screen flex justify-center items-center">
         로딩 중...
       </div>
     );
+
   if (error || !post)
     return (
       <div className="min-h-screen flex justify-center items-center">
@@ -329,11 +336,13 @@ export default function CardNewsDetailPage() {
           >
             {/* 제목/메타/부제목 */}
             <div className="pb-2">
-              <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-2">
+              {/* 제목 ↔ 메타: 간격 좁게 */}
+              <h1 className="text-3xl md:text-3xl lg:text-4xl font-bold mb-1 md:mb-2">
                 {post.title}
               </h1>
 
-              <div className="text-xs text-gray-500 mb-4">
+              {/* 메타 ↔ 부제목: 중간 정도 */}
+              <div className="text-sm text-gray-500 mb-1 md:mb-4">
                 {post.publishedAt
                   ? new Date(post.publishedAt).toLocaleDateString("ko-KR")
                   : ""}
@@ -342,8 +351,9 @@ export default function CardNewsDetailPage() {
                   ` · 냉장고에 담은 사람 ${post.bookmarkCount}`}
               </div>
 
+              {/* 부제목 ↔ 본문: 가장 넓은 간격 */}
               {post.subTitle && (
-                <h3 className="text-lg md:text-xl lg:text-2xl font-bold">
+                <h3 className="text-xl md:text-xl lg:text-2xl font-bold mt-7 md:mt-4 ">
                   {post.subTitle}
                 </h3>
               )}
@@ -351,24 +361,23 @@ export default function CardNewsDetailPage() {
 
             {/* 내용 */}
             <div
-              className={`mt-2 pr-2 flex-1 ${
+              className={`mt-0 md:mt-2 pr-2 flex-1 ${
                 rightHeight ? "overflow-y-auto no-scrollbar" : ""
               }`}
             >
-              <div className="text-sm md:text-base text-gray-700 leading-relaxed">
+              <div className="text-base md:text-base text-gray-700 leading-tight md:leading-relaxed">
                 {contentLines.map((line, idx) => {
                   const trimmed = line.trim();
 
-                  // 빈 줄은 간격용
                   if (trimmed === "") {
-                    return <div key={idx} className="h-3 md:h-3.5" />;
+                    return <div key={idx} className="h-2 md:h-3" />;
                   }
 
                   if (isMetaLine(trimmed)) {
                     return (
                       <p
                         key={idx}
-                        className="mt-2 text-right text-[13px] md:text-sm font-medium text-gray-400"
+                        className="mt-1.5 md:mt-2 text-right text-sm md:text-sm font-medium text-gray-400"
                       >
                         {normalizeMetaLine(trimmed)}
                       </p>
@@ -376,7 +385,7 @@ export default function CardNewsDetailPage() {
                   }
 
                   return (
-                    <p key={idx} className="mb-1">
+                    <p key={idx} className="mb-0.5 md:mb-1">
                       {line}
                     </p>
                   );

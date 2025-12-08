@@ -71,7 +71,7 @@ const KakaoExtraSignUpPage: React.FC = () => {
   });
 
   const CURRENT_YEAR = new Date().getFullYear();
-  const YEAR_START = 1900;
+  const YEAR_START = 1950;
   const yearOptions = Array.from(
     { length: CURRENT_YEAR - YEAR_START + 1 },
     (_, i) => String(YEAR_START + i)
