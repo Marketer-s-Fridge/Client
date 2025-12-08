@@ -36,7 +36,7 @@ export default function Fridge({
       ref={ref}
       className="
     z-50 relative
-    w-[20vw]
+    w-[19vw]
     h-auto aspect-[3/5]
     perspective-[1200px]
   "
