@@ -56,13 +56,16 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
   const handleConfirm = async () => {
     setErrorMsg(null);
 
+    // 일반 회원은 비밀번호 필수
     if (!isKakaoUser && !password) {
       setErrorMsg("비밀번호를 입력하세요.");
       return;
     }
 
     try {
-      await deleteAccountAsync(isKakaoUser ? "" : password);
+      // ✅ 카카오 로그인 유저는 "SOCIAL_LOGIN"을 비밀번호로 자동 사용
+      const passwordToSend = isKakaoUser ? "SOCIAL_LOGIN" : password;
+      await deleteAccountAsync(passwordToSend);
     } catch {
       /* onError에서 처리 */
     }
