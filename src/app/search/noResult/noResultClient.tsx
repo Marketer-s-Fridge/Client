@@ -48,12 +48,13 @@ export default function NoResultClient() {
       <section className="px-[7%] lg:px-[17%] py-18 text-center">
         <h1
           className="
-    text-xl md:text-2xl font-bold mb-10
-    text-center
-  "
+            text-xl md:text-2xl font-bold mb-10
+            text-center
+          "
         >
           <span className="md:hidden">
-            ‘{query || " "}’에 대한 콘텐츠가<br />
+            ‘{query || " "}’에 대한 콘텐츠가
+            <br />
             아직 준비되지 않았습니다.
           </span>
 
@@ -89,15 +90,34 @@ export default function NoResultClient() {
               추천 콘텐츠를 불러오는 중 오류가 발생했습니다.
             </p>
           )}
+
+          {/* ✅ 모바일: 카드 2개(2열), 데스크톱: 카드 3개(3열) */}
           {!isLoading && !error && recommendedContents.length > 0 && (
-            <CardGrid
-              items={recommendedContents.map((post) => ({
-                id: post.id,
-                title: post.title,
-                imageUrl: post.images?.[0], // ✅ 첫 번째 이미지 사용
-              }))}
-              columns={3}
-            />
+            <>
+              {/* 모바일 (md 미만) → 2열 */}
+              <div className="md:hidden w-full">
+                <CardGrid
+                  items={recommendedContents.map((post) => ({
+                    id: post.id,
+                    title: post.title,
+                    imageUrl: post.images?.[0],
+                  }))}
+                  columns={2}
+                />
+              </div>
+
+              {/* 데스크톱 (md 이상) → 3열 */}
+              <div className="hidden md:block w-full">
+                <CardGrid
+                  items={recommendedContents.map((post) => ({
+                    id: post.id,
+                    title: post.title,
+                    imageUrl: post.images?.[0],
+                  }))}
+                  columns={3}
+                />
+              </div>
+            </>
           )}
 
           {!isLoading && !error && recommendedContents.length === 0 && (
