@@ -40,15 +40,14 @@ export default function MobilePostCarousel({
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          // 화면에 60% 정도 들어왔을 때 한 번만 show = true
           if (entry.isIntersecting) {
             setShow(true);
-            observer.unobserve(el); // 한 번만 실행
+            observer.unobserve(el);
           }
         });
       },
       {
-        threshold: 0.6, // 요소의 60%가 뷰포트 안에 들어왔을 때
+        threshold: 0.6,
         rootMargin: "0px 0px 0px 0px",
       }
     );
@@ -73,6 +72,10 @@ export default function MobilePostCarousel({
   }, [activeIndex, imageList]);
 
   const isHot = title === "Hot Contents";
+
+  // ✅ 태그/인덱스 공통 스타일 (높이 완전 동일)
+  const badgeClass =
+    "rounded-full bg-black/70 px-2.5 py-[3px] text-[10px] font-medium text-white border border-white/10";
 
   return (
     <div
@@ -134,17 +137,19 @@ export default function MobilePostCarousel({
                     />
                   )}
 
-                  {/* 태그 & 인덱스 */}
+                  {/* 태그 & 인덱스 (높이 맞춤) */}
                   <div className="pointer-events-none">
                     <div className="absolute top-3 left-3">
-                      <span className="rounded-full bg-black/70 px-2 py-[2px] text-[10px] font-medium text-white border border-white/10">
+                      <span className={badgeClass}>
                         {isHot ? "HOT" : "PICK"}
                       </span>
                     </div>
 
                     {imageList.length > 1 && (
-                      <div className="absolute top-3 right-3 rounded-full bg-black/70 px-2.5 py-[3px] text-[10px] font-medium text-white border border-white/10">
-                        {i + 1}/{imageList.length}
+                      <div className="absolute top-3 right-3">
+                        <span className={badgeClass}>
+                          {i + 1}/{imageList.length}
+                        </span>
                       </div>
                     )}
                   </div>

@@ -32,6 +32,26 @@ export default function HomePage() {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
 
+  // ✅ Kakao SDK 초기화 (타입 안전 + 클라이언트 전용)
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const kakaoKey = process.env.NEXT_PUBLIC_KAKAO_JAVASCRIPT_KEY as
+      | string
+      | undefined;
+    const w = window as any;
+
+    if (!kakaoKey) {
+      // 필요하면 여기서 console.warn 정도만
+      return;
+    }
+    if (!w.Kakao) return;
+
+    if (!w.Kakao.isInitialized()) {
+      w.Kakao.init(kakaoKey);
+    }
+  }, []);
+
   // 모바일 섹션 진입 애니메이션용
   const [mobileEnter, setMobileEnter] = useState(false);
 
@@ -231,7 +251,6 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* 🔧 여기: 가운데 정렬 수정 (mx-auto) */}
         <div className="relative w-[50px] h-[20px] mb-7 mx-auto">
           <motion.div
             className="w-full h-full relative"
