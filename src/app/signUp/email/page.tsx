@@ -195,6 +195,13 @@ const EmailJoinPage: React.FC = () => {
   const isPasswordValid = (pwd: string) =>
     /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[^\w\s]).{8,20}$/.test(pwd);
 
+  const CURRENT_YEAR = new Date().getFullYear();
+  const YEAR_START = 1900;
+  const yearOptions = Array.from(
+    { length: CURRENT_YEAR - YEAR_START + 1 },
+    (_, i) => String(YEAR_START + i)
+  );
+
   const handleSubmit = () => {
     const newErrors = {
       email: !email.includes("@") || !isEmailVerified,
@@ -375,7 +382,7 @@ const EmailJoinPage: React.FC = () => {
           <InputRow label="생년월일" required>
             <CustomDropdown
               label="년도"
-              options={Array.from({ length: 50 }, (_, i) => String(1980 + i))}
+              options={yearOptions}
               onSelect={(val) => setBirth((prev) => ({ ...prev, year: val }))}
               buttonClassName="rounded-lg border-[#C2C2C2]"
             />

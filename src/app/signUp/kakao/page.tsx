@@ -70,6 +70,13 @@ const KakaoExtraSignUpPage: React.FC = () => {
     agreements: false,
   });
 
+  const CURRENT_YEAR = new Date().getFullYear();
+  const YEAR_START = 1900;
+  const yearOptions = Array.from(
+    { length: CURRENT_YEAR - YEAR_START + 1 },
+    (_, i) => String(YEAR_START + i)
+  );
+
   // 닉네임 중복 확인 플래그
   const [isNicknameChecked, setIsNicknameChecked] = useState(false);
 
@@ -233,7 +240,7 @@ const KakaoExtraSignUpPage: React.FC = () => {
           <InputRow label="생년월일" required>
             <CustomDropdown
               label="년도"
-              options={Array.from({ length: 50 }, (_, i) => String(1980 + i))}
+              options={yearOptions}
               onSelect={(v) => setBirthday((prev) => ({ ...prev, year: v }))}
               buttonClassName="rounded-lg border-[#C2C2C2]"
             />

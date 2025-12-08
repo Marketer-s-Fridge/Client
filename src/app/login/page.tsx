@@ -341,11 +341,11 @@ const LoginPage: React.FC = () => {
                 <span className="mx-4 text-[#757575] text-xs">또는</span>
                 <div className="flex-1 h-[1px] bg-[#ccc]" />
               </div>
-
+              {/* 소셜 로그인 더미 */}
               <div className="w-full flex flex-col items-center gap-y-3 mb-10">
                 {/* 카카오 로그인 버튼 */}
                 <button
-                  className="cursor-pointer"
+                  className="cursor-pointer w-full sm:w-7/11" // ✅ 로그인 버튼과 동일한 폭
                   onClick={() => {
                     const url = getKakaoAuthUrl();
                     if (url !== "#") {
@@ -356,7 +356,7 @@ const LoginPage: React.FC = () => {
                   <Image
                     src="/icons/kakao-login-bt.png"
                     alt=""
-                    className="w-full max-w-[300px]"
+                    className="w-full" // ✅ 부모 width에 맞게 꽉 채우기
                     width={500}
                     height={100}
                   />
