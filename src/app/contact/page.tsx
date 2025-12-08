@@ -11,9 +11,13 @@ import { createEnquiry } from "@/features/enquiries/api/enquiriesApi";
 import { EnquiryRequestDto } from "@/features/enquiries/types";
 import LoginRequiredModal from "@/components/loginRequiredModal";
 import { useImageUpload } from "@/features/posts/hooks/useImageUpload";
-import BaseConfirmButton from "@/components/baseConfirmButton"; // ✅ 추가
+import BaseConfirmButton from "@/components/baseConfirmButton";
+import BaseModal from "@/components/baseModal"; // ✅ 추가
+import { useRouter } from "next/navigation"; // ✅ 추가
 
 export default function ContactPage() {
+  const router = useRouter(); // ✅ 추가
+
   const [category, setCategory] = useState("");
   const [title, setTitle] = useState("");
   const [email, setEmail] = useState("");
@@ -25,6 +29,7 @@ export default function ContactPage() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false); // ✅ 추가
 
   const {
     mutateAsync: uploadImage,
@@ -114,8 +119,8 @@ export default function ContactPage() {
 
       const res = await createEnquiry(dto);
       console.log("문의 등록 성공:", res);
-      alert("문의가 성공적으로 제출되었습니다! 💌");
 
+      // ✅ 폼 초기화
       setCategory("");
       setTitle("");
       setEmail("");
@@ -124,6 +129,9 @@ export default function ContactPage() {
       setFileName("");
       setImageUrl(null);
       setAgreed(false);
+
+      // ✅ 성공 모달 오픈
+      setIsSuccessModalOpen(true);
     } catch (error: any) {
       console.error("문의 등록 실패:", error);
       alert("문의 등록 중 오류가 발생했습니다. 다시 시도해주세요.");
@@ -294,6 +302,24 @@ export default function ContactPage() {
           </div>
         </form>
       </main>
+
+      {/* ✅ 제출 성공 모달 */}
+      <BaseModal
+        isOpen={isSuccessModalOpen}
+        onClose={() => {
+          setIsSuccessModalOpen(false);
+          router.push("/"); // ✅ 홈으로 라우팅
+        }}
+      >
+        <div className="flex flex-col items-center justify-center px-4 py-2">
+          <p className="text-center text-base text-gray-700 mb-1 leading-snug">
+            <strong className="text-lg font-semibold block mb-1">
+              문의 제출 완료!
+            </strong>
+            빠르게 확인 후 입력하신 이메일로 답변드릴게요.
+          </p>
+        </div>
+      </BaseModal>
 
       <Footer />
     </div>

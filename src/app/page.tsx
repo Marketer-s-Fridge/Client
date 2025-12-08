@@ -17,8 +17,6 @@ import MobilePostCarousel from "@/components/mobilePostCarousel";
 import { usePosts } from "@/features/posts/hooks/usePosts";
 import { useTrackVisitor } from "@/features/visitorStatus/hooks/useVisitorStatus";
 import PopupBanner from "@/components/popupBanner";
-
-// ✅ 추가됨
 import { motion } from "framer-motion";
 
 // 홈에서 쓰는 최소 필드 타입
@@ -100,8 +98,8 @@ export default function HomePage() {
       <PopupBanner
         isOpen={showPopup}
         onClose={() => setShowPopup(false)}
-        desktopImage="/images/popup/popup1.png"
-        mobileImage="/images/popup/popup1.png"
+        desktopImage="/images/popup/popup2.png"
+        mobileImage="/images/popup/popup2.png"
         alt="마케터의 냉장고 오픈 기념 이벤트"
         oncePerDayKey="mf_home_popup"
       />
@@ -233,11 +231,11 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* ⭐ 여기 변경됨: 흔들리는 벡터 */}
-        <div className="justify-self-center relative w-[50px] h-[20px] mb-7">
+        {/* 🔧 여기: 가운데 정렬 수정 (mx-auto) */}
+        <div className="relative w-[50px] h-[20px] mb-7 mx-auto">
           <motion.div
             className="w-full h-full relative"
-            animate={{ y: [0, 4, 0] }} // 위아래 흔들림
+            animate={{ y: [0, 4, 0] }}
             transition={{
               duration: 1.6,
               repeat: Infinity,

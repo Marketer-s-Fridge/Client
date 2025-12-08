@@ -39,7 +39,7 @@ export default function PopupBanner({
 
   // ⭐ 이미지 클릭 시 로그인 페이지 이동
   const handleImageClick = () => {
-    router.push("/login");
+    router.push("/signUp");
     onClose(); // 팝업 닫기까지 할 경우
   };
 
