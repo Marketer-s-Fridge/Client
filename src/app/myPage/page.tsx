@@ -293,14 +293,13 @@ export default function MyPage() {
                   className="
         flex
         overflow-x-auto
-        overflow-y-hidden     /* 🔹 세로 스크롤 막기 */
+        overflow-y-hidden
         gap-4
         no-scrollbar
         snap-x snap-mandatory
-        touch-pan-x           /* 🔹 터치 제스처: 가로만 */
+        touch-pan-x
       "
                 >
-                  {" "}
                   {filteredRecentViews.map((item) => {
                     const postId = item.postId;
                     const isSaved = bookmarkIds.includes(postId);
@@ -424,16 +423,19 @@ export default function MyPage() {
                 <EmptySectionBox message="담은 콘텐츠가 없습니다" />
               ) : (
                 <div className="flex flex-col sm:flex-row sm:items-center">
-                  {/* 🔹 도넛 차트 크기 고정 + flex 줄어들지 않게 */}
+                  {/* 🔹 도넛 차트 크기 고정 + flex-shrink-0 */}
                   <div
-                    className="flex-shrink-0 mx-auto mb-4 sm:mb-0
-                  w-[180px] h-[180px]
-                  sm:w-[220px] sm:h-[220px]
-                  md:w-[240px] md:h-[240px]"
+                    className="
+                      flex-shrink-0
+                      mx-auto
+                      mb-4 sm:mb-0
+                      w-[180px] h-[180px]
+                      sm:w-[220px] sm:h-[220px]
+                      md:w-[240px] md:h-[240px]
+                    "
                   >
                     <DoughnutChart data={chartDataWithPercent} />
                   </div>
-
                   <ul className="md:pl-6 text-sm space-y-2 font-semibold mt-4 sm:mt-0">
                     {chartDataWithPercent.map((item, idx) => (
                       <li key={item.label} className="flex items-center gap-2">
@@ -649,8 +651,20 @@ export default function MyPage() {
           ) : !hasConsumptionReport ? (
             <EmptySectionBox message="담은 콘텐츠가 없습니다" />
           ) : (
-            <div className="flex flex-col sm:flex-row sm:items-center ">
-              <DoughnutChart data={chartDataWithPercent} />
+            <div className="flex flex-col sm:flex-row sm:items-center">
+              {/* 🔹 데스크탑 도넛 차트 크기 고정 */}
+              <div
+                className="
+                  flex-shrink-0
+                  mx-auto
+                  mb-4 sm:mb-0
+                  w-[200px] h-[200px]
+                  md:w-[230px] md:h-[230px]
+                  lg:w-[260px] lg:h-[260px]
+                "
+              >
+                <DoughnutChart data={chartDataWithPercent} />
+              </div>
               <ul className="md:pl-6 text-sm space-y-2 font-semibold">
                 {chartDataWithPercent.map((item, idx) => (
                   <li key={item.label} className="flex items-center gap-2">
