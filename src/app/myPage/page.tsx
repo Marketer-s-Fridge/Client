@@ -289,7 +289,18 @@ export default function MyPage() {
               ) : !hasRecentViewed ? (
                 <EmptySectionBox message="최근 본 콘텐츠가 없습니다" />
               ) : (
-                <div className="flex overflow-x-auto gap-4 no-scrollbar snap-x snap-mandatory">
+                <div
+                  className="
+                  flex
+                  overflow-x-auto
+                  overflow-y-hidden     /* 🔹 세로 스크롤 막기 */
+                  gap-4
+                  no-scrollbar
+                  snap-x snap-mandatory
+                  touch-pan-x           /* 🔹 터치 제스처: 가로만 */
+                "
+                >
+                  {" "}
                   {filteredRecentViews.map((item) => {
                     const postId = item.postId;
                     const isSaved = bookmarkIds.includes(postId);
