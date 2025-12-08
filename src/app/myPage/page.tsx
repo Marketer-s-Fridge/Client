@@ -291,14 +291,14 @@ export default function MyPage() {
               ) : (
                 <div
                   className="
-                  flex
-                  overflow-x-auto
-                  overflow-y-hidden     /* 🔹 세로 스크롤 막기 */
-                  gap-4
-                  no-scrollbar
-                  snap-x snap-mandatory
-                  touch-pan-x           /* 🔹 터치 제스처: 가로만 */
-                "
+        flex
+        overflow-x-auto
+        overflow-y-hidden     /* 🔹 세로 스크롤 막기 */
+        gap-4
+        no-scrollbar
+        snap-x snap-mandatory
+        touch-pan-x           /* 🔹 터치 제스처: 가로만 */
+      "
                 >
                   {" "}
                   {filteredRecentViews.map((item) => {
@@ -424,8 +424,17 @@ export default function MyPage() {
                 <EmptySectionBox message="담은 콘텐츠가 없습니다" />
               ) : (
                 <div className="flex flex-col sm:flex-row sm:items-center">
-                  <DoughnutChart data={chartDataWithPercent} />
-                  <ul className="md:pl-6 text-sm space-y-2 font-semibold mt-4">
+                  {/* 🔹 도넛 차트 크기 고정 + flex 줄어들지 않게 */}
+                  <div
+                    className="flex-shrink-0 mx-auto mb-4 sm:mb-0
+                  w-[180px] h-[180px]
+                  sm:w-[220px] sm:h-[220px]
+                  md:w-[240px] md:h-[240px]"
+                  >
+                    <DoughnutChart data={chartDataWithPercent} />
+                  </div>
+
+                  <ul className="md:pl-6 text-sm space-y-2 font-semibold mt-4 sm:mt-0">
                     {chartDataWithPercent.map((item, idx) => (
                       <li key={item.label} className="flex items-center gap-2">
                         <div
