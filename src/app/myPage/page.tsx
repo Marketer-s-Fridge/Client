@@ -128,7 +128,26 @@ export default function MyPage() {
       : 0,
   }));
 
-  const hasConsumptionReport = chartDataWithPercent.length > 0;
+  // ✅ 콘텐츠 소비 리포트 더미 데이터 (로컬에서 확인용)
+  const isDev = process.env.NODE_ENV === "development";
+
+  const dummyChartDataWithPercent = [
+    { label: "푸드", value: 40, percent: 40 },
+    { label: "라이프스타일", value: 25, percent: 25 },
+    { label: "뷰티", value: 15, percent: 15 },
+    { label: "테크", value: 10, percent: 10 },
+    { label: "기타", value: 10, percent: 10 },
+  ];
+
+  // 실제 데이터가 있으면 그걸 우선, 없으면 dev에서만 더미 사용
+  const displayChartData =
+    chartDataWithPercent.length > 0
+      ? chartDataWithPercent
+      : isDev
+      ? dummyChartDataWithPercent
+      : [];
+
+  const hasConsumptionReport = displayChartData.length > 0;
 
   // 도넛 & 범례 색상 (Tailwind 클래스)
   const chartColors = [
@@ -289,14 +308,14 @@ export default function MyPage() {
               ) : (
                 <div
                   className="
-        flex
-        overflow-x-auto
-        overflow-y-hidden
-        gap-4
-        no-scrollbar
-        snap-x snap-mandatory
-        touch-pan-x
-      "
+                    flex
+                    overflow-x-auto
+                    overflow-y-hidden
+                    gap-4
+                    no-scrollbar
+                    snap-x snap-mandatory
+                    touch-pan-x
+                  "
                 >
                   {filteredRecentViews.map((item) => {
                     const postId = item.postId;
@@ -413,29 +432,20 @@ export default function MyPage() {
         ) : (
           <>
             {/* 모바일: 콘텐츠 소비 리포트 */}
-            {/* 모바일: 콘텐츠 소비 리포트 */}
-            <div>
-              <h3 className="text-2xl font-bold mb-4">콘텐츠 소비 리포트</h3>
+            <div className="">
+              <h3 className="text-2xl font-bold mb-4 ">콘텐츠 소비 리포트</h3>
               {isCategoryStatsLoading ? (
                 <EmptySectionBox message="불러오는 중..." />
               ) : !hasConsumptionReport ? (
                 <EmptySectionBox message="담은 콘텐츠가 없습니다" />
               ) : (
-                // ✅ 여기부터 수정
                 <div className="flex flex-col items-center">
-                  <div
-                    className="
-          mx-auto
-          mb-4
-          w-[180px] h-[180px]
-          sm:w-[220px] sm:h-[220px]
-        "
-                  >
-                    <DoughnutChart data={chartDataWithPercent} />
+                  <div className="w-[70vw] mx-auto mb-4">
+                    <DoughnutChart data={displayChartData} />
                   </div>
 
                   <ul className="text-sm space-y-2 font-semibold w-full max-w-[260px]">
-                    {chartDataWithPercent.map((item, idx) => (
+                    {displayChartData.map((item, idx) => (
                       <li key={item.label} className="flex items-center gap-2">
                         <div
                           className={`w-3 h-3 rounded-sm ${
@@ -448,7 +458,6 @@ export default function MyPage() {
                     ))}
                   </ul>
                 </div>
-                // ✅ 여기까지
               )}
             </div>
 
@@ -662,10 +671,10 @@ export default function MyPage() {
                   lg:w-[260px] lg:h-[260px]
                 "
               >
-                <DoughnutChart data={chartDataWithPercent} />
+                <DoughnutChart data={displayChartData} />
               </div>
               <ul className="md:pl-6 text-sm space-y-2 font-semibold">
-                {chartDataWithPercent.map((item, idx) => (
+                {displayChartData.map((item, idx) => (
                   <li key={item.label} className="flex items-center gap-2">
                     <div
                       className={`w-3 h-3 rounded-sm ${

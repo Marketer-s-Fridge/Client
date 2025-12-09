@@ -1,7 +1,13 @@
 "use client";
 
 import { Doughnut } from "react-chartjs-2";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import {
+  Chart as ChartJS,
+  ArcElement,
+  Tooltip,
+  Legend,
+  ChartOptions,
+} from "chart.js";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -23,8 +29,9 @@ const defaultData = {
   ],
 };
 
-const options = {
+const options: ChartOptions<"doughnut"> = {
   responsive: true,
+  maintainAspectRatio: false, // ✅ 부모 박스 비율에 맞게
   cutout: "60%",
   animations: {
     numbers: {
@@ -43,7 +50,7 @@ const options = {
       display: false,
     },
   },
-} as const;
+};
 
 // MyPage에서 넘기는 데이터 타입 기준
 type DoughnutItem = {
@@ -80,7 +87,7 @@ export default function DoughnutChart({ data }: DoughnutChartProps) {
     : defaultData; // 아무것도 안 넘어오면 기본값 사용
 
   return (
-    <div className="w-[280px] sm:w-[300px] md:w-[210px] mx-auto">
+    <div className="relative mx-auto w-full aspect-square">
       <Doughnut data={chartData} options={options} />
     </div>
   );
