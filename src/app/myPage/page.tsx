@@ -413,6 +413,7 @@ export default function MyPage() {
         ) : (
           <>
             {/* 모바일: 콘텐츠 소비 리포트 */}
+            {/* 모바일: 콘텐츠 소비 리포트 */}
             <div>
               <h3 className="text-2xl font-bold mb-4">콘텐츠 소비 리포트</h3>
               {isCategoryStatsLoading ? (
@@ -420,21 +421,20 @@ export default function MyPage() {
               ) : !hasConsumptionReport ? (
                 <EmptySectionBox message="담은 콘텐츠가 없습니다" />
               ) : (
-                <div className="flex flex-col sm:flex-row sm:items-center">
-                  {/* 🔹 도넛 차트 크기 고정 + flex-shrink-0 */}
+                // ✅ 여기부터 수정
+                <div className="flex flex-col items-center">
                   <div
                     className="
-                      flex-shrink-0
-                      mx-auto
-                      mb-4 sm:mb-0
-                      w-[180px] h-[180px]
-                      sm:w-[220px] sm:h-[220px]
-                      md:w-[240px] md:h-[240px]
-                    "
+          mx-auto
+          mb-4
+          w-[180px] h-[180px]
+          sm:w-[220px] sm:h-[220px]
+        "
                   >
                     <DoughnutChart data={chartDataWithPercent} />
                   </div>
-                  <ul className="md:pl-6 text-sm space-y-2 font-semibold mt-4 sm:mt-0">
+
+                  <ul className="text-sm space-y-2 font-semibold w-full max-w-[260px]">
                     {chartDataWithPercent.map((item, idx) => (
                       <li key={item.label} className="flex items-center gap-2">
                         <div
@@ -448,6 +448,7 @@ export default function MyPage() {
                     ))}
                   </ul>
                 </div>
+                // ✅ 여기까지
               )}
             </div>
 
