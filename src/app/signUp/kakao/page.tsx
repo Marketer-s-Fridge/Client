@@ -17,6 +17,9 @@ import AgreementsSection, {
 } from "@/components/agreementSection";
 import AuthPageLayout from "@/components/authPageLayout";
 
+// ★ 추가: auth 캐시 갱신용
+import { useQueryClient } from "@tanstack/react-query";
+
 // 생년월일 인풋 라인 공통 컴포넌트
 const InputRow = ({
   label,
@@ -42,6 +45,8 @@ const InputRow = ({
 
 const KakaoExtraSignUpPage: React.FC = () => {
   const router = useRouter();
+  // ★ 추가: react-query 클라이언트
+  const queryClient = useQueryClient();
 
   // 입력값
   const [name, setName] = useState("");
@@ -167,7 +172,8 @@ const KakaoExtraSignUpPage: React.FC = () => {
     try {
       setSubmitting(true);
 
-      await updateKakaoExtraProfile(
+      // ★ 여기에서 프로필 업데이트
+      const updatedUser = await updateKakaoExtraProfile(
         name.trim(),
         nickname.trim(),
         birthdayStr,
@@ -177,6 +183,16 @@ const KakaoExtraSignUpPage: React.FC = () => {
         agreements.collect,
         agreements.marketing
       );
+
+      // ★ auth/me 캐시 갱신 (둘 중 하나 택1)
+
+      // 1) 서버가 변경된 유저 정보를 반환한다면:
+      if (updatedUser) {
+        queryClient.setQueryData(["auth", "me"], updatedUser);
+      } else {
+        // 2) 응답에 유저가 없으면 invalidate로 다시 요청
+        queryClient.invalidateQueries({ queryKey: ["auth", "me"] });
+      }
 
       setModalOpen(true);
     } catch (error) {

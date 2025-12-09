@@ -433,14 +433,14 @@ const EmailJoinPage: React.FC = () => {
             showError={errors.agreements}
           />
         </div>
+        <div className="justify-self-center w-full md:w-11/12 text-center ">
+          <SubmitButton
+            type="submit"
+            text={isPending ? "가입 중..." : "나의 냉장고 열어보기"}
+            disabled={isPending}
+          />
+        </div>
       </form>
-      <div className="justify-self-center w-full md:w-11/12 text-center ">
-        <SubmitButton
-          type="submit"
-          text={isPending ? "가입 중..." : "나의 냉장고 열어보기"}
-          disabled={isPending}
-        />
-      </div>
 
       <ConfirmModal
         isOpen={modalOpen}
