@@ -143,12 +143,12 @@ export default function ContactPage() {
       <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <Banner title="문의하기" />
 
-      {/* <LoginRequiredModal
+      <LoginRequiredModal
         isOpen={isLoginModalOpen}
         onClose={() => setIsLoginModalOpen(false)}
         message="로그인 후 문의를 남기실 수 있습니다"
         redirectPath="/login"
-      /> */}
+      />
 
       <main className="max-w-[800px] mx-auto px-[5%] sm:px-4 py-12 relative">
         <form className="space-y-6" onSubmit={handleSubmit}>
