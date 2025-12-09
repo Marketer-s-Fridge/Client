@@ -40,7 +40,7 @@ const ShareButton: React.FC<ShareButtonProps> = ({
     })();
 
     // ⭐ fallback URL 강제 생성
-    const fallbackUrl = `http://marketersfridge.co.kr/contents/${postId}`;
+    const fallbackUrl = `https://marketersfridge.co.kr/contents/${postId}`;
 
     const shareUrl = url ?? fallbackUrl;
     const shareImage =

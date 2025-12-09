@@ -193,7 +193,7 @@ function CardNewsDetailPage({ postId }: { postId: number }) {
     );
 
   // ✅ 공유용 URL / 썸네일
-  const shareUrl = `http://marketersfridge.co.kr/contents/${post.id}`;
+  const shareUrl = `https://marketersfridge.co.kr/contents/${post.id}`;
 
   const shareImage =
     post.images && post.images.length > 0
