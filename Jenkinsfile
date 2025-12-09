@@ -7,7 +7,7 @@ pipeline {
     COMPOSE_DIR = "/home/ec2-user/app"
 
     NEXT_PUBLIC_KAKAO_REST_API_KEY = credentials('KAKAO_REST_API_KEY')
-    NEXT_PUBLIC_KAKAO_REDIRECT_URI = 'http://marketersfridge.co.kr/login/kakao/callback'
+    NEXT_PUBLIC_KAKAO_REDIRECT_URI = 'https://marketersfridge.co.kr/login/kakao/callback'
     NEXT_PUBLIC_KAKAO_JAVASCRIPT_KEY = credentials('KAKAO_JAVASCRIPT_KEY')
   }
   stages {
