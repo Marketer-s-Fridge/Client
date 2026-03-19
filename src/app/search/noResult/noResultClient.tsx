@@ -9,9 +9,17 @@ import Footer from "@/components/footer";
 import MobileMenu from "@/components/mobileMenu";
 import { useSearchParams } from "next/navigation";
 import CardGrid from "@/components/cardGrid";
-import { usePosts } from "@/features/posts/hooks/usePosts";
+import type { PostResponseDto } from "@/features/posts/types";
 
-export default function NoResultClient() {
+type NoResultClientProps = {
+  initialPosts?: PostResponseDto[];
+  initialError?: boolean;
+};
+
+export default function NoResultClient({
+  initialPosts = [],
+  initialError = false,
+}: NoResultClientProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("전체");
   const [selectedSort, setSelectedSort] = useState("최신순");
@@ -19,7 +27,9 @@ export default function NoResultClient() {
   const query = searchParams.get("q") || "";
 
   // ✅ 전체 게시글 가져오기 (PUBLISHED)
-  const { data: posts, isLoading, error } = usePosts();
+  const posts = initialPosts;
+  const isLoading = false;
+  const error = initialError ? new Error("프리패치에 실패했습니다.") : null;
 
   // ✅ 추천용 콘텐츠 3개 (걍 순서대로 앞에서 3개)
   const recommendedContents = useMemo(() => {

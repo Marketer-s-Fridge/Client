@@ -8,7 +8,6 @@ import ScrollToTopButton from "@/components/scrollToTopButton";
 import CategoryTabBar from "@/components/categoryTabBar";
 import Pagination from "@/components/pagination";
 import CardGrid from "@/components/cardGrid";
-import { usePosts } from "@/features/posts/hooks/usePosts";
 import { Content } from "@/features/posts/hooks/usePosts";
 
 const PAGE_SIZE = 9; // 한 페이지 카드 개수 (3열 * 3행 기준)
@@ -18,7 +17,15 @@ const getTime = (item: Content): number => {
   return dateStr ? new Date(dateStr).getTime() : 0;
 };
 
-export default function SearchClient() {
+type SearchClientProps = {
+  initialPosts?: Content[];
+  initialError?: boolean;
+};
+
+export default function SearchClient({
+  initialPosts = [],
+  initialError = false,
+}: SearchClientProps) {
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -31,7 +38,9 @@ export default function SearchClient() {
   const [currentPage, setCurrentPage] = useState(1);
 
   // ✅ 전체 게시물(PUBLISHED) 조회
-  const { data: posts, isLoading, error } = usePosts();
+  const posts = initialPosts;
+  const isLoading = false;
+  const error = initialError ? new Error("프리패치에 실패했습니다.") : null;
 
   // ✅ 1차: "검색어" 기준으로만 필터링한 검색 결과 집합
   const searchedContents = useMemo<Content[]>(() => {
