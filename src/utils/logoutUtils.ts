@@ -1,4 +1,10 @@
 export const clearUserClientDataOnLogout = () => {
+    if (typeof window !== "undefined") {
+        document.cookie =
+            "accessToken=; Path=/; Max-Age=0; SameSite=Lax" +
+            (window.location.protocol === "https:" ? "; Secure" : "");
+    }
+
     const KEYS_TO_CLEAR = [
         "accessToken",
         "user",

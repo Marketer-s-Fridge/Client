@@ -3,7 +3,8 @@
 
 import { useEffect, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { kakaoLogin } from "@/features/auth/api/authApi";
+import { fetchUserInfo, kakaoLogin } from "@/features/auth/api/authApi";
+import { isAdminUser } from "@/utils/isAdminUser";
 
 function KakaoCallbackInner() {
   const router = useRouter();
@@ -34,6 +35,18 @@ function KakaoCallbackInner() {
         if (isNewUser) {
           router.replace("/signUp/kakao");
           return;
+        }
+
+        try {
+          const me = await fetchUserInfo();
+          localStorage.setItem("user", JSON.stringify(me));
+          if (isAdminUser(me)) {
+            router.replace("/admin");
+            return;
+          }
+        } catch (e) {
+          console.warn("⚠️ /auth/me 조회 실패:", e);
+          localStorage.removeItem("user");
         }
 
         router.replace("/");
