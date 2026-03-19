@@ -25,6 +25,19 @@ const api = axios.create({
   headers: { "Content-Type": "application/json" },
 });
 
+const setAccessTokenCookie = (token: string) => {
+  if (typeof window === "undefined") return;
+
+  const secure = window.location.protocol === "https:" ? "; Secure" : "";
+  document.cookie =
+    [
+      `accessToken=${encodeURIComponent(token)}`,
+      "Path=/",
+      "SameSite=Lax",
+      "Max-Age=604800",
+    ].join("; ") + secure;
+};
+
 /** ✅ 인터셉터: 특정 요청에만 JWT 자동 첨부 + 로깅 */
 api.interceptors.request.use((config) => {
   const token =
@@ -109,6 +122,7 @@ export const signin = async (dto: SigninRequestDto): Promise<string> => {
   }
 
   localStorage.setItem("accessToken", token);
+  setAccessTokenCookie(token);
   return token;
 };
 
@@ -307,6 +321,7 @@ export const kakaoLogin = async (
 
   // 공통 로그인 로직과 맞추고 싶으면 여기서도 저장
   localStorage.setItem("accessToken", token);
+  setAccessTokenCookie(token);
 
   return { token, isNewUser };
 };

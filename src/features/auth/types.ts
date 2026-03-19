@@ -35,6 +35,9 @@ export interface UserResponseDto {
   phone?: string;
   createdAt?: string; // 서버가 주면 사용, 아니면 무시
   profileImageUrl?: string;
+  // 관리자 판별용 (백엔드 응답에 맞춰 optional)
+  role?: string;
+  isAdmin?: boolean;
 }
 
 // 엔드포인트별 전용 페이로드

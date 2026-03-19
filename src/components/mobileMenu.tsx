@@ -2,6 +2,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { Dispatch, SetStateAction } from "react";
 import { useAuthStatus } from "@/features/auth/hooks/useAuthStatus";
 import Image from "next/image";
+import { isAdminUser } from "@/utils/isAdminUser";
 
 interface MobileMenuProps {
   menuOpen: boolean;
@@ -21,7 +22,7 @@ export const MobileMenu = ({ menuOpen, setMenuOpen }: MobileMenuProps) => {
   const router = useRouter();
   const pathname = usePathname();
   const { isAuthenticated, user } = useAuthStatus();
-  const isAdmin = isAuthenticated && user?.id === "mf-admin";
+  const isAdmin = isAuthenticated && isAdminUser(user);
 
   const handleClick = (path: string) => {
     router.push(path);

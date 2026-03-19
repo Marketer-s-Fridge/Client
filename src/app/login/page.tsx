@@ -9,12 +9,14 @@ import { AuthHeader, SubmitButton } from "@/components/authFormComponents";
 import Image from "next/image";
 import ConfirmModal from "@/components/confirmModal";
 import MobileMenu from "@/components/mobileMenu";
-import { SigninRequestDto } from "@/features/auth/types";
+import { SigninRequestDto, UserResponseDto } from "@/features/auth/types";
 import { useSignin } from "@/features/auth/hooks/useSignin";
 import api from "@/lib/apiClient"; // 서버에 /auth/signout 있으면 사용
 import { getKakaoAuthUrl } from "@/utils/getKakaoAuthUrl";
 import { useQueryClient } from "@tanstack/react-query";
 import { clearUserClientDataOnLogout } from "@/utils/logoutUtils";
+import { fetchUserInfo } from "@/features/auth/api/authApi";
+import { isAdminUser } from "@/utils/isAdminUser";
 
 const LoginPage: React.FC = () => {
   const queryClient = useQueryClient();
@@ -106,12 +108,20 @@ const LoginPage: React.FC = () => {
     const dto: SigninRequestDto = { id: input1.trim(), pw: input2 };
 
     signinMutate(dto, {
-      onSuccess: (userData) => {
+      onSuccess: async () => {
         const trimmedId = input1.trim();
 
-        // 1) 유저 정보 저장
+        // 1) 유저 정보 조회 & 저장
         //    accessToken은 useSignin 내부에서 localStorage에 저장된다고 가정
-        localStorage.setItem("user", JSON.stringify(userData));
+        let me: UserResponseDto | null = null;
+        try {
+          me = await fetchUserInfo();
+          localStorage.setItem("user", JSON.stringify(me));
+          queryClient.setQueryData(["auth", "me"], me);
+        } catch (e) {
+          console.warn("⚠️ /auth/me 조회 실패:", e);
+          localStorage.removeItem("user");
+        }
 
         // 2) 로그인 상태 유지 설정
         if (autoLogin) {
@@ -132,9 +142,8 @@ const LoginPage: React.FC = () => {
         // 4) 로그인 상태 갱신
         setIsLoggedIn(true);
 
-        // 5) 어드민 분기: mf-admin이면 관리자 페이지로 바로 이동
-        const idLower = trimmedId.toLowerCase();
-        if (idLower === "mf-admin") {
+        // 5) 어드민 분기: 계정 정보 확인 후 관리자면 이동
+        if (isAdminUser(me)) {
           router.replace("/admin");
           return;
         }

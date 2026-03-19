@@ -9,6 +9,7 @@ import {
   useSaveSearchKeyword,
 } from "@/features/search/hooks/useSearchHistory";
 import { useAuthStatus } from "@/features/auth/hooks/useAuthStatus";
+import { isAdminUser } from "@/utils/isAdminUser";
 
 interface HeaderProps {
   menuOpen: boolean;
@@ -22,7 +23,7 @@ export default function Header({ menuOpen, setMenuOpen }: HeaderProps) {
   const router = useRouter();
 
   const { isAuthenticated, user } = useAuthStatus();
-  const isAdmin = isAuthenticated && user?.id === "mf-admin";
+  const isAdmin = isAuthenticated && isAdminUser(user);
 
   const navItems = [
     { name: "Home", href: "/" },
