@@ -9,6 +9,7 @@ pipeline {
     NEXT_PUBLIC_KAKAO_REST_API_KEY = credentials('KAKAO_REST_API_KEY')
     NEXT_PUBLIC_KAKAO_REDIRECT_URI = 'https://marketersfridge.co.kr/login/kakao/callback'
     NEXT_PUBLIC_KAKAO_JAVASCRIPT_KEY = credentials('KAKAO_JAVASCRIPT_KEY')
+    NEXT_PUBLIC_API_URL = 'https://marketersfridge.co.kr'
   }
   stages {
     stage('Checkout'){ steps { checkout scm } }
@@ -20,6 +21,7 @@ pipeline {
             --build-arg NEXT_PUBLIC_KAKAO_REST_API_KEY=$NEXT_PUBLIC_KAKAO_REST_API_KEY \
             --build-arg NEXT_PUBLIC_KAKAO_REDIRECT_URI=$NEXT_PUBLIC_KAKAO_REDIRECT_URI \
             --build-arg NEXT_PUBLIC_KAKAO_JAVASCRIPT_KEY=$NEXT_PUBLIC_KAKAO_JAVASCRIPT_KEY \
+            --build-arg NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL \
             -t $IMAGE:$TAG .
         """
       } 

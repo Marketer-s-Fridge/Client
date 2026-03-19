@@ -5,7 +5,10 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchPost } from "../api/postsApi";
 import { PostResponseDto } from "../types";
 
-export function usePost(id: number | undefined) {
+export function usePost(
+  id: number | undefined,
+  options?: { initialData?: PostResponseDto }
+) {
   return useQuery<PostResponseDto, Error>({
     queryKey: ["post", id],
     queryFn: () => fetchPost(id!),   // enabled 때문에 ! 안전
@@ -14,5 +17,6 @@ export function usePost(id: number | undefined) {
     gcTime: 10 * 60_000,
     refetchOnWindowFocus: false,
     retry: false,
+    initialData: options?.initialData,
   });
 }
