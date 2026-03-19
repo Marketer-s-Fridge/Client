@@ -6,8 +6,6 @@ import { useState } from "react";
 import Image from "next/image";
 
 import { useSaveSearchKeyword } from "@/features/search/hooks/useSearchHistory";
-// ✅ 전체 게시물 훅 import
-import { usePosts } from "@/features/posts/hooks/usePosts";
 
 type SearchInputProps = {
   showInstagramButton?: boolean;
@@ -25,20 +23,12 @@ export default function SearchInput({
   // ✅ 검색어 저장 훅
   const { mutate: saveSearchKeyword } = useSaveSearchKeyword();
 
-  // ✅ 전체 게시물 조회 (PUBLISHED)
-  const { isLoading } = usePosts(); // 기본값으로 서버 모드 사용
-
   const handleSearch = (e: React.SyntheticEvent) => {
     e.preventDefault();
 
     const trimmed = query.trim();
     if (!trimmed) {
       alert("검색어를 입력해주세요");
-      return;
-    }
-
-    if (isLoading) {
-      alert("콘텐츠를 불러오는 중입니다. 잠시 후 다시 시도해주세요.");
       return;
     }
 

@@ -1,9 +1,14 @@
 import type { Metadata } from "next";
+import { cache } from "react";
 import { notFound } from "next/navigation";
 import CardNewsDetailClient from "./CardNewsDetailClient";
 import { fetchPostServer, fetchPublishedPostsServer } from "@/lib/serverApi";
 
 export const revalidate = 60;
+
+const getPost = cache(async (postId: number) => {
+  return await fetchPostServer(postId);
+});
 
 export async function generateStaticParams() {
   try {
@@ -23,7 +28,7 @@ export async function generateMetadata(
   if (!Number.isFinite(postId)) return {};
 
   try {
-    const post = await fetchPostServer(postId);
+    const post = await getPost(postId);
     const title = post.title ? `${post.title} | Marketer's Fridge` : "Marketer's Fridge";
     const description =
       post.subTitle ??
@@ -62,7 +67,7 @@ export default async function Page({
   }
 
   try {
-    const post = await fetchPostServer(postId);
+    const post = await getPost(postId);
     return <CardNewsDetailClient postId={postId} initialPost={post} />;
   } catch (e: any) {
     if (e?.status === 404) notFound();
