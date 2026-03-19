@@ -1,12 +1,9 @@
 "use client";
 
-import Header from "@/components/header";
 import SearchInput from "@/components/searchInput";
 import React, { useState, useMemo } from "react";
 import CategoryTabBar from "@/components/categoryTabBar";
 import Image from "next/image";
-import Footer from "@/components/footer";
-import MobileMenu from "@/components/mobileMenu";
 import { useSearchParams } from "next/navigation";
 import CardGrid from "@/components/cardGrid";
 import type { PostResponseDto } from "@/features/posts/types";
@@ -20,7 +17,6 @@ export default function NoResultClient({
   initialPosts = [],
   initialError = false,
 }: NoResultClientProps) {
-  const [menuOpen, setMenuOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("전체");
   const [selectedSort, setSelectedSort] = useState("최신순");
   const searchParams = useSearchParams();
@@ -39,9 +35,6 @@ export default function NoResultClient({
 
   return (
     <div className="min-h-screen bg-white mt-16 md:mt-0">
-      <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
-      <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
-
       <section className="hidden md:flex flex-col items-center main-red pb-10">
         <SearchInput showInstagramButton={false} />
       </section>
@@ -138,7 +131,6 @@ export default function NoResultClient({
         </section>
       </section>
 
-      <Footer />
     </div>
   );
 }

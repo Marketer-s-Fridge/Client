@@ -2,6 +2,8 @@ import { Suspense } from "react";
 import NoResultClient from "./noResultClient";
 import { fetchPostsByStatusServer } from "@/lib/serverApi";
 import type { PostResponseDto } from "@/features/posts/types";
+import PageShell from "@/components/pageShell";
+import Footer from "@/components/footer";
 
 export const revalidate = 60;
 
@@ -11,11 +13,14 @@ export default async function Page() {
   const initialError = !res;
 
   return (
-    <Suspense fallback={<div className="text-center py-20"></div>}>
-      <NoResultClient
-        initialPosts={initialPosts}
-        initialError={initialError}
-      />
-    </Suspense>
+    <PageShell>
+      <Suspense fallback={<div className="text-center py-20"></div>}>
+        <NoResultClient
+          initialPosts={initialPosts}
+          initialError={initialError}
+        />
+      </Suspense>
+      <Footer />
+    </PageShell>
   );
 }
