@@ -3,7 +3,7 @@
 import { useRouter, usePathname } from "next/navigation";
 import React, { useState } from "react";
 import Image from "next/image";
-import DeleteAccountModal from "@/app/myPage/account/deleteAccountModal";
+import DeleteAccountModal from "@/app/(main)/myPage/account/deleteAccountModal";
 import { useAuthStatus } from "@/features/auth/hooks/useAuthStatus";
 
 export default function AccountSidebar() {

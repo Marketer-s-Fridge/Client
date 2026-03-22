@@ -29,9 +29,10 @@ const withQuery = (path: string, query?: Record<string, string | number>) => {
 };
 
 async function fetchJson<T>(path: string, init?: RequestInit): Promise<T> {
-  const origin = await getOrigin();
+  const origin = getOrigin();
   const res = await fetch(`${origin}${path}`, {
     ...init,
+    signal: init?.signal ?? AbortSignal.timeout(15_000),
     headers: {
       ...(init?.headers ?? {}),
       Accept: "application/json",
